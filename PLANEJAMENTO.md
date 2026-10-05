@@ -34,17 +34,22 @@ direta com ele.
 | Conferir envio | (nenhum) | só conta como enviada se a resposta tiver `zaapId` ou `messageId` | a Z-API responde 200 com erro no corpo (lição do NetMax) |
 | Foto, nome e preço | o n8n descobre sozinho | você manda a foto e o texto junto com o link; o robô só troca o link | site de loja bloqueia robô que lê página, e preço errado no grupo é pior que sem preço |
 
-## Onde rodar
+## Onde rodar: Railway (decidido em 05/10)
 
-| Opção | Custo a mais | Observação |
-|---|---|---|
-| **Projeto novo no Easypanel que você já tem** (n8n + Postgres próprios) | nenhum, usa o mesmo servidor | separado da NetMax, mesma forma de trabalhar que você já conhece |
-| Railway (escopo original) | plano Pro do Railway | funciona igual; é uma conta e uma fatura a mais |
+O Wellington já tem o plano Pro do Railway com uso de sobra (US$ 20 de uso
+incluído, usando bem menos). Um n8n com Postgres para este volume cabe nisso.
 
-Recomendação: Easypanel, projeto novo (`ofertas`). Não usar o n8n da NetMax:
-é a infraestrutura do Viny, e misturar complica os dois.
+1. No Railway, **New Project > Deploy a Template**, e escolher um template de
+   **n8n com Postgres** (o n8n oficial em Docker e o banco juntos).
+2. Conferir e completar as variáveis do serviço do n8n (abaixo). O template
+   costuma gerar `N8N_ENCRYPTION_KEY` e as do banco; o resto entra à mão.
+3. **Settings > Networking > Generate Domain** no n8n: é o endereço do painel
+   e dos webhooks.
+4. Trocar a imagem `latest` por uma versão fixa depois que subir.
+5. Guardar a `N8N_ENCRYPTION_KEY` num lugar seguro: perdeu, perdeu todas as
+   credenciais.
 
-Variáveis do n8n (Easypanel ou Railway):
+Variáveis do n8n:
 
 ```
 DB_TYPE=postgresdb
@@ -71,7 +76,9 @@ Shopee. As chaves das lojas e da Z-API entram como variáveis também
    grupo rascunho (ou do seu número); o resto é ignorado.
 2. **Converte**: `extrairLinks` e `plataformaDe` (`lib/ofertas.mjs`).
    Amazon: `amazonComTag`. Shopee: `shopeeCorpo` + `shopeeAutorizacao` e a
-   chamada à API. Mercado Livre: passa como veio (já é seu link). Loja que o
+   chamada à API. Mercado Livre: passa como veio (já é seu link). Magalu: o
+   Parceiro Magalu é uma loja sua em `magazinevoce.com.br`; a conversão do
+   link do produto para a sua loja depende do formato atual (falta um exemplo). Loja que o
    robô não conhece: devolve no rascunho "não sei converter esta loja" e não
    posta.
 3. **Posta**: `send-image` com a sua foto e `legenda(...)`, ou `send-text`
@@ -89,12 +96,19 @@ Shopee. As chaves das lojas e da Z-API entram como variáveis também
   não pode prometer). Vale ler as da Shopee, da Amazon e do ML antes de abrir
   o grupo.
 
+## Decidido (05/10)
+
+- Railway, no plano Pro que ele já tem.
+- Aprovado em todos os programas: Shopee, Amazon, Mercado Livre e Magalu.
+- Grupo de teste primeiro; depois o grupo dele de 250 pessoas, com nome novo.
+  O número do robô precisa ser membro do grupo (e admin, se o grupo só deixar
+  admin mandar mensagem).
+
 ## Esperando o Wellington
 
 | # | Pergunta | Por quê |
 |---|---|---|
-| 1 | Easypanel (projeto novo) ou Railway? | decide onde subir o n8n |
-| 2 | Em quais programas você já está aprovado (Shopee, Amazon, Mercado Livre)? | define o que entra no primeiro fluxo |
-| 3 | Shopee: você já tem AppId e Secret da Open API de afiliados? | é o que gera o link curto automático |
-| 4 | Qual número vai ser o do robô (instância nova da Z-API)? | não pode ser o da Juliana |
-| 5 | O rascunho vai ser um grupo seu ou a conversa direta com o robô? | é por onde as ofertas entram |
+| 1 | Shopee: AppId e Secret da Open API (no painel de afiliados da Shopee) | é o que gera o link curto automático; vão direto nas variáveis do n8n |
+| 2 | Qual número vai ser o do robô (instância nova da Z-API)? | não pode ser o da Juliana |
+| 3 | Um link de produto da sua loja Parceiro Magalu, e o link do mesmo produto no site da Magalu | para converter o link certo |
+| 4 | O n8n do Railway com acesso MCP ligado e conectado ao Claude | para eu montar os fluxos direto nele |
