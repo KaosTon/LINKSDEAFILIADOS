@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
+import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
@@ -75,6 +75,26 @@ console.log('\n=== Padrao dos grupos de oferta ===');
   caso('preco curto como nos grupos', reaisCurto(456) === '456' && reaisCurto(2667) === '2.667' && reaisCurto(67.6) === '67,60');
   const S = legendaAchado({ nome: 'Fone', preco: 99, link: 'https://x', chave: 'k' });
   caso('sem preco antes e sem cupom: so "Por", sem linha de cupom', /\u{1F4B5} Por R\$99$/mu.test(S) && !/cupom/i.test(S), S);
+}
+console.log('\n=== Chamada criativa (IA) ===');
+{
+  const N = 'Air Fryer Teste 6,5L 1700W';
+  caso('frase boa: vira maiuscula, sem aspas, ponto ou emoji', limparChamada('"Vou aposentar o óleo da sua casa! 🍟"', N) === 'VOU APOSENTAR O ÓLEO DA SUA CASA');
+  caso('pega so a primeira linha (sem explicacao da IA)', limparChamada('Adeus óleo na cozinha\n\nEssa chamada destaca...', N) === 'ADEUS ÓLEO NA COZINHA');
+  caso('inventou preco, % ou promessa: descarta', limparChamada('Menor preço do ano', N) === null && limparChamada('Só R$ 99 hoje', N) === null && limparChamada('50% de desconto', N) === null && limparChamada('Frete grátis pra você', N) === null);
+  caso('numero que nao esta no nome: descarta; o do nome pode', limparChamada('3 motivos pra comprar', N) === null && limparChamada('1700W de pura crocancia', N) === '1700W DE PURA CROCANCIA');
+  caso('frase grande demais ou vazia: descarta', limparChamada('esta e uma frase muito longa que passa do limite de palavras que a gente aceita aqui', N) === null && limparChamada('', N) === null);
+  const ped = pedidoChamada(N);
+  caso('pedido: modelo barato por padrao, resposta curta, regras no sistema', ped.model === MODELO_CHAMADA && ped.max_tokens <= 60 && /Proibido/.test(ped.messages[0].content) && ped.messages[1].content.includes(N));
+  caso('OPENROUTER_MODELO troca o modelo', pedidoChamada(N, 'outro/modelo').model === 'outro/modelo');
+  const L = legendaAchado({ nome: N, preco: 266, precoAntes: 456, link: 'https://x', chave: 'k', chamada: 'VOU APOSENTAR O ÓLEO DA SUA CASA' });
+  caso('com chamada da IA: ela vai na primeira linha', L.split('\n')[0] === 'VOU APOSENTAR O ÓLEO DA SUA CASA');
+  const mem = memNova();
+  const pg = { canalum: pagina(post('canalum/70', min(5), P1)) };
+  const r1 = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem, rede: { ...rede, chamada: async () => 'MONITOR PRA JOGAR SEM TRAVAR' } });
+  caso('garimpo usa a chamada da IA', r1.texto.startsWith('MONITOR PRA JOGAR SEM TRAVAR') && r1.chamada_ia === true, r1.texto);
+  const r2 = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, chamada: async () => { throw new Error('timeout'); } } });
+  caso('IA caiu: o post sai mesmo assim, com a chamada da lista', r2.acao === 'postar' && r2.chamada_ia === false && r2.texto.split('\n')[0] === gancho('amazon:B0AAAAAAAA', 0), r2.texto);
 }
 caso('proibido: bebida alcoolica e aposta', proibido('Whisky Teste 21 Anos 700ml') && proibido('cassino online') && !proibido('Chaleira inox'));
 
@@ -196,6 +216,11 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('rodado na mao no editor (mode test): ignora o limite e mostra o que sairia', g.saida[0].json.chave === 'amazon:B0AAAAAAAA' && g.saida[0].json.teste === true && g.saida[0].json.postar === false, g.saida[0].json);
   const h = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, agora: new Date('2026-10-07T03:00:00Z'), modo: 'production' });
   caso('no gatilho (production) fora do horario: nao posta', h.saida[0].json.motivo === 'fora_do_horario');
+  const ia = await roda({ env: { ...ENV, OPENROUTER_API_KEY: 'chave-teste' }, http: [...http,
+    { quando: /openrouter\.ai\/api\/v1\/chat\/completions/, metodo: 'POST', responde: { choices: [{ message: { content: 'Monitor pra jogar sem travar' } }] } }] });
+  const chamadaIA = ia.chamadas.find(c => /openrouter/.test(c.url));
+  caso('no com OPENROUTER_API_KEY: pede a chamada e usa', ia.saida[0].json.texto.startsWith('MONITOR PRA JOGAR SEM TRAVAR') && chamadaIA && chamadaIA.headers.Authorization === 'Bearer chave-teste', ia.saida[0].json);
+  caso('no sem OPENROUTER_API_KEY: nao chama o OpenRouter', !a.chamadas.some(c => /openrouter/.test(c.url)));
   const anota = pegarCodigo('03-garimpo.json', 'Anota');
   const mem = { postados: 3, produtos: {} };
   await rodar(anota, { itens: [{ json: { ok: false, erro: 'x' } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'amazon:Z', tipo: 'produto' } }] } });

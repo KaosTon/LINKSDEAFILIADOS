@@ -85,6 +85,8 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 | `GARIMPO_LIGADO` | `sim` para o fluxo 03 postar sozinho; sem isso ele só calcula |
 | `GARIMPO_CANAIS` | opcional: canais públicos do Telegram (padrão `promotop,pechinchou,fadadoscupons,cupomonline`) |
 | `GARIMPO_INICIO`, `GARIMPO_FIM`, `GARIMPO_POR_DIA`, `GARIMPO_CUPONS_POR_DIA`, `GARIMPO_DESCONTO_MIN` | opcionais: 8, 22, 25, 6, 15 |
+| `OPENROUTER_API_KEY` | chave do OpenRouter (segredo): a IA escreve a chamada de cada achado |
+| `OPENROUTER_MODELO` | opcional: padrão `google/gemini-3.1-flash-lite` (US$ 0,25/1,50 por milhão; ~R$ 0,50/mês para 25 por dia) |
 | `GARIMPO_PROIBIDO` | opcional: palavras proibidas separadas por vírgula (padrão: bebida, adulto, aposta, vape, arma) |
 | `MAGALU_LOJA` | opcional: o nome da sua loja no magazinevoce (troca link de outra loja pela sua) |
 | `WEBHOOK_SEGREDO` | opcional, recomendado: texto aleatório; a URL do webhook na Z-API termina com `?k=` e ele |
@@ -118,6 +120,13 @@ de 2 horas. Cupom de ML sem link convertível sai só com o código.
 Canais (ensaio 06/10): @promotop (112 mil) e @pechinchou (69 mil) para
 produto; @fadadoscupons (82 mil) e @cupomonline (29 mil) mais cupom.
 Magalu bloqueia o Railway (403); API do ML fechada.
+
+Legenda (06/10, no padrão dos grupos que ele mostrou): CHAMADA EM MAIÚSCULA,
+nome, "💵 De R$X por R$Y pix", "🛒 link", "🏷️ Use o cupom A + B" e a linha
+"Link de afiliado" (ele quer manter; a Amazon exige aviso). A chamada é
+escrita pela IA (OpenRouter) e conferida por `limparChamada`: preço, número
+que não está no nome, %, frete, "menor preço" e urgência falsa são barrados.
+Se a IA errar ou cair, entra uma chamada da lista e o post sai igual.
 
 ## Cuidados
 
