@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
-         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink } from '../../lib/ofertas.mjs';
+         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -153,6 +153,13 @@ console.log('\n=== Esteira (fluxo 01) ===');
   const r9 = await prepararOferta(corpo('x https://meli.la/1', { fromApi: true }), C, rede);
   caso('a propria resposta do robo e ignorada (nao vira loop)', r9.acao === 'ignorar');
 
+  caso('CUPOM: reconhece com negrito, emoji e minuscula', eCupom('CUPOM: X10') && eCupom('*Cupom* ML') && eCupom('\u{1F381} cupons de hoje') && !eCupom('oferta com cupom no meio') && !eCupom('cupomzinho'));
+  const c1 = await prepararOferta(corpo('CUPOM: MEGA20 vale 20% no app'), C, rede);
+  caso('CUPOM sem link: posta o texto como veio, sem aviso de afiliado', c1.acao === 'postar' && c1.texto === 'CUPOM: MEGA20 vale 20% no app' && !/afiliado/.test(c1.texto), c1);
+  const c2 = await prepararOferta(corpo('CUPOM AMAZON10 https://amzn.to/abc'), C, rede);
+  caso('CUPOM com link: o link e convertido', c2.acao === 'postar' && /tag=minha-20/.test(c2.texto), c2);
+  const c3 = await prepararOferta(corpo('CUPOM https://produto.mercadolivre.com.br/MLB-1'), C, rede);
+  caso('CUPOM com link que nao converte: nao posta', c3.acao === 'recusar');
   const vistos = [];
   const b = corpo('x https://meli.la/1', { messageId: 'IGUAL' });
   const p1 = await prepararOferta(b, C, rede, vistos), p2 = await prepararOferta(b, C, rede, vistos);

@@ -38,6 +38,7 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 | Fluxo | id no n8n | Estado |
 |---|---|---|
 | 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | subido, sub-fluxo (não precisa publicar). A lib colada nele é de antes do `novaURL`; o que ele usa (pedidoZapi, idDoEnvio) não mudou. Subir de novo na próxima mudança do 02 |
+| 97 Ensaio: de onde tirar ofertas | `dg95IghMfsJGlosW` | manual; ML /ofertas e Amazon /deals abrem do Railway, Magalu e API do ML não |
 | 98 Ensaio: abre link curto | `dtJ7lwTKLItlckuD` | manual; mostra os saltos de um link e o que o nó Code tem (URL, require) |
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
-| 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | subido, NÃO publicado: publicar quando a Z-API estiver nas variáveis. Webhook: `/webhook/ofertas-zapi` |
+| 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | subido SEM o CUPOM (falta subir a versão de 06/10 da lib), NÃO publicado: publicar quando a Z-API estiver nas variáveis. Webhook: `/webhook/ofertas-zapi` |

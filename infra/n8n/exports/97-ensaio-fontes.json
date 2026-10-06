@@ -1,0 +1,52 @@
+{
+  "name": "[Ofertas] 97 Ensaio: de onde tirar ofertas",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b5158f9b-1041-5eeb-b3b1-14c487a8d727",
+      "name": "Rodar na mão",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const FONTES = ['https://www.mercadolivre.com.br/ofertas', 'https://www.amazon.com.br/deals'];\nconst H = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36', 'Accept-Language': 'pt-BR,pt;q=0.9', 'Accept': 'text/html' };\nconst saida = [];\nfor (const url of FONTES) {\n  const r = await this.helpers.httpRequest({ method: 'GET', url, headers: H, returnFullResponse: true, ignoreHttpStatusErrors: true, timeout: 20000, json: false });\n  const b = typeof r.body === 'string' ? r.body : '';\n  saida.push({ json: { url, status: r.statusCode, tamanho: b.length, amostra: b.slice(0, 300) } });\n}\nreturn saida;"
+      },
+      "id": "b1cb5452-d619-55d1-acb9-51ff16577785",
+      "name": "Testa as fontes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Rodar na mão": {
+      "main": [
+        [
+          {
+            "node": "Testa as fontes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
