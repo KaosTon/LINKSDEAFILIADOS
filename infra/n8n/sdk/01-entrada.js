@@ -13,7 +13,7 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * mandar o robô postar no grupo.
  */
 const GATEWAY = '0lJeNYqZyDG9Rq2J';
-const ENTRADAS = ['phone', 'message', 'image', 'origem'].map(id => ({
+const ENTRADAS = ['phone', 'message', 'image', 'origem', 'link', 'titulo'].map(id => ({
   id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type: 'string' }));
 const gateway = (nome, posicao, valores) => node({
   type: 'n8n-nodes-base.executeWorkflow', version: 1.2,
@@ -61,7 +61,7 @@ const podePostar = ifElse({
 });
 
 const posta = gateway('Posta no grupo', [720, -100], {
-  phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '01-grupo' });
+  phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '01-grupo', link: '', titulo: '' });
 
 const comoFoi = node({
   type: 'n8n-nodes-base.code', version: 2,
@@ -76,7 +76,7 @@ const comoFoi = node({
 });
 
 const responde = gateway('Responde no rascunho', [1200, 0], {
-  phone: expr('{{ $env.GRUPO_RASCUNHO }}'), message: expr('{{ $json.resposta }}'), image: '', origem: '01-resposta' });
+  phone: expr('{{ $env.GRUPO_RASCUNHO }}'), message: expr('{{ $json.resposta }}'), image: '', origem: '01-resposta', link: '', titulo: '' });
 
 export default workflow('ofertas-01-entrada', '[Ofertas] 01 Entrada (rascunho para o grupo)')
   .add(zapi.to(prepara).to(podePostar

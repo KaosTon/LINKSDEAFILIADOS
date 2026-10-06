@@ -44,6 +44,7 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
 | 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | subido SEM o CUPOM e sem o `converterLink` (falta subir a versão de 06/10 da lib), NÃO publicado: publicar quando a Z-API estiver nas variáveis. Webhook: `/webhook/ofertas-zapi` |
 
-**Antes de ligar a Z-API:** subir de novo o nó "Prepara a oferta" (01) com a
-lib atual (`node infra/n8n/compilar.mjs`, o jsCode sai de
-`infra/n8n/exports/`). O 02 também, para ficar igual ao testado.
+**Antes de ligar a Z-API:** subir de novo os fluxos 01, 02 e 03 com a lib
+atual (`node infra/n8n/compilar.mjs`; o jsCode sai de `infra/n8n/exports/`).
+O 02 ganhou as entradas `link` e `titulo` (send-link com plano B em
+send-image) e o 03 passa esses dois; os três precisam subir juntos.

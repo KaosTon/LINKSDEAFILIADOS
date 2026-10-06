@@ -121,6 +121,10 @@ console.log('\n=== Post completo (como os grupos fazem) ===');
   caso('condicao de cupom ("acima de R$89") nao vira preco', lerPost('Cupom Teste\n\n🎟 20% OFF acima de R$89, limite R$30: TESTEX').preco === null);
   const semFoto = lerCanalTelegram(`<div class="tgme_widget_message_wrap"><div data-post="c/1"><a class="tgme_widget_message_photo_wrap" style="background-image:url('//telegram.org/img/emoji/40/F09F92A5.png')"></a><div class="tgme_widget_message_text">X</div><time datetime="2026-10-06T14:00:00Z"></time></div></div>`);
   caso('post sem foto: o emoji do Telegram nao vira foto', semFoto[0].foto === null, semFoto[0]);
+  const T = lerPost('CORREEE PRECINHO NAS TOALHAS\n\nJogo de Toalhas Teste Velvet 4 Peças\n\n💵 R$43 pix\n🛒 https://meli.la/t1\n\n🏷️ Aplique o cupom de 25% do anúncio (aparece abaixo do preço) + Selecione PIX');
+  caso('cupom sem codigo, so instrucao: vira a linha do cupom (nao aviso)', T.preco === 43 && T.pagamento === 'no Pix' && T.cupons.length === 0 && /^Aplique o cupom de 25% do anúncio/.test(T.dicaCupom) && T.avisos.length === 0, T);
+  const LT = legendaAchado({ ...T, link: 'https://x', chave: 'k', chamada: 'TOALHA MACIA PRA SECAR SORRINDO' });
+  caso('legenda da toalha: 🏷️ com a instrucao inteira', LT.includes('\u{1F3F7}\uFE0F Aplique o cupom de 25% do anúncio (aparece abaixo do preço) + Selecione PIX'), LT);
   caso('nenhuma legenda tem a linha de afiliado', !/afiliado/i.test(L.join('\n')) && !/afiliado/i.test(legendaCupom({ cupons: ['X1234'], link: 'https://x' })));
 }
 console.log('\n=== Foto com marca de outro grupo ===');
@@ -195,6 +199,7 @@ console.log('\n=== Escolha ===');
     post('canalum/12', min(40), P1 + '\n\n👀 Visto em https://t.me/canalum @canalum entre no grupo', 'https://cdn1.telesco.pe/file/f2')) };
   const r = await garimpar({ canais, agora: AGORA, cfg: CFG, mem, rede });
   caso('pula o ML e posta o da Amazon com a sua tag', r.acao === 'postar' && r.chave === 'amazon:B0AAAAAAAA' && r.texto.includes('https://www.amazon.com.br/dp/B0AAAAAAAA?tag=minha-20'), r);
+  caso('devolve o link e o nome para a previa do link (send-link)', r.link === 'https://www.amazon.com.br/dp/B0AAAAAAAA?tag=minha-20' && r.titulo === 'Monitor Gamer Teste 25 144hz', r);
   caso('legenda no seu padrao: nome e preco; nada do canal (@, "Visto em", t.me)', /Monitor Gamer Teste/.test(r.texto) && /Por R\$458 no Pix/.test(r.texto) && !/@canalum|Visto em|t\.me|outro-20/.test(r.texto), r.texto);
   caso('vai com a foto do post', r.imagem === 'https://cdn1.telesco.pe/file/f2');
   caso('post com mais de 2 horas nao entra', !mem.vistos['canalum/10']);

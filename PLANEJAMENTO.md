@@ -132,6 +132,11 @@ escrita pela IA (OpenRouter) e conferida por `limparChamada`: preço, número
 que não está no nome, %, frete, "menor preço" e urgência falsa são barrados.
 Se a IA errar ou cair, entra uma chamada da lista e o post sai igual.
 
+Envio (06/10): achado com link e foto sai por `send-link` da Z-API (a prévia
+grande do link com a foto, como o Tudo na Promo); se falhar, o gateway manda
+na hora por `send-image`. Sem banner nas fotos (ele não quer). Nome do grupo,
+por enquanto: PromoX (pode mudar; nada no robô depende dele ainda).
+
 ## Cuidados
 
 - **Número dedicado** para o grupo. Postar em grupo é tranquilo; o que derruba

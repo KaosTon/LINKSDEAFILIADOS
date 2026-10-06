@@ -12,7 +12,7 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * legenda é sempre no seu padrão: nada do texto do canal vai para o grupo.
  */
 const GATEWAY = '0lJeNYqZyDG9Rq2J';
-const ENTRADAS = ['phone', 'message', 'image', 'origem'].map(id => ({
+const ENTRADAS = ['phone', 'message', 'image', 'origem', 'link', 'titulo'].map(id => ({
   id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type: 'string' }));
 
 const relogio = trigger({
@@ -70,7 +70,8 @@ const envia = node({
     source: 'database',
     workflowId: { __rl: true, mode: 'id', value: GATEWAY },
     workflowInputs: { mappingMode: 'defineBelow', matchingColumns: [], schema: ENTRADAS, attemptToConvertTypes: false,
-      value: { phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '03-garimpo' } },
+      value: { phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '03-garimpo',
+        link: expr('{{ $json.link }}'), titulo: expr('{{ $json.titulo }}') } },
     options: { waitForSubWorkflow: true } } },
   output: [{ ok: true, id: 'Z1', origem: '03-garimpo', erro: null }]
 });

@@ -108,6 +108,10 @@ console.log('\n=== Saida (Z-API) ===');
   caso('sem foto: send-text', tx.url.endsWith('/send-text') && tx.body.message === 'oi');
   let e = null; try { pedidoZapi({ phone: 'g', message: 'x' }, {}); } catch (x) { e = x.message; }
   caso('sem configuracao: erro, nao manda para endereco quebrado', /ZAPI_BASE_URL/.test(e || ''));
+  const sl = pedidoZapi({ phone: 'g', message: 'leg https://loja/x', image: 'https://img', link: 'https://loja/x', titulo: 'Toalha Teste' }, Z);
+  caso('com foto e link: send-link (previa grande do link, como os grupos)', sl.url.endsWith('/send-link') && sl.body.linkUrl === 'https://loja/x' && sl.body.image === 'https://img' && sl.body.title === 'Toalha Teste' && sl.body.message.includes('leg'), sl);
+  caso('forma imagem: volta para o send-image (plano B)', pedidoZapi({ phone: 'g', message: 'x', image: 'https://img', link: 'https://l', forma: 'imagem' }, Z).url.endsWith('/send-image'));
+  caso('link sem foto: send-text (o WhatsApp monta a previa sozinho)', pedidoZapi({ phone: 'g', message: 'x https://l', link: 'https://l' }, Z).url.endsWith('/send-text'));
   caso('saiu so com zaapId ou messageId', idDoEnvio({ zaapId: 'Z' }) === 'Z' && idDoEnvio({ messageId: 'M' }) === 'M' && idDoEnvio({ error: 'x' }) === null && idDoEnvio(null) === null);
 }
 

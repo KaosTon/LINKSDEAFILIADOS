@@ -42,5 +42,13 @@ const roda = (entrada, responde, env = ENV) => rodar(codigo, { itens: [{ json: {
   caso('sem instancia/token configurados: nao chama endereco quebrado', s.out.ok === false && s.chamadas.length === 0 && /ZAPI_INSTANCE_ID/.test(s.out.erro));
 }
 
+{
+  const r = await roda({ phone: 'g', message: 'Oferta https://l', image: 'https://img/1.jpg', link: 'https://l', titulo: 'Produto', origem: '03' }, { zaapId: 'Z7' });
+  caso('com link e foto: manda pela previa do link (send-link)', r.chamadas[0].url.endsWith('/send-link') && r.chamadas[0].body.linkUrl === 'https://l' && r.out.ok && r.out.forma === 'send-link', r.chamadas);
+  const f = await roda({ phone: 'g', message: 'Oferta https://l', image: 'https://img/1.jpg', link: 'https://l', titulo: 'Produto', origem: '03' },
+    (op) => (op.url.endsWith('/send-link') ? { error: 'link preview failed' } : { zaapId: 'Z8' }));
+  caso('send-link falhou: plano B na hora, send-image com a mesma legenda', f.out.ok && f.out.forma === 'send-image' && f.chamadas.length === 2 && f.chamadas[1].body.caption === 'Oferta https://l', f.chamadas.map(c => c.url));
+}
+
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;
