@@ -121,15 +121,16 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 
 - Amazon: tag `promoprimex08-20` (vai em `AMAZON_TAG`; não é segredo, aparece em todo link).
 - Magalu: programa agora se chama Influenciador Magalu; loja `magapromooficial`
-  (vai em `MAGALU_LOJA`).
-- Shopee: ainda sem acesso à Open API (precisa pedir).
+  (vai em `MAGALU_LOJA`). No link ela aparece como `magazinemagapromooficial`:
+  `magazinevoce.com.br/magazineLOJA/produto/p/ID/cat/sub/?seller_id=...`. O robô
+  aceita os dois jeitos, troca a loja de link de outro divulgador e converte
+  link de produto do magazineluiza.com.br para a loja dele.
+- Shopee: acesso à Open API pedido em 06/10, esperando a Shopee aprovar.
 
 ## Esperando o Wellington
 
 | # | Pergunta | Por quê |
 |---|---|---|
 | 1 | Shopee: acesso à Open API pedido (06/10) pelo formulário da Central de Ajuda em affiliate.shopee.com.br/open_api; quando aprovar, AppId e Secret | é o que gera o link curto automático; vão direto nas variáveis do n8n |
-| 3b | Um link de produto gerado no painel do Influenciador Magalu | confirmar o formato (magazinevoce.com.br/magapromooficial/... ou link curto) |
 | 2 | Qual número vai ser o do robô (instância nova da Z-API)? | não pode ser o da Juliana |
-| 3 | Um link de produto da sua loja Parceiro Magalu, e o link do mesmo produto no site da Magalu | para converter o link certo |
 | 4 | Ids dos grupos rascunho e ofertas | sai do webhook: com a Z-API ligada, manda um "oi" em cada grupo e eu leio o id na execução |

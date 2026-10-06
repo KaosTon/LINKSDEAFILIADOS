@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
-         magaluNaMinhaLoja, limparShopee, prepararOferta, abrirLink } from '../../lib/ofertas.mjs';
+         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -115,6 +115,12 @@ console.log('\n=== Esteira (fluxo 01) ===');
 {
   caso('Magalu: link de outra loja vira da sua', magaluNaMinhaLoja('https://www.magazinevoce.com.br/magazineoutro/p/tv-50/123/', 'magazineeu') === 'https://www.magazinevoce.com.br/magazineeu/p/tv-50/123/');
   caso('Magalu: com MAGALU_LOJA, o converter ja troca a loja', converterSemRede('https://www.magazinevoce.com.br/magazineoutro/p/x/', { magaluLoja: 'magazineeu' }).url === 'https://www.magazinevoce.com.br/magazineeu/p/x/');
+  const REAL = 'https://www.magazinevoce.com.br/magazineoutraloja/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz';
+  caso('MAGALU_LOJA com ou sem "magazine" na frente', lojaMagalu('magapromooficial') === 'magazinemagapromooficial' && lojaMagalu('magazinemagapromooficial') === 'magazinemagapromooficial' && lojaMagalu('') === '');
+  caso('Magalu: link de outra loja (formato real) vira da sua, mantendo produto e vendedor', magaluNaMinhaLoja(REAL, 'magapromooficial') === 'https://www.magazinevoce.com.br/magazinemagapromooficial/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz');
+  const SITE = 'https://www.magazineluiza.com.br/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz';
+  caso('Magalu: link do site vira link da sua loja', converterSemRede(SITE, { magaluLoja: 'magapromooficial' }).url === 'https://www.magazinevoce.com.br/magazinemagapromooficial/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz');
+  caso('Magalu: pagina do site que nao e produto continua recusada', converterSemRede('https://www.magazineluiza.com.br/busca/tv/', { magaluLoja: 'x' }).motivo === 'magalu_precisa_link_da_sua_loja');
   caso('Shopee: tira o rastreio de quem divulgou', limparShopee('https://shopee.com.br/produto-i.1.2?smtt=0.0.9&utm_source=x#a') === 'https://shopee.com.br/produto-i.1.2');
   caso('link mais longo trocado primeiro', trocarLinks('a https://x.co/1 b https://x.co/12', { 'https://x.co/1': 'A', 'https://x.co/12': 'B' }) === 'a A b B');
 
