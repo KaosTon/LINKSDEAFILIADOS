@@ -27,7 +27,7 @@ export function pegarCodigo(arquivo, nomeDoNo) {
 // `http` é a lista de respostas falsas: [{ quando: /regex/, metodo, responde }]
 // Toda chamada não prevista estoura, para o teste não passar por acidente.
 // `nos` simula o $('Nome do nó') do n8n: { 'Nome': [{ json: {...} }] }.
-export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {}, memoria = {} } = {}) {
+export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {}, memoria = {}, bloquear = [] } = {}) {
   const chamadas = [];
   const helpers = {
     async httpRequest(op) {
@@ -52,8 +52,12 @@ export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {},
   // require: o nó Code do n8n libera módulos nativos (crypto) e a lib colada usa.
   // $getWorkflowStaticData: a memória do fluxo (no n8n só persiste em produção).
   const $getWorkflowStaticData = () => memoria;
-  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require', '$getWorkflowStaticData',
-    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $, createRequire(import.meta.url), $getWorkflowStaticData);
+  // Como no task runner do n8n: sem URL/URLSearchParams globais, e o require só
+  // entrega o que NODE_FUNCTION_ALLOW_BUILTIN libera (`bloquear` simula o resto).
+  const req = createRequire(import.meta.url);
+  const requireN8n = (m) => { if (bloquear.includes(m)) throw new Error(`Module '${m}' is disallowed`); return req(m); };
+  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require', '$getWorkflowStaticData', 'URL', 'URLSearchParams',
+    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $, requireN8n, $getWorkflowStaticData, undefined, undefined);
   const saida = await fn.call(ctx);
   return { saida, chamadas };
 }

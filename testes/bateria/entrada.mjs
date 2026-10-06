@@ -17,7 +17,7 @@ const ENV = { GRUPO_RASCUNHO: '120363000000000001-group', GRUPO_OFERTAS: '120363
 const corpo = (texto, extra) => ({ instanceId: 'INST1', phone: ENV.GRUPO_RASCUNHO, isGroup: true,
   participantPhone: ENV.AUTOR_PHONE, fromMe: false, fromApi: false, messageId: 'M' + Math.random(),
   image: { imageUrl: 'https://z/f.jpg', caption: texto }, ...extra });
-const roda = (body, { env = ENV, http = [], query = {}, memoria = {} } = {}) => rodar(codigo, { env, http, memoria,
+const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear = [] } = {}) => rodar(codigo, { env, http, memoria, bloquear,
   nos: { 'Z-API avisou': [{ json: { body, query } }] } }).then(r => ({ ...r, out: r.saida[0] && r.saida[0].json }));
 
 {
@@ -59,6 +59,20 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {} } = {}) => 
 {
   const r = await roda(corpo('Fone https://shopee.com.br/x-i.1.2'), { env: { ...ENV, SHOPEE_SECRET: '' } });
   caso('Shopee sem segredo: nao chama a API, pede a configuracao', r.chamadas.length === 0 && /SHOPEE_APP_ID/.test(r.out.resposta), r.out);
+}
+{
+  const r = await roda(corpo('TV https://www.amazon.com.br/dp/B0X'), { bloquear: ['url'] });
+  caso('n8n sem o modulo url: nao estoura, responde no rascunho como resolver', r.out && r.out.postar === false && /crypto,url/.test(r.out.resposta), r.out);
+  const ML = { ...ENV, ML_ETIQUETA: 'minhaetiqueta' };
+  const abre = (palavra) => [{ quando: /meli\.la/, responde: { statusCode: 301, headers: { location: `https://www.mercadolivre.com.br/social/x?matt_word=${palavra}&matt_tool=1` } } }];
+  const meu = await roda(corpo('Chaleira https://meli.la/AAA'), { env: ML, http: abre('MinhaEtiqueta') });
+  caso('ML: meli.la da sua etiqueta passa como veio', meu.out.postar === true && meu.out.texto.includes('https://meli.la/AAA'), meu.out);
+  const outro = await roda(corpo('Chaleira https://meli.la/BBB'), { env: ML, http: abre('outrapessoa') });
+  caso('ML: meli.la de outra pessoa e recusado', outro.out.postar === false && /etiqueta/.test(outro.out.resposta), outro.out);
+  const semDestino = await roda(corpo('Chaleira https://meli.la/CCC'), { env: ML, http: [{ quando: /meli\.la/, responde: { statusCode: 200, headers: {} } }] });
+  caso('ML: meli.la que nao abre e recusado (na duvida, nao posta)', semDestino.out.postar === false, semDestino.out);
+  const semEtiqueta = await roda(corpo('Chaleira https://meli.la/DDD'));
+  caso('ML sem ML_ETIQUETA: passa sem abrir (como antes)', semEtiqueta.out.postar === true && semEtiqueta.chamadas.length === 0);
 }
 {
   const como = pegarCodigo('01-entrada.json', 'Como foi');

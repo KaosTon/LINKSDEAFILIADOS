@@ -62,3 +62,12 @@ que vale aqui é o mesmo: n8n, Z-API, nó Code, variáveis de ambiente.
 - Site de loja costuma bloquear servidor de datacenter. Não montar o robô
   dependendo de ler página de loja: nome, foto e preço vêm de você ou da API
   oficial do programa de afiliados.
+
+## Deste projeto
+
+- **O nó Code do n8n não tem `URL` global** (nem `URLSearchParams`), e o
+  módulo `url` vem bloqueado. A bateria passava porque roda no Node, onde o
+  `URL` existe. Agora o simulador (`testes/bateria/executar.mjs`) esconde o
+  `URL` e bloqueia módulos como o n8n, e a lib usa `novaURL` com
+  `require('url')`. Antes de confiar numa bateria, rodar um ensaio no n8n de
+  verdade (fluxo 98) para ver o que o ambiente tem.

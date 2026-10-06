@@ -62,11 +62,12 @@ N8N_ENCRYPTION_KEY=<texto aleatório longo, nunca trocar depois>
 GENERIC_TIMEZONE=America/Sao_Paulo
 EXECUTIONS_DATA_PRUNE=true
 EXECUTIONS_DATA_MAX_AGE=48
-NODE_FUNCTION_ALLOW_BUILTIN=crypto
+NODE_FUNCTION_ALLOW_BUILTIN=crypto,url
 ```
 
-`NODE_FUNCTION_ALLOW_BUILTIN=crypto` é para o nó Code assinar o pedido da
-Shopee. No Railway também precisa `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` (feito
+`NODE_FUNCTION_ALLOW_BUILTIN=crypto,url`: `crypto` assina o pedido da Shopee e
+`url` é obrigatório, porque o nó Code do n8n não tem `URL` global (ensaio 98,
+06/10); sem ele o fluxo 01 responde no rascunho pedindo a variável. No Railway também precisa `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` (feito
 em 05/10, diagnóstico 99 confere).
 
 Variáveis do projeto (no serviço do n8n, nunca no código):
@@ -80,6 +81,7 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 | `AUTOR_PHONE` | seu número, com 55 e DDD |
 | `AMAZON_TAG` | sua tag de associado (termina em `-20`) |
 | `SHOPEE_APP_ID`, `SHOPEE_SECRET` | da Open API da Shopee |
+| `ML_ETIQUETA` | opcional, recomendado: sua etiqueta do ML (`tonw17`); meli.la de outra etiqueta é recusado |
 | `MAGALU_LOJA` | opcional: o nome da sua loja no magazinevoce (troca link de outra loja pela sua) |
 | `WEBHOOK_SEGREDO` | opcional, recomendado: texto aleatório; a URL do webhook na Z-API termina com `?k=` e ele |
 
@@ -126,6 +128,10 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
   aceita os dois jeitos, troca a loja de link de outro divulgador e converte
   link de produto do magazineluiza.com.br para a loja dele.
 - Shopee: acesso à Open API pedido em 06/10, esperando a Shopee aprovar.
+- Mercado Livre: etiqueta `tonw17`. O meli.la abre (301) em
+  `mercadolivre.com.br/social/...?matt_word=tonw17&matt_tool=78518728&ref=...`;
+  o robô confere o `matt_word`. Link comum do ML não dá para converter
+  sozinho (o `ref` é cifrado), só pelo Gerador de links.
 
 ## Esperando o Wellington
 

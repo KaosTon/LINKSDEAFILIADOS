@@ -42,7 +42,7 @@ const prepara = node({
 "const memoria = $getWorkflowStaticData('global');",
 "memoria.vistos = memoria.vistos || [];",
 "const cfg = { rascunho: $env.GRUPO_RASCUNHO, grupo: $env.GRUPO_OFERTAS, autor: $env.AUTOR_PHONE,",
-"  instancia: $env.ZAPI_INSTANCE_ID, amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA,",
+"  instancia: $env.ZAPI_INSTANCE_ID, amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA,",
 "  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET) };",
 "const http = this.helpers;",
 "const rede = {",
