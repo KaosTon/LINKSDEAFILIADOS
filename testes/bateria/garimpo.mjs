@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { lerCanalTelegram, lerPost, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
+import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
@@ -45,17 +45,36 @@ const P1 = 'Monitor Gamer Teste 25 144hz\n\n🔥 Por: R$ 458 no Pix\n\n🛒 Link
 }
 {
   const a = lerPost(P1);
-  caso('produto: nome, preco e link', a.tipo === 'produto' && a.nome === 'Monitor Gamer Teste 25 144hz' && a.preco === '458,00' && a.link === 'https://amzn.to/aaa', a);
+  caso('produto: nome, preco e link', a.tipo === 'produto' && a.nome === 'Monitor Gamer Teste 25 144hz' && a.preco === 458 && a.pagamento === 'no Pix' && a.link === 'https://amzn.to/aaa', a);
   const b = lerPost('QNED MINI LED 4K 🎬\n\n- Smart TV Teste 55 Mini LED\n\n🔥 Por: R$ 2.667 Parcelado\n🎯 Usem o cupom: TODOSEU\n\n🛒 Link: https://meli.la/zzz');
-  caso('chamada em maiuscula + "- nome": pega o nome certo, preco e cupom', b.nome === 'Smart TV Teste 55 Mini LED' && b.preco === '2.667,00' && b.cupons.join() === 'TODOSEU', b);
+  caso('chamada em maiuscula + "- nome": pega o nome certo, preco e cupom', b.nome === 'Smart TV Teste 55 Mini LED' && b.preco === 2667 && b.pagamento === 'parcelado' && b.cupons.join() === 'TODOSEU', b);
   const c = lerPost('BAIXOU! 🏃 Sanduicheira! 🍔 UM LUXO\n\n•⁠  Sanduicheira Teste 2 em 1 850W\n\n🔥 R$ 90,14 Parcelado\nAchado Amazon 👇🏻\n🛒 https://pechin.co/111');
-  caso('formato com "•" e preco sem "Por"', c.tipo === 'produto' && c.nome === 'Sanduicheira Teste 2 em 1 850W' && c.preco === '90,14' && c.link === 'https://pechin.co/111', c);
+  caso('formato com "•" e preco sem "Por"', c.tipo === 'produto' && c.nome === 'Sanduicheira Teste 2 em 1 850W' && c.preco === 90.14 && c.link === 'https://pechin.co/111', c);
   const d = lerPost('Philco TV 50\n\n🔥 Por: R$ 1657 no pix\n⚠️ Resgate os cupons: https://s.shopee.com.br/cupons\n\n 🛒 Link: https://s.shopee.com.br/produto');
   caso('dois links: pega o da linha "Link:", nao o da pagina de cupons', d.link === 'https://s.shopee.com.br/produto', d);
   const e = lerPost('🔥 Cupons Mercado Livre em Selecionados\n\n🎟 20% OFF acima de R$89, limite R$30: TESTEUM\nLista: https://meli.la/l1\n\n🎟 10% OFF acima de R$99, limite R$20: TESTE0510\nLista: https://meli.la/l2');
   caso('post de cupom: tipo, codigos e linhas', e.tipo === 'cupom' && e.cupons.join() === 'TESTEUM,TESTE0510' && e.linhasCupom.length === 2 && /20% OFF/.test(e.linhasCupom[0]), e);
   const f = lerPost('🚨 Cupom Magalu APP\n\n🎟 15% OFF em compras de até R$500 - TESTE15\n\n✅ Resgate aqui:\nhttps://divulgador.magalu.com/Xyz');
   caso('cupom depois de " - "; "Magalu" e "APP" nao viram codigo', f.cupons.join() === 'TESTE15', f.cupons);
+}
+console.log('\n=== Padrao dos grupos de oferta ===');
+{
+  const a = lerPreco('💵 De R$456 por R$266 pix');
+  caso('"De R$456 por R$266 pix": antes, depois e forma de pagamento', a.precoAntes === 456 && a.preco === 266 && a.pagamento === 'no Pix', a);
+  const b = lerPreco('💵 De R$135 por a partir de R$57 até 2x sem juros');
+  caso('"por a partir de" e "ate 2x sem juros"', b.preco === 57 && b.precoAntes === 135 && b.aPartir && b.pagamento === 'em até 2x sem juros', b);
+  caso('"De" menor que o "por" nao vale (nao inventa desconto)', lerPreco('De R$50 por R$80').precoAntes === null);
+  const P = lerPost('VOU DEIXAR SUA COZINHA SEM OLEO\n\nAir Fryer Teste 6,5L 1700W\n\n💵 De R$456 por R$266 pix\n🛒 https://amzn.to/aaa\n\n🏷️ Use o cupom TESTECUPOM0510 + Selecione PIX');
+  caso('post no padrao: nome (pula a chamada), precos e cupom (sem "Selecione")', P.nome === 'Air Fryer Teste 6,5L 1700W' && P.preco === 266 && P.precoAntes === 456 && P.cupons.join() === 'TESTECUPOM0510', P);
+  caso('dois cupons, o segundo na linha de baixo com "+"', lerPost('X Teste\n\n💵 Por R$9\n🛒 https://amzn.to/b\n\n🏷️ Use o cupom TESTEUM\n+ TESTEDOIS').cupons.join() === 'TESTEUM,TESTEDOIS');
+  const L = legendaAchado({ ...P, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'amazon:B0X' });
+  const linhas = L.split('\n');
+  caso('legenda: chamada, nome, De/por com pix, link, cupom, nessa ordem', linhas[0] === '42% OFF, CORRE' && linhas[2] === 'Air Fryer Teste 6,5L 1700W' && linhas[4] === '\u{1F4B5} De R$456 por R$266 no Pix' && linhas[5] === '\u{1F6D2} https://www.amazon.com.br/dp/B0X?tag=minha-20' && linhas[7] === '\u{1F3F7}\uFE0F Use o cupom TESTECUPOM0510', linhas);
+  caso('a chamada e nossa, nao a do canal', !L.includes('COZINHA SEM OLEO'));
+  caso('sem desconto grande: chamada da lista, sempre a mesma para o mesmo produto', gancho('amazon:Z', 10) === gancho('amazon:Z', 10) && !/OFF/.test(gancho('amazon:Z', 10)) && gancho('amazon:Z', 30) === '30% OFF, CORRE');
+  caso('preco curto como nos grupos', reaisCurto(456) === '456' && reaisCurto(2667) === '2.667' && reaisCurto(67.6) === '67,60');
+  const S = legendaAchado({ nome: 'Fone', preco: 99, link: 'https://x', chave: 'k' });
+  caso('sem preco antes e sem cupom: so "Por", sem linha de cupom', /\u{1F4B5} Por R\$99$/mu.test(S) && !/cupom/i.test(S), S);
 }
 caso('proibido: bebida alcoolica e aposta', proibido('Whisky Teste 21 Anos 700ml') && proibido('cassino online') && !proibido('Chaleira inox'));
 
@@ -97,7 +116,7 @@ console.log('\n=== Escolha ===');
     post('canalum/12', min(40), P1 + '\n\n👀 Visto em https://t.me/canalum @canalum entre no grupo', 'https://cdn/f2')) };
   const r = await garimpar({ canais, agora: AGORA, cfg: CFG, mem, rede });
   caso('pula o ML e posta o da Amazon com a sua tag', r.acao === 'postar' && r.chave === 'amazon:B0AAAAAAAA' && r.texto.includes('https://www.amazon.com.br/dp/B0AAAAAAAA?tag=minha-20'), r);
-  caso('legenda no seu padrao: nome e preco; nada do canal (@, "Visto em", t.me)', /Monitor Gamer Teste/.test(r.texto) && /R\$ 458,00/.test(r.texto) && !/@canalum|Visto em|t\.me|outro-20/.test(r.texto), r.texto);
+  caso('legenda no seu padrao: nome e preco; nada do canal (@, "Visto em", t.me)', /Monitor Gamer Teste/.test(r.texto) && /Por R\$458 no Pix/.test(r.texto) && !/@canalum|Visto em|t\.me|outro-20/.test(r.texto), r.texto);
   caso('vai com a foto do post', r.imagem === 'https://cdn/f2');
   caso('post com mais de 2 horas nao entra', !mem.vistos['canalum/10']);
   caso('os tentados ficam marcados (nao tenta de novo)', mem.vistos['canalum/11'] && mem.vistos['canalum/12']);
@@ -108,7 +127,7 @@ console.log('\n=== Escolha ===');
 {
   const mem = memNova();
   const r = await garimpar({ canais: { canalum: pagina(post('canalum/20', min(5), 'Whisky Teste 12 Anos\n\n🔥 Por: R$ 99\n\n🛒 Link: https://amzn.to/aaa')) }, amazonHtml: DEALS, agora: AGORA, cfg: CFG, mem, rede });
-  caso('proibido no canal: pula; sem mais nada, vai para as ofertas da Amazon (maior desconto)', r.acao === 'postar' && r.chave === 'amazon:B0EEEEEEEE' && /De ~R\$ 899,00~ por \*R\$ 519,00\*/.test(r.texto) && /Prime/.test(r.texto), r);
+  caso('proibido no canal: pula; sem mais nada, vai para as ofertas da Amazon (maior desconto)', r.acao === 'postar' && r.chave === 'amazon:B0EEEEEEEE' && /De R\$899 por R\$519 \(oferta Prime\)/.test(r.texto) && /^42% OFF/.test(r.texto), r);
   const r2 = await garimpar({ canais: {}, amazonHtml: DEALS, agora: AGORA, cfg: { ...CFG, descontoMin: 50 }, mem: memNova(), rede });
   caso('Amazon abaixo do desconto minimo: nao posta', r2.acao === 'nada');
 }
