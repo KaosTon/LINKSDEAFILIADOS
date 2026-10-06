@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { mlAfiliado, escolherProdutoML } from '../../lib/ofertas.mjs';
+import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -70,7 +70,7 @@ console.log('\n=== Padrao dos grupos de oferta ===');
   caso('dois cupons, o segundo na linha de baixo com "+"', lerPost('X Teste\n\n💵 Por R$9\n🛒 https://amzn.to/b\n\n🏷️ Use o cupom TESTEUM\n+ TESTEDOIS').cupons.join() === 'TESTEUM,TESTEDOIS');
   const L = legendaAchado({ ...P, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'amazon:B0X' });
   const linhas = L.split('\n');
-  caso('legenda: chamada, nome, De/por com pix, link, cupom, nessa ordem', linhas[0] === '42% OFF, CORRE' && linhas[2] === 'Air Fryer Teste 6,5L 1700W' && linhas[4] === '\u{1F4B5} De R$456 por R$266 no Pix' && linhas[5] === '\u{1F6D2} https://www.amazon.com.br/dp/B0X?tag=minha-20' && linhas[7] === '\u{1F3F7}\uFE0F Use o cupom TESTECUPOM0510', linhas);
+  caso('legenda: chamada, nome, De/por com pix, link, cupom, nessa ordem', linhas[0] === '42% OFF, CORRE' && linhas[2] === 'Air Fryer Teste 6,5L 1700W' && linhas[4] === '\u{1F4B5} De R$456 por R$266 no Pix' && linhas[5] === '\u{1F6D2} https://www.amazon.com.br/dp/B0X?tag=minha-20' && linhas[7] === '\u{1F3F7}\uFE0F Use o cupom TESTECUPOM0510 + Selecione PIX' && linhas.length === 8, linhas);
   caso('a chamada e nossa, nao a do canal', !L.includes('COZINHA SEM OLEO'));
   caso('sem desconto grande: chamada da lista, sempre a mesma para o mesmo produto', gancho('amazon:Z', 10) === gancho('amazon:Z', 10) && !/OFF/.test(gancho('amazon:Z', 10)) && gancho('amazon:Z', 30) === '30% OFF, CORRE');
   caso('preco curto como nos grupos', reaisCurto(456) === '456' && reaisCurto(2667) === '2.667' && reaisCurto(67.6) === '67,60');
@@ -96,13 +96,44 @@ console.log('\n=== Mercado Livre com o seu link ===');
   const redeML = { ...rede,
     abrir: async (u) => u === 'https://meli.la/outro1' ? 'https://www.mercadolivre.com.br/social/outrocanal?matt_word=outro&matt_tool=999&ref=abc' : rede.abrir(u),
     pagina: async (u) => /social\/outrocanal/.test(u) ? PERFIL : '' };
-  const post1 = post('canalum/80', min(5), 'Cadeira Ergonômica Genebra B500 Teste Cor Preto Mesh\n\n🔥 Por: R$ 437 à vista\n\n🛒 Link: https://meli.la/outro1', 'https://cdn/f8');
+  const post1 = post('canalum/80', min(5), 'Cadeira Ergonômica Genebra B500 Teste Cor Preto Mesh\n\n🔥 Por: R$ 437 à vista\n\n🛒 Link: https://meli.la/outro1', 'https://cdn1.telesco.pe/file/f8');
   const r = await garimpar({ canais: { canalum: pagina(post1) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeML });
   caso('garimpo: ML de canal vira o SEU link do produto certo', r.acao === 'postar' && r.texto.includes('/p/MLB46220740?matt_word=minhaetiqueta&matt_tool=12345678') && !/outro|999/.test(r.texto) && r.chave === 'ml:46220740', r);
   const r2 = await garimpar({ canais: { canalum: pagina(post1) }, agora: AGORA, cfg: CFG, mem: memNova(), rede: redeML });
   caso('garimpo sem ML_MATT_TOOL: ML continua descartado', r2.acao === 'nada' && r2.tentou[0][1] === 'ml_terceiro');
   const r3 = await garimpar({ canais: { canalum: pagina(post('canalum/81', min(5), 'Produto Que Nao Esta Na Pagina\n\n🔥 Por: R$ 10\n\n🛒 Link: https://meli.la/outro1')) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeML });
   caso('produto nao achado no perfil: descarta (nao posta produto errado)', r3.acao === 'nada' && r3.tentou[0][1] === 'ml_terceiro');
+}
+console.log('\n=== Post completo (como os grupos fazem) ===');
+{
+  const A = lerPost('💥 Perfume Teste Feminino 30ml\n\n❌ De: R$529,00\n✅ Por: R$284,00\n🔻 46% de desconto\n\n🏪 Loja: #Amazon\n\n➡ - oferta exclusiva Prime\n\n🔗 PEGAR OFERTA: 👇🏼\nhttps://cupom.cc/xyz\n\n⚠️ Ofertas por tempo limitado.\n☕ #publi · você me paga um café sem custo extra!');
+  caso('"De:" numa linha e "Por:" na outra: le os dois', A.preco === 284 && A.precoAntes === 529, A);
+  caso('"oferta exclusiva Prime" vira aviso; #publi e "tempo limitado" ficam de fora', A.avisos.join('|') === 'Oferta exclusiva Prime', A.avisos);
+  const B = lerPost('Jogo Teste Collection - PlayStation 5\n\n💸 R$ 343,12 no PIX, ou\n💸 R$ 395,91 em até 7x sem juros\n🚚 Frete Grátis\n🎫 Cupom: TESTEGAME5 + Aplicar cupom de 10% abaixo do valor\n🔗 https://link.amazon/Babc');
+  caso('dois precos: pix e parcelado', B.preco === 343.12 && B.pagamento === 'no Pix' && B.outroPreco.preco === 395.91 && B.outroPreco.pagamento === 'em até 7x sem juros', B);
+  caso('frete gratis e a dica do cupom', B.frete === 'Frete grátis' && B.cupons.join() === 'TESTEGAME5' && B.dicaCupom === 'Aplicar cupom de 10% abaixo do valor', B);
+  const L = legendaAchado({ ...B, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'k', chamada: 'SUA DIVERSAO GARANTIDA' }).split('\n');
+  caso('legenda completa: os dois precos, frete, link e cupom com a dica', L.includes('\u{1F4B5} Por R$343,12 no Pix') && L.includes('\u{1F4B3} ou R$395,91 em até 7x sem juros') && L.includes('\u{1F69A} Frete grátis') && L.includes('\u{1F3F7}\uFE0F Use o cupom TESTEGAME5 + Aplicar cupom de 10% abaixo do valor'), L);
+  const C = lerPost('PERFEITO PRO DIA DAS CRIANCAS 😍\n\n📦 Frete Grátis assinantes Meli+\n•\u2060  Patinete Teste Agil\n\n🔥 R$ 810 Pix\nAchado Mercado Livre 👇🏻\n🛒 https://pechin.co/1\n➡ Cupom: TESTEMELI\n\n⚠️ Cupom exclusivo para assinantes Amazon Prime');
+  caso('frete so para assinantes e aviso do cupom', C.frete === 'Frete grátis para assinantes Meli+' && C.avisos[0] === 'Cupom exclusivo para assinantes Amazon Prime' && C.cupons.join() === 'TESTEMELI', C);
+  const D = lerPost('Teste Produto\n\n🔥 Por: R$64 no Pix\n⚠️ Desconto na tela de pagamento ao alterar para pix!\n🛒 Link: https://link.amazon/B1\n\n🚨Cupom pode não aparecer para todas as contas!');
+  caso('avisos de pagamento: desconto so no pix, cupom que nao aparece pra todos', D.avisos.length === 2 && /tela de pagamento/.test(D.avisos[0]) && /aparecer/.test(D.avisos[1]), D.avisos);
+  caso('condicao de cupom ("acima de R$89") nao vira preco', lerPost('Cupom Teste\n\n🎟 20% OFF acima de R$89, limite R$30: TESTEX').preco === null);
+  const semFoto = lerCanalTelegram(`<div class="tgme_widget_message_wrap"><div data-post="c/1"><a class="tgme_widget_message_photo_wrap" style="background-image:url('//telegram.org/img/emoji/40/F09F92A5.png')"></a><div class="tgme_widget_message_text">X</div><time datetime="2026-10-06T14:00:00Z"></time></div></div>`);
+  caso('post sem foto: o emoji do Telegram nao vira foto', semFoto[0].foto === null, semFoto[0]);
+  caso('nenhuma legenda tem a linha de afiliado', !/afiliado/i.test(L.join('\n')) && !/afiliado/i.test(legendaCupom({ cupons: ['X1234'], link: 'https://x' })));
+}
+console.log('\n=== Foto com marca de outro grupo ===');
+{
+  caso('resposta NAO: foto limpa; SIM ou estranha: nao usa', fotoLimpaDaResposta('NAO') && fotoLimpaDaResposta('NÃO.') && !fotoLimpaDaResposta('SIM, @canal') && !fotoLimpaDaResposta('talvez') && !fotoLimpaDaResposta(''));
+  caso('pedido leva a foto e pergunta so de canal/grupo', JSON.stringify(pedidoFoto('https://cdn1.telesco.pe/file/z')).includes('https://cdn1.telesco.pe/file/z') && /CANAL ou GRUPO/.test(pedidoFoto('u').messages[0].content[0].text));
+  const pg = { canalum: pagina(post('canalum/95', min(5), P1, 'https://cdn1.telesco.pe/file/marcada')) };
+  const comMarca = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => false } });
+  caso('foto com marca de outro grupo: posta sem a foto', comMarca.acao === 'postar' && comMarca.imagem === '' && comMarca.foto_descartada === true, comMarca);
+  const limpa = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => true } });
+  caso('foto limpa: vai com a foto', limpa.imagem === 'https://cdn1.telesco.pe/file/marcada');
+  const caiu = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => { throw new Error('x'); } } });
+  caso('IA nao respondeu sobre a foto: na duvida, sem foto (o post sai)', caiu.acao === 'postar' && caiu.imagem === '');
 }
 console.log('\n=== Chamada criativa (IA) ===');
 {
@@ -159,13 +190,13 @@ console.log('\n=== Escolha ===');
 {
   const mem = memNova();
   const canais = { canalum: pagina(
-    post('canalum/10', min(200), 'Velho Produto\n\n🔥 Por: R$ 10\n\n🛒 Link: https://amzn.to/aaa', 'https://cdn/f0'),
-    post('canalum/11', min(30), 'Produto ML Teste\n\n🔥 Por: R$ 99\n\n🛒 Link: https://meli.la/m1', 'https://cdn/f1'),
-    post('canalum/12', min(40), P1 + '\n\n👀 Visto em https://t.me/canalum @canalum entre no grupo', 'https://cdn/f2')) };
+    post('canalum/10', min(200), 'Velho Produto\n\n🔥 Por: R$ 10\n\n🛒 Link: https://amzn.to/aaa', 'https://cdn1.telesco.pe/file/f0'),
+    post('canalum/11', min(30), 'Produto ML Teste\n\n🔥 Por: R$ 99\n\n🛒 Link: https://meli.la/m1', 'https://cdn1.telesco.pe/file/f1x'),
+    post('canalum/12', min(40), P1 + '\n\n👀 Visto em https://t.me/canalum @canalum entre no grupo', 'https://cdn1.telesco.pe/file/f2')) };
   const r = await garimpar({ canais, agora: AGORA, cfg: CFG, mem, rede });
   caso('pula o ML e posta o da Amazon com a sua tag', r.acao === 'postar' && r.chave === 'amazon:B0AAAAAAAA' && r.texto.includes('https://www.amazon.com.br/dp/B0AAAAAAAA?tag=minha-20'), r);
   caso('legenda no seu padrao: nome e preco; nada do canal (@, "Visto em", t.me)', /Monitor Gamer Teste/.test(r.texto) && /Por R\$458 no Pix/.test(r.texto) && !/@canalum|Visto em|t\.me|outro-20/.test(r.texto), r.texto);
-  caso('vai com a foto do post', r.imagem === 'https://cdn/f2');
+  caso('vai com a foto do post', r.imagem === 'https://cdn1.telesco.pe/file/f2');
   caso('post com mais de 2 horas nao entra', !mem.vistos['canalum/10']);
   caso('os tentados ficam marcados (nao tenta de novo)', mem.vistos['canalum/11'] && mem.vistos['canalum/12']);
   registrarPostado(mem, r, AGORA);
@@ -175,7 +206,7 @@ console.log('\n=== Escolha ===');
 {
   const mem = memNova();
   const r = await garimpar({ canais: { canalum: pagina(post('canalum/20', min(5), 'Whisky Teste 12 Anos\n\n🔥 Por: R$ 99\n\n🛒 Link: https://amzn.to/aaa')) }, amazonHtml: DEALS, agora: AGORA, cfg: CFG, mem, rede });
-  caso('proibido no canal: pula; sem mais nada, vai para as ofertas da Amazon (maior desconto)', r.acao === 'postar' && r.chave === 'amazon:B0EEEEEEEE' && /De R\$899 por R\$519 \(oferta Prime\)/.test(r.texto) && /^42% OFF/.test(r.texto), r);
+  caso('proibido no canal: pula; sem mais nada, vai para as ofertas da Amazon (maior desconto)', r.acao === 'postar' && r.chave === 'amazon:B0EEEEEEEE' && /De R\$899 por R\$519$/m.test(r.texto) && /^42% OFF/.test(r.texto) && /\u26A0\uFE0F Oferta exclusiva para assinantes Prime/u.test(r.texto), r);
   const r2 = await garimpar({ canais: {}, amazonHtml: DEALS, agora: AGORA, cfg: { ...CFG, descontoMin: 50 }, mem: memNova(), rede });
   caso('Amazon abaixo do desconto minimo: nao posta', r2.acao === 'nada');
 }
@@ -220,7 +251,7 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
 {
   const codigo = pegarCodigo('03-garimpo.json', 'Garimpa');
   const ENV = { AMAZON_TAG: 'minha-20', GRUPO_OFERTAS: '120363000000000002-group', GARIMPO_CANAIS: 'canalum' };
-  const pag = pagina(post('canalum/90', min(5), P1, 'https://cdn/f9'));
+  const pag = pagina(post('canalum/90', min(5), P1, 'https://cdn1.telesco.pe/file/f9'));
   const http = [
     { quando: /t\.me\/s\/canalum/, responde: { statusCode: 200, body: pag } },
     { quando: /amazon\.com\.br\/deals/, responde: { statusCode: 200, body: '<html></html>' } },
@@ -231,7 +262,7 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   const o = a.saida[0].json;
   caso('desligado (sem GARIMPO_LIGADO): calcula a oferta mas NAO posta', o.postar === false && o.ligado === false && o.chave === 'amazon:B0AAAAAAAA' && /tag=minha-20/.test(o.texto), o);
   const b = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' } });
-  caso('ligado: posta no GRUPO_OFERTAS, com a foto do post', b.saida[0].json.postar === true && b.saida[0].json.grupo === ENV.GRUPO_OFERTAS && b.saida[0].json.imagem === 'https://cdn/f9');
+  caso('ligado: posta no GRUPO_OFERTAS, com a foto do post', b.saida[0].json.postar === true && b.saida[0].json.grupo === ENV.GRUPO_OFERTAS && b.saida[0].json.imagem === 'https://cdn1.telesco.pe/file/f9');
   const c = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, bloquear: ['url'] });
   caso('sem o modulo url: nao estoura, diz o motivo', c.saida[0].json.postar === false && /crypto,url/.test(c.saida[0].json.motivo));
   const d = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, memoria: { dia: '2026-10-06', postados: 25 } });
@@ -245,7 +276,7 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   const h = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, agora: new Date('2026-10-07T03:00:00Z'), modo: 'production' });
   caso('no gatilho (production) fora do horario: nao posta', h.saida[0].json.motivo === 'fora_do_horario');
   const ia = await roda({ env: { ...ENV, OPENROUTER_API_KEY: 'chave-teste' }, http: [...http,
-    { quando: /openrouter\.ai\/api\/v1\/chat\/completions/, metodo: 'POST', responde: { choices: [{ message: { content: 'Monitor pra jogar sem travar' } }] } }] });
+    { quando: /openrouter\.ai\/api\/v1\/chat\/completions/, metodo: 'POST', responde: (op) => ({ choices: [{ message: { content: JSON.stringify(op.body).includes('image_url') ? 'NAO' : 'Monitor pra jogar sem travar' } }] }) }] });
   const chamadaIA = ia.chamadas.find(c => /openrouter/.test(c.url));
   caso('no com OPENROUTER_API_KEY: pede a chamada e usa', ia.saida[0].json.texto.startsWith('MONITOR PRA JOGAR SEM TRAVAR') && chamadaIA && chamadaIA.headers.Authorization === 'Bearer chave-teste', ia.saida[0].json);
   caso('no sem OPENROUTER_API_KEY: nao chama o OpenRouter', !a.chamadas.some(c => /openrouter/.test(c.url)));

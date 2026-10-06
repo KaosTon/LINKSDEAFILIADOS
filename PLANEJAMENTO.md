@@ -122,9 +122,12 @@ Canais (ensaio 06/10): @promotop (112 mil) e @pechinchou (69 mil) para
 produto; @fadadoscupons (82 mil) e @cupomonline (29 mil) mais cupom.
 Magalu bloqueia o Railway (403); API do ML fechada.
 
-Legenda (06/10, no padrão dos grupos que ele mostrou): CHAMADA EM MAIÚSCULA,
-nome, "💵 De R$X por R$Y pix", "🛒 link", "🏷️ Use o cupom A + B" e a linha
-"Link de afiliado" (ele quer manter; a Amazon exige aviso). A chamada é
+Legenda (06/10, padrão Tudo na Promo + Ha!DESCONTOS): CHAMADA (IA), nome,
+"💵 De R$X por R$Y no Pix", "💳 ou R$Z em até Nx sem juros", "🚚 Frete grátis",
+"🛒 link", "🏷️ Use o cupom A + dica" e "⚠️ Oferta exclusiva Prime" (o que
+muda o preço). SEM a linha "Link de afiliado" (ele pediu para tirar em 06/10,
+mesmo avisado da regra da Amazon). Foto do canal passa pela IA: com marca de
+outro grupo (achou "@pechinchou" numa), posta sem foto. A chamada é
 escrita pela IA (OpenRouter) e conferida por `limparChamada`: preço, número
 que não está no nome, %, frete, "menor preço" e urgência falsa são barrados.
 Se a IA errar ou cair, entra uma chamada da lista e o post sai igual.

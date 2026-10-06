@@ -132,7 +132,7 @@ console.log('\n=== Esteira (fluxo 01) ===');
 
   const r1 = await prepararOferta(corpo('TV por R$ 1999 https://amzn.to/abc'), C, rede);
   caso('Amazon curto: abre, troca a tag, posta com a foto', r1.acao === 'postar' && /tag=minha-20/.test(r1.texto) && !/amzn\.to/.test(r1.texto) && r1.imagem === 'https://z/f.jpg' && r1.grupo === C.grupo, r1);
-  caso('o texto do autor fica, com o aviso de afiliado no fim', r1.texto.startsWith('TV por R$ 1999') && /afiliado/.test(r1.texto));
+  caso('o texto do autor fica como ele escreveu (sem linha de afiliado no fim)', r1.texto.startsWith('TV por R$ 1999') && !/afiliado/.test(r1.texto), r1.texto);
 
   const r2 = await prepararOferta(corpo('Fone https://shopee.com.br/produto-i.1.2?smtt=outro'), C, rede);
   caso('Shopee: pede o link curto na API com o link limpo', r2.acao === 'postar' && r2.texto.includes('https://s.shopee.com.br/MEU') && !r2.texto.includes('smtt'), r2);
