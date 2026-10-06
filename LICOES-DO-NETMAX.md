@@ -14,9 +14,10 @@ que vale aqui é o mesmo: n8n, Z-API, nó Code, variáveis de ambiente.
   agendamento das 9h sai às 6h.
 - **Chave de criptografia.** Sem `N8N_ENCRYPTION_KEY` fixa, recriar o
   container apaga todas as credenciais.
-- **`$env` no nó Code** só funciona se a instância não bloquear
-  (`N8N_BLOCK_ENV_ACCESS_IN_NODE` desligado). Conferir antes de escrever o
-  primeiro fluxo.
+- **`$env` no nó Code** só funciona se a instância não bloquear. No n8n do
+  Railway (06/10) veio bloqueado por padrão: "access to env vars denied", e o
+  erro escapa até de `try`. Precisa de `N8N_BLOCK_ENV_ACCESS_IN_NODE=false`
+  nas variáveis do serviço. O fluxo 99 (diagnóstico) confere.
 
 ## Z-API
 
