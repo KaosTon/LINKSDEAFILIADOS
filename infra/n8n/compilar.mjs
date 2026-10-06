@@ -136,6 +136,27 @@ export function compilar(codigo, semente) {
   return w._final();
 }
 
+// A biblioteca testada entra inteira no nó Code onde aparece /*LIB:nome*/.
+// Assim o código que roda no n8n é o mesmo que as baterias testam, e não uma
+// cópia que alguém esqueceu de atualizar. import vira require, export some.
+const raiz = path.resolve(aqui, '..', '..');
+export function colarLib(wf) {
+  for (const n of wf.nodes) {
+    const p = n.parameters;
+    if (!p || typeof p.jsCode !== 'string') continue;
+    p.jsCode = p.jsCode.replace(/\/\*LIB:([a-z0-9-]+)\*\//g, (_, nome) => {
+      const arq = path.join(raiz, 'lib', nome + '.mjs');
+      if (!fs.existsSync(arq)) throw new Error(`${wf.name}: não achei lib/${nome}.mjs`);
+      return fs.readFileSync(arq, 'utf8')
+        // Opcional: sem NODE_FUNCTION_ALLOW_BUILTIN o require estoura, e só a
+        // parte que usa o módulo (assinatura da Shopee) deve falhar, não o nó.
+        .replace(/^import (\w+) from 'node:(\w+)';$/gm, "let $1 = null; try { $1 = require('$2'); } catch (e) { $1 = null; }")
+        .replace(/^import .*$/gm, '')
+        .replace(/^export (function|const|let|async function) /gm, '$1 ');
+    });
+  }
+}
+
 // Prompt de agente (systemMessage) entra como texto simples, nunca como
 // expressão: um {{ }} dentro do prompt seria avaliado pelo n8n e quebraria.
 export function injetar(wf) {
@@ -152,6 +173,7 @@ let total = 0;
 if (rodandoDireto) for (const f of fs.readdirSync(SDK).filter(f => f.endsWith('.js')).sort()) {
   const codigo = fs.readFileSync(path.join(SDK, f), 'utf8');
   const wf = compilar(codigo, f);
+  colarLib(wf);
   injetar(wf);
   // sanidade: conexões apontam para nós existentes; todo nó sem trigger tem entrada
   const nomes = new Set(wf.nodes.map(n => n.name));

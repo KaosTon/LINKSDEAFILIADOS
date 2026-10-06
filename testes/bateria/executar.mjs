@@ -9,6 +9,7 @@
 // nomeados, PASS e FAIL no console, ANTES de produção.
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const aqui = path.dirname(fileURLToPath(import.meta.url));
@@ -48,8 +49,9 @@ export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {} 
     if (!nos[nome]) throw new Error(`o teste não deu a saída do nó "${nome}"`);
     return { first: () => nos[nome][0], all: () => nos[nome], item: nos[nome][0] };
   };
-  const fn = new Function('$input', '$env', '$json', '$now', '$',
-    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $);
+  // require: o nó Code do n8n libera módulos nativos (crypto) e a lib colada usa.
+  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require',
+    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $, createRequire(import.meta.url));
   const saida = await fn.call(ctx);
   return { saida, chamadas };
 }
