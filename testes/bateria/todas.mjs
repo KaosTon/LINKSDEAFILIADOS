@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const aqui = path.dirname(fileURLToPath(import.meta.url));
 let falhou = 0;
-for (const f of ['ofertas.mjs', 'gateway.mjs', 'sem-dado-real.mjs', 'sem-travessao.mjs']) {
+for (const f of ['ofertas.mjs', 'entrada.mjs', 'gateway.mjs', 'sem-dado-real.mjs', 'sem-travessao.mjs']) {
   console.log(`\n########## ${f}`);
   try {
     console.log(execFileSync('node', [path.join(aqui, f)], { encoding: 'utf8' }));

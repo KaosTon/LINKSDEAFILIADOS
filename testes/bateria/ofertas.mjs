@@ -4,7 +4,8 @@
 import crypto from 'node:crypto';
 import { extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
-         comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio } from '../../lib/ofertas.mjs';
+         comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
+         magaluNaMinhaLoja, limparShopee, prepararOferta, abrirLink } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -108,6 +109,55 @@ console.log('\n=== Saida (Z-API) ===');
   let e = null; try { pedidoZapi({ phone: 'g', message: 'x' }, {}); } catch (x) { e = x.message; }
   caso('sem configuracao: erro, nao manda para endereco quebrado', /ZAPI_BASE_URL/.test(e || ''));
   caso('saiu so com zaapId ou messageId', idDoEnvio({ zaapId: 'Z' }) === 'Z' && idDoEnvio({ messageId: 'M' }) === 'M' && idDoEnvio({ error: 'x' }) === null && idDoEnvio(null) === null);
+}
+
+console.log('\n=== Esteira (fluxo 01) ===');
+{
+  caso('Magalu: link de outra loja vira da sua', magaluNaMinhaLoja('https://www.magazinevoce.com.br/magazineoutro/p/tv-50/123/', 'magazineeu') === 'https://www.magazinevoce.com.br/magazineeu/p/tv-50/123/');
+  caso('Magalu: com MAGALU_LOJA, o converter ja troca a loja', converterSemRede('https://www.magazinevoce.com.br/magazineoutro/p/x/', { magaluLoja: 'magazineeu' }).url === 'https://www.magazinevoce.com.br/magazineeu/p/x/');
+  caso('Shopee: tira o rastreio de quem divulgou', limparShopee('https://shopee.com.br/produto-i.1.2?smtt=0.0.9&utm_source=x#a') === 'https://shopee.com.br/produto-i.1.2');
+  caso('link mais longo trocado primeiro', trocarLinks('a https://x.co/1 b https://x.co/12', { 'https://x.co/1': 'A', 'https://x.co/12': 'B' }) === 'a A b B');
+
+  const C = { ...CFG, grupo: '120363000000000002-group', shopee: true };
+  const corpo = (texto, extra) => ({ instanceId: 'INST1', phone: CFG.rascunho, isGroup: true, participantPhone: CFG.autor,
+    fromMe: false, fromApi: false, messageId: 'M' + Math.random(), image: { imageUrl: 'https://z/f.jpg', caption: texto }, ...extra });
+  const rede = { abrir: async (u) => u === 'https://amzn.to/abc' ? 'https://www.amazon.com.br/dp/B0X?tag=outro-20' : (() => { throw new Error('x'); })(),
+                 shopee: async (u) => u === 'https://shopee.com.br/produto-i.1.2' ? 'https://s.shopee.com.br/MEU' : null };
+
+  const r1 = await prepararOferta(corpo('TV por R$ 1999 https://amzn.to/abc'), C, rede);
+  caso('Amazon curto: abre, troca a tag, posta com a foto', r1.acao === 'postar' && /tag=minha-20/.test(r1.texto) && !/amzn\.to/.test(r1.texto) && r1.imagem === 'https://z/f.jpg' && r1.grupo === C.grupo, r1);
+  caso('o texto do autor fica, com o aviso de afiliado no fim', r1.texto.startsWith('TV por R$ 1999') && /afiliado/.test(r1.texto));
+
+  const r2 = await prepararOferta(corpo('Fone https://shopee.com.br/produto-i.1.2?smtt=outro'), C, rede);
+  caso('Shopee: pede o link curto na API com o link limpo', r2.acao === 'postar' && r2.texto.includes('https://s.shopee.com.br/MEU') && !r2.texto.includes('smtt'), r2);
+
+  const r3 = await prepararOferta(corpo('Combo https://amzn.to/abc e https://produto.mercadolivre.com.br/MLB-1'), C, rede);
+  caso('um link nao converteu: NAO posta nada e diz o motivo', r3.acao === 'recusar' && /meli\.la/.test(r3.resposta), r3);
+
+  const r4 = await prepararOferta(corpo('Fone https://shopee.com.br/produto-i.1.2'), { ...C, shopee: false }, rede);
+  caso('Shopee sem chaves: recusa pedindo SHOPEE_APP_ID', r4.acao === 'recusar' && /SHOPEE_APP_ID/.test(r4.resposta));
+  const r5 = await prepararOferta(corpo('Coisa https://shopee.com.br/outro-i.9.9'), C, rede);
+  caso('Shopee nao gerou: recusa', r5.acao === 'recusar' && /Shopee/.test(r5.resposta));
+  const r6 = await prepararOferta(corpo('Olha https://amzn.to/zzz'), C, rede);
+  caso('link curto que nao abre: recusa', r6.acao === 'recusar' && /link curto/.test(r6.resposta), r6);
+  const r7 = await prepararOferta(corpo('so texto sem link'), C, rede);
+  caso('sem link: recusa', r7.acao === 'recusar' && /link/.test(r7.resposta));
+  const r8 = await prepararOferta(corpo('x https://meli.la/1'), { ...C, grupo: '' }, rede);
+  caso('sem GRUPO_OFERTAS: recusa, nao posta em lugar nenhum', r8.acao === 'recusar' && /GRUPO_OFERTAS/.test(r8.resposta));
+  const r9 = await prepararOferta(corpo('x https://meli.la/1', { fromApi: true }), C, rede);
+  caso('a propria resposta do robo e ignorada (nao vira loop)', r9.acao === 'ignorar');
+
+  const vistos = [];
+  const b = corpo('x https://meli.la/1', { messageId: 'IGUAL' });
+  const p1 = await prepararOferta(b, C, rede, vistos), p2 = await prepararOferta(b, C, rede, vistos);
+  caso('webhook repetido da Z-API: posta uma vez so', p1.acao === 'postar' && p2.acao === 'ignorar' && p2.motivo === 'repetida');
+
+
+  const saltos = { 'https://amzn.to/a': 'https://amzn.to/b', 'https://amzn.to/b': 'https://www.amazon.com.br/dp/B0Y' };
+  const fim = await abrirLink('https://amzn.to/a', async (u) => ({ headers: { location: saltos[u] } }));
+  caso('abrirLink segue mais de um salto ate a loja', fim === 'https://www.amazon.com.br/dp/B0Y', fim);
+  let e2 = null; try { await abrirLink('https://amzn.to/a', async () => ({ headers: {} })); } catch (x) { e2 = x.message; }
+  caso('abrirLink sem destino: erro (nao devolve o link curto como se fosse produto)', /nao abriu|não abriu/.test(e2 || ''));
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

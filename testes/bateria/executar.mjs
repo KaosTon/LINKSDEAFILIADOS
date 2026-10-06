@@ -27,11 +27,11 @@ export function pegarCodigo(arquivo, nomeDoNo) {
 // `http` é a lista de respostas falsas: [{ quando: /regex/, metodo, responde }]
 // Toda chamada não prevista estoura, para o teste não passar por acidente.
 // `nos` simula o $('Nome do nó') do n8n: { 'Nome': [{ json: {...} }] }.
-export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {} } = {}) {
+export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {}, memoria = {} } = {}) {
   const chamadas = [];
   const helpers = {
     async httpRequest(op) {
-      chamadas.push({ metodo: op.method, url: op.url, body: op.body });
+      chamadas.push({ metodo: op.method, url: op.url, body: op.body, headers: op.headers, op });
       const r = http.find(x =>
         (!x.metodo || x.metodo === op.method) && x.quando.test(op.url));
       if (!r) throw new Error(`chamada HTTP não prevista: ${op.method} ${op.url}`);
@@ -50,8 +50,10 @@ export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {} 
     return { first: () => nos[nome][0], all: () => nos[nome], item: nos[nome][0] };
   };
   // require: o nó Code do n8n libera módulos nativos (crypto) e a lib colada usa.
-  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require',
-    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $, createRequire(import.meta.url));
+  // $getWorkflowStaticData: a memória do fluxo (no n8n só persiste em produção).
+  const $getWorkflowStaticData = () => memoria;
+  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require', '$getWorkflowStaticData',
+    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $, createRequire(import.meta.url), $getWorkflowStaticData);
   const saida = await fn.call(ctx);
   return { saida, chamadas };
 }

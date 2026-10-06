@@ -66,9 +66,22 @@ NODE_FUNCTION_ALLOW_BUILTIN=crypto
 ```
 
 `NODE_FUNCTION_ALLOW_BUILTIN=crypto` é para o nó Code assinar o pedido da
-Shopee. As chaves das lojas e da Z-API entram como variáveis também
-(`ZAPI_INSTANCE_ID`, `ZAPI_TOKEN`, `ZAPI_CLIENT_TOKEN`, `SHOPEE_APP_ID`,
-`SHOPEE_SECRET`, `AMAZON_TAG`, `GRUPO_OFERTAS`), nunca no código.
+Shopee. No Railway também precisa `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` (feito
+em 05/10, diagnóstico 99 confere).
+
+Variáveis do projeto (no serviço do n8n, nunca no código):
+
+| Variável | O que é |
+|---|---|
+| `ZAPI_BASE_URL` | `https://api.z-api.io` (só o endereço, sem /instances) |
+| `ZAPI_INSTANCE_ID`, `ZAPI_INSTANCE_TOKEN`, `ZAPI_CLIENT_TOKEN` | da instância nova da Z-API |
+| `GRUPO_RASCUNHO` | id do grupo onde você posta a oferta (`120363...-group`) |
+| `GRUPO_OFERTAS` | id do grupo que recebe as ofertas |
+| `AUTOR_PHONE` | seu número, com 55 e DDD |
+| `AMAZON_TAG` | sua tag de associado (termina em `-20`) |
+| `SHOPEE_APP_ID`, `SHOPEE_SECRET` | da Open API da Shopee |
+| `MAGALU_LOJA` | opcional: o nome da sua loja no magazinevoce (troca link de outra loja pela sua) |
+| `WEBHOOK_SEGREDO` | opcional, recomendado: texto aleatório; a URL do webhook na Z-API termina com `?k=` e ele |
 
 ## Os fluxos
 
@@ -108,7 +121,8 @@ Shopee. As chaves das lojas e da Z-API entram como variáveis também
 
 | # | Pergunta | Por quê |
 |---|---|---|
-| 1 | Shopee: AppId e Secret da Open API (no painel de afiliados da Shopee) | é o que gera o link curto automático; vão direto nas variáveis do n8n |
+| 1 | Shopee: AppId e Secret da Open API (painel de afiliados > Open API) | é o que gera o link curto automático; vão direto nas variáveis do n8n |
+| 1b | Tag da Amazon (Associados, canto de cima à direita, termina em `-20`) | vai em `AMAZON_TAG` |
 | 2 | Qual número vai ser o do robô (instância nova da Z-API)? | não pode ser o da Juliana |
 | 3 | Um link de produto da sua loja Parceiro Magalu, e o link do mesmo produto no site da Magalu | para converter o link certo |
-| 4 | O n8n do Railway com acesso MCP ligado e conectado ao Claude | para eu montar os fluxos direto nele |
+| 4 | Ids dos grupos rascunho e ofertas | sai do webhook: com a Z-API ligada, manda um "oi" em cada grupo e eu leio o id na execução |

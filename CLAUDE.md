@@ -39,4 +39,4 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 |---|---|---|
 | 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | subido, sub-fluxo (não precisa publicar) |
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
-| 01 Entrada (rascunho -> grupo) | ainda não | espera número do robô e chaves da Shopee |
+| 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | subido, NÃO publicado: publicar quando a Z-API estiver nas variáveis. Webhook: `/webhook/ofertas-zapi` |
