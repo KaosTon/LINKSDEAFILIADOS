@@ -32,3 +32,11 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 - O número do grupo de ofertas é separado do número da Juliana (NetMax).
 - Não mexer nos projetos da NetMax (tv_netmax) nem da Virtus.
 - Sem travessão em nenhum arquivo (a bateria `sem-travessao` confere).
+
+## Fluxos no n8n (Railway, projeto pessoal 2Re5IRd41nXG21gD)
+
+| Fluxo | id no n8n | Estado |
+|---|---|---|
+| 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | subido, sub-fluxo (não precisa publicar) |
+| 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
+| 01 Entrada (rascunho -> grupo) | ainda não | espera número do robô e chaves da Shopee |
