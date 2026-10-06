@@ -75,6 +75,13 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear =
   caso('ML sem ML_ETIQUETA: passa sem abrir (como antes)', semEtiqueta.out.postar === true && semEtiqueta.chamadas.length === 0);
 }
 {
+  const env = { ...ENV, ML_ETIQUETA: 'minhaetiqueta', ML_MATT_TOOL: '12345678' };
+  const r = await roda(corpo('Cadeira https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740?matt_word=outro'), { env });
+  caso('rascunho: link comum do ML vira o seu (com ML_MATT_TOOL)', r.out.postar === true && r.out.texto.includes('matt_word=minhaetiqueta&matt_tool=12345678') && !r.out.texto.includes('outro'), r.out);
+  const s = await roda(corpo('Cadeira https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740'));
+  caso('rascunho sem ML_MATT_TOOL: continua pedindo o link do painel', s.out.postar === false && /ML_MATT_TOOL/.test(s.out.resposta), s.out);
+}
+{
   const como = pegarCodigo('01-entrada.json', 'Como foi');
   const a = await rodar(como, { itens: [{ json: { ok: false, erro: 'instance not connected' } }] });
   caso('Como foi: leva o erro do gateway para o rascunho', /instance not connected/.test(a.saida[0].json.resposta));

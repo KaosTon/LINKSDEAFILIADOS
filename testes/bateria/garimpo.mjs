@@ -3,6 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
+import { mlAfiliado, escolherProdutoML } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -75,6 +76,33 @@ console.log('\n=== Padrao dos grupos de oferta ===');
   caso('preco curto como nos grupos', reaisCurto(456) === '456' && reaisCurto(2667) === '2.667' && reaisCurto(67.6) === '67,60');
   const S = legendaAchado({ nome: 'Fone', preco: 99, link: 'https://x', chave: 'k' });
   caso('sem preco antes e sem cupom: so "Por", sem linha de cupom', /\u{1F4B5} Por R\$99$/mu.test(S) && !/cupom/i.test(S), S);
+}
+console.log('\n=== Mercado Livre com o seu link ===');
+{
+  const ML = { ...CFG, mlEtiqueta: 'minhaetiqueta', mlTool: '12345678' };
+  caso('produto (/p/MLB): tira o rastreio de quem divulgou e poe o seu', mlAfiliado('https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740?matt_word=outro&matt_tool=999#polycard', ML) === 'https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740?matt_word=minhaetiqueta&matt_tool=12345678');
+  caso('produto antigo (MLB-) e /up/MLBU tambem', !!mlAfiliado('https://produto.mercadolivre.com.br/MLB-1234567890-cadeira-teste-_JM', ML) && !!mlAfiliado('https://www.mercadolivre.com.br/chaleira-teste/up/MLBU1111122222', ML));
+  caso('perfil social, lista ou busca: nao e produto, nao vira link', mlAfiliado('https://www.mercadolivre.com.br/social/outro?ref=x', ML) === null && mlAfiliado('https://lista.mercadolivre.com.br/fone', ML) === null);
+  caso('sem ML_ETIQUETA ou ML_MATT_TOOL: nao monta', mlAfiliado('https://www.mercadolivre.com.br/x/p/MLB1234567', { mlEtiqueta: 'a' }) === null);
+  const PERFIL = '<html><script>{"url":"www.mercadolivre.com.br\\u002Fmixer-teste-200w-mix1002\\u002Fp\\u002FMLB18646315"}</script>'
+    + '<a href="https://www.mercadolivre.com.br/cadeira-escritorio-ergonomica-genebra-b500-teste-cor-preto-mesh/p/MLB46220740?matt_event_ts=1&amp;x=2">a</a>'
+    + '<a href="https://produto.mercadolivre.com.br/MLB-1234567890-cadeira-de-escritorio-ergonmica-b500-suporte-lombar-_JM">b</a>'
+    + '<a href="https://www.mercadolivre.com.br/drone-teste-mini/p/MLB52129285?y=1">c</a></html>';
+  caso('perfil do outro: acha o produto do post pelo nome', (escolherProdutoML(PERFIL, 'Cadeira Ergonômica Genebra B500 Teste Cor Preto Mesh') || '').includes('/p/MLB46220740'));
+  caso('nome que nao bate o bastante: nao arrisca (null)', escolherProdutoML(PERFIL, 'Mixer De Mão 200w Compacto MIX1001 Elgin') === null);
+  caso('endereco escondido em JSON (\\u002F) tambem e lido', (escolherProdutoML(PERFIL, 'Mixer Teste 200W MIX1002') || '').includes('MLB18646315'));
+  caso('pagina de captcha: null (nao tenta driblar)', escolherProdutoML('<!DOCTYPE html><html data-assets-prefix="https://x/abuse-captcha-mobile-frontend/">', 'Cadeira Genebra B500') === null);
+
+  const redeML = { ...rede,
+    abrir: async (u) => u === 'https://meli.la/outro1' ? 'https://www.mercadolivre.com.br/social/outrocanal?matt_word=outro&matt_tool=999&ref=abc' : rede.abrir(u),
+    pagina: async (u) => /social\/outrocanal/.test(u) ? PERFIL : '' };
+  const post1 = post('canalum/80', min(5), 'Cadeira Ergonômica Genebra B500 Teste Cor Preto Mesh\n\n🔥 Por: R$ 437 à vista\n\n🛒 Link: https://meli.la/outro1', 'https://cdn/f8');
+  const r = await garimpar({ canais: { canalum: pagina(post1) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeML });
+  caso('garimpo: ML de canal vira o SEU link do produto certo', r.acao === 'postar' && r.texto.includes('/p/MLB46220740?matt_word=minhaetiqueta&matt_tool=12345678') && !/outro|999/.test(r.texto) && r.chave === 'ml:46220740', r);
+  const r2 = await garimpar({ canais: { canalum: pagina(post1) }, agora: AGORA, cfg: CFG, mem: memNova(), rede: redeML });
+  caso('garimpo sem ML_MATT_TOOL: ML continua descartado', r2.acao === 'nada' && r2.tentou[0][1] === 'ml_terceiro');
+  const r3 = await garimpar({ canais: { canalum: pagina(post('canalum/81', min(5), 'Produto Que Nao Esta Na Pagina\n\n🔥 Por: R$ 10\n\n🛒 Link: https://meli.la/outro1')) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeML });
+  caso('produto nao achado no perfil: descarta (nao posta produto errado)', r3.acao === 'nada' && r3.tentou[0][1] === 'ml_terceiro');
 }
 console.log('\n=== Chamada criativa (IA) ===');
 {

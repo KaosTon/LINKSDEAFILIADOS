@@ -38,12 +38,12 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 | Fluxo | id no n8n | Estado |
 |---|---|---|
 | 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | subido, sub-fluxo (não precisa publicar). A lib colada nele é de antes do `novaURL`; o que ele usa (pedidoZapi, idDoEnvio) não mudou. Subir de novo na próxima mudança do 02 |
-| 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | subido SEM a legenda nova (padrão dos grupos, 06/10): subir de novo antes de ligar. NÃO publicado. Rodar na mão mostra o que sairia (ensaio 06/10: post do @cupomonline virou Amazon com a tag dele). Só posta com `GARIMPO_LIGADO=sim` |
+| 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | atualizado 06/10 (legenda dos grupos, IA, ML). NÃO publicado. Rodar na mão mostra o que sairia (ensaio 06/10: post do @cupomonline virou Amazon com a tag dele). Só posta com `GARIMPO_LIGADO=sim` |
 | 97 Ensaio: de onde tirar ofertas | `dg95IghMfsJGlosW` | manual; ML /ofertas e Amazon /deals abrem do Railway, Magalu e API do ML não |
 | 98 Ensaio: abre link curto | `dtJ7lwTKLItlckuD` | manual; mostra os saltos de um link e o que o nó Code tem (URL, require) |
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
 | 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | subido SEM o CUPOM e sem o `converterLink` (falta subir a versão de 06/10 da lib), NÃO publicado: publicar quando a Z-API estiver nas variáveis. Webhook: `/webhook/ofertas-zapi` |
 
-**Antes de ligar a Z-API:** subir de novo o nó "Prepara a oferta" (01) e o
-"Garimpa" (03) com a lib atual (`node infra/n8n/compilar.mjs`, o jsCode sai de
+**Antes de ligar a Z-API:** subir de novo o nó "Prepara a oferta" (01) com a
+lib atual (`node infra/n8n/compilar.mjs`, o jsCode sai de
 `infra/n8n/exports/`). O 02 também, para ficar igual ao testado.

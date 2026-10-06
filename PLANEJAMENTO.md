@@ -81,7 +81,8 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 | `AUTOR_PHONE` | seu número, com 55 e DDD |
 | `AMAZON_TAG` | sua tag de associado (termina em `-20`) |
 | `SHOPEE_APP_ID`, `SHOPEE_SECRET` | da Open API da Shopee |
-| `ML_ETIQUETA` | opcional, recomendado: sua etiqueta do ML (`tonw17`); meli.la de outra etiqueta é recusado |
+| `ML_ETIQUETA` | etiqueta do ML (`tonw17`): meli.la de outra etiqueta é recusado no rascunho; com `ML_MATT_TOOL`, link de produto vira o dele |
+| `ML_MATT_TOOL` | id de afiliado do ML (`78518728`, aparece em todo meli.la dele): monta o link `produto?matt_word=ETIQUETA&matt_tool=ID` |
 | `GARIMPO_LIGADO` | `sim` para o fluxo 03 postar sozinho; sem isso ele só calcula |
 | `GARIMPO_CANAIS` | opcional: canais públicos do Telegram (padrão `promotop,pechinchou,fadadoscupons,cupomonline`) |
 | `GARIMPO_INICIO`, `GARIMPO_FIM`, `GARIMPO_POR_DIA`, `GARIMPO_CUPONS_POR_DIA`, `GARIMPO_DESCONTO_MIN` | opcionais: 8, 22, 25, 6, 15 |
@@ -155,6 +156,11 @@ Se a IA errar ou cair, entra uma chamada da lista e o post sai igual.
   aceita os dois jeitos, troca a loja de link de outro divulgador e converte
   link de produto do magazineluiza.com.br para a loja dele.
 - Shopee: acesso à Open API pedido em 06/10, esperando a Shopee aprovar.
+- Mercado Livre (06/10): link de produto + `?matt_word=tonw17&matt_tool=78518728`
+  CONTOU clique nas Métricas (2 cliques de 2 abas anônimas). Falta ver a
+  primeira venda. Página /ofertas do ML passou a dar captcha para o Railway
+  (não driblamos); ML de canal sai abrindo o perfil social do outro e achando
+  o produto pelo nome (60% das palavras no endereço, senão descarta).
 - Mercado Livre: etiqueta `tonw17`. O meli.la abre (301) em
   `mercadolivre.com.br/social/...?matt_word=tonw17&matt_tool=78518728&ref=...`;
   o robô confere o `matt_word`. Link comum do ML não dá para converter

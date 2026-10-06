@@ -31,7 +31,7 @@ const garimpa = node({
 "const mem = arrumarMemoria($getWorkflowStaticData('global'), agora);",
 "const N = (k, d) => (Number($env[k]) > 0 ? Number($env[k]) : d);",
 "const lista = (k, d) => String($env[k] || d).split(',').map(s => s.trim()).filter(Boolean);",
-"const cfg = { amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA,",
+"const cfg = { amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA, mlTool: $env.ML_MATT_TOOL,",
 "  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET),",
 "  inicio: N('GARIMPO_INICIO', 8), fim: N('GARIMPO_FIM', 22), porDia: N('GARIMPO_POR_DIA', 25),",
 "  cuponsPorDia: N('GARIMPO_CUPONS_POR_DIA', 6), descontoMin: N('GARIMPO_DESCONTO_MIN', 15),",
