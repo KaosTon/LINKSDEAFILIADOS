@@ -82,6 +82,10 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 | `AMAZON_TAG` | sua tag de associado (termina em `-20`) |
 | `SHOPEE_APP_ID`, `SHOPEE_SECRET` | da Open API da Shopee |
 | `ML_ETIQUETA` | opcional, recomendado: sua etiqueta do ML (`tonw17`); meli.la de outra etiqueta é recusado |
+| `GARIMPO_LIGADO` | `sim` para o fluxo 03 postar sozinho; sem isso ele só calcula |
+| `GARIMPO_CANAIS` | opcional: canais públicos do Telegram (padrão `promotop,pechinchou,fadadoscupons,cupomonline`) |
+| `GARIMPO_INICIO`, `GARIMPO_FIM`, `GARIMPO_POR_DIA`, `GARIMPO_CUPONS_POR_DIA`, `GARIMPO_DESCONTO_MIN` | opcionais: 8, 22, 25, 6, 15 |
+| `GARIMPO_PROIBIDO` | opcional: palavras proibidas separadas por vírgula (padrão: bebida, adulto, aposta, vape, arma) |
 | `MAGALU_LOJA` | opcional: o nome da sua loja no magazinevoce (troca link de outra loja pela sua) |
 | `WEBHOOK_SEGREDO` | opcional, recomendado: texto aleatório; a URL do webhook na Z-API termina com `?k=` e ele |
 
@@ -100,6 +104,20 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
    se não houver foto. Confere o `zaapId`.
 4. **Avisa no rascunho**: "postado" ou o motivo de não ter postado. Assim
    você nunca fica sem saber.
+
+## Garimpo automático (fluxo 03, decidido em 06/10)
+
+Ele quer 100% automático, 25 por dia. A cada 35 minutos, das 8h às 22h:
+lê as páginas públicas `t.me/s/CANAL` (sem conta do Telegram), abre qualquer
+link até a loja e troca pelo dele; sem oferta de canal, usa a página de ofertas
+da Amazon (maior desconto). Legenda sempre no padrão dele, nunca o texto do
+canal. Descarta: ML de canal (o link só sai do painel dele), Shopee até a API,
+proibidos, cupom com nome do canal, produto repetido em 7 dias, post com mais
+de 2 horas. Cupom de ML sem link convertível sai só com o código.
+
+Canais (ensaio 06/10): @promotop (112 mil) e @pechinchou (69 mil) para
+produto; @fadadoscupons (82 mil) e @cupomonline (29 mil) mais cupom.
+Magalu bloqueia o Railway (403); API do ML fechada.
 
 ## Cuidados
 

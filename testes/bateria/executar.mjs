@@ -27,7 +27,7 @@ export function pegarCodigo(arquivo, nomeDoNo) {
 // `http` é a lista de respostas falsas: [{ quando: /regex/, metodo, responde }]
 // Toda chamada não prevista estoura, para o teste não passar por acidente.
 // `nos` simula o $('Nome do nó') do n8n: { 'Nome': [{ json: {...} }] }.
-export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {}, memoria = {}, bloquear = [] } = {}) {
+export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {}, memoria = {}, bloquear = [], agora = null, modo = undefined } = {}) {
   const chamadas = [];
   const helpers = {
     async httpRequest(op) {
@@ -56,8 +56,12 @@ export async function rodar(codigo, { itens = [], env = {}, http = [], nos = {},
   // entrega o que NODE_FUNCTION_ALLOW_BUILTIN libera (`bloquear` simula o resto).
   const req = createRequire(import.meta.url);
   const requireN8n = (m) => { if (bloquear.includes(m)) throw new Error(`Module '${m}' is disallowed`); return req(m); };
-  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require', '$getWorkflowStaticData', 'URL', 'URLSearchParams',
-    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Date(), $, requireN8n, $getWorkflowStaticData, undefined, undefined);
+  // `agora`: relógio fixo (new Date() e Date.now() dentro do nó), para teste de horário não depender da hora real.
+  const Relogio = agora ? class extends Date { constructor(...a) { if (a.length) super(...a); else super(agora.getTime()); } static now() { return agora.getTime(); } } : Date;
+  // `modo`: o $execution.mode do n8n ('test' quando roda no editor, 'production' no gatilho).
+  const $execution = modo ? { mode: modo } : undefined;
+  const fn = new Function('$input', '$env', '$json', '$now', '$', 'require', '$getWorkflowStaticData', 'URL', 'URLSearchParams', 'Date', '$execution',
+    `return (async function () {\n${codigo}\n});`)($input, env, itens[0]?.json, new Relogio(), $, requireN8n, $getWorkflowStaticData, undefined, undefined, Relogio, $execution);
   const saida = await fn.call(ctx);
   return { saida, chamadas };
 }

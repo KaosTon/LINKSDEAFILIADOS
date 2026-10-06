@@ -152,7 +152,12 @@ export function colarLib(wf) {
         // parte que usa o módulo (assinatura da Shopee) deve falhar, não o nó.
         .replace(/^import (\w+) from 'node:(\w+)';$/gm, "let $1 = null; try { $1 = require('$2'); } catch (e) { $1 = null; }")
         .replace(/^import .*$/gm, '')
-        .replace(/^export (function|const|let|async function) /gm, '$1 ');
+        .replace(/^export (function|const|let|async function) /gm, '$1 ')
+        // Sem comentário de linha inteira: o nó fica menor e o código é o mesmo
+        // (a bateria testa esta versão). Comentário no fim de linha fica.
+        .replace(/^\s*\/\*\*[\s\S]*?\*\/\s*$/gm, '')
+        .replace(/^\s*\/\/.*$/gm, '')
+        .replace(/\n{3,}/g, '\n\n');
     });
   }
 }
