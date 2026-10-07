@@ -137,6 +137,12 @@ grande do link com a foto, como o Tudo na Promo); se falhar, o gateway manda
 na hora por `send-image`. Sem banner nas fotos (ele não quer). Nome do grupo,
 por enquanto: PromoX (pode mudar; nada no robô depende dele ainda).
 
+Programas (07/10): as 4 diretas (Amazon, Shopee, ML, Magalu) ficam; Lomadee
+só para loja que faltar (ela fica com parte da comissão). Ele acha que tem
+Casas Bahia e Fast Shop: falta um link de afiliado de exemplo de cada para o
+robô aprender o formato. AliExpress: candidato (público do grupo compra lá);
+cadastro no AliExpress Portals e link gerado pela API deles.
+
 ## Cuidados
 
 - **Número dedicado** para o grupo. Postar em grupo é tranquilo; o que derruba
