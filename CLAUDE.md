@@ -13,6 +13,26 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 3. `lib/ofertas.mjs`: as funções que viram nós Code (links, plataforma,
    Amazon, Shopee, legenda), testadas em `testes/bateria/ofertas.mjs`.
 
+## O caminho do grupo (a prioridade, não perder)
+
+O objetivo é o grupo de ofertas no ar, postando sozinho. Ordem:
+
+1. Ele traz a Z-API (instância nova, número do robô) e preenche as variáveis
+   que faltam de uma vez: `ZAPI_INSTANCE_ID`, `ZAPI_INSTANCE_TOKEN`,
+   `ZAPI_CLIENT_TOKEN`, `AUTOR_PHONE`, `WEBHOOK_SEGREDO`.
+2. Rodar o 99 (diagnóstico) e subir 01, 02 e 03 juntos com a lib atual.
+3. Publicar o 01, passar a ele a URL do webhook (com `?k=`) para a Z-API.
+4. "Oi" no grupo rascunho e no de teste: ler os ids na execução e pôr em
+   `GRUPO_RASCUNHO` e `GRUPO_OFERTAS`.
+5. Testar rascunho e garimpo no grupo de teste (send-link com foto).
+6. `GARIMPO_LIGADO=sim` e trocar `GRUPO_OFERTAS` para o grupo de verdade.
+7. Shopee: quando a API aprovar (pedida 06/10), `SHOPEE_APP_ID` e `SHOPEE_SECRET`.
+
+O aprendizado deste projeto vai para o **KaosTon/opensquad-starter**, sem
+dado dele: receita `_recipes/robo-ofertas-afiliado.md` (produto 42), lições
+no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
+(PR #19, mesclado em 07/10). Isso é registro; o trabalho principal é aqui.
+
 ## Como trabalhar aqui
 
 - Fluxo do n8n: escrever em `infra/n8n/sdk/` (Workflow SDK), compilar com
