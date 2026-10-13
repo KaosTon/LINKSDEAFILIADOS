@@ -60,7 +60,10 @@ const posta = ifElse({
   version: 2.2,
   config: { name: 'Posta?', position: [480, 0], parameters: {
     conditions: { combinator: 'and', options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 },
-      conditions: [{ leftValue: expr('{{ $json.postar }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }] },
+      // Rodada de teste (na mão) não posta: ela não grava a memória e repetiria
+      // o produto na rodada automática seguinte (13/10, Pampers duas vezes).
+      conditions: [{ leftValue: expr('{{ $json.postar }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } },
+        { leftValue: expr('{{ $json.teste === true }}'), rightValue: false, operator: { type: 'boolean', operation: 'false', singleValue: true } }] },
     looseTypeValidation: true, options: {} } }
 });
 

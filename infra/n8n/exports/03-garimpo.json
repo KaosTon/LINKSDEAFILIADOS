@@ -55,6 +55,15 @@
                 "operation": "true",
                 "singleValue": true
               }
+            },
+            {
+              "leftValue": "={{ $json.teste === true }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
             }
           ]
         },
