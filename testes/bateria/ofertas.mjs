@@ -174,6 +174,15 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('Amazon no rascunho sai no formato limpo /dp/ASIN?tag=', longo.texto === 'Fone https://www.amazon.com.br/dp/B0FR49NFLT?tag=minha-20', longo.texto);
   const semFoto = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: undefined, text: { message: 'Fone https://amzn.to/abc' } }), C, rede);
   caso('sem foto: sem link de previa (vai como texto)', semFoto.acao === 'postar' && semFoto.imagem === '' && semFoto.link === '', semFoto);
+  // meli.la de outro afiliado encaminhado (13/10): acha o produto pelo nome e usa a sua etiqueta.
+  const CML = { ...C, mlEtiqueta: 'minhaetq', mlTool: '999' };
+  const redeML = { ...rede,
+    abrir: async (u) => u === 'https://meli.la/OUTRO' ? 'https://www.mercadolivre.com.br/social/fulano?matt_word=outraetq&matt_tool=1&ref=x' : rede.abrir(u),
+    pagina: async () => '<a href="https://www.mercadolivre.com.br/lustre-pendente-led-moderno-3-cores-bivolt/p/MLB12345678">x</a><a href="https://www.mercadolivre.com.br/cadeira-gamer/p/MLB99">y</a>' };
+  const ml1 = await prepararOferta(corpo('LUMINARIA CHIQUE DEMAIS\n\nLustre Pendente Led Moderno 3 Cores Bivolt\n\nDe R$169 por R$61\nhttps://meli.la/OUTRO'), CML, redeML);
+  caso('meli.la de outra pessoa: acha o produto e posta com a sua etiqueta', ml1.acao === 'postar' && ml1.texto.includes('https://www.mercadolivre.com.br/lustre-pendente-led-moderno-3-cores-bivolt/p/MLB12345678?matt_word=minhaetq&matt_tool=999') && !ml1.texto.includes('meli.la'), ml1);
+  const ml2 = await prepararOferta(corpo('Coisa que nao existe na pagina\nhttps://meli.la/OUTRO'), CML, redeML);
+  caso('meli.la de outra pessoa sem produto achado: recusa e explica', ml2.acao === 'recusar' && /outra pessoa/.test(ml2.resposta), ml2);
   const vistos = [];
   const b = corpo('x https://meli.la/1', { messageId: 'IGUAL' });
   const p1 = await prepararOferta(b, C, rede, vistos), p2 = await prepararOferta(b, C, rede, vistos);
