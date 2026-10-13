@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto } from '../../lib/ofertas.mjs';
+import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -133,11 +133,23 @@ console.log('\n=== Foto com marca de outro grupo ===');
   caso('pedido leva a foto e pergunta so de canal/grupo', JSON.stringify(pedidoFoto('https://cdn1.telesco.pe/file/z')).includes('https://cdn1.telesco.pe/file/z') && /CANAL ou GRUPO/.test(pedidoFoto('u').messages[0].content[0].text));
   const pg = { canalum: pagina(post('canalum/95', min(5), P1, 'https://cdn1.telesco.pe/file/marcada')) };
   const comMarca = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => false } });
-  caso('foto com marca de outro grupo: posta sem a foto', comMarca.acao === 'postar' && comMarca.imagem === '' && comMarca.foto_descartada === true, comMarca);
+  caso('foto com marca de outro grupo e sem pagina da Amazon: pula (post de produto so sai com foto)', comMarca.acao === 'nada' && comMarca.tentou.some(x => x[1] === 'foto_de_outro_grupo'), comMarca);
+  const PAG_AMZ = '<span id="productTitle" class="a">  Monitor Gamer Teste 25 144hz Preto  </span> ... "hiRes":"https://m.media-amazon.com/images/I/limpa.jpg"';
+  const trocou = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => false, pagina: async () => PAG_AMZ } });
+  caso('foto com marca: troca pela foto da pagina da Amazon', trocou.acao === 'postar' && trocou.imagem === 'https://m.media-amazon.com/images/I/limpa.jpg' && trocou.foto_descartada === true, trocou);
   const limpa = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => true } });
   caso('foto limpa: vai com a foto', limpa.imagem === 'https://cdn1.telesco.pe/file/marcada');
   const caiu = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => { throw new Error('x'); } } });
-  caso('IA nao respondeu sobre a foto: na duvida, sem foto (o post sai)', caiu.acao === 'postar' && caiu.imagem === '');
+  caso('IA nao respondeu sobre a foto: na duvida nao usa a foto (e sem outra, pula)', caiu.acao === 'nada');
+  // 13/10: saiu "Ofertas por tempo limitado." sem foto. Agora: nome e foto vem da pagina da Amazon.
+  const ruim = { canalum: pagina(post('canalum/96', min(5), 'Ofertas por tempo limitado.\n\n\u{1F525} Por: R$ 18\n\n\u{1F6D2} Link: https://amzn.to/aaa')) };
+  const semPag = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede });
+  caso('nome de canal e sem foto, sem pagina: nao posta', semPag.acao === 'nada' && semPag.tentou.some(x => /sem_nome|sem_foto/.test(x[1])), semPag);
+  const comPag = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async (u) => u === 'https://www.amazon.com.br/dp/B0AAAAAAAA' ? PAG_AMZ : '' } });
+  caso('nome de canal e sem foto: nome e foto vem da pagina da Amazon', comPag.acao === 'postar' && comPag.titulo === 'Monitor Gamer Teste 25 144hz Preto' && comPag.imagem === 'https://m.media-amazon.com/images/I/limpa.jpg' && comPag.texto.includes('Monitor Gamer Teste 25 144hz Preto') && !/tempo limitado/i.test(comPag.texto), comPag);
+  const captcha = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => '<form action="/errors/validateCaptcha">' } });
+  caso('pagina da Amazon com captcha: nao dribla e nao posta', captcha.acao === 'nada', captcha);
+  caso('nomeFraco: frase de canal e curta sao fracas; nome de produto nao', nomeFraco('Ofertas por tempo limitado.') && nomeFraco('Fone') && nomeFraco('') && !nomeFraco('Fone Bluetooth JBL Tune 520'));
 }
 console.log('\n=== Chamada criativa (IA) ===');
 {
@@ -153,7 +165,7 @@ console.log('\n=== Chamada criativa (IA) ===');
   const L = legendaAchado({ nome: N, preco: 266, precoAntes: 456, link: 'https://x', chave: 'k', chamada: 'VOU APOSENTAR O ÓLEO DA SUA CASA' });
   caso('com chamada da IA: ela vai na primeira linha', L.split('\n')[0] === 'VOU APOSENTAR O ÓLEO DA SUA CASA');
   const mem = memNova();
-  const pg = { canalum: pagina(post('canalum/70', min(5), P1)) };
+  const pg = { canalum: pagina(post('canalum/70', min(5), P1, 'https://cdn1.telesco.pe/file/f70')) };
   const r1 = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem, rede: { ...rede, chamada: async () => 'MONITOR PRA JOGAR SEM TRAVAR' } });
   caso('garimpo usa a chamada da IA', r1.texto.startsWith('MONITOR PRA JOGAR SEM TRAVAR') && r1.chamada_ia === true, r1.texto);
   const r2 = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, chamada: async () => { throw new Error('timeout'); } } });

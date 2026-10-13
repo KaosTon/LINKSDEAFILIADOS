@@ -68,7 +68,7 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear =
   const meu = await roda(corpo('Chaleira https://meli.la/AAA'), { env: ML, http: abre('MinhaEtiqueta') });
   caso('ML: meli.la da sua etiqueta passa como veio', meu.out.postar === true && meu.out.texto.includes('https://meli.la/AAA'), meu.out);
   const outro = await roda(corpo('Chaleira https://meli.la/BBB'), { env: ML, http: abre('outrapessoa') });
-  caso('ML: meli.la de outra pessoa e recusado', outro.out.postar === false && /etiqueta/.test(outro.out.resposta), outro.out);
+  caso('ML: meli.la de outra pessoa sem o produto achado e recusado', outro.out.postar === false && /outra pessoa/.test(outro.out.resposta), outro.out);
   const semDestino = await roda(corpo('Chaleira https://meli.la/CCC'), { env: ML, http: [{ quando: /meli\.la/, responde: { statusCode: 200, headers: {} } }] });
   caso('ML: meli.la que nao abre e recusado (na duvida, nao posta)', semDestino.out.postar === false, semDestino.out);
   const semEtiqueta = await roda(corpo('Chaleira https://meli.la/DDD'));
