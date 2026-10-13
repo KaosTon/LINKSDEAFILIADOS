@@ -1,0 +1,52 @@
+{
+  "name": "[Ofertas] 96 Ensaio: le um post do canal",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "75895dd2-b3a9-5c01-952f-8dcb610afdca",
+      "name": "Rodar na mão",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const ASINS = ['B0GGTXJD61'];\nconst H = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36', 'Accept-Language': 'pt-BR,pt;q=0.9' };\nconst out = [];\nfor (const asin of ASINS) {\n  const r = await this.helpers.httpRequest({ method: 'GET', url: 'https://www.amazon.com.br/dp/' + asin, headers: H, returnFullResponse: true, ignoreHttpStatusErrors: true, timeout: 20000, json: false });\n  const b = typeof r.body === 'string' ? r.body : '';\n  const json = (b.match(/\"desktop_buybox_group_1\":\\[\\{[^}]*?\"priceAmount\":([\\d.]+)/) || [])[1] || null;\n  const apex = (b.match(/apex-pricetopay-value[^>]*><span class=\"a-offscreen\">\\s*R\\$\\s*([\\d.]+,\\d{2})/) || [])[1] || null;\n  out.push({ json: { asin, status: r.statusCode, captcha: /validateCaptcha/.test(b), json, apex } });\n}\nreturn out;"
+      },
+      "id": "d1df7939-0036-5cff-9aa1-2e0132ed8839",
+      "name": "Le o post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Rodar na mão": {
+      "main": [
+        [
+          {
+            "node": "Le o post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

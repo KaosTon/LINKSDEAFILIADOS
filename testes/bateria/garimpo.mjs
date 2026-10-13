@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco } from '../../lib/ofertas.mjs';
+import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -134,21 +134,32 @@ console.log('\n=== Foto com marca de outro grupo ===');
   const pg = { canalum: pagina(post('canalum/95', min(5), P1, 'https://cdn1.telesco.pe/file/marcada')) };
   const comMarca = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => false } });
   caso('foto com marca de outro grupo e sem pagina da Amazon: pula (post de produto so sai com foto)', comMarca.acao === 'nada' && comMarca.tentou.some(x => x[1] === 'foto_de_outro_grupo'), comMarca);
-  const PAG_AMZ = '<span id="productTitle" class="a">  Monitor Gamer Teste 25 144hz Preto  </span> ... "hiRes":"https://m.media-amazon.com/images/I/limpa.jpg"';
+  const PAG_AMZ = '<span class="apex-pricetopay-value"><span class="a-offscreen">R$458,00</span></span> <span id="productTitle" class="a">  Monitor Gamer Teste 25 144hz Preto  </span> ... "hiRes":"https://m.media-amazon.com/images/I/limpa.jpg"';
   const trocou = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => false, pagina: async () => PAG_AMZ } });
-  caso('foto com marca: troca pela foto da pagina da Amazon', trocou.acao === 'postar' && trocou.imagem === 'https://m.media-amazon.com/images/I/limpa.jpg' && trocou.foto_descartada === true, trocou);
+  caso('com pagina da Amazon: usa a foto oficial (nem precisa da do canal)', trocou.acao === 'postar' && trocou.imagem === 'https://m.media-amazon.com/images/I/limpa.jpg', trocou);
   const limpa = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => true } });
   caso('foto limpa: vai com a foto', limpa.imagem === 'https://cdn1.telesco.pe/file/marcada');
   const caiu = await garimpar({ canais: pg, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => { throw new Error('x'); } } });
   caso('IA nao respondeu sobre a foto: na duvida nao usa a foto (e sem outra, pula)', caiu.acao === 'nada');
   // 13/10: saiu "Ofertas por tempo limitado." sem foto. Agora: nome e foto vem da pagina da Amazon.
-  const ruim = { canalum: pagina(post('canalum/96', min(5), 'Ofertas por tempo limitado.\n\n\u{1F525} Por: R$ 18\n\n\u{1F6D2} Link: https://amzn.to/aaa')) };
+  const ruim = { canalum: pagina(post('canalum/96', min(5), 'Ofertas por tempo limitado.\n\n\u{1F525} Por: R$ 458\n\n\u{1F6D2} Link: https://amzn.to/aaa')) };
   const semPag = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede });
   caso('nome de canal e sem foto, sem pagina: nao posta', semPag.acao === 'nada' && semPag.tentou.some(x => /sem_nome|sem_foto/.test(x[1])), semPag);
   const comPag = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async (u) => u === 'https://www.amazon.com.br/dp/B0AAAAAAAA' ? PAG_AMZ : '' } });
   caso('nome de canal e sem foto: nome e foto vem da pagina da Amazon', comPag.acao === 'postar' && comPag.titulo === 'Monitor Gamer Teste 25 144hz Preto' && comPag.imagem === 'https://m.media-amazon.com/images/I/limpa.jpg' && comPag.texto.includes('Monitor Gamer Teste 25 144hz Preto') && !/tempo limitado/i.test(comPag.texto), comPag);
   const captcha = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => '<form action="/errors/validateCaptcha">' } });
   caso('pagina da Amazon com captcha: nao dribla e nao posta', captcha.acao === 'nada', captcha);
+  // 13/10: canal postou "Por: R$2,00" num water cooler de R$258,81, e a foto do canal saiu em branco.
+  const PAG_P = '<span class="a-price aok-align-center apex-pricetopay-value" data-a-size="xl"><span class="a-offscreen">R$258,81</span></span> <span id="productTitle">Water Cooler Teste 360</span> "hiRes":"https://m.media-amazon.com/images/I/cooler.jpg"';
+  const bug = { canalum: pagina(post('canalum/97', min(5), 'Water Cooler Teste 360 RGB\n\n\u2705 Por: R$2,00\n\n\u{1F517} PEGAR OFERTA: https://amzn.to/aaa', 'https://cdn1.telesco.pe/file/branca')) };
+  const rb = await garimpar({ canais: bug, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG_P } });
+  caso('preco do canal muito diferente do da Amazon: nao posta', rb.acao === 'nada' && rb.tentou.some(x => x[1] === 'preco_diferente_da_loja'), rb);
+  const ok = { canalum: pagina(post('canalum/98', min(5), 'Water Cooler Teste 360 RGB\n\n\u2705 Por: R$259,90\n\n\u{1F517} PEGAR OFERTA: https://amzn.to/aaa', 'https://cdn1.telesco.pe/file/branca')) };
+  const ro = await garimpar({ canais: ok, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG_P } });
+  caso('preco bate (ate 15%): posta com a foto oficial da Amazon no lugar da do canal', ro.acao === 'postar' && ro.imagem === 'https://m.media-amazon.com/images/I/cooler.jpg', ro);
+  caso('lerPaginaAmazon le o preco de pagar (bloco apex e JSON do buybox)', lerPaginaAmazon(PAG_P).preco === 258.81 && lerPaginaAmazon('{"desktop_buybox_group_1":[{"displayPrice":"R$ 1.299,00","priceAmount":1299,"currencySymbol":"R$"}]}').preco === 1299 && !lerPaginaAmazon('<span class="a-offscreen">R$ 1,39</span>').preco);
+  const acabou = await garimpar({ canais: ok, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => '<span id="productTitle">Water Cooler Teste 360</span> Comparar outras 4 ofertas <span class="apex-priceperunit-value"><span class="a-offscreen">R$1,39</span>' } });
+  caso('pagina abre mas sem preco de compra (so outras ofertas): promocao acabou, nao posta', acabou.acao === 'nada' && acabou.tentou.some(x => x[1] === 'sem_preco_na_loja'), acabou);
   caso('nomeFraco: frase de canal e curta sao fracas; nome de produto nao', nomeFraco('Ofertas por tempo limitado.') && nomeFraco('Fone') && nomeFraco('') && !nomeFraco('Fone Bluetooth JBL Tune 520'));
 }
 console.log('\n=== Chamada criativa (IA) ===');

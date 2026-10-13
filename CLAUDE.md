@@ -59,7 +59,8 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 |---|---|---|
 | 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | PUBLICADO 13/10. Webhook `/webhook/ofertas-zapi?k=` na Z-API. Encaminhada usa a foto da prévia, meli.la de outro afiliado vira link com a etiqueta dele, Amazon sai limpa. A lib colada ainda não tem `nomeFraco` (só muda o título da prévia) |
 | 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | PUBLICADO 13/10 (o 01 exige). send-link com plano B em send-image |
-| 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | PUBLICADO 13/10 com `GARIMPO_LIGADO=sim`, postando no grupo de TESTE. Produto só sai com foto e nome de produto (a página da Amazon completa) |
+| 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | PUBLICADO 13/10 com `GARIMPO_LIGADO=sim`, postando no grupo de TESTE. Produto só sai com foto e nome de produto. Amazon: a página do produto confere o preço (mais de 15% de diferença ou sem preço de compra, não posta) e dá a foto oficial. Rodada na mão não posta |
+| 96 Ensaio: lê um post do canal | `V0XEygzTlePVkDCY` | manual; investigar post errado (preço e foto na página da Amazon) |
 | 97 Ensaio: de onde tirar ofertas | `dg95IghMfsJGlosW` | manual |
 | 98 Ensaio: abre link curto | `dtJ7lwTKLItlckuD` | manual |
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
