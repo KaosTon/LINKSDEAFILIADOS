@@ -164,6 +164,16 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('CUPOM com link: o link e convertido', c2.acao === 'postar' && /tag=minha-20/.test(c2.texto), c2);
   const c3 = await prepararOferta(corpo('CUPOM https://produto.mercadolivre.com.br/MLB-1'), C, rede);
   caso('CUPOM com link que nao converte: nao posta', c3.acao === 'recusar');
+  // Encaminhada de outro grupo (13/10): chega como texto com prévia, a foto em text.thumbnailUrl.
+  const enc = corpo('', { image: undefined, forwarded: true, text: { message: 'MENOR PRECO NESSA GILLETTE\n\nGillette Styler Barbeador\n\nDe R$216 por R$74\nhttps://amzn.to/abc',
+    url: 'https://amzn.to/abc', thumbnailUrl: 'https://tmp/previa.jpeg', title: '   ' } });
+  const e1 = await prepararOferta(enc, C, rede);
+  caso('encaminhada com previa: usa a foto da previa', e1.acao === 'postar' && e1.imagem === 'https://tmp/previa.jpeg', e1);
+  caso('encaminhada com previa: manda link e titulo para o send-link', e1.link === 'https://www.amazon.com.br/dp/B0X?tag=minha-20' && e1.titulo === 'Gillette Styler Barbeador', e1);
+  const longo = await prepararOferta(corpo('Fone https://www.amazon.com.br/gp/aw/d/B0FR49NFLT?pd_rd_w=kk&qid=1&ref_=sbx&th=1'), C, rede);
+  caso('Amazon no rascunho sai no formato limpo /dp/ASIN?tag=', longo.texto === 'Fone https://www.amazon.com.br/dp/B0FR49NFLT?tag=minha-20', longo.texto);
+  const semFoto = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: undefined, text: { message: 'Fone https://amzn.to/abc' } }), C, rede);
+  caso('sem foto: sem link de previa (vai como texto)', semFoto.acao === 'postar' && semFoto.imagem === '' && semFoto.link === '', semFoto);
   const vistos = [];
   const b = corpo('x https://meli.la/1', { messageId: 'IGUAL' });
   const p1 = await prepararOferta(b, C, rede, vistos), p2 = await prepararOferta(b, C, rede, vistos);

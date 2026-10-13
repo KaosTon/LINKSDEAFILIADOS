@@ -61,7 +61,7 @@ const podePostar = ifElse({
 });
 
 const posta = gateway('Posta no grupo', [720, -100], {
-  phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '01-grupo', link: '', titulo: '' });
+  phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '01-grupo', link: expr('{{ $json.link }}'), titulo: expr('{{ $json.titulo }}') });
 
 const comoFoi = node({
   type: 'n8n-nodes-base.code', version: 2,
