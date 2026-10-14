@@ -180,7 +180,7 @@ console.log('\n=== Esteira (fluxo 01) ===');
     abrir: async (u) => u === 'https://meli.la/OUTRO' ? 'https://www.mercadolivre.com.br/social/fulano?matt_word=outraetq&matt_tool=1&ref=x' : rede.abrir(u),
     pagina: async () => '<a href="https://www.mercadolivre.com.br/lustre-pendente-led-moderno-3-cores-bivolt/p/MLB12345678">x</a><a href="https://www.mercadolivre.com.br/cadeira-gamer/p/MLB99">y</a>' };
   const ml1 = await prepararOferta(corpo('LUMINARIA CHIQUE DEMAIS\n\nLustre Pendente Led Moderno 3 Cores Bivolt\n\nDe R$169 por R$61\nhttps://meli.la/OUTRO'), CML, redeML);
-  caso('meli.la de outra pessoa: acha o produto e posta com a sua etiqueta', ml1.acao === 'postar' && ml1.texto.includes('https://www.mercadolivre.com.br/lustre-pendente-led-moderno-3-cores-bivolt/p/MLB12345678?matt_word=minhaetq&matt_tool=999') && !ml1.texto.includes('meli.la'), ml1);
+  caso('meli.la de outra pessoa: acha o produto e posta com a sua etiqueta', ml1.acao === 'postar' && ml1.texto.includes('https://www.mercadolivre.com.br/p/MLB12345678?matt_word=minhaetq&matt_tool=999') && !ml1.texto.includes('meli.la'), ml1);
   const ml2 = await prepararOferta(corpo('Coisa que nao existe na pagina\nhttps://meli.la/OUTRO'), CML, redeML);
   caso('meli.la de outra pessoa sem produto achado: recusa e explica', ml2.acao === 'recusar' && /outra pessoa/.test(ml2.resposta), ml2);
   const vistos = [];

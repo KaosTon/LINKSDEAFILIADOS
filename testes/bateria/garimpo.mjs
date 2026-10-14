@@ -80,7 +80,8 @@ console.log('\n=== Padrao dos grupos de oferta ===');
 console.log('\n=== Mercado Livre com o seu link ===');
 {
   const ML = { ...CFG, mlEtiqueta: 'minhaetiqueta', mlTool: '12345678' };
-  caso('produto (/p/MLB): tira o rastreio de quem divulgou e poe o seu', mlAfiliado('https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740?matt_word=outro&matt_tool=999#polycard', ML) === 'https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740?matt_word=minhaetiqueta&matt_tool=12345678');
+  caso('produto (/p/MLB): tira o rastreio de quem divulgou e poe o seu', mlAfiliado('https://www.mercadolivre.com.br/cadeira-teste/p/MLB46220740?matt_word=outro&matt_tool=999#polycard', ML) === 'https://www.mercadolivre.com.br/p/MLB46220740?matt_word=minhaetiqueta&matt_tool=12345678');
+  caso('link curto: sem o nome do produto no endereco', mlAfiliado('https://www.mercadolivre.com.br/carregador-super-rapido-25w-tipo-c/p/MLB47889235', ML) === 'https://www.mercadolivre.com.br/p/MLB47889235?matt_word=minhaetiqueta&matt_tool=12345678');
   caso('produto antigo (MLB-) e /up/MLBU tambem', !!mlAfiliado('https://produto.mercadolivre.com.br/MLB-1234567890-cadeira-teste-_JM', ML) && !!mlAfiliado('https://www.mercadolivre.com.br/chaleira-teste/up/MLBU1111122222', ML));
   caso('perfil social, lista ou busca: nao e produto, nao vira link', mlAfiliado('https://www.mercadolivre.com.br/social/outro?ref=x', ML) === null && mlAfiliado('https://lista.mercadolivre.com.br/fone', ML) === null);
   caso('sem ML_ETIQUETA ou ML_MATT_TOOL: nao monta', mlAfiliado('https://www.mercadolivre.com.br/x/p/MLB1234567', { mlEtiqueta: 'a' }) === null);
