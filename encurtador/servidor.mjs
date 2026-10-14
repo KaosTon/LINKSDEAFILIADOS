@@ -1,0 +1,111 @@
+// Encurtador próprio: promox.com.br/a7k2 -> link de afiliado.
+// Sem dependência. Roda no Railway como serviço separado do n8n, com um volume em /data.
+//
+//   GET  /{codigo}          redireciona (302) e conta o clique
+//   POST /api/encurtar      { url } com Authorization: Bearer ENCURTADOR_SEGREDO -> { codigo, curto }
+//   GET  /api/cliques       mesma senha; os links mais clicados
+//   GET  /saude             para o Railway saber que está de pé
+//
+// Só encurta link das lojas da lista: mesmo que a senha vaze, ninguém usa o
+// domínio para mandar gente para golpe.
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const LOJAS = /(^|\.)(amazon\.com\.br|amzn\.to|mercadolivre\.com\.br|meli\.la|shopee\.com\.br|magazinevoce\.com\.br|magazineluiza\.com\.br)$/i;
+const ALFABETO = 'abcdefghijkmnpqrstuvwxyz23456789';   // sem l, o, 0, 1 (confundem)
+
+export function lojaPermitida(url) {
+  let u; try { u = new URL(url); } catch { return false; }
+  return u.protocol === 'https:' && LOJAS.test(u.hostname);
+}
+
+export function novoCodigo(existe, tamanho = 5) {
+  for (;;) {
+    const b = crypto.randomBytes(tamanho);
+    const c = [...b].map(x => ALFABETO[x % ALFABETO.length]).join('');
+    if (!existe(c)) return c;
+  }
+}
+
+export function criarServidor({ pasta, segredo, base, convite }) {
+  fs.mkdirSync(pasta, { recursive: true });
+  const arquivo = path.join(pasta, 'links.json');
+  let dados = { links: {} };
+  try { dados = JSON.parse(fs.readFileSync(arquivo, 'utf8')); } catch (e) { /* primeira vez */ }
+  const porUrl = new Map(Object.entries(dados.links).map(([c, l]) => [l.url, c]));
+
+  let sujo = false;
+  const salvar = () => {
+    if (!sujo) return;
+    const tmp = arquivo + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(dados));
+    fs.renameSync(tmp, arquivo);
+    sujo = false;
+  };
+  const relogio = setInterval(salvar, 30000);
+  relogio.unref();
+
+  const responde = (res, status, corpo, extra = {}) => {
+    const json = typeof corpo !== 'string';
+    res.writeHead(status, { 'Content-Type': json ? 'application/json' : 'text/plain; charset=utf-8', ...extra });
+    res.end(json ? JSON.stringify(corpo) : corpo);
+  };
+  const autorizado = (req) => {
+    const t = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    return !!segredo && t.length === segredo.length && crypto.timingSafeEqual(Buffer.from(t), Buffer.from(segredo));
+  };
+
+  const servidor = http.createServer((req, res) => {
+    const u = new URL(req.url, 'http://x');
+    const p = u.pathname;
+
+    if (p === '/saude') return responde(res, 200, 'ok');
+
+    if (p === '/api/encurtar' && req.method === 'POST') {
+      if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
+      let corpo = '';
+      req.on('data', (c) => { corpo += c; if (corpo.length > 1e4) req.destroy(); });
+      req.on('end', () => {
+        let url;
+        try { url = String(JSON.parse(corpo).url || ''); } catch { return responde(res, 400, { erro: 'json' }); }
+        if (!lojaPermitida(url)) return responde(res, 400, { erro: 'loja_nao_permitida' });
+        let codigo = porUrl.get(url);
+        if (!codigo) {
+          codigo = novoCodigo((c) => !!dados.links[c]);
+          dados.links[codigo] = { url, criado: Date.now(), cliques: 0 };
+          porUrl.set(url, codigo);
+          sujo = true; salvar();
+        }
+        responde(res, 200, { codigo, curto: `${base.replace(/\/+$/, '')}/${codigo}` });
+      });
+      return;
+    }
+
+    if (p === '/api/cliques') {
+      if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
+      const top = Object.entries(dados.links).sort((a, b) => b[1].cliques - a[1].cliques).slice(0, 50)
+        .map(([codigo, l]) => ({ codigo, cliques: l.cliques, url: l.url, criado: new Date(l.criado).toISOString() }));
+      return responde(res, 200, { total: Object.keys(dados.links).length, top });
+    }
+
+    if (p === '/' || p === '') return convite ? responde(res, 302, '', { Location: convite }) : responde(res, 200, 'ok');
+
+    const l = dados.links[p.slice(1)];
+    if (!l) return responde(res, 404, 'Essa oferta não existe mais.');
+    l.cliques++; sujo = true;
+    responde(res, 302, '', { Location: l.url, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer-when-downgrade' });
+  });
+  servidor.on('close', () => { clearInterval(relogio); salvar(); });
+  return servidor;
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+  const segredo = process.env.ENCURTADOR_SEGREDO;
+  if (!segredo || segredo.length < 32) { console.error('falta ENCURTADOR_SEGREDO (32 caracteres ou mais)'); process.exit(1); }
+  const s = criarServidor({ pasta: process.env.PASTA_DADOS || '/data', segredo,
+    base: process.env.BASE_URL || 'http://localhost', convite: process.env.CONVITE_GRUPO || '' });
+  s.listen(Number(process.env.PORT) || 8080, () => console.log('encurtador de pé'));
+  for (const sinal of ['SIGTERM', 'SIGINT']) process.on(sinal, () => s.close(() => process.exit(0)));
+}

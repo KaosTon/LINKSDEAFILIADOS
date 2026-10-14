@@ -1,0 +1,7 @@
+{
+  "name": "encurtador",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node servidor.mjs" }
+}
