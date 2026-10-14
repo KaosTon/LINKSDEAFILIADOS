@@ -283,7 +283,11 @@ console.log('\n=== Horario e limite ===');
   caso('23h em SP sem post recente: pode (e e noite)', podeAgora(mem, NOITE, CFG).ok && podeAgora(mem, NOITE, CFG).noite === true);
   caso('noite: post ha 60 min, intervalo de 150: ainda nao', podeAgora({ ...mem, ultimo: NOITE.getTime() - 60 * 6e4 }, NOITE, CFG).motivo === 'cedo');
   caso('noite: post ha 151 min: pode', podeAgora({ ...mem, ultimo: NOITE.getTime() - 151 * 6e4 }, NOITE, CFG).ok);
-  caso('dia: post ha 5 min, intervalo de 8: ainda nao; ha 9: pode', podeAgora({ ...mem, ultimo: AGORA.getTime() - 5 * 6e4 }, AGORA, CFG).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 9 * 6e4 }, AGORA, CFG).ok);
+  const C110 = { ...CFG, porDia: 110 };
+  caso('dia: post ha 5 min, intervalo de 8: ainda nao; ha 9: pode', podeAgora({ ...mem, ultimo: AGORA.getTime() - 5 * 6e4 }, AGORA, C110).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 9 * 6e4 }, AGORA, C110).ok);
+  // 12h, 25 por dia, nada postado: 600 min para 24 posts = 1 a cada 25 min.
+  caso('espalha o limite ate as 22h (25/dia ao meio-dia: 1 a cada 25 min)', podeAgora({ ...mem, ultimo: AGORA.getTime() - 20 * 6e4 }, AGORA, CFG).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 26 * 6e4 }, AGORA, CFG).ok);
+  caso('guarda 1 para a noite: 24 de 25 as 12h, nao posta de dia', podeAgora({ ...mem, postados: 24 }, AGORA, CFG).motivo === 'reserva_da_noite');
   mem.postados = 25;
   caso('25 no dia: para', podeAgora(mem, AGORA, CFG).motivo === 'limite_do_dia');
   arrumarMemoria(mem, new Date('2026-10-07T12:00:00Z'));
