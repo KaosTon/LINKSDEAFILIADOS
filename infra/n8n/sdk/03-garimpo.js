@@ -2,8 +2,12 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
 
 /* GARIMPO: o robô acha a oferta sozinho e posta (100% automático)
  *
- * A cada 35 minutos, das GARIMPO_INICIO às GARIMPO_FIM (8h às 22h em SP), até
- * GARIMPO_POR_DIA posts (25). Lê as páginas públicas dos canais do Telegram
+ * O relógio bate a cada 5 minutos; quem decide se é hora é o ritmo: de dia
+ * (GARIMPO_INICIO às GARIMPO_FIM, 8h às 22h) um post a cada
+ * GARIMPO_INTERVALO_DIA minutos (8), de madrugada um a cada
+ * GARIMPO_INTERVALO_NOITE (150), até GARIMPO_POR_DIA (110). A cada 3 posts, 1
+ * vem da lista oficial da Shopee (desconto de GARIMPO_DESCONTO_SHOPEE, 30%,
+ * para cima; entre esses, a maior comissão). Lê as páginas públicas dos canais do Telegram
  * (GARIMPO_CANAIS) e as ofertas da Amazon, troca o link pelo seu e posta UMA
  * oferta por vez pelo gateway (fluxo 02). Só posta com GARIMPO_LIGADO=sim:
  * publicado sem isso, ele só calcula (dá para ver na execução o que sairia).
@@ -17,8 +21,8 @@ const ENTRADAS = ['phone', 'message', 'image', 'origem', 'link', 'titulo'].map(i
 
 const relogio = trigger({
   type: 'n8n-nodes-base.scheduleTrigger', version: 1.2,
-  config: { name: 'A cada 35 minutos', position: [0, 0],
-    parameters: { rule: { interval: [{ field: 'minutes', minutesInterval: 35 }] } } },
+  config: { name: 'A cada 5 minutos', position: [0, 0],
+    parameters: { rule: { interval: [{ field: 'minutes', minutesInterval: 5 }] } } },
   output: [{}]
 });
 
@@ -33,7 +37,8 @@ const garimpa = node({
 "const lista = (k, d) => String($env[k] || d).split(',').map(s => s.trim()).filter(Boolean);",
 "const cfg = { amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA, mlTool: $env.ML_MATT_TOOL,",
 "  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET),",
-"  inicio: N('GARIMPO_INICIO', 8), fim: N('GARIMPO_FIM', 22), porDia: N('GARIMPO_POR_DIA', 25),",
+"  inicio: N('GARIMPO_INICIO', 8), fim: N('GARIMPO_FIM', 22), porDia: N('GARIMPO_POR_DIA', 30),",
+"  intervaloDia: N('GARIMPO_INTERVALO_DIA', 25), intervaloNoite: N('GARIMPO_INTERVALO_NOITE', 150), descontoShopee: N('GARIMPO_DESCONTO_SHOPEE', 30),",
 "  cuponsPorDia: N('GARIMPO_CUPONS_POR_DIA', 6), descontoMin: N('GARIMPO_DESCONTO_MIN', 15),",
 "  idadeMaxMin: 120, maxTentativas: 8,",
 "  canais: lista('GARIMPO_CANAIS', 'promotop,pechinchou,fadadoscupons,cupomonline'),",
@@ -49,7 +54,9 @@ const garimpa = node({
 "for (const c of cfg.canais) { try { canais[c] = await rede.pagina('https://t.me/s/' + encodeURIComponent(c)); } catch (e) { canais[c] = ''; } }",
 "let amazonHtml = '';",
 "if (cfg.amazonTag) { try { amazonHtml = await rede.pagina('https://www.amazon.com.br/deals'); } catch (e) { amazonHtml = ''; } }",
-"const r = await garimpar({ canais, amazonHtml, agora, cfg, mem, rede });",
+"let shopee = [];",
+"if (cfg.shopee) { try { shopee = await rede.shopeeOfertas(); } catch (e) { shopee = []; } }",
+"const r = await garimpar({ canais, amazonHtml, shopee, agora, cfg, mem, rede });",
 "if (r.acao !== 'postar') return [{ json: { postar: false, motivo: r.motivo, tentou: r.tentou, postados_hoje: mem.postados } }];",
 "return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados } }];"
 ].join('\n') } },
@@ -89,6 +96,7 @@ const anota = node({
 "const mem = $getWorkflowStaticData('global');",
 "if (r.ok) {",
 "  mem.postados = (mem.postados || 0) + 1;",
+"  mem.ultimo = Date.now();",
 "  if (g.tipo === 'cupom') mem.cupons = (mem.cupons || 0) + 1;",
 "  mem.produtos = mem.produtos || {};",
 "  if (g.chave) mem.produtos[g.chave] = Date.now();",

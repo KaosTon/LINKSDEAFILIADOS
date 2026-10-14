@@ -3,8 +3,8 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon } from '../../lib/ofertas.mjs';
-import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora,
+import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto } from '../../lib/ofertas.mjs';
+import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
@@ -133,6 +133,11 @@ console.log('\n=== Post completo (como os grupos fazem) ===');
   const c = lerPost('O CREME MAIS MILAGROSO DE TODOS\nfaz mais coisa do que vc imagina\n\nCreme Multirreparador Cicaplast Baume B5+ 20ml\n\n\u{1F4B5} R$31 pix\n\u{1F6D2} https://meli.la/2nxfpLk');
   caso('nome e a linha antes do preco, nao a frase de efeito nem a observacao', a.nome === 'Perfume Armani Code EDT 125ml' && a.preco === 484 && a.precoAntes === 929 && c.nome === 'Creme Multirreparador Cicaplast Baume B5+ 20ml' && c.preco === 31, { a: a.nome, c: c.nome });
 }
+{
+  const s = lerPost('Micro-ondas Britania 20L Pintura Limpa Facil\n\n\u2705 Por: R$355\n\n\u{1F39F} Resgate todos os cupons aqui:\nhttps://cupom.cc/abc\n\n\u{1F517} PEGAR OFERTA: https://s.shopee.com.br/x');
+  caso('instrucao de cupom que apontava para link do canal ("aqui:"): fica de fora', s.dicaCupom === null, s.dicaCupom);
+  caso('chave da Shopee no formato /loja/ID/ID', chaveProduto('https://shopee.com.br/umaloja/123456789/1234567890') === 'shopee:123456789.1234567890' && chaveProduto('https://shopee.com.br/product/1/22') === 'shopee:1.22');
+}
 console.log('\n=== Foto com marca de outro grupo ===');
 {
   caso('resposta NAO: foto limpa; SIM ou estranha: nao usa', fotoLimpaDaResposta('NAO') && fotoLimpaDaResposta('NÃO.') && !fotoLimpaDaResposta('SIM, @canal') && !fotoLimpaDaResposta('talvez') && !fotoLimpaDaResposta(''));
@@ -163,6 +168,11 @@ console.log('\n=== Foto com marca de outro grupo ===');
   const ok = { canalum: pagina(post('canalum/98', min(5), 'Water Cooler Teste 360 RGB\n\n\u2705 Por: R$259,90\n\n\u{1F517} PEGAR OFERTA: https://amzn.to/aaa', 'https://cdn1.telesco.pe/file/branca')) };
   const ro = await garimpar({ canais: ok, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG_P } });
   caso('preco bate (ate 15%): posta com a foto oficial da Amazon no lugar da do canal', ro.acao === 'postar' && ro.imagem === 'https://m.media-amazon.com/images/I/cooler.jpg', ro);
+  const PAG_DE = '<span class="apex-pricetopay-value"><span class="a-offscreen">R$100,00</span></span><span class="a-price a-text-price" data-a-size="s" data-a-strike="true" data-a-color="secondary"><span class="a-offscreen">R$ 250,00</span></span><span id="productTitle">Fone Teste Bluetooth</span>';
+  caso('lerPaginaAmazon le o preco De (riscado)', lerPaginaAmazon(PAG_DE).precoDe === 250);
+  caso('preco De absurdo (mais de 5x) nao entra', !lerPaginaAmazon(PAG_DE.replace('R$ 250,00', 'R$ 900,00')).precoDe);
+  caso('legenda mostra a porcentagem junto do De/por', legendaAchado({ nome: 'Fone Teste Bluetooth', preco: 59.99, precoAntes: 200, link: 'L', chamada: 'SOM DE VERDADE' }).includes('De R$200 por R$59,99 (70% OFF)'));
+  caso('sem % repetido quando a chamada ja fala', !legendaAchado({ nome: 'Fone Teste Bluetooth', preco: 59.99, precoAntes: 200, link: 'L', chamada: '70% OFF, CORRE' }).includes('(70% OFF)'));
   caso('lerPaginaAmazon le o preco de pagar (bloco apex e JSON do buybox)', lerPaginaAmazon(PAG_P).preco === 258.81 && lerPaginaAmazon('{"desktop_buybox_group_1":[{"displayPrice":"R$ 1.299,00","priceAmount":1299,"currencySymbol":"R$"}]}').preco === 1299 && !lerPaginaAmazon('<span class="a-offscreen">R$ 1,39</span>').preco);
   const acabou = await garimpar({ canais: ok, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => '<span id="productTitle">Water Cooler Teste 360</span> Comparar outras 4 ofertas <span class="apex-priceperunit-value"><span class="a-offscreen">R$1,39</span>' } });
   caso('pagina abre mas sem preco de compra (so outras ofertas): promocao acabou, nao posta', acabou.acao === 'nada' && acabou.tentou.some(x => x[1] === 'sem_preco_na_loja'), acabou);
@@ -267,8 +277,12 @@ console.log('\n=== Horario e limite ===');
 {
   const mem = memNova();
   caso('12h em SP: pode', podeAgora(mem, AGORA, CFG).ok);
-  caso('23h em SP: fora do horario', podeAgora(mem, new Date('2026-10-07T02:00:00Z'), CFG).motivo === 'fora_do_horario');
-  caso('7h59 em SP: fora do horario', podeAgora(mem, new Date('2026-10-06T10:59:00Z'), CFG).motivo === 'fora_do_horario');
+  // 14/10: madrugada nao e mais fechada; so tem um intervalo maior (umas 4 por noite).
+  const NOITE = new Date('2026-10-07T02:00:00Z');   // 23h em SP
+  caso('23h em SP sem post recente: pode (e e noite)', podeAgora(mem, NOITE, CFG).ok && podeAgora(mem, NOITE, CFG).noite === true);
+  caso('noite: post ha 60 min, intervalo de 150: ainda nao', podeAgora({ ...mem, ultimo: NOITE.getTime() - 60 * 6e4 }, NOITE, CFG).motivo === 'cedo');
+  caso('noite: post ha 151 min: pode', podeAgora({ ...mem, ultimo: NOITE.getTime() - 151 * 6e4 }, NOITE, CFG).ok);
+  caso('dia: post ha 5 min, intervalo de 8: ainda nao; ha 9: pode', podeAgora({ ...mem, ultimo: AGORA.getTime() - 5 * 6e4 }, AGORA, CFG).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 9 * 6e4 }, AGORA, CFG).ok);
   mem.postados = 25;
   caso('25 no dia: para', podeAgora(mem, AGORA, CFG).motivo === 'limite_do_dia');
   arrumarMemoria(mem, new Date('2026-10-07T12:00:00Z'));
@@ -277,9 +291,31 @@ console.log('\n=== Horario e limite ===');
   arrumarMemoria(mem, AGORA);
   caso('esquece produto com mais de 7 dias, guarda o recente', !mem.produtos['amazon:X'] && mem.produtos['amazon:Y']);
   registrarPostado(mem, { chave: 'cupom:A', tipo: 'cupom' }, AGORA);
-  caso('registrar: conta post e cupom', mem.postados === 1 && mem.cupons === 1 && mem.produtos['cupom:A']);
+  caso('registrar: conta post e cupom e guarda a hora', mem.postados === 1 && mem.cupons === 1 && mem.produtos['cupom:A'] && mem.ultimo === AGORA.getTime());
 }
 caso('legenda de cupom sem link nao fala de afiliado', !/afiliado/.test(legendaCupom({ cupons: ['X1234'] })));
+
+console.log('\n=== Shopee oficial (14/10) ===');
+{
+  const RESP = { data: { productOfferV2: { nodes: [
+    { productName: 'Creatina Teste 300g', priceMin: '39.9', priceDiscountRate: 47, commissionRate: '0.26', imageUrl: 'https://cf.shopee.com.br/file/a', productLink: 'https://shopee.com.br/product/1/11', offerLink: 'https://s.shopee.com.br/A' },
+    { productName: 'Power Bank Teste 10000mAh', priceMin: '31.99', priceDiscountRate: 45, commissionRate: '0.28', imageUrl: 'https://cf.shopee.com.br/file/b', productLink: 'https://shopee.com.br/product/2/22', offerLink: 'https://s.shopee.com.br/B' },
+    { productName: 'Fone Teste Pouco Desconto', priceMin: '20', priceDiscountRate: 10, commissionRate: '0.50', imageUrl: 'https://cf.shopee.com.br/file/c', productLink: 'https://shopee.com.br/product/3/33', offerLink: 'https://s.shopee.com.br/C' },
+    { productName: 'Vodka Teste 1L', priceMin: '30', priceDiscountRate: 60, commissionRate: '0.40', imageUrl: 'https://cf.shopee.com.br/file/d', productLink: 'https://shopee.com.br/product/4/44', offerLink: 'https://s.shopee.com.br/D' } ] } } };
+  const L = lerOfertasShopee(JSON.stringify(RESP));
+  caso('le a lista oficial: nome, preco, desconto, comissao, foto, seu link e a chave do produto', L.length === 4 && L[1].preco === 31.99 && L[1].comissao === 0.28 && L[1].link === 'https://s.shopee.com.br/B' && L[1].chave === 'shopee:2.22');
+  const m2 = { ...memNova(), postados: 2 };
+  const r = await garimpar({ canais: { canalum: pagina(post('canalum/99', min(5), P1, 'https://cdn1.telesco.pe/file/f99')) }, shopee: L, agora: AGORA, cfg: CFG, mem: m2, rede });
+  caso('3o post: vem da Shopee, desconto de 30%+ e a MAIOR comissao (nao a proibida nem a de 10%)', r.acao === 'postar' && r.fonte === 'shopee/ofertas' && r.link === 'https://s.shopee.com.br/B' && r.imagem === 'https://cf.shopee.com.br/file/b', r);
+  caso('legenda da Shopee: De/Por calculado pelo desconto', /De R\$58 por R\$31,99/.test(r.texto), r.texto);
+  const r1 = await garimpar({ canais: { canalum: pagina(post('canalum/99', min(5), P1, 'https://cdn1.telesco.pe/file/f99')) }, shopee: L, agora: AGORA, cfg: CFG, mem: memNova(), rede });
+  caso('fora da vez da Shopee: vem do canal', r1.acao === 'postar' && r1.fonte === 'canalum/99', r1);
+  const r3 = await garimpar({ canais: {}, shopee: L, agora: AGORA, cfg: CFG, mem: memNova(), rede });
+  caso('canal sem nada (madrugada): a Shopee completa', r3.acao === 'postar' && r3.fonte === 'shopee/ofertas', r3);
+  const m4 = memNova(); m4.produtos['shopee:2.22'] = AGORA.getTime();
+  const r4 = await garimpar({ canais: {}, shopee: L, agora: AGORA, cfg: CFG, mem: m4, rede });
+  caso('Shopee ja postado na semana: vai para o proximo da lista', r4.link === 'https://s.shopee.com.br/A', r4);
+}
 
 console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
 {
@@ -299,16 +335,17 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('ligado: posta no GRUPO_OFERTAS, com a foto do post', b.saida[0].json.postar === true && b.saida[0].json.grupo === ENV.GRUPO_OFERTAS && b.saida[0].json.imagem === 'https://cdn1.telesco.pe/file/f9');
   const c = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, bloquear: ['url'] });
   caso('sem o modulo url: nao estoura, diz o motivo', c.saida[0].json.postar === false && /crypto,url/.test(c.saida[0].json.motivo));
-  const d = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, memoria: { dia: '2026-10-06', postados: 25 } });
+  const d = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, memoria: { dia: '2026-10-06', postados: 110 } });
   caso('limite do dia (memoria do fluxo): nem busca nos sites', d.saida[0].json.motivo === 'limite_do_dia' && d.chamadas.length === 0, d.saida[0].json);
-  const e = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, agora: new Date('2026-10-07T03:00:00Z') });
-  caso('meia-noite em SP: fora do horario, nem busca', e.saida[0].json.motivo === 'fora_do_horario' && e.chamadas.length === 0);
-  const f = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim', GARIMPO_INICIO: '13' } });
-  caso('GARIMPO_INICIO muda a janela (13h: ainda nao)', f.saida[0].json.motivo === 'fora_do_horario');
+  const MEIA = new Date('2026-10-07T03:00:00Z');
+  const e = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, agora: MEIA, memoria: { dia: '2026-10-07', ultimo: MEIA.getTime() - 60 * 6e4 } });
+  caso('meia-noite em SP, post ha 1h: cedo, nem busca', e.saida[0].json.motivo === 'cedo' && e.chamadas.length === 0, e.saida[0].json);
+  const f = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim', GARIMPO_INTERVALO_DIA: '30' }, memoria: { dia: '2026-10-06', ultimo: AGORA.getTime() - 20 * 6e4 } });
+  caso('GARIMPO_INTERVALO_DIA muda o ritmo (30 min: ainda nao)', f.saida[0].json.motivo === 'cedo');
   const g = await roda({ memoria: { dia: '2026-10-06', postados: 25 }, modo: 'test' });
   caso('rodado na mao no editor (mode test): ignora o limite e mostra o que sairia', g.saida[0].json.chave === 'amazon:B0AAAAAAAA' && g.saida[0].json.teste === true && g.saida[0].json.postar === false, g.saida[0].json);
-  const h = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, agora: new Date('2026-10-07T03:00:00Z'), modo: 'production' });
-  caso('no gatilho (production) fora do horario: nao posta', h.saida[0].json.motivo === 'fora_do_horario');
+  const h = await roda({ env: { ...ENV, GARIMPO_LIGADO: 'sim' }, agora: MEIA, memoria: { dia: '2026-10-07', ultimo: MEIA.getTime() - 60 * 6e4 }, modo: 'production' });
+  caso('no gatilho (production) antes do intervalo: nao posta', h.saida[0].json.motivo === 'cedo');
   const ia = await roda({ env: { ...ENV, OPENROUTER_API_KEY: 'chave-teste' }, http: [...http,
     { quando: /openrouter\.ai\/api\/v1\/chat\/completions/, metodo: 'POST', responde: (op) => ({ choices: [{ message: { content: JSON.stringify(op.body).includes('image_url') ? 'NAO' : 'Monitor pra jogar sem travar' } }] }) }] });
   const chamadaIA = ia.chamadas.find(c => /openrouter/.test(c.url));
