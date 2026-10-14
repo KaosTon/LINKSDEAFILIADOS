@@ -84,7 +84,7 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 | `ML_ETIQUETA` | etiqueta do ML (`tonw17`): meli.la de outra etiqueta é recusado no rascunho; com `ML_MATT_TOOL`, link de produto vira o dele |
 | `ML_MATT_TOOL` | id de afiliado do ML (`78518728`, aparece em todo meli.la dele): monta o link `produto?matt_word=ETIQUETA&matt_tool=ID` |
 | `GARIMPO_LIGADO` | `sim` para o fluxo 03 postar sozinho; sem isso ele só calcula |
-| `GARIMPO_CANAIS` | opcional: canais públicos do Telegram (padrão `promotop,pechinchou,fadadoscupons,cupomonline`) |
+| `GARIMPO_CANAIS` | opcional: canais públicos do Telegram (padrão `promotop,pechinchou,fadadoscupons,cupomonline`; 13/10 ele pediu somar `tudonapromo`, o canal de referência do padrão de legenda) |
 | `GARIMPO_INICIO`, `GARIMPO_FIM`, `GARIMPO_POR_DIA`, `GARIMPO_CUPONS_POR_DIA`, `GARIMPO_DESCONTO_MIN` | opcionais: 8, 22, 25, 6, 15 |
 | `OPENROUTER_API_KEY` | chave do OpenRouter (segredo): a IA escreve a chamada de cada achado |
 | `OPENROUTER_MODELO` | opcional: padrão `google/gemini-3.1-flash-lite` (US$ 0,25/1,50 por milhão; ~R$ 0,50/mês para 25 por dia) |

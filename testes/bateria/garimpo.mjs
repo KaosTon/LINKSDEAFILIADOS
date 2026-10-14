@@ -127,6 +127,12 @@ console.log('\n=== Post completo (como os grupos fazem) ===');
   caso('legenda da toalha: 🏷️ com a instrucao inteira', LT.includes('\u{1F3F7}\uFE0F Aplique o cupom de 25% do anúncio (aparece abaixo do preço) + Selecione PIX'), LT);
   caso('nenhuma legenda tem a linha de afiliado', !/afiliado/i.test(L.join('\n')) && !/afiliado/i.test(legendaCupom({ cupons: ['X1234'], link: 'https://x' })));
 }
+{
+  // Formato do canal de referencia (13/10): chamada, frase de efeito ou observacao, nome, preco.
+  const a = lerPost('MENOR PRECO JA POSTADO NO ARMANI CODE\n(loja oficial Armani no ML)\n\nPerfume Armani Code EDT 125ml\n\n\u{1F4B5} De R$929 por R$484 pix\n\u{1F6D2} https://meli.la/1QtAu1h');
+  const c = lerPost('O CREME MAIS MILAGROSO DE TODOS\nfaz mais coisa do que vc imagina\n\nCreme Multirreparador Cicaplast Baume B5+ 20ml\n\n\u{1F4B5} R$31 pix\n\u{1F6D2} https://meli.la/2nxfpLk');
+  caso('nome e a linha antes do preco, nao a frase de efeito nem a observacao', a.nome === 'Perfume Armani Code EDT 125ml' && a.preco === 484 && a.precoAntes === 929 && c.nome === 'Creme Multirreparador Cicaplast Baume B5+ 20ml' && c.preco === 31, { a: a.nome, c: c.nome });
+}
 console.log('\n=== Foto com marca de outro grupo ===');
 {
   caso('resposta NAO: foto limpa; SIM ou estranha: nao usa', fotoLimpaDaResposta('NAO') && fotoLimpaDaResposta('NÃO.') && !fotoLimpaDaResposta('SIM, @canal') && !fotoLimpaDaResposta('talvez') && !fotoLimpaDaResposta(''));
