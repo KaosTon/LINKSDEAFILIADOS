@@ -38,6 +38,20 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear =
   caso('vai sem o rastreio de quem divulgou antes', !c.body.includes('smtt'));
 }
 {
+  // 14/10: mensagem so de texto (sem foto nem previa) no rascunho.
+  const texto = '🎁 Fone Bluetooth Teste Pro Cancelamento\n\n🚨 POR: R$ 99,90 no PIX\n\n🔗 Compre aqui:\n👉 https://s.shopee.com.br/AAA\n\n🏷️ Resgate o cupom aqui:\n👉 https://s.shopee.com.br/BBB';
+  const api = (op) => /productOfferV2/.test(op.body)
+    ? '{"data":{"productOfferV2":{"nodes":[{"productName":"Fone Bluetooth Teste Pro","priceMin":"129","priceDiscountRate":20,"commissionRate":"0.1","imageUrl":"https://cf.shopee.com.br/file/foto-oficial","productLink":"https://shopee.com.br/product/111/222","offerLink":"https://s.shopee.com.br/X"}]}}}'
+    : `{"data":{"generateShortLink":{"shortLink":"https://s.shopee.com.br/MEU${/333/.test(op.body) ? 'CUPOM' : ''}"}}}`;
+  const r = await roda({ ...corpo(''), image: undefined, text: { message: texto } }, { http: [
+    { quando: /s\.shopee\.com\.br\/AAA/, responde: { statusCode: 301, headers: { location: 'https://shopee.com.br/Fone-Teste-i.111.222?extra=1' } } },
+    { quando: /s\.shopee\.com\.br\/BBB/, responde: { statusCode: 301, headers: { location: 'https://shopee.com.br/m/cupons-333' } } },
+    { quando: /open-api\.affiliate\.shopee\.com\.br\/graphql/, metodo: 'POST', responde: api }] });
+  caso('texto sem foto: busca a foto oficial na Shopee', r.out.postar === true && r.out.imagem === 'https://cf.shopee.com.br/file/foto-oficial' && r.out.link === 'https://s.shopee.com.br/MEU', r.out);
+  caso('rascunho sai no padrao do grupo (nome, preco, link, cupom)', r.out.texto.includes('Fone Bluetooth Teste Pro Cancelamento') && r.out.texto.includes('R$99,90 no Pix')
+    && r.out.texto.includes('\u{1F6D2} https://s.shopee.com.br/MEU') && r.out.texto.includes('Resgate o cupom: https://s.shopee.com.br/MEUCUPOM') && !r.out.texto.includes('Compre aqui'), r.out.texto);
+}
+{
   const r = await roda(corpo('Fone https://shopee.com.br/x-i.1.2'), { http: [
     { quando: /shopee/, responde: { errors: [{ message: 'invalid signature' }] } }] });
   caso('Shopee recusou: nao posta, explica', r.out.postar === false && /Shopee/.test(r.out.resposta), r.out);
