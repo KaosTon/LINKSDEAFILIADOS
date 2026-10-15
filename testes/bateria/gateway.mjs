@@ -48,6 +48,9 @@ const roda = (entrada, responde, env = ENV) => rodar(codigo, { itens: [{ json: {
   const f = await roda({ phone: 'g', message: 'Oferta https://l', image: 'https://img/1.jpg', link: 'https://l', titulo: 'Produto', origem: '03' },
     (op) => (op.url.endsWith('/send-link') ? { error: 'link preview failed' } : { zaapId: 'Z8' }));
   caso('send-link falhou: plano B na hora, send-image com a mesma legenda', f.out.ok && f.out.forma === 'send-image' && f.chamadas.length === 2 && f.chamadas[1].body.caption === 'Oferta https://l', f.chamadas.map(c => c.url));
+  caso('previa grande com a foto enquadrada (1200x630, borda branca)', r.chamadas[0].body.linkType === 'LARGE'
+    && r.chamadas[0].body.image === 'https://images.weserv.nl/?url=' + encodeURIComponent('https://img/1.jpg') + '&w=1200&h=630&fit=contain&cbg=white&output=jpg', r.chamadas[0].body);
+  caso('plano B (foto com legenda) usa a foto original, sem enquadrar', f.chamadas[1].body.image === 'https://img/1.jpg', f.chamadas[1].body);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
