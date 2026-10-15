@@ -57,14 +57,16 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 
 | Fluxo | id no n8n | Estado |
 |---|---|---|
-| 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | PUBLICADO 13/10. Webhook `/webhook/ofertas-zapi?k=` na Z-API. Encaminhada usa a foto da prévia, meli.la de outro afiliado vira link com a etiqueta dele, Amazon sai limpa. A lib colada ainda não tem `nomeFraco` (só muda o título da prévia) |
-| 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | PUBLICADO 13/10 (o 01 exige). send-link com plano B em send-image |
-| 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | PUBLICADO 13/10 com `GARIMPO_LIGADO=sim`, postando no grupo de TESTE. Produto só sai com foto e nome de produto. Amazon: a página do produto confere o preço (mais de 15% de diferença ou sem preço de compra, não posta) e dá a foto oficial. Rodada na mão não posta |
+| 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | PUBLICADO 15/10. Webhook `/webhook/ofertas-zapi?k=` na Z-API. Com nome e preço lidos, sai no padrão do garimpo (chamada, nome, De/por, link, cupom); senão, o texto como veio com os links trocados. Mensagem só de texto (colada, sem prévia) ganha a foto oficial: API da Shopee por loja e item, ou página da Amazon |
+| 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | PUBLICADO 15/10. send-link com `linkType: LARGE` e a foto enquadrada em 1200x630 (images.weserv.nl, borda branca; sem isso a foto quadrada sai cortada). Plano B: send-image com a foto original |
+| 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | PUBLICADO 15/10 com `GARIMPO_LIGADO=sim`, postando no grupo de TESTE. Fontes: canais do Telegram, Shopee oficial (productOfferV2, 1 a cada 3, desconto 30%+, maior comissão), Amazon /deals. Ritmo: espalha o limite do dia até as 22h (guarda 1 para a noite), 2h30 entre posts de madrugada. Não repete o mesmo tipo de produto em 6 posts. Amazon: confere preço e usa título e foto oficiais. Rodada na mão não posta |
 | 96 Ensaio: lê um post do canal | `V0XEygzTlePVkDCY` | manual; investigar post errado (preço e foto na página da Amazon) |
 | 97 Ensaio: de onde tirar ofertas | `dg95IghMfsJGlosW` | manual |
 | 98 Ensaio: abre link curto | `dtJ7lwTKLItlckuD` | manual |
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
 
 **Grupos (13/10):** `GRUPO_RASCUNHO` = Rascunho, `GRUPO_OFERTAS` = Grupo de Ofertas teste. Para ir ao grupo de verdade: trocar `GRUPO_OFERTAS` e Deploy. O número do robô ainda aparece com o nome de outra pessoa no perfil; ele troca para PromoX antes do grupo de verdade.
+
+**Railway (15/10):** `GARIMPO_POR_DIA=40`. Parece haver `GARIMPO_INTERVALO_DIA=30` (posts saíram de 30 em 30 min); o padrão do código é 25.
 
 **Mudou a lib:** subir de novo os nós Code que a usam (01, 02 e 03) quando a mudança afetar cada um.
