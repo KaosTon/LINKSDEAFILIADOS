@@ -203,6 +203,7 @@ cadastro no AliExpress Portals e link gerado pela API deles.
 ## Vender o robô para outros grupos (ideia, 15/10)
 
 - Validar antes: 2 a 4 semanas no grupo de verdade com cliques e comissões medidos. O caso real é o que vende.
+- Começo recomendado: o cliente cria a conta dele no Railway e na Z-API e a gente instala lá (custo de servidor é dele, uns US$3 a 8 por mês por n8n, conferir no painel); quem não quiser mexer fica num projeto nosso com o custo na mensalidade.
 - Um n8n por cliente (projeto Railway separado): credenciais, número, tags de afiliado e memória do garimpo ficam isoladas; um erro de um não derruba o outro. Com muitos clientes, pensar em configuração por cliente numa tabela.
 - Cada cliente com o próprio número da Z-API e as próprias contas de afiliado; nada de chave nossa no fluxo dele.
 - Modelo: implantação + mensalidade (receita `robo-ofertas-afiliado` no opensquad-starter).
