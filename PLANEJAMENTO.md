@@ -180,10 +180,29 @@ cadastro no AliExpress Portals e link gerado pela API deles.
   o robô confere o `matt_word`. Link comum do ML não dá para converter
   sozinho (o `ref` é cifrado), só pelo Gerador de links.
 
-## Esperando o Wellington
+## Esperando o Wellington (15/10)
 
-| # | Pergunta | Por quê |
+| # | O quê | Por quê |
 |---|---|---|
-| 1 | Shopee: acesso à Open API pedido (06/10) pelo formulário da Central de Ajuda em affiliate.shopee.com.br/open_api; quando aprovar, AppId e Secret | é o que gera o link curto automático; vão direto nas variáveis do n8n |
-| 2 | Qual número vai ser o do robô (instância nova da Z-API)? | não pode ser o da Juliana |
-| 4 | Ids dos grupos rascunho e ofertas | sai do webhook: com a Z-API ligada, manda um "oi" em cada grupo e eu leio o id na execução |
+| 1 | Comprar `pxofertas.com.br` (registro.br, 1 ano, renovação automática, no CPF dele) e pôr no Cloudflare | encurtador e, depois, o site |
+| 2 | Subir o serviço `encurtador/` no Railway (volume em `/data`, `ENCURTADOR_SEGREDO`, `BASE_URL`, domínio próprio) | link curto `pxofertas.com.br/a7k2m` e contagem de cliques |
+| 3 | Link (meli.la) da lista de afiliado do Mercado Livre ("Achados com cupom" ou "Minhas recomendações") | post de cupom do ML hoje sai sem link dele: sem comissão |
+| 4 | Trocar o nome do perfil do número do robô para PromoX | aparece em todo post |
+| 5 | Trocar `GRUPO_OFERTAS` pelo grupo de verdade | sair do grupo de teste |
+
+## Próximas fases (ordem combinada em 15/10)
+
+1. **Grupo de verdade rodando** com o ritmo de número novo (40 por dia, espalhado até as 22h) e subir aos poucos.
+2. **Encurtador** no domínio próprio, ligado no gateway (se cair, posta com o link normal).
+3. **Grupos por tema** (eletrônicos, games, casa, automotivo, achados): classificar a oferta por categoria, uma variável de grupo e um limite por grupo, mais um teto total por número (risco de banimento é do número).
+4. **Site no mesmo domínio:** página de ofertas do dia alimentada pelo robô e botão "Entre no grupo". O próprio serviço do encurtador serve as páginas.
+5. **Blog:** guias de intenção de compra ("melhor X até R$Y", "X vale a pena?", "X ou Y"), 2 por semana, com informação real (texto raso não ranqueia). Google Search Console primeiro (grátis); OpenSEO (every-app/open-seo, usa DataForSEO pago por consulta) só quando o blog for a sério, e conferir se tem dados do Brasil. Expectativa: 3 a 6 meses até trazer visita; o blog é porta de entrada para o grupo.
+6. **Card sem foto** (opcional): imagem com nome e preço nas cores do grupo, montada no n8n, para o caso raro sem foto oficial. Nada de foto gerada por IA (mostra produto que não existe).
+7. **Vender para outros donos de grupo** depois de validar com números reais (ver abaixo).
+
+## Vender o robô para outros grupos (ideia, 15/10)
+
+- Validar antes: 2 a 4 semanas no grupo de verdade com cliques e comissões medidos. O caso real é o que vende.
+- Um n8n por cliente (projeto Railway separado): credenciais, número, tags de afiliado e memória do garimpo ficam isoladas; um erro de um não derruba o outro. Com muitos clientes, pensar em configuração por cliente numa tabela.
+- Cada cliente com o próprio número da Z-API e as próprias contas de afiliado; nada de chave nossa no fluxo dele.
+- Modelo: implantação + mensalidade (receita `robo-ofertas-afiliado` no opensquad-starter).
