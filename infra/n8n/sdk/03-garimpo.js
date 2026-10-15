@@ -58,7 +58,7 @@ const garimpa = node({
 "if (cfg.shopee) { try { shopee = await rede.shopeeOfertas(); } catch (e) { shopee = []; } }",
 "const r = await garimpar({ canais, amazonHtml, shopee, agora, cfg, mem, rede });",
 "if (r.acao !== 'postar') return [{ json: { postar: false, motivo: r.motivo, tentou: r.tentou, postados_hoje: mem.postados } }];",
-"return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados } }];"
+"return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || '') } }];"
 ].join('\n') } },
   output: [{ postar: true, tipo: 'produto', chave: 'amazon:B0X', texto: 'Oferta', imagem: '', grupo: '120363000000000002-group' }]
 });
@@ -100,6 +100,7 @@ const anota = node({
 "  if (g.tipo === 'cupom') mem.cupons = (mem.cupons || 0) + 1;",
 "  mem.produtos = mem.produtos || {};",
 "  if (g.chave) mem.produtos[g.chave] = Date.now();",
+"  if (g.parecido) mem.recentes = [...(mem.recentes || []), g.parecido].slice(-6);",
 "}",
 "return [{ json: { ok: !!r.ok, erro: r.erro || null, chave: g.chave || null, fonte: g.fonte || null, postados_hoje: mem.postados || 0 } }];"
 ].join('\n') } },

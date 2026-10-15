@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto } from '../../lib/ofertas.mjs';
+import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -272,6 +272,24 @@ console.log('\n=== Escolha ===');
   const muitos = Array.from({ length: 12 }, (_, i) => post(`canalum/4${i}`, min(5 + i), `Produto ML ${i}\n\n🔥 Por: R$ 9\n\n🛒 Link: https://meli.la/x${i}`));
   const r = await garimpar({ canais: { canalum: pagina(...muitos) }, agora: AGORA, cfg: CFG, mem: memNova(), rede });
   caso('no maximo 8 tentativas por rodada (nao martela os sites)', r.acao === 'nada' && r.tentou.length === 8, r.tentou.length);
+}
+
+console.log('\n=== Nome errado e produto repetido (14/10) ===');
+caso('linha de pagamento nao e nome', nomeFraco('[em até 6x sem juros]') && nomeFraco('Por R$ 99 no Pix') && !nomeFraco('Teclado Mecânico Gamer Redragon'));
+caso('primeira palavra: o que e o produto', primeiraPalavra('Creatina Monohidratada Pura 300g') === 'creatina' && primeiraPalavra('Kit com 6 Cuecas Boxer') === 'cuecas');
+{
+  const ofertas = [
+    { nome: 'Creatina Pura 300g Teste', preco: 30, desconto: 50, comissao: 20, foto: 'f', link: 'https://s.shopee.com.br/a', chave: 'shopee:1.1' },
+    { nome: 'Fone Bluetooth Teste', preco: 50, desconto: 40, comissao: 10, foto: 'f', link: 'https://s.shopee.com.br/b', chave: 'shopee:2.2' },
+  ];
+  const r = await garimpar({ canais: {}, shopee: ofertas, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: { ...memNova(), postados: 2, recentes: ['creatina'] }, rede });
+  caso('Shopee: pula creatina se acabou de sair creatina', r.acao === 'postar' && r.chave === 'shopee:2.2', r);
+}
+{
+  const PAG = '<span class="apex-pricetopay-value"><span class="a-offscreen">R$297,50</span></span><span id="productTitle">Cadeira Gamer Teste Reclinavel Preta</span> "hiRes":"https://m.media-amazon.com/images/I/x.jpg"';
+  const ruim = { canalum: pagina(post('canalum/91', min(5), '🏽 [em até 6x sem juros]\n\n🔥 Por R$ 297,50 no Pix\n\n🛒 Link: https://amzn.to/aaa')) };
+  const r = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG } });
+  caso('nome lixo do canal: usa o titulo da Amazon', r.acao === 'postar' && r.titulo === 'Cadeira Gamer Teste Reclinavel Preta' && !r.texto.includes('sem juros]'), r);
 }
 
 console.log('\n=== Horario e limite ===');
