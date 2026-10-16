@@ -25,6 +25,9 @@ const tok = (n, u = 42) => ({ access_token: 'APP-' + n, refresh_token: 'TG-' + n
 caso('guarda o token', guardarToken(mem, tok(1), 0).ok && mem.ml.token === 'APP-1' && mem.ml.usuario === '42');
 caso('outra conta nao troca o acesso', !guardarToken(mem, tok(2, 99), 0).ok && mem.ml.token === 'APP-1');
 caso('mesma conta renova', guardarToken(mem, tok(3), 0).ok && mem.ml.token === 'APP-3');
+const m2 = {};
+const sr = guardarToken(m2, { access_token: 'APP-x', expires_in: 21600, user_id: 7 }, 0);
+caso('sem refresh token: guarda e avisa, e nao tenta renovar', sr.ok && sr.semRenovacao && m2.ml.token === 'APP-x' && !precisaRenovar(m2, 5 * H));
 caso('resposta sem token nao apaga o que tem', !guardarToken(mem, { error: 'x' }, 0).ok && mem.ml.token === 'APP-3');
 
 caso('token vale enquanto nao vence', tokenValido(mem, H) === 'APP-3' && tokenValido(mem, 6 * H) === null);

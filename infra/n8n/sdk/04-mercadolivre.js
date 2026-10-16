@@ -60,7 +60,9 @@ const trocaCodigo = node({
 "  retorno: $env.ML_RETORNO || '" + RETORNO + "', codigo: q.code });",
 "if (!tok) return fim('Não deu certo', 'O Mercado Livre recusou o código. Confira se o redirect do app é o mesmo endereço do robô e tente de novo.');",
 "const g = guardarToken(mem, tok, agora);",
-"if (!g.ok) return fim('Conta diferente', 'O robô já está ligado a outra conta do Mercado Livre e continua com ela.');",
+"if (g.motivo === 'outra_conta') return fim('Conta diferente', 'O robô já está ligado a outra conta do Mercado Livre e continua com ela.');",
+"if (!g.ok) return fim('Não deu certo', 'O Mercado Livre respondeu sem o acesso (' + Object.keys(tok).join(', ') + '). Me mande um print desta tela.');",
+"if (g.semRenovacao) return fim('Conectado, mas só por 6 horas', 'Falta ligar o acesso offline (offline_access) no app do Mercado Livre Developers. Ligue, salve e abra o link de autorização de novo.');",
 "return fim('Pronto!', 'O robô está conectado ao Mercado Livre. Pode fechar esta página.');"
 ].join('\n') } },
   output: [{ html: '<p>ok</p>' }]
