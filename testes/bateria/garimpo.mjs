@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
+         registrarPostado, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -313,6 +313,41 @@ caso('primeira palavra: o que e o produto', primeiraPalavra('Creatina Monohidrat
   const ruim = { canalum: pagina(post('canalum/91', min(5), '🏽 [em até 6x sem juros]\n\n🔥 Por R$ 297,50 no Pix\n\n🛒 Link: https://amzn.to/aaa')) };
   const r = await garimpar({ canais: ruim, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG } });
   caso('nome lixo do canal: usa o titulo da Amazon', r.acao === 'postar' && r.titulo === 'Cadeira Gamer Teste Reclinavel Preta' && !r.texto.includes('sem juros]'), r);
+}
+
+console.log('\n=== Travas de qualidade (16/10) ===');
+{
+  const PAG = (titulo, preco = '199,90') => `<span class="apex-pricetopay-value"><span class="a-offscreen">R$${preco}</span></span><span id="productTitle">${titulo}</span> "hiRes":"https://m.media-amazon.com/images/I/y.jpg"`;
+  const pAmz = (txt) => ({ canalum: pagina(post('canalum/95', min(5), txt + '\n\n🛒 Link: https://amzn.to/aaa')) });
+  const outro = await garimpar({ canais: pAmz('Fritadeira Air Fryer Teste 4L\n\n🔥 Por R$ 199,90'), agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG('Tênis Corrida Masculino Teste Azul') } });
+  caso('link com outro produto (air fryer no texto, tenis na loja): nao posta', outro.acao !== 'postar' && JSON.stringify(outro.tentou).includes('produto_diferente_do_post'), outro);
+  const kit = await garimpar({ canais: pAmz('Kit 3 Cuecas Boxer Teste Algodao\n\n🔥 Por R$ 199,90'), agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG('Cueca Boxer Teste Algodao Preta') } });
+  caso('kit 3 no texto, 1 unidade na loja: nao posta', kit.acao !== 'postar' && JSON.stringify(kit.tentou).includes('produto_diferente_do_post'), kit);
+  const ok = await garimpar({ canais: pAmz('Fritadeira Air Fryer Teste 4L\n\n🔥 Por R$ 199,90'), agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG('Fritadeira Elétrica Air Fryer Teste 4L Preta 1500W') } });
+  caso('mesmo produto com titulo maior na loja: posta, com o nome do post', ok.acao === 'postar' && ok.titulo === 'Fritadeira Air Fryer Teste 4L', ok);
+
+  const CML = { ...CFG, mlEtiqueta: 'minhaetiqueta', mlTool: '12345678' };
+  const LINK = 'https://produto.mercadolivre.com.br/MLB-1234567890-chaleira-teste-_JM';
+  const pml = (m) => ({ canalum: pagina(post('canalum/96', min(m), 'Chaleira Eletrica Teste 1,8L\n\n🔥 Por R$ 89\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f96')) });
+  const redeML = { ...rede, abrir: async (u) => u };
+  const velho = await garimpar({ canais: pml(45), agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
+  caso('ML sem como conferir e post de 45 min: nao posta', velho.acao !== 'postar' && JSON.stringify(velho.tentou).includes('ml_sem_conferir_antigo'), velho);
+  const novo = await garimpar({ canais: pml(10), agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
+  caso('ML sem como conferir e post de 10 min: posta', novo.acao === 'postar' && /MLB-1234567890/.test(novo.link), novo);
+
+  caso('De crivel: 50% sim, 80% nao', deCrivel(50, 100) && !deCrivel(20, 100));
+  const inflado = await garimpar({ canais: { canalum: pagina(post('canalum/97', min(5), 'Chaleira Eletrica Teste 1,8L\n\n🔥 De R$ 499 por R$ 89\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f97')) }, agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
+  caso('De do canal com 82% OFF sem loja para conferir: sai so o Por', inflado.acao === 'postar' && /Por R\$89/.test(inflado.texto) && !/De R\$499/.test(inflado.texto), inflado.texto);
+  const infLoja = conferirPreco({ preco: 100, precoAntes: 900, cupons: [] }, { preco: 100 });
+  caso('De do canal exagerado com loja sem De: sai', infLoja.ok && infLoja.campos.precoAntes === null, infLoja);
+
+  const mem = memNova();
+  await garimpar({ canais: pml(45), agora: AGORA, cfg: CML, mem, rede: redeML });
+  mem.resumo.lojas = { amazon: 3, shopee: 5, ml: 2 };
+  const txt = textoResumo(mem, AGORA);
+  caso('resumo: postados por loja e descartes com o motivo', /Postados: 10/.test(txt) && /Shopee: 5/.test(txt) && /ML sem como conferir e post antigo: 1/.test(txt), txt);
+  const NOITE = new Date('2026-10-07T01:10:00Z');   // 22h10 em SP
+  caso('resumo: so depois das 22h e uma vez por dia', !horaDoResumo(mem, AGORA, CFG) && horaDoResumo(mem, NOITE, CFG) && !horaDoResumo({ ...mem, resumoDia: '2026-10-06' }, NOITE, CFG));
 }
 
 console.log('\n=== Conferir preco com a loja (16/10) ===');
