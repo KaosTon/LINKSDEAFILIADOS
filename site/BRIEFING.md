@@ -34,7 +34,7 @@ Legenda: [ ] pendente · [x] resolvido · [~] parcial
 - [x] 6. Arquivo do logo (16/10/2026): recortado e com as cores medidas. Se houver versão em SVG
   ou PNG maior, trocar o original e refazer os recortes (ficam mais nítidos em tela grande).
 - [ ] 7. Instagram (e outras redes) da marca, para o rodapé, o /links e o schema.
-- [ ] 8. E-mail de contato no domínio (ex.: contato@temdescontos.com.br), para a política de privacidade.
+- [x] 8. `contato@temdescontos.com.br` (16/10/2026): Email Routing do Cloudflare, encaminha para o Gmail. Só recebe; para responder com o endereço, trocar por uma caixa (Zoho, Workspace) e desligar o encaminhamento.
 
 ### Conteúdo e aprovação
 - [ ] 9. Assinar os guias com o seu nome (E-E-A-T) ou deixar "Equipe Tem Descontos".

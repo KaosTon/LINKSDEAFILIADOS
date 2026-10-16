@@ -25,8 +25,8 @@ export const SITE = {
    *  do robo e separado e nao aparece aqui (decisao do Wellington). */
   whatsapp: "",
   whatsappFormatado: "",
-  /** PENDENTE (BRIEFING §2): e-mail de contato no dominio */
-  email: "",
+  /** e-mail de contato (Cloudflare Email Routing, encaminha para o Gmail do Wellington; 16/10/2026) */
+  email: "contato@temdescontos.com.br",
   /** horario padrao do robo (GARIMPO_INICIO e GARIMPO_FIM em 16/10/2026) */
   horario: "Ofertas todos os dias, das 8h às 22h",
   horarioSchema: [] as string[],
