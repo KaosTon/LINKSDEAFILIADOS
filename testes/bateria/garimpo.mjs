@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
+import { quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -100,6 +100,29 @@ console.log('\n=== Mercado Livre com o seu link ===');
   const post1 = post('canalum/80', min(5), 'Cadeira Ergonômica Genebra B500 Teste Cor Preto Mesh\n\n🔥 Por: R$ 437 à vista\n\n🛒 Link: https://meli.la/outro1', 'https://cdn1.telesco.pe/file/f8');
   const r = await garimpar({ canais: { canalum: pagina(post1) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeML });
   caso('garimpo: ML de canal vira o SEU link do produto certo', r.acao === 'postar' && r.texto.includes('/p/MLB46220740?matt_word=minhaetiqueta&matt_tool=12345678') && !/outro|999/.test(r.texto) && r.chave === 'ml:46220740', r);
+
+  // Vitrine de outro canal (16/10, Kit 3 Legging): recorte com a estrutura real e ids inventados.
+  const cardJson = (id, url, titulo, preco, antes) => `{"unique_id":"u${id}","metadata":{"id":"MLB${id}","url":"${url}","card_type":"list"},"pictures":{"pictures":[{"id":"1-MLB9_1"}]},"components":[{"type":"title","id":"title","title":{"text":"${titulo}","long_title":false}},{"type":"price","id":"price","price":{"previous_price":{"value":${antes},"currency":"BRL"},"current_price":{"value":${preco},"currency":"BRL"}}}]}`;
+  const VITRINE = '<html><head><meta property="og:title" content="Kit 3 Legging Teste Com Bolso Fitness Atletyca"/>'
+    + '<meta property="og:image" content="https://http2.mlstatic.com/D_NQ_NP_9-MLB111_102026-O.webp"/></head><body>'
+    + '<a href="https://produto.mercadolivre.com.br/MLB-4100000001-kit-3-legging-teste-com-bolso-fitness-atletyca-_JM?matt_event_ts=1&amp;x=2#polycard_client=recommendations&amp;reco_item_pos=0&amp;c_id=/home/card-featured/element&amp;c_uid=a" class="poly-component__title">Kit 3 Legging Teste Com Bolso Fitness Atletyca</a>'
+    + '<a href="https://www.mercadolivre.com.br/calca-legging-teste-com-bolso-fitness-atletyca/up/MLBU5200000002#c_id=/home/affiliate-profile-recommendations/element">x</a>'
+    + '<script>{"items":[' + cardJson('4100000001', 'produto.mercadolivre.com.br/MLB-4100000001-kit-3-legging-teste-com-bolso-fitness-atletyca-_JM', 'Kit 3 Legging Teste Com Bolso Fitness Atletyca', 75.64, 215.71)
+    + ',' + cardJson('5200000003', 'www.mercadolivre.com.br/calca-legging-teste-com-bolso-fitness-atletyca/up/MLBU5200000002', 'Calça Legging Teste Com Bolso Fitness Atletyca', 52.9, 78.9) + ']}</script></body></html>';
+  const v = lerVitrineML(VITRINE);
+  caso('vitrine: le o card em destaque com preco, preco antigo e foto', v && v.id === 'MLB4100000001' && v.preco === 75.64 && v.precoDe === 215.71 && /MLB-4100000001/.test(v.url) && !/[?#]/.test(v.url) && /D_NQ_NP_9/.test(v.foto), v);
+  caso('quantidade: kit 3, 2 unidades e avulso', quantidade('Kit 3 Legging') === 3 && quantidade('Fralda 2 unidades') === 2 && quantidade('Legging Com Bolso') === 1);
+  caso('escolher por nome: kit 3 nao vira a legging avulsa', !/MLBU5200000002/.test(escolherProdutoML(VITRINE.replace(/card-featured/g, 'x'), 'Kit 3 Legging Com Bolso Atletyca') || ''));
+  caso('link produto.mercadolivre.com.br/MLB-123-nome agora e achado', /MLB-4100000001/.test(escolherProdutoML(VITRINE, 'Kit 3 Legging Teste Com Bolso Atletyca') || ''));
+  const redeV = { ...rede,
+    abrir: async (u) => u === 'https://meli.la/kit3' ? 'https://www.mercadolivre.com.br/social/outrocanal?matt_word=outro&matt_tool=999&ref=abc' : rede.abrir(u),
+    pagina: async (u) => /social\/outrocanal/.test(u) ? VITRINE : '' };
+  const pk = (txt) => post('canalum/81', min(5), txt, 'https://cdn1.telesco.pe/file/f81');
+  const rk = await garimpar({ canais: { canalum: pagina(pk('25 CONTO CADA LEGGING\n\nKit 3 Legging Teste Com Bolso Atletyca\n\n💵 De R$199 por R$75 pix\n🛒 https://meli.la/kit3')) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeV });
+  caso('garimpo: vitrine vira o SEU link do kit, com o preco conferido e a foto do ML', rk.acao === 'postar' && /MLB-4100000001/.test(rk.link) && /matt_word=minhaetiqueta/.test(rk.link) && rk.preco_loja === 75.64
+    && /De R\$215,71 por R\$75,64/.test(rk.texto) && /D_NQ_NP_9/.test(rk.imagem), rk);
+  const rb = await garimpar({ canais: { canalum: pagina(pk('Kit 3 Legging Teste Com Bolso Atletyca\n\n💵 Por R$39 pix\n🛒 https://meli.la/kit3')) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeV });
+  caso('garimpo: canal bem abaixo do preco da vitrine, sem cupom: nao posta', rb.acao !== 'postar' && JSON.stringify(rb.tentou).includes('preco_diferente_da_loja'), rb);
   const r2 = await garimpar({ canais: { canalum: pagina(post1) }, agora: AGORA, cfg: CFG, mem: memNova(), rede: redeML });
   caso('garimpo sem ML_MATT_TOOL: ML continua descartado', r2.acao === 'nada' && r2.tentou[0][1] === 'ml_terceiro');
   const r3 = await garimpar({ canais: { canalum: pagina(post('canalum/81', min(5), 'Produto Que Nao Esta Na Pagina\n\n🔥 Por: R$ 10\n\n🛒 Link: https://meli.la/outro1')) }, agora: AGORA, cfg: ML, mem: memNova(), rede: redeML });
