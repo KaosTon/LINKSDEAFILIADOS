@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
+import { lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -324,6 +324,33 @@ console.log('\n=== Mercado Livre de catalogo pela API (16/10) ===');
   const certo = await garimpar({ canais: { canalum: pagina(post('canalum/72', min(5), 'Air Fryer Teste 4L\n\n🔥 Por: R$ 305 no Pix\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f72')) }, agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
   caso('ML confere: preco da API, De/Por e foto oficial', certo.acao === 'postar' && pedidos.includes('MLB12345678') && certo.preco_loja === 299.9
     && /De R\$450 por R\$299,90/.test(certo.texto) && certo.imagem === 'https://http2.mlstatic.com/oficial.jpg', certo);
+}
+
+console.log('\n=== Cupom da Amazon na pagina (16/10) ===');
+{
+  // Recorte do HTML real (B0DHWFBYVC, 16/10), com o texto escondido que repete o codigo.
+  const bloco = (miolo) => `<div id="apex_desktop"></div><div id="promoPriceBlockMessage_feature_div" class="celwidget" data-feature-name="promoPriceBlockMessage" data-csa-c-slot-id="promoPriceBlockMessage_feature_div" data-csa-c-asin="B0TESTE001"> <div> ${miolo} </div></div><div id="availability_feature_div"><span>Em estoque. Cupom de 50% em outro produto</span></div>`;
+  const codigo = bloco('<span class="a-size-small">Faça login para resgatar. </span><span>R$20 off. Insira o c&oacute;digo COMPRANOAPP na finaliza&ccedil;&atilde;o.</span> <a data-selector="cxcwPopoverLink" href="#">Termos</a> <span id="doneMessagepctch1" class="aok-hidden">&nbsp;off. O cupom de desconto COMPRANOAPP foi salvo na sua conta.</span>');
+  const c1 = lerCupomAmazon(codigo, 829);
+  caso('codigo: le COMPRANOAPP, R$20 off e o preco com cupom', c1 && c1.codigo === 'COMPRANOAPP' && c1.desconto === 20 && c1.precoCom === 809, c1);
+  const real = lerCupomAmazon(bloco('<span>Faça login para resgatar. </span><span>R$20 off. Insira o c&oacute;digo COMPRANOAPP na finaliza&ccedil;&atilde;o da compra. V&aacute;lido na sua primeira compra na Amazon, pelo App</span>'), 829);
+  caso('texto real de 16/10: primeira compra pelo app e restrito', real && real.restrito && real.app && real.codigo === 'COMPRANOAPP', real);
+  const pa = conferirPreco({ preco: 829, cupons: [] }, { preco: 829, cupom: real });
+  caso('cupom de primeira compra: preco normal e o cupom vira aviso', pa.ok && pa.campos.preco === 829 && !pa.campos.semCupom && /Primeira compra no app\? Cupom COMPRANOAPP d. mais R\$20 off/.test(pa.campos.avisos.join()), pa);
+  const pb = conferirPreco({ preco: 809, cupons: [] }, { preco: 829, cupom: real });
+  caso('canal com o preco de primeira compra: sai o preco normal (829), com o aviso', pb.ok && pb.campos.preco === 829 && pb.campos.avisos.length === 1, pb);
+  const c2 = lerCupomAmazon(bloco('<span>Aplicar cupom de 10%</span> <span>Termos</span>'), 250);
+  caso('cupom de marcar: 10% de R$250 = R$225, sem codigo', c2 && !c2.codigo && c2.precoCom === 225 && c2.texto === '10%', c2);
+  caso('pedido minimo acima do preco: nao vale', lerCupomAmazon(bloco('<span>Economize R$ 30 com cupom em compras acima de R$ 300</span>'), 199) === null);
+  caso('bloco sem cupom (Amazon Music gratis): nada', lerCupomAmazon(bloco('Oferta 90 dias de Amazon Music grátis incluso'), 2999) === null);
+  caso('cupom fora do bloco nao conta', lerCupomAmazon('<div id="availability_feature_div">Aplicar cupom de 10%</div>', 100) === null);
+  const semMencao = conferirPreco({ preco: 809, cupons: [] }, { preco: 829, cupom: c1 });
+  caso('canal com o preco do cupom sem falar dele: posta com o cupom da loja', semMencao.ok && semMencao.campos.preco === 809 && semMencao.campos.semCupom === 829 && semMencao.campos.cupons.join() === 'COMPRANOAPP', semMencao);
+  const marcar = conferirPreco({ preco: 250, cupons: [] }, { preco: 250, cupom: c2 });
+  caso('cupom de marcar: preco com cupom e a dica', marcar.ok && marcar.campos.preco === 225 && /Marque o cupom de 10%/.test(marcar.campos.dicaCupom), marcar);
+  caso('canal bem abaixo ate do preco com cupom, sem cupom: nao posta', !conferirPreco({ preco: 600, cupons: [] }, { preco: 829, cupom: c1 }).ok);
+  const txt = legendaAchado({ nome: 'Fone Teste Bluetooth', ...semMencao.campos, link: 'L', chamada: 'X TESTE CHAMADA' });
+  caso('legenda: Por R$809, Sem cupom R$829, Use o cupom COMPRANOAPP', txt.includes('Por R$809') && txt.includes('Sem cupom: R$829') && txt.includes('Use o cupom COMPRANOAPP'), txt);
 }
 
 console.log('\n=== Horario e limite ===');
