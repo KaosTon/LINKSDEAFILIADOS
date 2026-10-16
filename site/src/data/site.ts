@@ -30,9 +30,9 @@ export const SITE = {
   /** horario padrao do robo (GARIMPO_INICIO e GARIMPO_FIM em 16/10/2026) */
   horario: "Ofertas todos os dias, das 8h às 22h",
   horarioSchema: [] as string[],
-  /** PENDENTE (BRIEFING §2): perfil do Instagram da marca */
-  instagram: "",
-  instagramUsuario: "",
+  /** perfil do Instagram da marca (criado pelo Wellington em 16/10/2026) */
+  instagram: "https://www.instagram.com/temdescontos",
+  instagramUsuario: "@temdescontos",
   redes: [] as { nome: string; url: string }[],
   avaliacoesGoogle: "",
   /** endereco do site, sem barra no fim. O dominio sem www e do encurtador (links curtos das
