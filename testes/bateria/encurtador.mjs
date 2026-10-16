@@ -43,6 +43,24 @@ const volta = await fetch(`${raiz}/${r1.codigo}`, { redirect: 'manual' });
 caso('reiniciou: o link continua valendo (salvo no volume)', volta.status === 302 && volta.headers.get('location') === ML);
 const home = await fetch(`${raiz}/`, { redirect: 'manual' });
 caso('pagina inicial leva para o convite do grupo', home.status === 302 && home.headers.get('location') === 'https://chat.whatsapp.com/CONVITE');
+const g = await fetch(`${raiz}/grupo?de=guia:cupom-amazon`, { redirect: 'manual' });
+caso('/grupo leva ao convite', g.status === 302 && g.headers.get('location') === 'https://chat.whatsapp.com/CONVITE');
+await fetch(`${raiz}/grupo?de=<script>`, { redirect: 'manual' });
+const cg = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('/grupo conta a origem e ignora origem estranha', cg.grupo['guia:cupom-amazon'] === 1 && cg.grupo.direto === 1 && !cg.grupo['<script>'], cg.grupo);
+await new Promise((ok) => s.close(ok));
+
+// com o site no www: o dominio sem www so guarda os links curtos
+({ s, raiz } = await sobe({ convite: 'https://chat.whatsapp.com/CONVITE', site: 'https://www.temdescontos.example/' }));
+const ini = await fetch(`${raiz}/?utm_source=bio`, { redirect: 'manual' });
+caso('com SITE_URL, a pagina inicial vai para o site (com o ?utm)', ini.status === 301 && ini.headers.get('location') === 'https://www.temdescontos.example/?utm_source=bio', ini.headers.get('location'));
+const pag = await fetch(`${raiz}/guias/cupom?x=1`, { redirect: 'manual' });
+caso('caminho do site vai para o www', pag.status === 301 && pag.headers.get('location') === 'https://www.temdescontos.example/guias/cupom?x=1');
+const fim = await fetch(`${raiz}/zzzzz`, { redirect: 'manual' });
+caso('codigo que nao existe mais: pagina de oferta encerrada', fim.status === 302 && fim.headers.get('location') === 'https://www.temdescontos.example/oferta-encerrada');
+const ok2 = await fetch(`${raiz}/${r1.codigo}`, { redirect: 'manual' });
+caso('com SITE_URL, o link curto continua indo para a loja', ok2.status === 302 && ok2.headers.get('location') === ML);
+caso('com SITE_URL, /saude continua respondendo', (await fetch(`${raiz}/saude`)).status === 200);
 await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });
 

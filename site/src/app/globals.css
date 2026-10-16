@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/*
+  IDENTIDADE DO TEM DESCONTOS: os tokens abaixo sao a marca. Trocar estes valores troca o site.
+  As mesmas cores moram em src/data/tema.ts (trava scripts/check-tema.mjs).
+
+  Origem (16/10/2026): logo mandado no chat, TEM DESCONTOS em marinho e monograma TD em degrade
+  do marinho ao laranja e vermelho. PENDENTE (BRIEFING §2): medir no arquivo original; os
+  valores abaixo foram escolhidos pela imagem do chat e ajustados para contraste AA.
+  Contraste medido (WCAG): --tinta-3 sobre --fundo 5,35:1; --marca-escura sobre --fundo 4,88:1;
+  texto branco sobre --cta-1 5,18:1 e sobre --cta-2 5,48:1. --marca (laranja vivo) so em
+  titulo grande, brilho e enfeite (3,4:1 sobre --fundo, abaixo de 4,5 para texto comum).
+*/
+:root {
+  --fundo: #f7f8fb;
+  --fundo-2: #eceef5;
+  --tinta: #121a3a;
+  --tinta-2: #3a4466;
+  --tinta-3: #5d6684;
+  --marca: #e8590c;
+  --marca-escura: #c2410c;
+  --marca-clara: #fff1e8;
+  --vermelho: #d6332a;
+  --marinho: #1b2a5e;
+  /* botao principal (CTA): uma cor so no site inteiro, laranja para vermelho como o logo */
+  --cta-1: #c2410c;
+  --cta-2: #c62f22;
+  --cta-texto: #ffffff;
+  /* faixa escura, rodape e card escuro */
+  --escuro: #0e1533;
+  --linha: #dde1ec;
+  --whats: #1f9d55;
+}
+
+@theme inline {
+  --color-fundo: var(--fundo);
+  --color-fundo-2: var(--fundo-2);
+  --color-tinta: var(--tinta);
+  --color-tinta-2: var(--tinta-2);
+  --color-tinta-3: var(--tinta-3);
+  --color-marca: var(--marca);
+  --color-marca-escura: var(--marca-escura);
+  --color-marca-clara: var(--marca-clara);
+  --color-escuro: var(--escuro);
+  --color-linha: var(--linha);
+  --color-whats: var(--whats);
+  --color-vermelho: var(--vermelho);
+  --color-marinho: var(--marinho);
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* a linha de destaque dos titulos: o degrade do monograma (marinho, laranja, vermelho) */
+.texto-degrade {
+  background: linear-gradient(90deg, var(--marca-escura), var(--vermelho));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* eyebrow padrao das secoes */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--marca-escura);
+}
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* textura sutil do hero */
+.grao {
+  background-image: radial-gradient(circle at 1px 1px, rgba(27, 42, 94, 0.07) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+/* Corpo dos posts do blog (HTML vindo de src/data/blog.ts) */
+.prosa {
+  color: var(--tinta-2);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.prosa > * + * {
+  margin-top: 1.1em;
+}
+.prosa h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--tinta);
+  margin-top: 2.2em;
+}
+.prosa h3 {
+  font-weight: 600;
+  color: var(--tinta);
+  margin-top: 1.6em;
+}
+.prosa a {
+  color: var(--marca-escura);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--marca) 40%, transparent);
+  text-underline-offset: 4px;
+}
+.prosa a:hover {
+  text-decoration-color: var(--marca);
+}
+.prosa ul {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+.prosa li + li {
+  margin-top: 0.4em;
+}
+.prosa li::marker {
+  color: var(--marca);
+}
+.prosa strong {
+  color: var(--tinta);
+}
+/* tabela: cabecalho escuro, zebra, numeros alinhados; rola sozinha no celular, nunca a pagina */
+.prosa table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--linha);
+  border-radius: 1rem;
+}
+.prosa thead {
+  background: var(--tinta);
+  color: var(--fundo);
+}
+.prosa th,
+.prosa td {
+  padding: 0.75rem 1.1rem;
+  text-align: left;
+  vertical-align: top;
+}
+.prosa th {
+  font-weight: 600;
+}
+.prosa tbody tr {
+  border-top: 1px solid var(--linha);
+}
+.prosa tbody tr:nth-child(even) {
+  background: var(--fundo-2);
+}
+/* tabela de 2 colunas: metade pra cada; com 3 ou mais, cada coluna tem largura minima
+   pra nao espremer o texto (rola so dentro da tabela no celular) */
+.prosa tr > :first-child:nth-last-child(2) {
+  width: 50%;
+}
+.prosa th,
+.prosa td {
+  min-width: 9rem;
+}
+.prosa th:first-child,
+.prosa td:first-child {
+  min-width: 11rem;
+}
+
+/* Botao principal (CTA). Uma cor de CTA no site inteiro (METODO §4): degrade entre
+   --cta-1 e --cta-2, em pilula. Forma e cor sao do cliente: mudar aqui muda todos os botoes. */
+.botao-marca {
+  background: linear-gradient(90deg, var(--cta-1), var(--cta-2));
+  color: var(--cta-texto);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--marca-escura) 55%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: filter 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.botao-marca:hover {
+  filter: brightness(1.05) saturate(1.08);
+  box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--marca-escura) 65%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* no celular a tabela rola sozinha pro lado (a pagina nunca); no desktop ocupa a largura toda */
+@media (max-width: 767px) {
+  .prosa table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* Brilho da marca no canto dos blocos escuros (faixa de numeros, card de CTA, rodape do post).
+   Antes era um rgba fixo do dourado; agora sai do token, entao acompanha a marca do cliente. */
+.brilho-marca {
+  background: radial-gradient(ellipse at top right, color-mix(in srgb, var(--marca) 35%, transparent), transparent 60%);
+}
+.brilho-marca-topo {
+  background: radial-gradient(ellipse at top, color-mix(in srgb, var(--marca) 32%, transparent), transparent 65%);
+}
+/* halo atras da foto do hero */
+.halo-marca {
+  background: radial-gradient(ellipse 62% 58% at 50% 42%, color-mix(in srgb, var(--marca) 55%, transparent) 0%, color-mix(in srgb, var(--marca) 30%, transparent) 35%, color-mix(in srgb, var(--marca-clara) 60%, transparent) 55%, transparent 80%);
+}

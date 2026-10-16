@@ -1,0 +1,17 @@
+# Cabecalhos de protecao, os mesmos do site da Virtus (auditoria de 26/08/2026 la).
+# Lido pelo Cloudflare Pages em todo arquivo servido.
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Icone, icone Apple e imagem de compartilhamento sao gerados no build sem extensao.
+# Sem isto o Cloudflare manda como arquivo generico e o WhatsApp nao mostra a previa do link.
+/icon
+  Content-Type: image/png
+/apple-icon
+  Content-Type: image/png
+/opengraph-image
+  Content-Type: image/png

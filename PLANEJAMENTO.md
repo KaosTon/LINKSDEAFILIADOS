@@ -184,8 +184,9 @@ cadastro no AliExpress Portals e link gerado pela API deles.
 
 | # | O quê | Por quê |
 |---|---|---|
-| 1 | Comprar `pxofertas.com.br` (registro.br, 1 ano, renovação automática, no CPF dele) e pôr no Cloudflare | encurtador e, depois, o site |
-| 2 | Subir o serviço `encurtador/` no Railway (volume em `/data`, `ENCURTADOR_SEGREDO`, `BASE_URL`, domínio próprio) | link curto `pxofertas.com.br/a7k2m` e contagem de cliques |
+| 1 | FEITO 16/10: comprou `temdescontos.com.br` e pôs no Cloudflare | encurtador e site |
+| 2 | FEITO 16/10: encurtador no Railway; falta o DNS terminar de propagar e `SITE_URL` | link curto `temdescontos.com.br/a7k2m` e contagem de cliques |
+| 2b | Site: Cloudflare Pages ligado ao repo (pasta `site`), `www.temdescontos.com.br`; mandar o arquivo do logo; o resto em `site/BRIEFING.md` §2 | site e blog |
 | 3 | Link (meli.la) da lista de afiliado do Mercado Livre ("Achados com cupom" ou "Minhas recomendações") | post de cupom do ML hoje sai sem link dele: sem comissão |
 | 4 | Trocar o nome do perfil do número do robô para PromoX | aparece em todo post |
 | 5 | Trocar `GRUPO_OFERTAS` pelo grupo de verdade | sair do grupo de teste |

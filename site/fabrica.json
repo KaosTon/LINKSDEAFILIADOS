@@ -1,0 +1,36 @@
+{
+  "origem": "KaosTon/fabrica-sites",
+  "motorVersao": "2e80b5e",
+  "criadoEm": "16/10/2026",
+  "arquivosMotor": [
+    "AGENTS.md",
+    "eslint.config.mjs",
+    "next.config.ts",
+    "postcss.config.mjs",
+    "tsconfig.json",
+    "public/_headers",
+    "scripts/check-copy.mjs",
+    "scripts/check-fontes.mjs",
+    "scripts/check-indice-blog.mjs",
+    "scripts/check-links-internos.mjs",
+    "scripts/check-markdown.mjs",
+    "scripts/check-modelo.mjs",
+    "scripts/check-paginas.mjs",
+    "scripts/check-tema.mjs",
+    "scripts/check-whatsapp.mjs",
+    "scripts/pos-export.mjs",
+    "src/components/AvisoCookies.tsx",
+    "src/components/Breadcrumb.tsx",
+    "src/components/Icones.tsx",
+    "src/components/Medicao.tsx",
+    "src/components/MenuCelular.tsx",
+    "src/components/WhatsCliques.tsx",
+    "src/components/WhatsFlutuante.tsx",
+    "src/lib/fontes-og.ts",
+    "src/lib/medicao.ts"
+  ],
+  "alteradoAqui": [
+    "scripts/check-links-internos.mjs (rota /guias)",
+    "src/lib/fontes-og.ts (Bricolage no lugar da Cormorant)"
+  ]
+}

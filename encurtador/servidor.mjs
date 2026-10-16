@@ -1,10 +1,15 @@
-// Encurtador próprio: promox.com.br/a7k2 -> link de afiliado.
+// Encurtador próprio: temdescontos.com.br/a7k2p -> link de afiliado.
 // Sem dependência. Roda no Railway como serviço separado do n8n, com um volume em /data.
 //
 //   GET  /{codigo}          redireciona (302) e conta o clique
 //   POST /api/encurtar      { url } com Authorization: Bearer ENCURTADOR_SEGREDO -> { codigo, curto }
 //   GET  /api/cliques       mesma senha; os links mais clicados
 //   GET  /saude             para o Railway saber que está de pé
+//   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
+//
+// Com SITE_URL (o site no www), o domínio sem www só fica com os links curtos: a página
+// inicial e qualquer outro caminho vão para o site, e código que não existe mais vai para
+// a página "oferta encerrada" do site.
 //
 // Só encurta link das lojas da lista: mesmo que a senha vaze, ninguém usa o
 // domínio para mandar gente para golpe.
@@ -29,11 +34,13 @@ export function novoCodigo(existe, tamanho = 5) {
   }
 }
 
-export function criarServidor({ pasta, segredo, base, convite }) {
+export function criarServidor({ pasta, segredo, base, convite, site }) {
+  const raizSite = String(site || '').replace(/\/+$/, '');
   fs.mkdirSync(pasta, { recursive: true });
   const arquivo = path.join(pasta, 'links.json');
   let dados = { links: {} };
   try { dados = JSON.parse(fs.readFileSync(arquivo, 'utf8')); } catch (e) { /* primeira vez */ }
+  dados.grupo = dados.grupo || {};
   const porUrl = new Map(Object.entries(dados.links).map(([c, l]) => [l.url, c]));
 
   let sujo = false;
@@ -87,13 +94,28 @@ export function criarServidor({ pasta, segredo, base, convite }) {
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
       const top = Object.entries(dados.links).sort((a, b) => b[1].cliques - a[1].cliques).slice(0, 50)
         .map(([codigo, l]) => ({ codigo, cliques: l.cliques, url: l.url, criado: new Date(l.criado).toISOString() }));
-      return responde(res, 200, { total: Object.keys(dados.links).length, top });
+      return responde(res, 200, { total: Object.keys(dados.links).length, top, grupo: dados.grupo });
     }
 
-    if (p === '/' || p === '') return convite ? responde(res, 302, '', { Location: convite }) : responde(res, 200, 'ok');
+    if (p === '/grupo') {
+      // origem curta e sem nada de quem clicou: só a página do site ("home", "guia:cupom-amazon")
+      const de = /^[a-z0-9:-]{1,60}$/.test(u.searchParams.get('de') || '') ? u.searchParams.get('de') : 'direto';
+      dados.grupo[de] = (dados.grupo[de] || 0) + 1; sujo = true;
+      const destino = convite || raizSite;
+      return destino ? responde(res, 302, '', { Location: destino, 'Cache-Control': 'no-store' }) : responde(res, 404, 'Grupo ainda não configurado.');
+    }
+
+    if (p === '/' || p === '') {
+      if (raizSite) return responde(res, 301, '', { Location: raizSite + '/' + u.search });
+      return convite ? responde(res, 302, '', { Location: convite }) : responde(res, 200, 'ok');
+    }
 
     const l = dados.links[p.slice(1)];
-    if (!l) return responde(res, 404, 'Essa oferta não existe mais.');
+    if (!l) {
+      if (!raizSite) return responde(res, 404, 'Essa oferta não existe mais.');
+      if (/^\/[a-km-np-z2-9]{5}$/.test(p)) return responde(res, 302, '', { Location: raizSite + '/oferta-encerrada', 'Cache-Control': 'no-store' });
+      return responde(res, 301, '', { Location: raizSite + p + u.search });
+    }
     l.cliques++; sujo = true;
     responde(res, 302, '', { Location: l.url, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer-when-downgrade' });
   });
@@ -105,7 +127,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(im
   const segredo = process.env.ENCURTADOR_SEGREDO;
   if (!segredo || segredo.length < 32) { console.error('falta ENCURTADOR_SEGREDO (32 caracteres ou mais)'); process.exit(1); }
   const s = criarServidor({ pasta: process.env.PASTA_DADOS || '/data', segredo,
-    base: process.env.BASE_URL || 'http://localhost', convite: process.env.CONVITE_GRUPO || '' });
+    base: process.env.BASE_URL || 'http://localhost', convite: process.env.CONVITE_GRUPO || '',
+    site: process.env.SITE_URL || '' });
   s.listen(Number(process.env.PORT) || 8080, () => console.log('encurtador de pé'));
   for (const sinal of ['SIGTERM', 'SIGINT']) process.on(sinal, () => s.close(() => process.exit(0)));
 }

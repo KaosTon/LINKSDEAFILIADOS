@@ -1,0 +1,37 @@
+{
+  "name": "temdescontos-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "node scripts/check-modelo.mjs && node scripts/check-tema.mjs && node scripts/check-copy.mjs && node scripts/check-links-internos.mjs && node scripts/check-markdown.mjs && node scripts/check-indice-blog.mjs && node scripts/check-whatsapp.mjs && node scripts/check-paginas.mjs && next build && node scripts/pos-export.mjs",
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:fontes": "node scripts/check-fontes.mjs",
+    "check:links": "node scripts/check-links-internos.mjs",
+    "start": "next start",
+    "lint": "eslint",
+    "check:markdown": "node scripts/check-markdown.mjs",
+    "check:indice": "node scripts/check-indice-blog.mjs",
+    "check:whatsapp": "node scripts/check-whatsapp.mjs",
+    "check:paginas": "node scripts/check-paginas.mjs",
+    "check:modelo": "node scripts/check-modelo.mjs",
+    "check:tema": "node scripts/check-tema.mjs"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

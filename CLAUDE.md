@@ -71,3 +71,15 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 **Railway (15/10):** `GARIMPO_POR_DIA=40`. Parece haver `GARIMPO_INTERVALO_DIA=30` (posts saíram de 30 em 30 min); o padrão do código é 25.
 
 **Mudou a lib:** subir de novo os nós Code que a usam (01, 02 e 03) quando a mudança afetar cada um.
+
+## Domínio, encurtador e site (16/10)
+
+- `temdescontos.com.br` (Registro.br, DNS no Cloudflare). Sem www = **encurtador** (`encurtador/`,
+  serviço ENCURTADOR no Railway, volume `/data`, `BASE_URL`, `ENCURTADOR_SEGREDO`, `CONVITE_GRUPO`;
+  CNAME da raiz para o Railway, proxy do Cloudflare desligado). Com `SITE_URL`, a raiz e qualquer
+  caminho que não é link curto vão para o site; código vencido vai para `/oferta-encerrada`;
+  `/grupo?de=` abre o convite e conta a origem (`/api/cliques`, campo `grupo`).
+- `www.temdescontos.com.br` = **site** (`site/`, Next.js estático da fábrica de sites, Cloudflare
+  Pages com diretório raiz `site`). Ler `site/CLAUDE.md` e `site/BRIEFING.md` antes de mexer.
+  O que o site diz sobre o robô sai daqui (conferências, lojas, horário): mudou a regra no robô,
+  mudar o guia em `site/src/data/paginas-servico.ts`.

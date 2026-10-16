@@ -19,7 +19,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const PULAR = new Set(['.git', 'node_modules', '_browser_profile', 'transcricoes', 'exports']);
+const PULAR = new Set(['.git', 'node_modules', '_browser_profile', 'transcricoes', 'exports', '.next', 'out', '.wrangler']);
 const EXTENSOES = ['.js', '.mjs', '.md', '.sql', '.json', '.py', '.txt', '.html', '.yaml', '.yml'];
 
 // 10 ou 11 dígitos nacionais, com ou sem o 55 na frente, com ou sem separador.
