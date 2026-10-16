@@ -25,8 +25,8 @@ Legenda: [ ] pendente · [x] resolvido · [~] parcial
 
 ### Para ir ao ar
 - [x] 1. Domínio: temdescontos.com.br (16/10/2026).
-- [ ] 2. Projeto no Cloudflare Pages ligado ao repo, pasta `site` (passo a passo no CLAUDE.md).
-- [ ] 3. `SITE_URL=https://www.temdescontos.com.br` no serviço ENCURTADOR do Railway (a raiz passa a levar ao site).
+- [x] 2. Projeto no Cloudflare Pages (`linksdeafiliados`), `www.temdescontos.com.br` ativo com SSL (16/10/2026).
+- [x] 3. `SITE_URL` no ENCURTADOR (16/10/2026). Conferido pelo n8n: raiz 301 para o www com o `?utm`, código vencido 302 para `/oferta-encerrada`, `/grupo` 302 para o convite, link curto 302 para a loja.
 - [ ] 4. `CONVITE_GRUPO` no Railway com o convite do grupo DE VERDADE (hoje pode ser o de teste).
 - [ ] 5. Search Console com o domínio, para tirar o `noindex` no lançamento.
 

@@ -28,7 +28,8 @@ Outras diferenças do modelo, todas fora do motor: o botão verde abre o grupo (
 ## Onde estamos (atualizar a cada entrega)
 - 16/10/2026: site criado (motor 2e80b5e). Home, 3 guias, Sobre, Blog (vazio), /links,
   /oferta-encerrada, 404 e política de privacidade. Build com todas as travas passando; conferido no
-  `wrangler pages dev` em 1280 e 390, console sem erro. `noindex` ligado. Falta: BRIEFING §2.
+  `wrangler pages dev` em 1280 e 390, console sem erro. `noindex` ligado. No ar no mesmo dia em
+  `www.temdescontos.com.br` (Cloudflare Pages) e com `SITE_URL` no encurtador. Falta: BRIEFING §2.
 - Primeiro post: mover `src/app/blog/_post/[slug]` para `src/app/blog/[slug]` (o export estático
   não aceita rota dinâmica sem página). Depois seguir `DOCS/BLOG.md`.
 
