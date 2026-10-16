@@ -4,7 +4,7 @@
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
 import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
-import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee,
+import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
@@ -292,6 +292,21 @@ caso('primeira palavra: o que e o produto', primeiraPalavra('Creatina Monohidrat
   caso('nome lixo do canal: usa o titulo da Amazon', r.acao === 'postar' && r.titulo === 'Cadeira Gamer Teste Reclinavel Preta' && !r.texto.includes('sem juros]'), r);
 }
 
+console.log('\n=== Conferir preco com a loja (16/10) ===');
+{
+  const sem = conferirPreco({ preco: 90, cupons: [] }, { preco: 100 });
+  caso('canal 10% mais barato sem cupom: nao posta', !sem.ok && sem.motivo === 'preco_diferente_da_loja');
+  const com = conferirPreco({ preco: 90, cupons: ['DESC10'] }, { preco: 100 });
+  caso('canal mais barato com cupom: preco com cupom e mostra o sem cupom', com.ok && com.campos.semCupom === 100 && com.campos.preco === undefined);
+  const igual = conferirPreco({ preco: 99.9, pagamento: 'no Pix', cupons: [] }, { preco: 99.42, precoDe: 150 });
+  caso('quase igual: vale o preco da loja, sem a forma de pagamento do canal', igual.ok && igual.campos.preco === 99.42 && igual.campos.pagamento === null && igual.campos.precoAntes === 150);
+  const subiu = conferirPreco({ preco: 80, cupons: [] }, { preco: 75 });
+  caso('loja mais barata que o canal: vale o da loja', subiu.ok && subiu.campos.preco === 75);
+  caso('sem preco da loja: segue como o canal', conferirPreco({ preco: 50 }, null).ok);
+  const txt = legendaAchado({ nome: 'Fone Teste Bluetooth', preco: 90, semCupom: 100, cupons: ['DESC10'], link: 'L', chamada: 'X TESTE CHAMADA' });
+  caso('legenda com cupom mostra o preco sem cupom', txt.includes('Por R$90') && txt.includes('Sem cupom: R$100') && txt.includes('Use o cupom DESC10'), txt);
+}
+
 console.log('\n=== Horario e limite ===');
 {
   const mem = memNova();
@@ -331,6 +346,7 @@ console.log('\n=== Shopee oficial (14/10) ===');
   const r = await garimpar({ canais: { canalum: pagina(post('canalum/99', min(5), P1, 'https://cdn1.telesco.pe/file/f99')) }, shopee: L, agora: AGORA, cfg: CFG, mem: m2, rede });
   caso('3o post: vem da Shopee, desconto de 30%+ e a MAIOR comissao (nao a proibida nem a de 10%)', r.acao === 'postar' && r.fonte === 'shopee/ofertas' && r.link === 'https://s.shopee.com.br/B' && r.imagem === 'https://cf.shopee.com.br/file/b', r);
   caso('legenda da Shopee: De/Por calculado pelo desconto', /De R\$58 por R\$31,99/.test(r.texto), r.texto);
+  caso('Shopee avisa que e o valor da opcao mais barata', r.texto.includes('Valor da opção mais barata'), r.texto);
   const r1 = await garimpar({ canais: { canalum: pagina(post('canalum/99', min(5), P1, 'https://cdn1.telesco.pe/file/f99')) }, shopee: L, agora: AGORA, cfg: CFG, mem: memNova(), rede });
   caso('fora da vez da Shopee: vem do canal', r1.acao === 'postar' && r1.fonte === 'canalum/99', r1);
   const r3 = await garimpar({ canais: {}, shopee: L, agora: AGORA, cfg: CFG, mem: memNova(), rede });
