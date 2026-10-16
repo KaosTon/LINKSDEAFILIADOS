@@ -195,7 +195,7 @@ cadastro no AliExpress Portals e link gerado pela API deles.
 Pesquisa na internet (docs oficiais, blogs e comunidades BR). Parte das fontes é blog de terceiro; o que está "a verificar" não foi confirmado em documento oficial.
 
 **Compliance (fazer primeiro, esforço baixo)**
-- CONAR, Guia de Influenciadores (vale desde 1/6/2026): link de afiliado com comissão é publicidade e tem que estar identificado de forma clara ("publi" ou "publicidade"). Proposta: "#publi" curto em cada post e a regra fixa na descrição do grupo.
+- CONAR, Guia de Influenciadores (vale desde 1/6/2026): link de afiliado com comissão é publicidade e tem que estar identificado de forma clara ("publi" ou "publicidade"). Decidido (16/10): "#publi" só nos posts de redes sociais; no WhatsApp não vai.
 - CDC arts. 30 e 31: o preço anunciado vincula. Já conferimos o preço na loja; falta o aviso "preços e estoque podem mudar" na descrição e cuidar do "De X" (preço riscado inflado é risco de publicidade enganosa; histórico de preço próprio resolve).
 - Amazon Associados: o grupo tem que estar cadastrado como canal no painel (a verificar no contrato). Encurtador próprio: redirecionar direto para a Amazon com a tag, sem esconder que é Amazon.
 - LGPD: não expor nem exportar os números do grupo; se o encurtador gravar IP, anonimizar e ter prazo.
@@ -213,6 +213,8 @@ Pesquisa na internet (docs oficiais, blogs e comunidades BR). Parte das fontes �
 - Encurtador próprio: cliques por hora para ajustar o horário dos posts.
 - Formatos: "cupom do dia", resumo dos mais vendidos da semana, enquete de categoria.
 - Novas lojas: KaBuM (Awin), AliExpress (Awin/Admitad), Lomadee.
+
+**Esperando o Wellington (17/10)**: escolher quais destas implementar.
 
 **Feito em 16/10**: preço, nome e foto do ML de catálogo pela API (fluxo 04); cupom da página da Amazon (código ou cupom de marcar; cupom de primeira compra vira aviso e não muda o preço).
 
