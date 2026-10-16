@@ -31,8 +31,18 @@ const envia = node({
 "if (!phone) return [{ json: { ok: false, origem, erro: 'sem destino (phone)' } }];",
 "const cfg = { base: $env.ZAPI_BASE_URL, instancia: $env.ZAPI_INSTANCE_ID, token: $env.ZAPI_INSTANCE_TOKEN };",
 "const msg = { phone, message: String(e.message || ''), image: String(e.image || '') || null, link: String(e.link || '') || null, titulo: String(e.titulo || '') };",
+"// Links do ML pelo encurtador próprio (ENCURTADOR_URL). Falhou, vai o link normal.",
+"let final = msg;",
+"if ($env.ENCURTADOR_URL && $env.ENCURTADOR_SEGREDO) {",
+"  const encurtar = async (url) => {",
+"    const r = await this.helpers.httpRequest({ method: 'POST', url: String($env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/encurtar', json: true, timeout: 8000,",
+"      headers: { Authorization: 'Bearer ' + $env.ENCURTADOR_SEGREDO, 'Content-Type': 'application/json' }, body: { url } });",
+"    return r && r.curto;",
+"  };",
+"  final = await encurtarLinks(msg, encurtar);",
+"}",
 "let pedido;",
-"try { pedido = pedidoZapi(msg, cfg); } catch (x) { return [{ json: { ok: false, origem, erro: x.message } }]; }",
+"try { pedido = pedidoZapi(final, cfg); } catch (x) { return [{ json: { ok: false, origem, erro: x.message } }]; }",
 "const H = { 'client-token': $env.ZAPI_CLIENT_TOKEN || '', 'Content-Type': 'application/json' };",
 "const dorme = (ms) => new Promise(r => setTimeout(r, ms));",
 "let id = null, erro = null, forma = pedido.url.split('/').pop();",
@@ -43,10 +53,10 @@ const envia = node({
 "    if (!id) erro = JSON.stringify(r).slice(0, 200);",
 "  } catch (x) { erro = String(x.message || x).slice(0, 200); }",
 "  // Plano B: se a prévia do link (send-link) não saiu, manda como foto com legenda.",
-"  if (!id && forma === 'send-link') { pedido = pedidoZapi({ ...msg, forma: 'imagem' }, cfg); forma = 'send-image'; continue; }",
+"  if (!id && forma === 'send-link') { pedido = pedidoZapi({ ...final, forma: 'imagem' }, cfg); forma = 'send-image'; continue; }",
 "  if (!id && t < 3) await dorme(3000);",
 "}",
-"return [{ json: { ok: !!id, id, origem, forma, erro: id ? null : erro } }];"
+"return [{ json: { ok: !!id, id, origem, forma, encurtados: final.encurtados || 0, erro: id ? null : erro } }];"
 ].join('\n') } },
   output: [{ ok: true, id: 'Z1', origem: 'teste', erro: null }]
 });

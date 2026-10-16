@@ -53,5 +53,30 @@ const roda = (entrada, responde, env = ENV) => rodar(codigo, { itens: [{ json: {
   caso('plano B (foto com legenda) usa a foto original, sem enquadrar', f.chamadas[1].body.image === 'https://img/1.jpg', f.chamadas[1].body);
 }
 
+{
+  // Encurtador próprio (16/10): só os links do ML; se ele falhar, vai o link normal.
+  const ENVE = { ...ENV, ENCURTADOR_URL: 'https://curto.example/', ENCURTADOR_SEGREDO: 'x'.repeat(40) };
+  const ML = 'https://www.mercadolivre.com.br/p/MLB123?matt_word=minha&matt_tool=1';
+  const AMZ = 'https://www.amazon.com.br/dp/B0TESTE001?tag=minha-20';
+  const msg = `Oferta\n🛒 ${ML}\n🔗 ${AMZ}`;
+  const comEnc = (resp) => rodar(codigo, { itens: [{ json: {} }], env: ENVE,
+    nos: { 'Alguém quer enviar': [{ json: { phone: 'g', message: msg, image: 'https://img/1.jpg', link: ML, titulo: 'P', origem: '03' } }] },
+    http: [{ quando: /curto\.example/, responde: resp }, { quando: /z-api\.io/, responde: { zaapId: 'Z1' } }] }).then(r => ({ ...r, out: r.saida[0].json }));
+  const r = await comEnc((op) => ({ codigo: 'abc23', curto: 'https://curto.example/abc23', pedido: op.body }));
+  const pedidoEnc = r.chamadas.find(c => /curto\.example/.test(c.url));
+  const zapi = r.chamadas.find(c => /z-api/.test(c.url));
+  caso('encurta so o link do ML, com a senha, e uma vez so', r.chamadas.filter(c => /curto/.test(c.url)).length === 1 && pedidoEnc.url === 'https://curto.example/api/encurtar'
+    && pedidoEnc.headers.Authorization === 'Bearer ' + 'x'.repeat(40) && pedidoEnc.body.url === ML, r.chamadas);
+  caso('mensagem e previa saem com o link curto; Amazon fica direto', zapi.body.message.includes('https://curto.example/abc23') && !zapi.body.message.includes(ML)
+    && zapi.body.message.includes(AMZ) && zapi.body.linkUrl === 'https://curto.example/abc23' && r.out.encurtados === 1, zapi.body);
+  const caiu = await comEnc(() => { throw new Error('getaddrinfo ENOTFOUND'); });
+  const z2 = caiu.chamadas.find(c => /z-api/.test(c.url));
+  caso('encurtador fora do ar: sai com o link normal', caiu.out.ok && z2.body.message.includes(ML) && z2.body.linkUrl === ML && caiu.out.encurtados === 0, z2 && z2.body);
+  const lixo = await comEnc({ erro: 'senha' });
+  caso('encurtador respondeu sem link: sai com o link normal', lixo.out.ok && lixo.chamadas.find(c => /z-api/.test(c.url)).body.linkUrl === ML);
+  const sem = await roda({ phone: 'g', message: msg, origem: '03' }, { zaapId: 'Z' });
+  caso('sem ENCURTADOR_URL: nem tenta', sem.chamadas.length === 1 && sem.chamadas[0].body.message.includes(ML));
+}
+
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;
