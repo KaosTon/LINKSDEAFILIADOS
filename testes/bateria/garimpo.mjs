@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
+import { lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, converterLink, legendaCupom } from '../../lib/ofertas.mjs';
 
@@ -305,6 +305,25 @@ console.log('\n=== Conferir preco com a loja (16/10) ===');
   caso('sem preco da loja: segue como o canal', conferirPreco({ preco: 50 }, null).ok);
   const txt = legendaAchado({ nome: 'Fone Teste Bluetooth', preco: 90, semCupom: 100, cupons: ['DESC10'], link: 'L', chamada: 'X TESTE CHAMADA' });
   caso('legenda com cupom mostra o preco sem cupom', txt.includes('Por R$90') && txt.includes('Sem cupom: R$100') && txt.includes('Use o cupom DESC10'), txt);
+}
+
+console.log('\n=== Mercado Livre de catalogo pela API (16/10) ===');
+{
+  const prod = { id: 'MLB12345678', name: 'Air Fryer Teste 4L', pictures: [{ url: 'http://http2.mlstatic.com/teste.jpg' }], buy_box_winner: null };
+  const l = lerProdutoML(prod, [{ price: 340, original_price: 500 }, { price: 299.9, original_price: 450 }, { price: 0 }]);
+  caso('sem buy box: o vendedor mais barato, com o preco antigo dele e foto https', l.preco === 299.9 && l.precoDe === 450 && l.foto === 'https://http2.mlstatic.com/teste.jpg' && l.aberta, l);
+  const bb = lerProdutoML({ ...prod, buy_box_winner: { price: 310, original_price: 300 } }, []);
+  caso('com buy box: o preco dele; "de" menor que o preco nao vale', bb.preco === 310 && bb.precoDe === null, bb);
+  caso('sem vendedor: aberta sem preco (descarta)', lerProdutoML(prod, []).preco === null);
+  const CML = { ...CFG, mlEtiqueta: 'minhaetiqueta', mlTool: '12345678' };
+  const LINK = 'https://www.mercadolivre.com.br/air-fryer-teste/p/MLB12345678';
+  const pedidos = [];
+  const redeML = { ...rede, abrir: async (u) => u, mlCatalogo: async (id) => { pedidos.push(id); return { nome: 'Air Fryer Teste 4L Oficial', foto: 'https://http2.mlstatic.com/oficial.jpg', preco: 299.9, precoDe: 450, aberta: true }; } };
+  const barato = await garimpar({ canais: { canalum: pagina(post('canalum/71', min(5), 'Air Fryer Teste 4L\n\n🔥 Por: R$ 199\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f71')) }, agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
+  caso('canal bem mais barato que o ML sem cupom: nao posta', barato.acao !== 'postar' && JSON.stringify(barato.tentou).includes('preco_diferente_da_loja'), barato);
+  const certo = await garimpar({ canais: { canalum: pagina(post('canalum/72', min(5), 'Air Fryer Teste 4L\n\n🔥 Por: R$ 305 no Pix\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f72')) }, agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
+  caso('ML confere: preco da API, De/Por e foto oficial', certo.acao === 'postar' && pedidos.includes('MLB12345678') && certo.preco_loja === 299.9
+    && /De R\$450 por R\$299,90/.test(certo.texto) && certo.imagem === 'https://http2.mlstatic.com/oficial.jpg', certo);
 }
 
 console.log('\n=== Horario e limite ===');
