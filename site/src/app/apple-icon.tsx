@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
-import { SITE } from "@/data/site";
-import { CORES } from "@/data/tema";
-import { fontesOg } from "@/lib/fontes-og";
+import { logoOg } from "@/lib/fontes-og";
 
 // Export estatico (Cloudflare Pages): gerado uma vez no build.
 export const dynamic = "force-static";
@@ -11,24 +9,14 @@ export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 export default async function AppleIcon() {
+  const src = await logoOg("monograma.png");
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#ffffff" }}>
-        <div
-          style={{
-            fontFamily: "Bricolage",
-            fontSize: 120,
-            letterSpacing: -8,
-            backgroundImage: `linear-gradient(135deg, ${CORES.marinho} 15%, ${CORES.marca} 60%, ${CORES.vermelho})`,
-            backgroundClip: "text",
-            color: "transparent",
-            paddingBottom: 12,
-          }}
-        >
-          {SITE.monograma}
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt="" width={160} height={108} />
       </div>
     ),
-    { ...size, fonts: await fontesOg() },
+    size,
   );
 }

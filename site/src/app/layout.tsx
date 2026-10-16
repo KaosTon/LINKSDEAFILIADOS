@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { Figtree, Montserrat } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AvisoCookies from "@/components/AvisoCookies";
@@ -10,8 +10,8 @@ import { SchemaOrganizacao } from "@/components/Schemas";
 import { SITE } from "@/data/site";
 import "./globals.css";
 
-// Par de fontes do Tem Descontos: Bricolage Grotesque (titulos, forte como o DESCONTOS do logo)
-// e Figtree (texto). Fora do Inter e do par da Michele (METODO §4).
+// Par de fontes do Tem Descontos: Montserrat (titulos; e a familia do TEM DESCONTOS do logo, o TEM
+// em italico e o DESCONTOS em extra negrito) e Figtree (texto). Fora do Inter e do par da Michele.
 const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
@@ -19,10 +19,11 @@ const figtree = Figtree({
   display: "swap",
 });
 
-const bricolage = Bricolage_Grotesque({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-bricolage",
+  variable: "--font-montserrat",
   weight: ["500", "700", "800"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${figtree.variable} ${bricolage.variable}`}>
+    <html lang="pt-BR" className={`${figtree.variable} ${montserrat.variable}`}>
       <body className="min-h-screen flex flex-col">
         <SchemaOrganizacao />
         <Header />

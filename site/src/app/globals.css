@@ -4,31 +4,33 @@
   IDENTIDADE DO TEM DESCONTOS: os tokens abaixo sao a marca. Trocar estes valores troca o site.
   As mesmas cores moram em src/data/tema.ts (trava scripts/check-tema.mjs).
 
-  Origem (16/10/2026): logo mandado no chat, TEM DESCONTOS em marinho e monograma TD em degrade
-  do marinho ao laranja e vermelho. PENDENTE (BRIEFING §2): medir no arquivo original; os
-  valores abaixo foram escolhidos pela imagem do chat e ajustados para contraste AA.
-  Contraste medido (WCAG): --tinta-3 sobre --fundo 5,35:1; --marca-escura sobre --fundo 4,88:1;
-  texto branco sobre --cta-1 5,18:1 e sobre --cta-2 5,48:1. --marca (laranja vivo) so em
-  titulo grande, brilho e enfeite (3,4:1 sobre --fundo, abaixo de 4,5 para texto comum).
+  Cores MEDIDAS no arquivo do logo (assets/logo/tem-descontos-original.jpg, 16/10/2026):
+  marinho do TEM DESCONTOS #032451, azul do alto do T #094f82, laranja claro do D #fd9c1a,
+  laranja do meio do D #f26027, vermelho da base do D #d2212b.
+  Contraste medido (WCAG) sobre --fundo: --tinta 14,38:1; --tinta-3 5,13:1; --marca-escura
+  5,63:1; --vermelho 4,95:1. Branco sobre --cta-1 4,53:1 e sobre --cta-2 5,72:1. --marca (laranja
+  do logo) so em enfeite, titulo grande ou sobre o escuro (5,52:1 sobre --escuro).
 */
 :root {
   --fundo: #f7f8fb;
-  --fundo-2: #eceef5;
-  --tinta: #121a3a;
-  --tinta-2: #3a4466;
-  --tinta-3: #5d6684;
-  --marca: #e8590c;
-  --marca-escura: #c2410c;
-  --marca-clara: #fff1e8;
-  --vermelho: #d6332a;
-  --marinho: #1b2a5e;
-  /* botao principal (CTA): uma cor so no site inteiro, laranja para vermelho como o logo */
-  --cta-1: #c2410c;
-  --cta-2: #c62f22;
+  --fundo-2: #eceef4;
+  --tinta: #032451;
+  --tinta-2: #33476b;
+  --tinta-3: #5a6a88;
+  --marca: #f26027;
+  --marca-escura: #b8321c;
+  --marca-clara: #fff3ea;
+  --vermelho: #d2212b;
+  --laranja: #fd9c1a;
+  --azul: #094f82;
+  --marinho: #032451;
+  /* botao principal (CTA): uma cor so no site inteiro, do laranja ao vermelho do D */
+  --cta-1: #d93d1c;
+  --cta-2: #c81e28;
   --cta-texto: #ffffff;
   /* faixa escura, rodape e card escuro */
-  --escuro: #0e1533;
-  --linha: #dde1ec;
+  --escuro: #021733;
+  --linha: #dde2ec;
   --whats: #1f9d55;
 }
 
@@ -46,8 +48,10 @@
   --color-whats: var(--whats);
   --color-vermelho: var(--vermelho);
   --color-marinho: var(--marinho);
+  --color-laranja: var(--laranja);
+  --color-azul: var(--azul);
   --font-sans: var(--font-figtree), system-ui, sans-serif;
-  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-display: var(--font-montserrat), system-ui, sans-serif;
 }
 
 html {
@@ -63,12 +67,12 @@ body {
 
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-/* a linha de destaque dos titulos: o degrade do monograma (marinho, laranja, vermelho) */
+/* a linha de destaque dos titulos: o laranja ao vermelho do D do logo (3,9:1 no ponto mais claro) */
 .texto-degrade {
-  background: linear-gradient(90deg, var(--marca-escura), var(--vermelho));
+  background: linear-gradient(90deg, #e0461f, var(--vermelho));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -102,7 +106,7 @@ h3 {
 
 /* textura sutil do hero */
 .grao {
-  background-image: radial-gradient(circle at 1px 1px, rgba(27, 42, 94, 0.07) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgba(3, 36, 81, 0.07) 1px, transparent 0);
   background-size: 22px 22px;
 }
 

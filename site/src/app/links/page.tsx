@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IconeInstagram, IconeWhats } from "@/components/Icones";
-import { Logo } from "@/components/Marca";
+import { LogoCompleto } from "@/components/Marca";
 import { PRINCIPAIS, SITE, TEXTOS, linkWhats } from "@/data/site";
 import { MENSAGENS_ROTA } from "@/data/whatsapp";
 
@@ -57,7 +57,7 @@ export default function Links() {
         <div className="rounded-[2rem] bg-escuro text-white px-6 py-8 text-center relative overflow-hidden">
           <div className="absolute inset-0 brilho-marca-topo" aria-hidden="true" />
           <div className="relative">
-            <Logo claro grande />
+            <LogoCompleto claro prioridade className="w-56 h-auto mx-auto" />
             <h1 className="sr-only">{SITE.nome}: links</h1>
             <p className="mt-5 font-display text-2xl font-bold leading-snug">{SITE.frase}</p>
             <a

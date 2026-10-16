@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import { IconeWhats } from "@/components/Icones";
-import { Monograma } from "@/components/Marca";
+import { LogoCompleto } from "@/components/Marca";
 import { POSTS_ORDENADOS } from "@/data/blog";
 import { AUTOR, LOJAS, PRINCIPAIS, SITE, TEXTOS, linkWhats } from "@/data/site";
 import { MENSAGENS_ROTA } from "@/data/whatsapp";
@@ -63,7 +63,7 @@ export default function Sobre() {
             </a>
           </div>
           <div className="rounded-[2rem] bg-white border border-linha p-10 flex items-center justify-center">
-            <Monograma className="w-56 max-w-full h-auto" />
+            <LogoCompleto className="w-80 max-w-full h-auto" />
           </div>
         </div>
       </section>

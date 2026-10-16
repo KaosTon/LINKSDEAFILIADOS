@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { LOJAS, PRINCIPAIS, SITE } from "@/data/site";
 import { IconeInstagram } from "./Icones";
-import { Logo } from "./Marca";
+import { LogoCompleto } from "./Marca";
 
 export default function Footer() {
   return (
     <footer className="bg-escuro text-white/80 mt-24">
       <div className="max-w-6xl mx-auto px-4 py-14 grid gap-10 md:grid-cols-[1.1fr_0.9fr_1.2fr]">
         <div>
-          <Logo claro />
+          <LogoCompleto claro className="w-44 h-auto" />
           <p className="text-sm mt-5 leading-relaxed text-white/65">{SITE.descricaoCurta}</p>
           <p className="text-sm mt-3 text-white/65">Ofertas de {LOJAS.join(", ")}.</p>
           {SITE.instagram ? (

@@ -70,7 +70,7 @@ export default function Home() {
               <div className="relative">
                 <div className="flex items-center justify-between gap-4">
                   <p className="font-display text-2xl font-bold leading-tight">{ficha.titulo}</p>
-                  <Monograma className="w-16 h-auto shrink-0" claro />
+                  <Monograma className="w-20 h-auto shrink-0" claro />
                 </div>
                 <ol className="mt-6 space-y-3">
                   {ficha.itens.map((t, i) => (
@@ -98,7 +98,7 @@ export default function Home() {
         <div className="relative max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 text-center">
           {numeros.map((n) => (
             <div key={n.rotulo}>
-              <p className="font-display text-4xl md:text-5xl font-extrabold leading-none text-marca">{valorNumero(n.valor)}</p>
+              <p className="font-display text-4xl md:text-5xl font-extrabold leading-none text-laranja">{valorNumero(n.valor)}</p>
               <p className="mt-2 text-sm text-white/70">{n.rotulo}</p>
             </div>
           ))}
@@ -224,7 +224,7 @@ export default function Home() {
         <div className="rounded-[2rem] bg-escuro text-white px-8 py-14 md:px-16 text-center relative overflow-hidden">
           <div className="absolute inset-0 brilho-marca" aria-hidden="true" />
           <div className="relative">
-            <Monograma className="w-20 h-auto mx-auto" claro />
+            <Monograma className="w-28 h-auto mx-auto" claro />
             <h2 className="mt-6 font-display text-4xl md:text-5xl font-extrabold leading-tight">{HOME.cta.titulo}</h2>
             <p className="mt-4 text-white/70 max-w-xl mx-auto">{HOME.cta.texto}</p>
             <a

@@ -93,7 +93,7 @@ export default async function PaginaGuia(props: PageProps<"/guias/[slug]">) {
                 {pagina.numeros.map((n) => (
                   <div key={n.rotulo}>
                     <dt className="text-xs text-white/60">{n.rotulo}</dt>
-                    <dd className="font-display text-4xl font-extrabold leading-none mt-1 text-marca">{n.valor}</dd>
+                    <dd className="font-display text-4xl font-extrabold leading-none mt-1 text-laranja">{n.valor}</dd>
                   </div>
                 ))}
               </dl>

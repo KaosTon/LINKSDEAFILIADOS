@@ -7,8 +7,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+// Fora da regra: o AGENTS.md do site e reescrito pelo proprio Next (next dev), e a trava de copy
+// do site precisa do caractere para procura-lo (os dois sao motor da fabrica de sites).
+const FORA = new Set(['site/AGENTS.md', 'site/scripts/check-copy.mjs']);
 const arquivos = execFileSync('git', ['ls-files'], { cwd: raiz, encoding: 'utf8' })
-  .split('\n').filter(f => /\.(md|js|mjs|sql|py|json|txt|html)$/.test(f));
+  .split('\n').filter(f => /\.(md|js|mjs|sql|py|json|txt|html)$/.test(f) && !FORA.has(f));
 // Montado pelo código do caractere para este arquivo não se acusar.
 const TRAVESSAO = new RegExp('[' + String.fromCharCode(0x2014, 0x2013) + ']');
 const achados = [];

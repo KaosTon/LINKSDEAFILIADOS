@@ -14,8 +14,9 @@ robô (`LINKSDEAFILIADOS/site`), porque o site e o encurtador dividem o domínio
 - Horário das ofertas: 8h às 22h (padrão do robô, `GARIMPO_INICIO` e `GARIMPO_FIM`, 16/10/2026).
 - O que o robô confere antes de postar: `lib/ofertas.mjs` (lista nos guias, conferida no código em 16/10/2026).
 - WhatsApp: não há número de atendimento no site. O botão leva ao grupo. O número do robô fica separado.
-- Logo: mandado no chat em 16/10/2026 (imagem, sem arquivo). TEM em marinho, DESCONTOS em marinho
-  forte, monograma TD em degradê do marinho ao laranja e vermelho, etiqueta com % pendurada no D e brilhos.
+- Logo: arquivo mandado em 16/10/2026, guardado em `assets/logo/tem-descontos-original.jpg`
+  (1600x893, fundo branco). Recortes com fundo transparente em `public/logo/` (logo inteiro e só o
+  monograma, cada um também na versão clara, com o marinho em branco, para fundo escuro).
 - Público: quem compra nas grandes lojas pelo celular e quer promoção sem cair em golpe.
 
 ## 2. O que falta
@@ -30,8 +31,8 @@ Legenda: [ ] pendente · [x] resolvido · [~] parcial
 - [ ] 5. Search Console com o domínio, para tirar o `noindex` no lançamento.
 
 ### Marca
-- [ ] 6. Arquivo do logo (PNG transparente ou SVG) em `site/public/logo/`. Com ele: medir as cores
-  (hoje escolhidas pela imagem do chat), conferir o desenho do monograma em `src/components/Marca.tsx`.
+- [x] 6. Arquivo do logo (16/10/2026): recortado e com as cores medidas. Se houver versão em SVG
+  ou PNG maior, trocar o original e refazer os recortes (ficam mais nítidos em tela grande).
 - [ ] 7. Instagram (e outras redes) da marca, para o rodapé, o /links e o schema.
 - [ ] 8. E-mail de contato no domínio (ex.: contato@temdescontos.com.br), para a política de privacidade.
 
@@ -45,11 +46,12 @@ Legenda: [ ] pendente · [x] resolvido · [~] parcial
 
 ## 3. Identidade
 
-- Cores (provisórias, da imagem do logo no chat, 16/10/2026; medir no arquivo, pendência 6):
-  marinho `#1b2a5e`, laranja `#e8590c`, vermelho `#d6332a`; texto `#121a3a`; fundo `#f7f8fb`.
-  CTA em degradê `#c2410c` para `#c62f22` (branco por cima: 5,18:1 e 5,48:1). Contrastes em `globals.css`.
-- Fontes: Bricolage Grotesque (títulos, forte como o DESCONTOS do logo) e Figtree (texto). Fora do
-  Inter e do par da Michele.
+- Cores medidas no arquivo do logo (16/10/2026): marinho `#032451` (TEM DESCONTOS, também o texto),
+  azul `#094f82` (alto do T), laranja claro `#fd9c1a`, laranja `#f26027` e vermelho `#d2212b` (o D).
+  CTA em degradê `#d93d1c` para `#c81e28` (branco por cima: 4,53:1 e 5,72:1). Contrastes em `globals.css`.
+- Fontes: Montserrat (títulos; é a família do TEM DESCONTOS do logo) e Figtree (texto).
+- No topo, o logo vai deitado (monograma + TEM DESCONTOS em texto), porque empilhado ele fica
+  ilegível em 64 px de altura. Rodapé, /links e Sobre usam o logo inteiro.
 - Hero com conteúdo real: a ficha das conferências do robô, em vez de foto (não há foto de produto
   própria, e preço da Amazon no site é proibido, §4).
 

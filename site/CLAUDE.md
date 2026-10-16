@@ -19,7 +19,7 @@ dentro do repo do robô (`LINKSDEAFILIADOS`), que trabalha direto no `main`.
 campo `alteradoAqui`), que precisam virar opção na fábrica antes de o próximo `atualizar-motor`
 sobrescrever:
 - `scripts/check-links-internos.mjs`: aceita a rota `/guias/[slug]` além de `/servicos/[slug]`.
-- `src/lib/fontes-og.ts`: `fontesOg()` lê a Bricolage Grotesque (no modelo, `fontesCormorant()`).
+- `src/lib/fontes-og.ts`: `fontesOg()` lê a Montserrat (no modelo, `fontesCormorant()`) e `logoOg()` põe o logo nas imagens geradas.
 
 Outras diferenças do modelo, todas fora do motor: o botão verde abre o grupo (`linkWhats` em
 `site.ts` leva a `temdescontos.com.br/grupo?de=`), as páginas de serviço são guias

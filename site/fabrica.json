@@ -31,6 +31,6 @@
   ],
   "alteradoAqui": [
     "scripts/check-links-internos.mjs (rota /guias)",
-    "src/lib/fontes-og.ts (Bricolage no lugar da Cormorant)"
+    "src/lib/fontes-og.ts (Montserrat no lugar da Cormorant, e logoOg)"
   ]
 }
