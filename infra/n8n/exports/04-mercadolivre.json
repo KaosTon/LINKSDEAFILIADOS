@@ -1,0 +1,201 @@
+{
+  "name": "[Ofertas] 04 Mercado Livre",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "ml-autorizar",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {
+          "responsePropertyName": "html",
+          "responseContentType": "text/html; charset=utf-8"
+        }
+      },
+      "id": "39c1acb3-ec33-55e3-ade5-c888c1d6b1f4",
+      "name": "ML autorizar",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "e4548e60-001b-57e7-8ce7-67689432bee9"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\nlet nodeUrl = null; try { nodeUrl = require('url'); } catch (e) { nodeUrl = null; }\n\nconst URLM = typeof URL !== 'undefined' ? URL : nodeUrl.URL;\nconst PARAMS = typeof URLSearchParams !== 'undefined' ? URLSearchParams : nodeUrl.URLSearchParams;\n\nconst ML_AUTH = 'https://auth.mercadolivre.com.br/authorization';\nconst ML_API = 'https://api.mercadolibre.com';\nconst VALIDADE_ESTADO = 15 * 60 * 1000;\nconst RENOVA_ANTES = 2 * 60 * 60 * 1000;\n\nfunction linkAutorizacao(appId, retorno, estado) {\n  const u = new URLM(ML_AUTH);\n  u.searchParams.set('response_type', 'code');\n  u.searchParams.set('client_id', String(appId));\n  u.searchParams.set('redirect_uri', retorno);\n  u.searchParams.set('state', estado);\n  return u.toString();\n}\n\nfunction novoEstado(mem, agora, sorteio = () => crypto.randomBytes(16).toString('hex')) {\n  mem.estados = (mem.estados || []).filter(e => agora - e.t < VALIDADE_ESTADO).slice(-9);\n  const s = sorteio();\n  mem.estados.push({ s, t: agora });\n  return s;\n}\n\nfunction usarEstado(mem, s, agora) {\n  const antes = mem.estados || [];\n  const achou = antes.find(e => e.s === String(s || '') && agora - e.t < VALIDADE_ESTADO);\n  mem.estados = antes.filter(e => e !== achou && agora - e.t < VALIDADE_ESTADO);\n  return !!achou;\n}\n\nfunction chaveInterna(segredo) {\n  return crypto.createHash('sha256').update('ml-token:' + String(segredo || '')).digest('hex');\n}\n\nfunction guardarToken(mem, tok, agora) {\n  if (!tok || !tok.access_token || !tok.refresh_token) return { ok: false, motivo: 'resposta_sem_token' };\n  const usuario = String(tok.user_id || '');\n  if (mem.ml && mem.ml.usuario && usuario && mem.ml.usuario !== usuario) return { ok: false, motivo: 'outra_conta' };\n  mem.ml = { usuario: usuario || (mem.ml && mem.ml.usuario) || '', token: tok.access_token, refresh: tok.refresh_token,\n    expira: agora + (Number(tok.expires_in) || 21600) * 1000, escopo: tok.scope || '', renovado: agora };\n  return { ok: true, usuario: mem.ml.usuario };\n}\n\nconst precisaRenovar = (mem, agora) => !!(mem.ml && mem.ml.refresh) && mem.ml.expira - agora < RENOVA_ANTES;\nconst tokenValido = (mem, agora) => (mem.ml && mem.ml.token && mem.ml.expira - agora > 60000 ? mem.ml.token : null);\n\nfunction redeML(http) {\n  return async ({ method, url, form, token }) => {\n    const headers = { Accept: 'application/json' };\n    if (token) headers.Authorization = `Bearer ${token}`;\n    let body;\n    if (form) { headers['Content-Type'] = 'application/x-www-form-urlencoded'; body = new PARAMS(form).toString(); }\n    const r = await http.httpRequest({ method, url, headers, body, json: false, returnFullResponse: true,\n      ignoreHttpStatusErrors: true, timeout: 15000 });\n    let corpo = r.body;\n    if (typeof corpo === 'string') { try { corpo = JSON.parse(corpo); } catch (e) { /* texto */ } }\n    return { status: r.statusCode, corpo };\n  };\n}\n\nasync function trocarCodigo(pedir, { appId, segredo, retorno, codigo }) {\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'authorization_code', client_id: appId, client_secret: segredo, code: codigo, redirect_uri: retorno } });\n  return r.status === 200 ? r.corpo : null;\n}\n\nasync function renovar(pedir, mem, { appId, segredo }, agora) {\n  if (!mem.ml || !mem.ml.refresh) return { ok: false, motivo: 'sem_autorizacao' };\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'refresh_token', client_id: appId, client_secret: segredo, refresh_token: mem.ml.refresh } });\n  if (r.status !== 200) {\n    mem.ml.erro = { status: r.status, quando: agora, msg: String((r.corpo && (r.corpo.error || r.corpo.message)) || '').slice(0, 80) };\n    return { ok: false, motivo: 'ml_recusou', status: r.status };\n  }\n  return guardarToken(mem, r.corpo, agora);\n}\n\nconst esc = (s) => String(s).replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\nfunction pagina(titulo, texto, botao) {\n  const b = botao ? `<p><a href=\"${esc(botao.url)}\" style=\"display:inline-block;background:#3483fa;color:#fff;padding:14px 22px;border-radius:8px;text-decoration:none;font-weight:600\">${esc(botao.texto)}</a></p>` : '';\n  return `<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>${esc(titulo)}</title></head>`\n    + `<body style=\"font-family:system-ui,sans-serif;max-width:480px;margin:48px auto;padding:0 16px;color:#222;background:#fff\"><h1 style=\"font-size:22px\">${esc(titulo)}</h1><p>${esc(texto)}</p>${b}</body></html>`;\n}\n\nconst mem = $getWorkflowStaticData('global');\nif (!$env.ML_APP_ID || !$env.ML_SECRET) return [{ json: { html: pagina('Falta configurar', 'Coloque ML_APP_ID e ML_SECRET nas variáveis do n8n no Railway e espere ele reiniciar.') } }];\nconst url = linkAutorizacao($env.ML_APP_ID, $env.ML_RETORNO || 'https://n8n-production-4226.up.railway.app/webhook/ml-retorno', novoEstado(mem, Date.now()));\nconst ja = mem.ml && mem.ml.usuario ? ' O robô já está conectado; autorizar de novo só renova o acesso da mesma conta.' : '';\nreturn [{ json: { html: pagina('Conectar o Mercado Livre', 'Clique no botão, entre na sua conta do Mercado Livre e clique em Permitir.' + ja, { url, texto: 'Entrar no Mercado Livre' }) } }];"
+      },
+      "id": "ee49bb5b-4bc8-5c65-a10d-242eae6bd381",
+      "name": "Monta o link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "ml-retorno",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {
+          "responsePropertyName": "html",
+          "responseContentType": "text/html; charset=utf-8"
+        }
+      },
+      "id": "c6c04670-5e23-5e46-a5b8-23e345d0e01d",
+      "name": "ML retorno",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        200
+      ],
+      "webhookId": "ec72b932-788d-5eb7-9067-c86d20f58b67"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\nlet nodeUrl = null; try { nodeUrl = require('url'); } catch (e) { nodeUrl = null; }\n\nconst URLM = typeof URL !== 'undefined' ? URL : nodeUrl.URL;\nconst PARAMS = typeof URLSearchParams !== 'undefined' ? URLSearchParams : nodeUrl.URLSearchParams;\n\nconst ML_AUTH = 'https://auth.mercadolivre.com.br/authorization';\nconst ML_API = 'https://api.mercadolibre.com';\nconst VALIDADE_ESTADO = 15 * 60 * 1000;\nconst RENOVA_ANTES = 2 * 60 * 60 * 1000;\n\nfunction linkAutorizacao(appId, retorno, estado) {\n  const u = new URLM(ML_AUTH);\n  u.searchParams.set('response_type', 'code');\n  u.searchParams.set('client_id', String(appId));\n  u.searchParams.set('redirect_uri', retorno);\n  u.searchParams.set('state', estado);\n  return u.toString();\n}\n\nfunction novoEstado(mem, agora, sorteio = () => crypto.randomBytes(16).toString('hex')) {\n  mem.estados = (mem.estados || []).filter(e => agora - e.t < VALIDADE_ESTADO).slice(-9);\n  const s = sorteio();\n  mem.estados.push({ s, t: agora });\n  return s;\n}\n\nfunction usarEstado(mem, s, agora) {\n  const antes = mem.estados || [];\n  const achou = antes.find(e => e.s === String(s || '') && agora - e.t < VALIDADE_ESTADO);\n  mem.estados = antes.filter(e => e !== achou && agora - e.t < VALIDADE_ESTADO);\n  return !!achou;\n}\n\nfunction chaveInterna(segredo) {\n  return crypto.createHash('sha256').update('ml-token:' + String(segredo || '')).digest('hex');\n}\n\nfunction guardarToken(mem, tok, agora) {\n  if (!tok || !tok.access_token || !tok.refresh_token) return { ok: false, motivo: 'resposta_sem_token' };\n  const usuario = String(tok.user_id || '');\n  if (mem.ml && mem.ml.usuario && usuario && mem.ml.usuario !== usuario) return { ok: false, motivo: 'outra_conta' };\n  mem.ml = { usuario: usuario || (mem.ml && mem.ml.usuario) || '', token: tok.access_token, refresh: tok.refresh_token,\n    expira: agora + (Number(tok.expires_in) || 21600) * 1000, escopo: tok.scope || '', renovado: agora };\n  return { ok: true, usuario: mem.ml.usuario };\n}\n\nconst precisaRenovar = (mem, agora) => !!(mem.ml && mem.ml.refresh) && mem.ml.expira - agora < RENOVA_ANTES;\nconst tokenValido = (mem, agora) => (mem.ml && mem.ml.token && mem.ml.expira - agora > 60000 ? mem.ml.token : null);\n\nfunction redeML(http) {\n  return async ({ method, url, form, token }) => {\n    const headers = { Accept: 'application/json' };\n    if (token) headers.Authorization = `Bearer ${token}`;\n    let body;\n    if (form) { headers['Content-Type'] = 'application/x-www-form-urlencoded'; body = new PARAMS(form).toString(); }\n    const r = await http.httpRequest({ method, url, headers, body, json: false, returnFullResponse: true,\n      ignoreHttpStatusErrors: true, timeout: 15000 });\n    let corpo = r.body;\n    if (typeof corpo === 'string') { try { corpo = JSON.parse(corpo); } catch (e) { /* texto */ } }\n    return { status: r.statusCode, corpo };\n  };\n}\n\nasync function trocarCodigo(pedir, { appId, segredo, retorno, codigo }) {\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'authorization_code', client_id: appId, client_secret: segredo, code: codigo, redirect_uri: retorno } });\n  return r.status === 200 ? r.corpo : null;\n}\n\nasync function renovar(pedir, mem, { appId, segredo }, agora) {\n  if (!mem.ml || !mem.ml.refresh) return { ok: false, motivo: 'sem_autorizacao' };\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'refresh_token', client_id: appId, client_secret: segredo, refresh_token: mem.ml.refresh } });\n  if (r.status !== 200) {\n    mem.ml.erro = { status: r.status, quando: agora, msg: String((r.corpo && (r.corpo.error || r.corpo.message)) || '').slice(0, 80) };\n    return { ok: false, motivo: 'ml_recusou', status: r.status };\n  }\n  return guardarToken(mem, r.corpo, agora);\n}\n\nconst esc = (s) => String(s).replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\nfunction pagina(titulo, texto, botao) {\n  const b = botao ? `<p><a href=\"${esc(botao.url)}\" style=\"display:inline-block;background:#3483fa;color:#fff;padding:14px 22px;border-radius:8px;text-decoration:none;font-weight:600\">${esc(botao.texto)}</a></p>` : '';\n  return `<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>${esc(titulo)}</title></head>`\n    + `<body style=\"font-family:system-ui,sans-serif;max-width:480px;margin:48px auto;padding:0 16px;color:#222;background:#fff\"><h1 style=\"font-size:22px\">${esc(titulo)}</h1><p>${esc(texto)}</p>${b}</body></html>`;\n}\n\nconst mem = $getWorkflowStaticData('global');\nconst q = $('ML retorno').first().json.query || {};\nconst agora = Date.now();\nconst fim = (t, x) => [{ json: { html: pagina(t, x) } }];\nif (q.error) return fim('Não autorizado', 'O Mercado Livre não liberou o acesso. Abra o link de autorização de novo e clique em Permitir.');\nif (!usarEstado(mem, q.state, agora)) return fim('Link vencido', 'Esse retorno não veio do link do robô ou passou de 15 minutos. Abra o link de autorização de novo.');\nconst tok = await trocarCodigo(redeML(this.helpers), { appId: $env.ML_APP_ID, segredo: $env.ML_SECRET,\n  retorno: $env.ML_RETORNO || 'https://n8n-production-4226.up.railway.app/webhook/ml-retorno', codigo: q.code });\nif (!tok) return fim('Não deu certo', 'O Mercado Livre recusou o código. Confira se o redirect do app é o mesmo endereço do robô e tente de novo.');\nconst g = guardarToken(mem, tok, agora);\nif (!g.ok) return fim('Conta diferente', 'O robô já está ligado a outra conta do Mercado Livre e continua com ela.');\nreturn fim('Pronto!', 'O robô está conectado ao Mercado Livre. Pode fechar esta página.');"
+      },
+      "id": "8bffd9b4-31a7-5e37-bfd9-bfea03e218b6",
+      "name": "Troca o código",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "2f478285-8148-5397-97af-19c9892722d5",
+      "name": "De hora em hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\nlet nodeUrl = null; try { nodeUrl = require('url'); } catch (e) { nodeUrl = null; }\n\nconst URLM = typeof URL !== 'undefined' ? URL : nodeUrl.URL;\nconst PARAMS = typeof URLSearchParams !== 'undefined' ? URLSearchParams : nodeUrl.URLSearchParams;\n\nconst ML_AUTH = 'https://auth.mercadolivre.com.br/authorization';\nconst ML_API = 'https://api.mercadolibre.com';\nconst VALIDADE_ESTADO = 15 * 60 * 1000;\nconst RENOVA_ANTES = 2 * 60 * 60 * 1000;\n\nfunction linkAutorizacao(appId, retorno, estado) {\n  const u = new URLM(ML_AUTH);\n  u.searchParams.set('response_type', 'code');\n  u.searchParams.set('client_id', String(appId));\n  u.searchParams.set('redirect_uri', retorno);\n  u.searchParams.set('state', estado);\n  return u.toString();\n}\n\nfunction novoEstado(mem, agora, sorteio = () => crypto.randomBytes(16).toString('hex')) {\n  mem.estados = (mem.estados || []).filter(e => agora - e.t < VALIDADE_ESTADO).slice(-9);\n  const s = sorteio();\n  mem.estados.push({ s, t: agora });\n  return s;\n}\n\nfunction usarEstado(mem, s, agora) {\n  const antes = mem.estados || [];\n  const achou = antes.find(e => e.s === String(s || '') && agora - e.t < VALIDADE_ESTADO);\n  mem.estados = antes.filter(e => e !== achou && agora - e.t < VALIDADE_ESTADO);\n  return !!achou;\n}\n\nfunction chaveInterna(segredo) {\n  return crypto.createHash('sha256').update('ml-token:' + String(segredo || '')).digest('hex');\n}\n\nfunction guardarToken(mem, tok, agora) {\n  if (!tok || !tok.access_token || !tok.refresh_token) return { ok: false, motivo: 'resposta_sem_token' };\n  const usuario = String(tok.user_id || '');\n  if (mem.ml && mem.ml.usuario && usuario && mem.ml.usuario !== usuario) return { ok: false, motivo: 'outra_conta' };\n  mem.ml = { usuario: usuario || (mem.ml && mem.ml.usuario) || '', token: tok.access_token, refresh: tok.refresh_token,\n    expira: agora + (Number(tok.expires_in) || 21600) * 1000, escopo: tok.scope || '', renovado: agora };\n  return { ok: true, usuario: mem.ml.usuario };\n}\n\nconst precisaRenovar = (mem, agora) => !!(mem.ml && mem.ml.refresh) && mem.ml.expira - agora < RENOVA_ANTES;\nconst tokenValido = (mem, agora) => (mem.ml && mem.ml.token && mem.ml.expira - agora > 60000 ? mem.ml.token : null);\n\nfunction redeML(http) {\n  return async ({ method, url, form, token }) => {\n    const headers = { Accept: 'application/json' };\n    if (token) headers.Authorization = `Bearer ${token}`;\n    let body;\n    if (form) { headers['Content-Type'] = 'application/x-www-form-urlencoded'; body = new PARAMS(form).toString(); }\n    const r = await http.httpRequest({ method, url, headers, body, json: false, returnFullResponse: true,\n      ignoreHttpStatusErrors: true, timeout: 15000 });\n    let corpo = r.body;\n    if (typeof corpo === 'string') { try { corpo = JSON.parse(corpo); } catch (e) { /* texto */ } }\n    return { status: r.statusCode, corpo };\n  };\n}\n\nasync function trocarCodigo(pedir, { appId, segredo, retorno, codigo }) {\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'authorization_code', client_id: appId, client_secret: segredo, code: codigo, redirect_uri: retorno } });\n  return r.status === 200 ? r.corpo : null;\n}\n\nasync function renovar(pedir, mem, { appId, segredo }, agora) {\n  if (!mem.ml || !mem.ml.refresh) return { ok: false, motivo: 'sem_autorizacao' };\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'refresh_token', client_id: appId, client_secret: segredo, refresh_token: mem.ml.refresh } });\n  if (r.status !== 200) {\n    mem.ml.erro = { status: r.status, quando: agora, msg: String((r.corpo && (r.corpo.error || r.corpo.message)) || '').slice(0, 80) };\n    return { ok: false, motivo: 'ml_recusou', status: r.status };\n  }\n  return guardarToken(mem, r.corpo, agora);\n}\n\nconst esc = (s) => String(s).replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\nfunction pagina(titulo, texto, botao) {\n  const b = botao ? `<p><a href=\"${esc(botao.url)}\" style=\"display:inline-block;background:#3483fa;color:#fff;padding:14px 22px;border-radius:8px;text-decoration:none;font-weight:600\">${esc(botao.texto)}</a></p>` : '';\n  return `<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>${esc(titulo)}</title></head>`\n    + `<body style=\"font-family:system-ui,sans-serif;max-width:480px;margin:48px auto;padding:0 16px;color:#222;background:#fff\"><h1 style=\"font-size:22px\">${esc(titulo)}</h1><p>${esc(texto)}</p>${b}</body></html>`;\n}\n\nconst mem = $getWorkflowStaticData('global');\nconst agora = Date.now();\nif (!mem.ml) return [{ json: { ok: false, motivo: 'sem_autorizacao' } }];\nif (!precisaRenovar(mem, agora)) return [{ json: { ok: true, motivo: 'ainda_vale', minutos: Math.round((mem.ml.expira - agora) / 60000) } }];\nconst r = await renovar(redeML(this.helpers), mem, { appId: $env.ML_APP_ID, segredo: $env.ML_SECRET }, agora);\nreturn [{ json: { ok: r.ok, motivo: r.motivo || 'renovado', status: r.status || null } }];"
+      },
+      "id": "88afb787-2b71-55de-8d9e-3840a02e55f0",
+      "name": "Renova o token",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "ml-token",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {
+          "responsePropertyName": "dados"
+        }
+      },
+      "id": "f6637782-8872-5a7b-93f2-8cde854c8a53",
+      "name": "ML token",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        600
+      ],
+      "webhookId": "718cb550-da98-51e7-9888-13c960631def"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\nlet nodeUrl = null; try { nodeUrl = require('url'); } catch (e) { nodeUrl = null; }\n\nconst URLM = typeof URL !== 'undefined' ? URL : nodeUrl.URL;\nconst PARAMS = typeof URLSearchParams !== 'undefined' ? URLSearchParams : nodeUrl.URLSearchParams;\n\nconst ML_AUTH = 'https://auth.mercadolivre.com.br/authorization';\nconst ML_API = 'https://api.mercadolibre.com';\nconst VALIDADE_ESTADO = 15 * 60 * 1000;\nconst RENOVA_ANTES = 2 * 60 * 60 * 1000;\n\nfunction linkAutorizacao(appId, retorno, estado) {\n  const u = new URLM(ML_AUTH);\n  u.searchParams.set('response_type', 'code');\n  u.searchParams.set('client_id', String(appId));\n  u.searchParams.set('redirect_uri', retorno);\n  u.searchParams.set('state', estado);\n  return u.toString();\n}\n\nfunction novoEstado(mem, agora, sorteio = () => crypto.randomBytes(16).toString('hex')) {\n  mem.estados = (mem.estados || []).filter(e => agora - e.t < VALIDADE_ESTADO).slice(-9);\n  const s = sorteio();\n  mem.estados.push({ s, t: agora });\n  return s;\n}\n\nfunction usarEstado(mem, s, agora) {\n  const antes = mem.estados || [];\n  const achou = antes.find(e => e.s === String(s || '') && agora - e.t < VALIDADE_ESTADO);\n  mem.estados = antes.filter(e => e !== achou && agora - e.t < VALIDADE_ESTADO);\n  return !!achou;\n}\n\nfunction chaveInterna(segredo) {\n  return crypto.createHash('sha256').update('ml-token:' + String(segredo || '')).digest('hex');\n}\n\nfunction guardarToken(mem, tok, agora) {\n  if (!tok || !tok.access_token || !tok.refresh_token) return { ok: false, motivo: 'resposta_sem_token' };\n  const usuario = String(tok.user_id || '');\n  if (mem.ml && mem.ml.usuario && usuario && mem.ml.usuario !== usuario) return { ok: false, motivo: 'outra_conta' };\n  mem.ml = { usuario: usuario || (mem.ml && mem.ml.usuario) || '', token: tok.access_token, refresh: tok.refresh_token,\n    expira: agora + (Number(tok.expires_in) || 21600) * 1000, escopo: tok.scope || '', renovado: agora };\n  return { ok: true, usuario: mem.ml.usuario };\n}\n\nconst precisaRenovar = (mem, agora) => !!(mem.ml && mem.ml.refresh) && mem.ml.expira - agora < RENOVA_ANTES;\nconst tokenValido = (mem, agora) => (mem.ml && mem.ml.token && mem.ml.expira - agora > 60000 ? mem.ml.token : null);\n\nfunction redeML(http) {\n  return async ({ method, url, form, token }) => {\n    const headers = { Accept: 'application/json' };\n    if (token) headers.Authorization = `Bearer ${token}`;\n    let body;\n    if (form) { headers['Content-Type'] = 'application/x-www-form-urlencoded'; body = new PARAMS(form).toString(); }\n    const r = await http.httpRequest({ method, url, headers, body, json: false, returnFullResponse: true,\n      ignoreHttpStatusErrors: true, timeout: 15000 });\n    let corpo = r.body;\n    if (typeof corpo === 'string') { try { corpo = JSON.parse(corpo); } catch (e) { /* texto */ } }\n    return { status: r.statusCode, corpo };\n  };\n}\n\nasync function trocarCodigo(pedir, { appId, segredo, retorno, codigo }) {\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'authorization_code', client_id: appId, client_secret: segredo, code: codigo, redirect_uri: retorno } });\n  return r.status === 200 ? r.corpo : null;\n}\n\nasync function renovar(pedir, mem, { appId, segredo }, agora) {\n  if (!mem.ml || !mem.ml.refresh) return { ok: false, motivo: 'sem_autorizacao' };\n  const r = await pedir({ method: 'POST', url: ML_API + '/oauth/token', form: {\n    grant_type: 'refresh_token', client_id: appId, client_secret: segredo, refresh_token: mem.ml.refresh } });\n  if (r.status !== 200) {\n    mem.ml.erro = { status: r.status, quando: agora, msg: String((r.corpo && (r.corpo.error || r.corpo.message)) || '').slice(0, 80) };\n    return { ok: false, motivo: 'ml_recusou', status: r.status };\n  }\n  return guardarToken(mem, r.corpo, agora);\n}\n\nconst esc = (s) => String(s).replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\nfunction pagina(titulo, texto, botao) {\n  const b = botao ? `<p><a href=\"${esc(botao.url)}\" style=\"display:inline-block;background:#3483fa;color:#fff;padding:14px 22px;border-radius:8px;text-decoration:none;font-weight:600\">${esc(botao.texto)}</a></p>` : '';\n  return `<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>${esc(titulo)}</title></head>`\n    + `<body style=\"font-family:system-ui,sans-serif;max-width:480px;margin:48px auto;padding:0 16px;color:#222;background:#fff\"><h1 style=\"font-size:22px\">${esc(titulo)}</h1><p>${esc(texto)}</p>${b}</body></html>`;\n}\n\nconst mem = $getWorkflowStaticData('global');\nconst h = $('ML token').first().json.headers || {};\nif (!$env.ML_SECRET || String(h['x-chave'] || '') !== chaveInterna($env.ML_SECRET)) return [{ json: { dados: { token: null, motivo: 'chave' } } }];\nconst token = tokenValido(mem, Date.now());\nreturn [{ json: { dados: { token, motivo: token ? null : (mem.ml ? 'vencido' : 'sem_autorizacao') } } }];"
+      },
+      "id": "5bccd811-0574-50fe-b31c-24a223863851",
+      "name": "Entrega o token",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        600
+      ]
+    }
+  ],
+  "connections": {
+    "ML autorizar": {
+      "main": [
+        [
+          {
+            "node": "Monta o link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ML retorno": {
+      "main": [
+        [
+          {
+            "node": "Troca o código",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "De hora em hora": {
+      "main": [
+        [
+          {
+            "node": "Renova o token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ML token": {
+      "main": [
+        [
+          {
+            "node": "Entrega o token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
