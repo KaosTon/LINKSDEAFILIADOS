@@ -190,6 +190,32 @@ cadastro no AliExpress Portals e link gerado pela API deles.
 | 4 | Trocar o nome do perfil do número do robô para PromoX | aparece em todo post |
 | 5 | Trocar `GRUPO_OFERTAS` pelo grupo de verdade | sair do grupo de teste |
 
+## Pesquisa de melhorias (16/10)
+
+Pesquisa na internet (docs oficiais, blogs e comunidades BR). Parte das fontes é blog de terceiro; o que está "a verificar" não foi confirmado em documento oficial.
+
+**Compliance (fazer primeiro, esforço baixo)**
+- CONAR, Guia de Influenciadores (vale desde 1/6/2026): link de afiliado com comissão é publicidade e tem que estar identificado de forma clara ("publi" ou "publicidade"). Proposta: "#publi" curto em cada post e a regra fixa na descrição do grupo.
+- CDC arts. 30 e 31: o preço anunciado vincula. Já conferimos o preço na loja; falta o aviso "preços e estoque podem mudar" na descrição e cuidar do "De X" (preço riscado inflado é risco de publicidade enganosa; histórico de preço próprio resolve).
+- Amazon Associados: o grupo tem que estar cadastrado como canal no painel (a verificar no contrato). Encurtador próprio: redirecionar direto para a Amazon com a tag, sem esconder que é Amazon.
+- LGPD: não expor nem exportar os números do grupo; se o encurtador gravar IP, anonimizar e ter prazo.
+- Cupom de terceiro: algumas lojas (KaBuM via Awin) cancelam a comissão se o cupom não veio delas. Hoje não postamos KaBuM.
+
+**Riscos para acompanhar**
+- Amazon: a PA-API 5 foi substituída pela Creators API (OAuth; dizem que pede 10 vendas em 30 dias; Brasil a verificar). A política fala em preço vindo de link ou API da Amazon e foto sem cache. O robô lê a página pública; quando tivermos vendas, migrar para a Creators API.
+- WhatsApp: número dedicado, intervalos variados, entrada só por convite, plano B (espelho no Telegram e Canal do WhatsApp, número reserva).
+
+**Melhorias de conversão**
+- Shopee: subIds no link (até 5: canal, grupo, tipo, id) e o conversionReport para saber o que vende. Esforço baixo.
+- Shopee: shopOfferV2 (lojas com comissão extra do vendedor).
+- Histórico de preço próprio (tabela no n8n): "menor preço em 30 dias" e barrar "De X" falso.
+- ML: uma etiqueta por grupo para medir cada grupo.
+- Encurtador próprio: cliques por hora para ajustar o horário dos posts.
+- Formatos: "cupom do dia", resumo dos mais vendidos da semana, enquete de categoria.
+- Novas lojas: KaBuM (Awin), AliExpress (Awin/Admitad), Lomadee.
+
+**Feito em 16/10**: preço, nome e foto do ML de catálogo pela API (fluxo 04); cupom da página da Amazon (código ou cupom de marcar; cupom de primeira compra vira aviso e não muda o preço).
+
 ## Próximas fases (ordem combinada em 15/10)
 
 1. **Grupo de verdade rodando** com o ritmo de número novo (40 por dia, espalhado até as 22h) e subir aos poucos.
