@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -350,6 +350,37 @@ console.log('\n=== Travas de qualidade (16/10) ===');
   caso('resumo: so depois das 22h e uma vez por dia', !horaDoResumo(mem, AGORA, CFG) && horaDoResumo(mem, NOITE, CFG) && !horaDoResumo({ ...mem, resumoDia: '2026-10-06' }, NOITE, CFG));
 }
 
+console.log('\n=== Painel do resumo: membros, cliques e Shopee (17/10) ===');
+{
+  const D1 = new Date('2026-10-06T01:10:00Z'), D2 = new Date('2026-10-07T01:10:00Z');   // 05/10 e 06/10, 22h10 em SP
+  const mem = { resumo: { lojas: { amazon: 2 }, descartes: {} }, titulos: { 'https://www.mercadolivre.com.br/p/MLB1': 'Sorveteira Teste' } };
+  guardarPainel(mem, D1, { membros: 100, cliques: { grupo: { status: 2 }, top: [{ url: 'https://www.mercadolivre.com.br/p/MLB1', cliques: 5 }] }, shopee: null });
+  const x = guardarPainel(mem, D2, { membros: 109, cliques: { grupo: { status: 7, indicacao: 3 }, top: [{ url: 'https://www.mercadolivre.com.br/p/MLB1', cliques: 25 }, { url: 'https://www.mercadolivre.com.br/p/MLB2', cliques: 4 }] },
+    shopee: { pedidos: 2, valor: 80.5, comissao: 6.1 } });
+  caso('membros e diferenca do dia', x.membros === 109 && x.membrosDia === 9 && x.membrosSemana === null, x);
+  caso('cliques no convite do dia por origem (diferenca da vespera)', x.convites.status === 5 && x.convites.indicacao === 3, x.convites);
+  caso('ofertas mais clicadas no dia, pelo nome', x.topOfertas[0].titulo === 'Sorveteira Teste' && x.topOfertas[0].cliques === 20 && x.topOfertas[1].cliques === 4, x.topOfertas);
+  const t = textoResumo(mem, D2, x);
+  caso('resumo com o painel', /Membros: 109 \(hoje \+9\)/.test(t) && /Cliques no convite hoje: 8 \(status 5, indicacao 3\)/.test(t) && /Sorveteira Teste: 20/.test(t) && /2 pedidos, R\$ 80,50 em compras, comissão estimada R\$ 6,10/.test(t), t);
+  caso('sem painel: resumo como antes', !/Membros/.test(textoResumo(mem, D2)));
+  caso('uma foto por dia (rodar de novo no mesmo dia troca a foto)', (guardarPainel(mem, D2, { membros: 110, cliques: null, shopee: null }), mem.historico.filter(h => h.dia === '2026-10-06').length === 1 && mem.historico.length === 2));
+  const m7 = { historico: [{ dia: '2026-09-29', membros: 80 }] };
+  const s7 = guardarPainel(m7, D2, { membros: 109, cliques: null, shopee: null });
+  caso('membros em 7 dias', s7.membrosSemana === 29 && s7.convites === undefined, s7);
+  const primeiro = guardarPainel({}, D2, { membros: 14, cliques: { grupo: { status: 1 }, top: [] }, shopee: { pedidos: 0, valor: 0, comissao: 0 } });
+  const tp = textoResumo({ resumo: { lojas: {}, descartes: {} } }, D2, primeiro);
+  caso('primeiro dia: membros sem diferenca, convite comeca amanha, Shopee sem venda', /Membros: 14\n/.test(tp + '\n') && /começa a contar amanhã/.test(tp) && /Nenhuma venda/.test(tp), tp);
+  const DOM = new Date('2026-10-12T01:10:00Z');   // domingo 11/10, 22h10 em SP
+  const md = { historico: ['2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-10'].map((dia, i) => ({ dia, membros: 100 + i })) };
+  const dom = guardarPainel(md, DOM, { membros: 110, cliques: null, shopee: null });
+  caso('domingo: membros dia a dia na semana', dom.semana.length === 7 && dom.semana[0][0] === '05/10' && dom.semana[6][1] === 110 && /Semana: 05\/10 100/.test(textoResumo({ resumo: { lojas: {}, descartes: {} } }, DOM, dom)), dom.semana);
+  caso('somar vendas da Shopee', JSON.stringify(somarVendasShopee([{ estimatedTotalCommission: '3.5', orders: [{ items: [{ actualAmount: '20' }, { actualAmount: '10.5' }] }] }, { totalCommission: '1', orders: [{ items: [{ actualAmount: '9.99' }] }] }])) === JSON.stringify({ pedidos: 2, valor: 40.49, comissao: 4.5 }));
+  const falha = await coletarPainel({ membrosDoGrupo: async () => { throw new Error('x'); }, cliques: async () => ({ grupo: {}, top: [] }), shopeeVendas: async () => null }, ['g1'], D2);
+  caso('coletar: o que falha fica de fora', falha.membros === null && falha.cliques && falha.shopee === null, falha);
+  const dois = await coletarPainel({ membrosDoGrupo: async (g) => (g === 'g1' ? 10 : 5), cliques: async () => null, shopeeVendas: async (ini, fim) => ({ ini, fim }) }, ['g1', 'g2'], D2);
+  caso('coletar: soma os grupos e pede a Shopee do inicio do dia em SP', dois.membros === 15 && dois.shopee.ini === Date.parse('2026-10-06T03:00:00Z') / 1000, dois);
+}
+
 console.log('\n=== Conferir preco com a loja (16/10) ===');
 {
   const sem = conferirPreco({ preco: 90, cupons: [] }, { preco: 100 });
@@ -542,6 +573,22 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('status: sem oferta de hoje, nao manda', st2.tipo !== 'status', st2);
   const st3 = (await roda({ env: { ...LIG, GRUPO_LINK: 'https://outro.com.br/entrar/' }, memoria: { dia: '2026-10-06', melhorDoDia: melhor } })).saida[0].json;
   caso('GRUPO_LINK troca o link do grupo', st3.texto.endsWith('https://outro.com.br/entrar?de=status'), st3.texto);
+  const NOITE22 = new Date('2026-10-07T01:10:00Z');   // 22h10 em SP
+  const httpR = [...http,
+    { quando: /light-group-metadata\/120363000000000002-group/, responde: { participants: [{ phone: 'a' }, { phone: 'b' }, { phone: 'c' }] } },
+    { quando: /encurta\.teste\/api\/cliques/, responde: { total: 1, top: [], grupo: { status: 4 } } },
+    { quando: /open-api\.affiliate\.shopee\.com\.br\/graphql/, metodo: 'POST', responde: (op) => JSON.stringify(/conversionReport/.test(op.body)
+      ? { data: { conversionReport: { nodes: [{ estimatedTotalCommission: '2.5', orders: [{ items: [{ actualAmount: '30' }] }] }], pageInfo: { hasNextPage: false, scrollId: '' } } } } : {}) },
+  ];
+  const envR = { ...ENV, GARIMPO_LIGADO: 'sim', GRUPO_RASCUNHO: '120363000000000001-group', ZAPI_BASE_URL: 'https://zapi.teste', ZAPI_INSTANCE_ID: 'I', ZAPI_INSTANCE_TOKEN: 'T',
+    ENCURTADOR_URL: 'https://encurta.teste', ENCURTADOR_SEGREDO: 'S', SHOPEE_APP_ID: '1', SHOPEE_SECRET: 'x' };
+  const memR = { dia: '2026-10-06', postados: 3, resumo: { lojas: { amazon: 3 }, descartes: {} } };
+  const rs = await rodar(codigo, { env: envR, http: httpR, memoria: memR, agora: NOITE22 });
+  const jr = rs.saida[0].json;
+  caso('no as 22h: resumo com membros, convite e Shopee', jr.tipo === 'resumo' && /Membros: 3/.test(jr.texto) && /começa a contar amanhã/.test(jr.texto) && /1 pedido, R\$ 30,00/.test(jr.texto) && memR.historico.length === 1, jr.texto);
+  caso('no as 22h: Z-API e encurtador chamados com as chaves', rs.chamadas.some(c => /zapi\.teste\/instances\/I\/token\/T\/light-group-metadata/.test(c.url)) && rs.chamadas.some(c => /api\/cliques/.test(c.url) && c.headers.Authorization === 'Bearer S'));
+  const semNada = await rodar(codigo, { env: { ...ENV, GARIMPO_LIGADO: 'sim', GRUPO_RASCUNHO: '120363000000000001-group' }, http, memoria: { dia: '2026-10-06', resumo: { lojas: {}, descartes: {} } }, agora: NOITE22 });
+  caso('no as 22h sem as chaves: resumo sai como antes', semNada.saida[0].json.tipo === 'resumo' && !/Membros/.test(semNada.saida[0].json.texto), semNada.saida[0].json.texto);
   const anota = pegarCodigo('03-garimpo.json', 'Anota');
   const mem = { postados: 3, produtos: {} };
   await rodar(anota, { itens: [{ json: { ok: false, erro: 'x' } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'amazon:Z', tipo: 'produto' } }] } });
@@ -561,6 +608,8 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('Anota: guarda a oferta de maior desconto do dia', m2.melhorDoDia && m2.melhorDoDia.desconto === 50 && m2.melhorDoDia.texto.startsWith('A'), m2.melhorDoDia);
   await prod('C\n70% OFF, CORRE', '');
   caso('Anota: oferta sem foto nao vira status', m2.melhorDoDia.desconto === 50);
+  await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m2, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'ml:1', link: 'https://www.mercadolivre.com.br/p/MLB1?x=1', titulo: 'Sorveteira Teste', texto: 'x', imagem: '' } }] } });
+  caso('Anota: guarda o nome do link para o resumo', m2.titulos['https://www.mercadolivre.com.br/p/MLB1?x=1'] === 'Sorveteira Teste');
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
