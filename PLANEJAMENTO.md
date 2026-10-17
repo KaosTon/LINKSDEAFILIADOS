@@ -188,8 +188,8 @@ cadastro no AliExpress Portals e link gerado pela API deles.
 | 2 | FEITO 16/10: encurtador no Railway com `SITE_URL`; link curto do ML conferido de ponta a ponta | link curto `temdescontos.com.br/a7k2m` e contagem de cliques |
 | 2b | Site NO AR 16/10 em `www.temdescontos.com.br` com o logo dele. Falta: Instagram, e-mail, assinatura dos guias, aprovar textos, frase da Amazon (`site/BRIEFING.md` §2) | site e blog |
 | 3 | Link (meli.la) da lista de afiliado do Mercado Livre ("Achados com cupom" ou "Minhas recomendações") | post de cupom do ML hoje sai sem link dele: sem comissão |
-| 4 | Trocar o nome do perfil do número do robô para PromoX | aparece em todo post |
-| 5 | Trocar `GRUPO_OFERTAS` pelo grupo de verdade | sair do grupo de teste |
+| 4 | FEITO 17/10: perfil do número do robô com nome e foto do Tem Descontos | aparece em todo post |
+| 5 | FEITO 17/10: o grupo de teste virou o oficial (foto, nome e descrição); `GRUPO_OFERTAS` e `CONVITE_GRUPO` continuam os mesmos | sair do grupo de teste |
 
 ## Pesquisa de melhorias (16/10)
 

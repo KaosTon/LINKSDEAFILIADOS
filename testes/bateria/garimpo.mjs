@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -460,6 +460,39 @@ console.log('\n=== Shopee oficial (14/10) ===');
   caso('Shopee ja postado na semana: vai para o proximo da lista', r4.link === 'https://s.shopee.com.br/A', r4);
 }
 
+console.log('\n=== Vez do eletronico (17/10) ===');
+{
+  caso('eletronico pelo nome', ['Smartphone Xiaomi Poco X7 Pro', 'Samsung Smart TV 75" Mini LED', 'Fone de Ouvido Sem Fio', 'Monitor Gamer 27', 'Power Bank 10000mAh', 'Philco TV 50'].every(ehEletronico));
+  caso('nao eletronico pelo nome', !['Kit Sabonete Phebo 720g', 'Mousse de Chocolate', 'Lixeira 16 Litros', 'Top Alpha Basic', 'Kit 12 Potes Herméticos'].some(ehEletronico));
+  const SAB = 'Kit Sabonete Teste 720g\n\n🔥 Por: R$ 32\n\n🛒 Link: https://link.amazon/Bccc';
+  const canais = () => ({ canalum: pagina(post('canalum/70', min(20), P1, 'https://cdn1.telesco.pe/file/f70'), post('canalum/71', min(5), SAB, 'https://cdn1.telesco.pe/file/f71')) });
+  const C2 = { ...CFG, eletronicoACada: 2 };
+  const fora = await garimpar({ canais: canais(), agora: AGORA, cfg: C2, mem: { ...memNova(), semEletronico: 0 }, rede });
+  caso('fora da vez: o mais novo (sabonete)', fora.chave === 'amazon:B0CCCCCCCC', fora);
+  const na = await garimpar({ canais: canais(), agora: AGORA, cfg: C2, mem: { ...memNova(), semEletronico: 1 }, rede });
+  caso('na vez: o eletronico primeiro, mesmo mais velho (monitor)', na.chave === 'amazon:B0AAAAAAAA', na);
+  const desl = await garimpar({ canais: canais(), agora: AGORA, cfg: { ...CFG, eletronicoACada: 0 }, mem: { ...memNova(), semEletronico: 9 }, rede });
+  caso('GARIMPO_ELETRONICO_A_CADA 0: desligado', desl.chave === 'amazon:B0CCCCCCCC', desl);
+  const sem = await garimpar({ canais: { canalum: pagina(post('canalum/72', min(5), SAB, 'https://cdn1.telesco.pe/file/f72')) }, agora: AGORA, cfg: C2, mem: { ...memNova(), semEletronico: 5 }, rede });
+  caso('na vez sem eletronico: sai o de sempre', sem.chave === 'amazon:B0CCCCCCCC', sem);
+  const SH = [
+    { nome: 'Creatina Teste 300g', preco: 39.9, desconto: 47, comissao: 0.40, foto: 'f', link: 'https://s.shopee.com.br/A', chave: 'shopee:1.11' },
+    { nome: 'Fone Bluetooth Teste', preco: 20, desconto: 45, comissao: 0.10, foto: 'f', link: 'https://s.shopee.com.br/B', chave: 'shopee:2.22' } ];
+  const s1 = await garimpar({ canais: {}, shopee: SH, agora: AGORA, cfg: { ...C2, shopee: true }, mem: { ...memNova(), postados: 2, semEletronico: 1 }, rede });
+  caso('Shopee na vez: o eletronico, mesmo com comissao menor', s1.link === 'https://s.shopee.com.br/B', s1);
+  const s0 = await garimpar({ canais: {}, shopee: SH, agora: AGORA, cfg: { ...C2, shopee: true }, mem: { ...memNova(), postados: 2, semEletronico: 0 }, rede });
+  caso('Shopee fora da vez: a maior comissao', s0.link === 'https://s.shopee.com.br/A', s0);
+  const s2 = await garimpar({ canais: canais(), shopee: [SH[0]], agora: AGORA, cfg: { ...C2, shopee: true }, mem: { ...memNova(), postados: 2, semEletronico: 1 }, rede });
+  caso('vez da Shopee e do eletronico, Shopee sem eletronico: vai o eletronico do canal', s2.chave === 'amazon:B0AAAAAAAA', s2);
+  const m = memNova();
+  registrarPostado(m, { chave: 'amazon:X', tipo: 'produto' }, AGORA);
+  registrarPostado(m, { chave: 'amazon:Y', tipo: 'produto' }, AGORA);
+  caso('conta posts seguidos sem eletronico', m.semEletronico === 2);
+  registrarPostado(m, { chave: 'cupom:Z', tipo: 'cupom' }, AGORA);
+  registrarPostado(m, { chave: 'amazon:W', tipo: 'produto', eletronico: true }, AGORA);
+  caso('cupom nao conta; eletronico zera', m.semEletronico === 0);
+}
+
 console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
 {
   const codigo = pegarCodigo('03-garimpo.json', 'Garimpa');
@@ -500,6 +533,10 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('Anota: envio falhou, nao conta nem guarda', mem.postados === 3 && !mem.produtos['amazon:Z']);
   await rodar(anota, { itens: [{ json: { ok: true } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'cupom:Q', tipo: 'cupom' } }] } });
   caso('Anota: envio confirmado, conta e guarda', mem.postados === 4 && mem.cupons === 1 && mem.produtos['cupom:Q']);
+  await rodar(anota, { itens: [{ json: { ok: true } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'amazon:E1', tipo: 'produto', eletronico: false } }] } });
+  const semE = mem.semEletronico;
+  await rodar(anota, { itens: [{ json: { ok: true } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'amazon:E2', tipo: 'produto', eletronico: true } }] } });
+  caso('Anota: conta posts sem eletronico e zera no eletronico', semE === 1 && mem.semEletronico === 0, mem);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

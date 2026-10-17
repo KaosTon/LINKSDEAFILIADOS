@@ -9,8 +9,10 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * vem da lista oficial da Shopee (desconto de GARIMPO_DESCONTO_SHOPEE, 30%,
  * para cima; entre esses, a maior comissão). Lê as páginas públicas dos canais do Telegram
  * (GARIMPO_CANAIS) e as ofertas da Amazon, troca o link pelo seu e posta UMA
- * oferta por vez pelo gateway (fluxo 02). Só posta com GARIMPO_LIGADO=sim:
- * publicado sem isso, ele só calcula (dá para ver na execução o que sairia).
+ * oferta por vez pelo gateway (fluxo 02). Eletrônico ganha a vez a cada
+ * GARIMPO_ELETRONICO_A_CADA posts (2; 0 desliga): nessa vez ele é tentado
+ * primeiro. Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
+ * calcula (dá para ver na execução o que sairia).
  *
  * Link que não vira seu (ML de canal, Shopee sem API) descarta a oferta. A
  * legenda é sempre no seu padrão: nada do texto do canal vai para o grupo.
@@ -40,7 +42,7 @@ const garimpa = node({
 "  inicio: N('GARIMPO_INICIO', 8), fim: N('GARIMPO_FIM', 22), porDia: N('GARIMPO_POR_DIA', 30),",
 "  intervaloDia: N('GARIMPO_INTERVALO_DIA', 25), intervaloNoite: N('GARIMPO_INTERVALO_NOITE', 150), descontoShopee: N('GARIMPO_DESCONTO_SHOPEE', 30),",
 "  cuponsPorDia: N('GARIMPO_CUPONS_POR_DIA', 6), descontoMin: N('GARIMPO_DESCONTO_MIN', 15), idadeSemConferirMin: N('GARIMPO_IDADE_SEM_CONFERIR', 30),",
-"  idadeMaxMin: 120, maxTentativas: 8,",
+"  idadeMaxMin: 120, maxTentativas: 8, eletronicoACada: String($env.GARIMPO_ELETRONICO_A_CADA || '').trim() === '0' ? 0 : N('GARIMPO_ELETRONICO_A_CADA', 2),",
 "  canais: lista('GARIMPO_CANAIS', 'promotop,pechinchou,fadadoscupons,cupomonline'),",
 "  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",
@@ -61,7 +63,7 @@ const garimpa = node({
 "if (cfg.shopee) { try { shopee = await rede.shopeeOfertas(); } catch (e) { shopee = []; } }",
 "const r = await garimpar({ canais, amazonHtml, shopee, agora, cfg, mem, rede });",
 "if (r.acao !== 'postar') return [{ json: { postar: false, motivo: r.motivo, tentou: r.tentou, postados_hoje: mem.postados } }];",
-"return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || '') } }];"
+"return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || ''), eletronico: ehEletronico(r.titulo || '') } }];"
 ].join('\n') } },
   output: [{ postar: true, tipo: 'produto', chave: 'amazon:B0X', texto: 'Oferta', imagem: '', grupo: '120363000000000002-group' }]
 });
@@ -111,6 +113,8 @@ const anota = node({
 "  mem.produtos = mem.produtos || {};",
 "  if (g.chave) mem.produtos[g.chave] = Date.now();",
 "  if (g.parecido) mem.recentes = [...(mem.recentes || []), g.parecido].slice(-6);",
+"  // Vez do eletrônico (GARIMPO_ELETRONICO_A_CADA): posts seguidos sem eletrônico.",
+"  if (g.tipo !== 'cupom') mem.semEletronico = g.eletronico ? 0 : (mem.semEletronico || 0) + 1;",
 "}",
 "return [{ json: { ok: !!r.ok, erro: r.erro || null, chave: g.chave || null, fonte: g.fonte || null, postados_hoje: mem.postados || 0 } }];"
 ].join('\n') } },
