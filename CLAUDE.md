@@ -58,7 +58,7 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 | Fluxo | id no n8n | Estado |
 |---|---|---|
 | 01 Entrada (rascunho -> grupo) | `Q29NVtchUBdLaeKH` | PUBLICADO 15/10. Webhook `/webhook/ofertas-zapi?k=` na Z-API. Com nome e preço lidos, sai no padrão do garimpo (chamada, nome, De/por, link, cupom); senão, o texto como veio com os links trocados. Mensagem só de texto (colada, sem prévia) ganha a foto oficial: API da Shopee por loja e item, ou página da Amazon |
-| 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | PUBLICADO 16/10. Links do Mercado Livre saem encurtados pelo encurtador (ENCURTADOR_URL + ENCURTADOR_SEGREDO no n8n); se o encurtador falhar, vai o link original. Amazon vai direto (regra da Amazon) e Shopee já é curto. send-link com `linkType: LARGE` e a foto enquadrada em 1200x630 (images.weserv.nl, borda branca; sem isso a foto quadrada sai cortada). Plano B: send-image com a foto original |
+| 02 Gateway de saída (Z-API) | `0lJeNYqZyDG9Rq2J` | PUBLICADO 17/10. Vários grupos: `phone` (e `GRUPO_OFERTAS`) aceita ids separados por vírgula; a mesma mensagem vai para cada um com `GRUPOS_INTERVALO_SEG` (15 s, variando 30%) entre eles, total abaixo de 200 s; ok = saiu em pelo menos um. Encurta uma vez só. Links do Mercado Livre saem encurtados pelo encurtador (ENCURTADOR_URL + ENCURTADOR_SEGREDO no n8n); se o encurtador falhar, vai o link original. Amazon vai direto (regra da Amazon) e Shopee já é curto. send-link com `linkType: LARGE` e a foto enquadrada em 1200x630 (images.weserv.nl, borda branca; sem isso a foto quadrada sai cortada). Plano B: send-image com a foto original |
 | 03 Garimpo automático | `w7x4LWl6wiBWRZDB` | PUBLICADO 15/10 com `GARIMPO_LIGADO=sim`, postando no grupo de TESTE. Fontes: canais do Telegram, Shopee oficial (productOfferV2, 1 a cada 3, desconto 30%+, maior comissão), Amazon /deals. Ritmo: espalha o limite do dia até as 22h (guarda 1 para a noite), 2h30 entre posts de madrugada. Não repete o mesmo tipo de produto em 6 posts. Amazon: confere preço e usa título e foto oficiais. Mercado Livre de catálogo (/p/MLB): confere preço, nome e foto pela API (fluxo 04; anúncio comum MLB-123 a API não abre). Travas (16/10): link com produto diferente do texto (nome ou quantidade) não sai; ML sem como conferir só se o post tiver até 30 min (`GARIMPO_IDADE_SEM_CONFERIR`); "De" do canal com mais de 70% OFF sem a loja confirmar sai do post. Às 22h manda o resumo do dia (postados por loja, descartes por motivo) no rascunho. Rodada na mão não posta. O 01 está com a lib de antes das travas (só muda a lista de unidades em "Kit/2 unidades") |
 | 04 Mercado Livre | `s3ybSgtGEWoPM3x5` | PUBLICADO 16/10. Acesso OAuth à API do ML (app no ML Developers; `ML_APP_ID` e `ML_SECRET` no Railway). Webhooks: `ml-autorizar` (página com o botão; o dono autoriza uma vez), `ml-retorno` (troca o código e guarda o token na memória do fluxo, só a primeira conta), `ml-token` (entrega o token com o cabeçalho `x-chave` = sha256 de `ml-token:` + ML_SECRET). Renova de hora em hora. Lib: `lib/mercadolivre.mjs` |
 | 96 Ensaio: lê um post do canal | `V0XEygzTlePVkDCY` | manual; investigar post errado (preço e foto na página da Amazon) |
@@ -71,6 +71,14 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 **Railway (15/10):** `GARIMPO_POR_DIA=40`. Parece haver `GARIMPO_INTERVALO_DIA=30` (posts saíram de 30 em 30 min); o padrão do código é 25.
 
 **Mudou a lib:** subir de novo os nós Code que a usam (01, 02 e 03) quando a mudança afetar cada um.
+
+## Vários grupos de ofertas (estrutura pronta 17/10, em uso: 1 grupo)
+
+Cada grupo do WhatsApp aceita até 1.024 pessoas. Quando o grupo atual estiver perto de encher:
+1. Criar o grupo novo (mesmo nome com #2, #3...), pôr o número do robô como admin e o número reserva também.
+2. Railway, n8n: `GRUPO_OFERTAS` = ids de todos os grupos separados por vírgula, na ordem (`id1,id2`). Deploy.
+3. Railway, ENCURTADOR: `CONVITE_GRUPO` = convites de todos, na mesma ordem. O `/grupo` (site, bio, posts) abre o ÚLTIMO, o mais novo, que tem vaga; `/grupo?n=1` abre um específico.
+4. Com muitos grupos, ficar de olho no volume do número (cada oferta vira uma mensagem por grupo) e no plano da Z-API.
 
 ## Domínio, encurtador e site (16/10)
 
