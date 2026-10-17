@@ -11,7 +11,9 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * (GARIMPO_CANAIS) e as ofertas da Amazon, troca o link pelo seu e posta UMA
  * oferta por vez pelo gateway (fluxo 02). Eletrônico ganha a vez a cada
  * GARIMPO_ELETRONICO_A_CADA posts (2; 0 desliga): nessa vez ele é tentado
- * primeiro. Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
+ * primeiro. Às GARIMPO_CONVITE_HORA (19h) pede no grupo para compartilhar; às
+ * GARIMPO_STATUS_HORA (12h) manda a melhor oferta do dia no rascunho, para o
+ * status (0 desliga cada um). Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
  * calcula (dá para ver na execução o que sairia).
  *
  * Link que não vira seu (ML de canal, Shopee sem API) descarta a oferta. A
@@ -36,13 +38,16 @@ const garimpa = node({
 "const agora = new Date();",
 "const mem = arrumarMemoria($getWorkflowStaticData('global'), agora);",
 "const N = (k, d) => (Number($env[k]) > 0 ? Number($env[k]) : d);",
+"const N0 = (k, d) => (String($env[k] || '').trim() === '0' ? 0 : N(k, d));   // 0 desliga",
+
 "const lista = (k, d) => String($env[k] || d).split(',').map(s => s.trim()).filter(Boolean);",
 "const cfg = { amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA, mlTool: $env.ML_MATT_TOOL,",
 "  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET),",
 "  inicio: N('GARIMPO_INICIO', 8), fim: N('GARIMPO_FIM', 22), porDia: N('GARIMPO_POR_DIA', 30),",
 "  intervaloDia: N('GARIMPO_INTERVALO_DIA', 25), intervaloNoite: N('GARIMPO_INTERVALO_NOITE', 150), descontoShopee: N('GARIMPO_DESCONTO_SHOPEE', 30),",
 "  cuponsPorDia: N('GARIMPO_CUPONS_POR_DIA', 6), descontoMin: N('GARIMPO_DESCONTO_MIN', 15), idadeSemConferirMin: N('GARIMPO_IDADE_SEM_CONFERIR', 30),",
-"  idadeMaxMin: 120, maxTentativas: 8, eletronicoACada: String($env.GARIMPO_ELETRONICO_A_CADA || '').trim() === '0' ? 0 : N('GARIMPO_ELETRONICO_A_CADA', 2),",
+"  idadeMaxMin: 120, maxTentativas: 8, eletronicoACada: N0('GARIMPO_ELETRONICO_A_CADA', 2),",
+"  conviteHora: N0('GARIMPO_CONVITE_HORA', 19), statusHora: N0('GARIMPO_STATUS_HORA', 12),",
 "  canais: lista('GARIMPO_CANAIS', 'promotop,pechinchou,fadadoscupons,cupomonline'),",
 "  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",
@@ -52,6 +57,12 @@ const garimpa = node({
 "// 22h: o resumo do dia vai para o rascunho (uma vez por dia), pelo mesmo caminho do post.",
 "if ($env.GRUPO_RASCUNHO && !teste && horaDoResumo(mem, agora, cfg))",
 "  return [{ json: { postar: ligado, tipo: 'resumo', dia: diaSP(agora), grupo: $env.GRUPO_RASCUNHO, texto: textoResumo(mem, agora), imagem: '', link: '', titulo: '', teste: false } }];",
+"// 19h: convite para compartilhar o grupo; 12h: a melhor oferta do dia no rascunho, para o status.",
+"const linkGrupo = String($env.GRUPO_LINK || 'https://temdescontos.com.br/grupo').trim().replace(/\\/+$/, '');",
+"if ($env.GRUPO_OFERTAS && !teste && horaDoConvite(mem, agora, cfg))",
+"  return [{ json: { postar: ligado, tipo: 'convite', dia: diaSP(agora), grupo: $env.GRUPO_OFERTAS, texto: textoConvite(linkGrupo), imagem: '', link: '', titulo: '', teste: false } }];",
+"if ($env.GRUPO_RASCUNHO && !teste && horaDoStatus(mem, agora, cfg))",
+"  return [{ json: { postar: ligado, tipo: 'status', dia: diaSP(agora), grupo: $env.GRUPO_RASCUNHO, texto: textoStatus(mem.melhorDoDia, linkGrupo), imagem: mem.melhorDoDia.imagem, link: '', titulo: '', teste: false } }];",
 "const pode = podeAgora(mem, agora, cfg);",
 "if (!pode.ok && !teste) return [{ json: { postar: false, motivo: pode.motivo, postados_hoje: mem.postados } }];",
 "const rede = redeN8n(this.helpers, $env);",
@@ -99,9 +110,9 @@ const anota = node({
 "const r = $input.first().json || {};",
 "const g = $('Garimpa').first().json || {};",
 "const mem = $getWorkflowStaticData('global');",
-"if (r.ok && g.tipo === 'resumo') {",
-"  mem.resumoDia = g.dia;",
-"  return [{ json: { ok: true, resumo: true } }];",
+"if (r.ok && ['resumo', 'convite', 'status'].includes(g.tipo)) {",
+"  mem[g.tipo + 'Dia'] = g.dia;",
+"  return [{ json: { ok: true, [g.tipo]: true } }];",
 "}",
 "if (r.ok) {",
 "  mem.postados = (mem.postados || 0) + 1;",
@@ -115,6 +126,12 @@ const anota = node({
 "  if (g.parecido) mem.recentes = [...(mem.recentes || []), g.parecido].slice(-6);",
 "  // Vez do eletrônico (GARIMPO_ELETRONICO_A_CADA): posts seguidos sem eletrônico.",
 "  if (g.tipo !== 'cupom') mem.semEletronico = g.eletronico ? 0 : (mem.semEletronico || 0) + 1;",
+"  // Melhor oferta do dia (maior % OFF da legenda), para a sugestão de status das 12h.",
+"  if (g.tipo === 'produto' && g.imagem && g.texto) {",
+"    const off = Number((String(g.texto).match(/(\\d{1,2})% OFF/) || [])[1]) || 0;",
+"    const m = mem.melhorDoDia && mem.melhorDoDia.dia === mem.dia ? mem.melhorDoDia : null;",
+"    if (!m || off > m.desconto) mem.melhorDoDia = { dia: mem.dia, desconto: off, texto: g.texto, imagem: g.imagem };",
+"  }",
 "}",
 "return [{ json: { ok: !!r.ok, erro: r.erro || null, chave: g.chave || null, fonte: g.fonte || null, postados_hoje: mem.postados || 0 } }];"
 ].join('\n') } },

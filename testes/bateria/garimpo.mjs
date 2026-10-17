@@ -527,6 +527,21 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   const chamadaIA = ia.chamadas.find(c => /openrouter/.test(c.url));
   caso('no com OPENROUTER_API_KEY: pede a chamada e usa', ia.saida[0].json.texto.startsWith('MONITOR PRA JOGAR SEM TRAVAR') && chamadaIA && chamadaIA.headers.Authorization === 'Bearer chave-teste', ia.saida[0].json);
   caso('no sem OPENROUTER_API_KEY: nao chama o OpenRouter', !a.chamadas.some(c => /openrouter/.test(c.url)));
+  const LIG = { ...ENV, GARIMPO_LIGADO: 'sim', GRUPO_RASCUNHO: '120363000000000001-group' };
+  const SETE = new Date('2026-10-06T22:10:00Z');   // 19h10 em SP
+  const cv = (await roda({ env: LIG, agora: SETE, memoria: { dia: '2026-10-06', ultimo: SETE.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('19h: convite no grupo, com o link que conta a origem', cv.tipo === 'convite' && cv.postar === true && cv.grupo === ENV.GRUPO_OFERTAS && cv.texto.includes('https://temdescontos.com.br/grupo?de=indicacao') && !cv.imagem, cv);
+  const cv2 = (await roda({ env: LIG, agora: SETE, memoria: { dia: '2026-10-06', conviteDia: '2026-10-06', ultimo: SETE.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('convite: uma vez por dia', cv2.tipo !== 'convite', cv2);
+  const cv3 = (await roda({ env: { ...LIG, GARIMPO_CONVITE_HORA: '0' }, agora: SETE, memoria: { dia: '2026-10-06', ultimo: SETE.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('GARIMPO_CONVITE_HORA 0: sem convite', cv3.tipo !== 'convite', cv3);
+  const melhor = { dia: '2026-10-06', desconto: 52, texto: 'FONE BOM\n\nFone Teste\n\n💵 De R$43 por R$20 (52% OFF)\n🛒 https://s.shopee.com.br/x', imagem: 'https://cf.shopee.com.br/file/f' };
+  const st = (await roda({ env: LIG, memoria: { dia: '2026-10-06', melhorDoDia: melhor, ultimo: AGORA.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('12h: a melhor oferta do dia vai para o rascunho, com foto e o link do grupo', st.tipo === 'status' && st.grupo === LIG.GRUPO_RASCUNHO && st.imagem === melhor.imagem && !st.link && st.texto.startsWith('FONE BOM') && st.texto.endsWith('https://temdescontos.com.br/grupo?de=status'), st);
+  const st2 = (await roda({ env: LIG, memoria: { dia: '2026-10-06', melhorDoDia: { ...melhor, dia: '2026-10-05' }, ultimo: AGORA.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('status: sem oferta de hoje, nao manda', st2.tipo !== 'status', st2);
+  const st3 = (await roda({ env: { ...LIG, GRUPO_LINK: 'https://outro.com.br/entrar/' }, memoria: { dia: '2026-10-06', melhorDoDia: melhor } })).saida[0].json;
+  caso('GRUPO_LINK troca o link do grupo', st3.texto.endsWith('https://outro.com.br/entrar?de=status'), st3.texto);
   const anota = pegarCodigo('03-garimpo.json', 'Anota');
   const mem = { postados: 3, produtos: {} };
   await rodar(anota, { itens: [{ json: { ok: false, erro: 'x' } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'amazon:Z', tipo: 'produto' } }] } });
@@ -537,6 +552,15 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   const semE = mem.semEletronico;
   await rodar(anota, { itens: [{ json: { ok: true } }], memoria: mem, nos: { 'Garimpa': [{ json: { chave: 'amazon:E2', tipo: 'produto', eletronico: true } }] } });
   caso('Anota: conta posts sem eletronico e zera no eletronico', semE === 1 && mem.semEletronico === 0, mem);
+  const m2 = { dia: '2026-10-06', postados: 5, produtos: {} };
+  await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m2, nos: { 'Garimpa': [{ json: { tipo: 'convite', dia: '2026-10-06' } }] } });
+  caso('Anota: convite marca o dia e nao conta como post', m2.conviteDia === '2026-10-06' && m2.postados === 5);
+  const prod = (texto, imagem = 'https://f/1') => rodar(anota, { itens: [{ json: { ok: true } }], memoria: m2, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'amazon:' + texto.length, texto, imagem } }] } });
+  await prod('A\nDe R$10 por R$5 (50% OFF)');
+  await prod('B\nDe R$10 por R$8 (20% OFF)');
+  caso('Anota: guarda a oferta de maior desconto do dia', m2.melhorDoDia && m2.melhorDoDia.desconto === 50 && m2.melhorDoDia.texto.startsWith('A'), m2.melhorDoDia);
+  await prod('C\n70% OFF, CORRE', '');
+  caso('Anota: oferta sem foto nao vira status', m2.melhorDoDia.desconto === 50);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
