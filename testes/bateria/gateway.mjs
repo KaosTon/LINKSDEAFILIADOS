@@ -54,6 +54,27 @@ const roda = (entrada, responde, env = ENV) => rodar(codigo, { itens: [{ json: {
 }
 
 {
+  // Varios grupos (17/10): mesma mensagem em cada um, encurta uma vez so, ok se saiu em pelo menos um.
+  const ENVG = { ...ENV, GRUPOS_INTERVALO_SEG: '0' };
+  const r = await roda({ phone: 'G1-group, G2-group;G3-group', message: 'Oferta', origem: '03' }, { zaapId: 'Z1' }, ENVG);
+  caso('varios grupos: manda para cada um, na ordem', r.chamadas.map(c => c.body.phone).join() === 'G1-group,G2-group,G3-group' && r.out.ok && r.out.grupos.length === 3, r.chamadas.map(c => c.body.phone));
+  let n = 0;
+  const f = await roda({ phone: 'G1-group,G2-group', message: 'Oferta', origem: '03' }, (op) => (op.body.phone === 'G1-group' ? { error: 'not admin' } : { zaapId: 'Z' + (++n) }), ENVG);
+  caso('um grupo falhou: os outros saem, ok e diz qual falhou', f.out.ok === true && f.out.grupos[0].ok === false && f.out.grupos[1].ok === true && /not admin/.test(f.out.erro), f.out);
+  const um = await roda({ phone: 'G1-group', message: 'Oferta' }, { zaapId: 'Z1' }, ENVG);
+  caso('um grupo so: igual a antes (sem lista de grupos na resposta)', um.out.ok && um.out.grupos === undefined && um.chamadas.length === 1);
+  const rep = await roda({ phone: 'G1-group,G1-group', message: 'Oferta' }, { zaapId: 'Z1' }, ENVG);
+  caso('grupo repetido na lista: manda uma vez so', rep.chamadas.length === 1);
+}
+{
+  const { pausaEntreGrupos } = await import('../../lib/ofertas.mjs');
+  const p0 = pausaEntreGrupos(3, 15, () => 0), p1 = pausaEntreGrupos(3, 15, () => 1);
+  caso('pausa entre grupos varia de 70% a 130% do intervalo', Math.abs(p0 - 10500) <= 1 && Math.abs(p1 - 19500) <= 1, [p0, p1]);
+  caso('com muitos grupos, o total nao passa de 200 s', pausaEntreGrupos(30, 15, () => 1) * 29 <= 200000);
+  caso('um grupo so: nao espera', pausaEntreGrupos(1, 15) === 0);
+}
+
+{
   // Encurtador próprio (16/10): só os links do ML; se ele falhar, vai o link normal.
   const ENVE = { ...ENV, ENCURTADOR_URL: 'https://curto.example/', ENCURTADOR_SEGREDO: 'x'.repeat(40) };
   const ML = 'https://www.mercadolivre.com.br/p/MLB123?matt_word=minha&matt_tool=1';

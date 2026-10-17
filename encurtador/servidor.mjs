@@ -6,6 +6,8 @@
 //   GET  /api/cliques       mesma senha; os links mais clicados
 //   GET  /saude             para o Railway saber que está de pé
 //   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
+//                           CONVITE_GRUPO pode ter vários convites separados por vírgula (17/10):
+//                           vale o ÚLTIMO, o grupo mais novo, que ainda tem vaga. /grupo?n=2 abre o 2º.
 //
 // Com SITE_URL (o site no www), o domínio sem www só fica com os links curtos: a página
 // inicial e qualquer outro caminho vão para o site, e código que não existe mais vai para
@@ -36,6 +38,7 @@ export function novoCodigo(existe, tamanho = 5) {
 
 export function criarServidor({ pasta, segredo, base, convite, site }) {
   const raizSite = String(site || '').replace(/\/+$/, '');
+  const convites = String(convite || '').split(/[\s,;]+/).filter(c => /^https:\/\//.test(c));
   fs.mkdirSync(pasta, { recursive: true });
   const arquivo = path.join(pasta, 'links.json');
   let dados = { links: {} };
@@ -101,13 +104,14 @@ export function criarServidor({ pasta, segredo, base, convite, site }) {
       // origem curta e sem nada de quem clicou: só a página do site ("home", "guia:cupom-amazon")
       const de = /^[a-z0-9:-]{1,60}$/.test(u.searchParams.get('de') || '') ? u.searchParams.get('de') : 'direto';
       dados.grupo[de] = (dados.grupo[de] || 0) + 1; sujo = true;
-      const destino = convite || raizSite;
+      const n = Number(u.searchParams.get('n'));
+      const destino = (Number.isInteger(n) && n >= 1 && convites[n - 1]) || convites[convites.length - 1] || raizSite;
       return destino ? responde(res, 302, '', { Location: destino, 'Cache-Control': 'no-store' }) : responde(res, 404, 'Grupo ainda não configurado.');
     }
 
     if (p === '/' || p === '') {
       if (raizSite) return responde(res, 301, '', { Location: raizSite + '/' + u.search });
-      return convite ? responde(res, 302, '', { Location: convite }) : responde(res, 200, 'ok');
+      return convites.length ? responde(res, 302, '', { Location: convites[convites.length - 1] }) : responde(res, 200, 'ok');
     }
 
     const l = dados.links[p.slice(1)];

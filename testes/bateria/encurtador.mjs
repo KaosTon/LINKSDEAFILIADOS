@@ -62,6 +62,16 @@ const ok2 = await fetch(`${raiz}/${r1.codigo}`, { redirect: 'manual' });
 caso('com SITE_URL, o link curto continua indo para a loja', ok2.status === 302 && ok2.headers.get('location') === ML);
 caso('com SITE_URL, /saude continua respondendo', (await fetch(`${raiz}/saude`)).status === 200);
 await new Promise((ok) => s.close(ok));
+
+// varios grupos: vale o ultimo convite (o grupo mais novo, com vaga); ?n= abre um especifico
+({ s, raiz } = await sobe({ convite: 'https://chat.whatsapp.com/G1, https://chat.whatsapp.com/G2,https://chat.whatsapp.com/G3' }));
+const ult = await fetch(`${raiz}/grupo?de=home`, { redirect: 'manual' });
+caso('varios convites: /grupo abre o ultimo (grupo com vaga)', ult.headers.get('location') === 'https://chat.whatsapp.com/G3', ult.headers.get('location'));
+const seg = await fetch(`${raiz}/grupo?n=2`, { redirect: 'manual' });
+caso('/grupo?n=2 abre o segundo', seg.headers.get('location') === 'https://chat.whatsapp.com/G2');
+const fora = await fetch(`${raiz}/grupo?n=9`, { redirect: 'manual' });
+caso('n que nao existe: cai no ultimo', fora.headers.get('location') === 'https://chat.whatsapp.com/G3');
+await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });
 
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\n  todos passaram');
