@@ -11,9 +11,8 @@ import { destinoDaTag } from "@/data/tag-destinos";
 import { pessoaNode } from "@/components/Schemas";
 import { MENSAGENS_POST } from "@/data/whatsapp";
 
-// ESPERANDO O PRIMEIRO POST (16/10/2026). O export estatico nao aceita rota dinamica sem pagina
-// nenhuma, entao esta pagina fica na pasta privada _post (o Next ignora pastas com "_"). Ao
-// publicar o primeiro post: mover a pasta [slug] para src/app/blog/[slug] (DOCS/BLOG.md §2).
+// Ate o primeiro post (16/10/2026) esta pagina ficou na pasta privada _post, porque o export
+// estatico nao aceita rota dinamica sem pagina nenhuma. Saiu de la em 18/10/2026, com os 10 primeiros.
 type Props = { params: Promise<{ slug: string }> };
 
 export const dynamicParams = false;

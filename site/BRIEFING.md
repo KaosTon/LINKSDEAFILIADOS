@@ -37,12 +37,12 @@ Legenda: [ ] pendente · [x] resolvido · [~] parcial
 - [x] 8. `contato@temdescontos.com.br` (16/10/2026): Email Routing do Cloudflare, encaminha para o Gmail. Só recebe; para responder com o endereço, trocar por uma caixa (Zoho, Workspace) e desligar o encaminhamento.
 
 ### Conteúdo e aprovação
-- [ ] 9. Assinar os guias com o seu nome (E-E-A-T) ou deixar "Equipe Tem Descontos".
+- [x] 9. Assina como Wellington Santos, com os dados do site da Virtus (decisão do Wellington, 18/10/2026: "pode usar meus dados como autoridade").
 - [ ] 10. Ler e aprovar os 3 guias (preenche `revisadoEm`) e a política de privacidade.
 - [ ] 11. Conferir no painel do Programa de Associados da Amazon a frase obrigatória de associado
   (usada no rodapé: "Como Associado da Amazon, recebo por compras qualificadas."). NÃO CONFIRMEI a
   redação exata (portal fora do alcance em 16/10/2026).
-- [ ] 12. Primeiro post do blog (protocolo em `DOCS/BLOG.md`).
+- [~] 12. Blog: 10 posts escritos em 18/10/2026, com "revisão pendente" até o Wellington ler e conferir as fontes da lista em `DOCS/REVISAO-BLOG.md`.
 
 ## 3. Identidade
 

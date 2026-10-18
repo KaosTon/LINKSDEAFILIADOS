@@ -32,6 +32,16 @@ export const MENSAGENS_SERVICO: Record<string, string> = {
 
 /** /blog/{slug}: um por post (blog.ts) */
 export const MENSAGENS_POST: Record<string, string> = {
+  "black-friday-2026-quando-e": "post:black-friday-2026",
+  "direito-de-arrependimento-compra-online": "post:arrependimento-7-dias",
+  "produto-com-defeito-comprado-online": "post:produto-com-defeito",
+  "taxa-de-importacao-compra-internacional": "post:taxa-importacao",
+  "pix-ou-cartao-compra-online": "post:pix-ou-cartao",
+  "como-saber-se-loja-da-shopee-e-confiavel": "post:loja-shopee-confiavel",
+  "cupom-shopee-e-mercado-livre-como-usar": "post:cupom-shopee-ml",
+  "compra-garantida-mercado-livre": "post:compra-garantida-ml",
+  "garantia-de-a-a-z-amazon": "post:garantia-a-a-z",
+  "link-de-afiliado-o-preco-muda": "post:link-de-afiliado",
 };
 
 /** botoes com assunto proprio dentro de uma pagina */
