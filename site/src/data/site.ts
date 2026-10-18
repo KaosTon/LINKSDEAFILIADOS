@@ -141,23 +141,24 @@ export const UNIDADES: Unidade[] = [
 export const ONLINE: { nome: string; desc: string } | null = null;
 
 /**
- * Quem assina o conteudo (E-E-A-T, METODO §2.5). PENDENTE (BRIEFING §2): o Wellington decide se
- * assina com o nome dele. Ate la, a equipe.
+ * Quem assina o conteudo (E-E-A-T, METODO §2.5). Decidido em 18/10/2026: o Wellington assina com o
+ * nome dele ("pode usar meus dados como autoridade"). Dados iguais aos do site da Virtus
+ * (projeto-virtus-site, src/data/blog.ts, AUTHOR_WELLINGTON); foto: a mesma, recortada.
  */
 export const AUTOR = {
-  nome: "Equipe Tem Descontos",
-  cargo: "Curadoria de ofertas",
+  nome: "Wellington Santos",
+  cargo: "Criador do Tem Descontos",
   registro: "",
-  foto: "",
+  foto: "/autor/wellington-santos.webp",
   bio: [
-    "O Tem Descontos junta, num grupo de WhatsApp, ofertas das grandes lojas que passam por uma conferência antes de sair: o preço é checado na própria loja, o produto tem que ser o mesmo do anúncio e o link leva direto para a loja oficial.",
-    "A busca das ofertas é automática, feita por um robô nosso, e as regras de conferência são escritas e revisadas por nós. Oferta que não passa nas regras não é postada.",
+    "Wellington Santos criou o Tem Descontos e escreveu as regras que o robô do grupo segue antes de postar uma oferta: o preço é checado na própria loja, o produto tem que ser o mesmo do anúncio e o link leva direto para a loja oficial. Oferta que não passa nas regras não é postada.",
+    "Engenheiro de Produção formado pela UniABC, trabalha no mercado de seguros desde 2015 e fundou a Virtus Corretora de Seguros em 2020. Do seguro veio o hábito de ler a regra antes de prometer e de desconfiar de número sem conta, que é o que o Tem Descontos faz com cada promoção.",
   ],
 };
 
-/** Formacao do autor: nao se aplica (sem registro profissional). */
+/** Formacao do autor (a mesma do site da Virtus). Sem registro profissional nesta atividade. */
 export const CREDENCIAIS = {
-  graduacao: null as { curso: string; instituicao: string; conclusao: string } | null,
+  graduacao: { curso: "Engenharia de Produção", instituicao: "UniABC", conclusao: "" } as { curso: string; instituicao: string; conclusao: string } | null,
   cursos: [] as { ano: string; nome: string; com: string; area: string }[],
 };
 

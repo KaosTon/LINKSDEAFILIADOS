@@ -30,8 +30,10 @@ Outras diferenças do modelo, todas fora do motor: o botão verde abre o grupo (
   /oferta-encerrada, 404 e política de privacidade. Build com todas as travas passando; conferido no
   `wrangler pages dev` em 1280 e 390, console sem erro. `noindex` ligado. No ar no mesmo dia em
   `www.temdescontos.com.br` (Cloudflare Pages) e com `SITE_URL` no encurtador. Falta: BRIEFING §2.
-- Primeiro post: mover `src/app/blog/_post/[slug]` para `src/app/blog/[slug]` (o export estático
-  não aceita rota dinâmica sem página). Depois seguir `DOCS/BLOG.md`.
+- 18/10/2026: 10 primeiros posts no blog (rota saiu de `_post` para `src/app/blog/[slug]`), assinados
+  por Wellington Santos, capas geradas por `scripts/capas-blog.py`. Pesquisa e fontes em `DOCS/fontes-blog/`.
+  Nesta sessão a rede bloqueou a abertura direta dos sites oficiais: tudo foi conferido pelo trecho da
+  página oficial na busca. Antes de preencher `revisadoEm`, abrir as fontes de `DOCS/REVISAO-BLOG.md`.
 
 ## Caminho de volta para a fábrica (obrigatório ao fechar qualquer trabalho)
 
