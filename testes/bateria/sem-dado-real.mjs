@@ -54,9 +54,12 @@ for (const arq of arquivos) {
   linhas.forEach((linha, i) => {
     // datas dd/mm/aaaa e horas não são telefone
     if (/^\s*(\/\/|--|#)/.test(linha) && !/\d{4}[\s.-]?\d{4}/.test(linha)) return;
+    // número dentro de um link (id de artigo da central de ajuda de loja, 18/10/2026) não é telefone
+    const links = [...linha.matchAll(/https?:\/\/\S+/g)].map(u => [u.index, u.index + u[0].length]);
     for (const m of linha.matchAll(TELEFONE)) {
       const so = m[0].replace(/\D/g, '');
       if (so.length < 10) continue;
+      if (links.some(([a, b]) => m.index >= a && m.index < b)) continue;
       if (pareceInventado(so)) continue;
       // Epoch do painel tem 10 dígitos e DDD do interior de SP também começa
       // com 17 e 18, então o número sozinho não decide. O que decide é a
