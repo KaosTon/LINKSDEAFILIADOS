@@ -228,11 +228,12 @@ Pesquisa na internet (docs oficiais, blogs e comunidades BR). Parte das fontes �
 
 1. **Grupo de verdade rodando** com o ritmo de número novo (40 por dia, espalhado até as 22h) e subir aos poucos.
 2. **Encurtador** no domínio próprio, ligado no gateway (se cair, posta com o link normal).
-3. **Grupos por tema** (eletrônicos, games, casa, automotivo, achados): classificar a oferta por categoria, uma variável de grupo e um limite por grupo, mais um teto total por número (risco de banimento é do número).
+3. **Grupos por tema** (18/10: o Wellington quer começar por **brinquedos**, no começo de novembro, antes da Black Friday e do Natal; depois eletrônicos, roupas, casa; por enquanto o foco é encher o grupo atual; um número da Z-API só, não precisa um por grupo agora) (eletrônicos, games, casa, automotivo, achados): classificar a oferta por categoria, uma variável de grupo e um limite por grupo, mais um teto total por número (risco de banimento é do número).
 4. **Site no mesmo domínio:** página de ofertas do dia alimentada pelo robô e botão "Entre no grupo". O próprio serviço do encurtador serve as páginas.
 5. **Blog:** guias de intenção de compra ("melhor X até R$Y", "X vale a pena?", "X ou Y"), 2 por semana, com informação real (texto raso não ranqueia). Google Search Console primeiro (grátis); OpenSEO (every-app/open-seo, usa DataForSEO pago por consulta) só quando o blog for a sério, e conferir se tem dados do Brasil. Expectativa: 3 a 6 meses até trazer visita; o blog é porta de entrada para o grupo.
-6. **Card sem foto** (opcional): imagem com nome e preço nas cores do grupo, montada no n8n, para o caso raro sem foto oficial. Nada de foto gerada por IA (mostra produto que não existe).
-7. **Vender para outros donos de grupo** depois de validar com números reais (ver abaixo).
+6. **Nota da Shopee no post** (oferecido 18/10, não aceito ainda): mostrar "nota, loja indicada, vendidos" nos posts da Shopee; mandar prévia no rascunho antes.
+7. **Card sem foto** (opcional): imagem com nome e preço nas cores do grupo, montada no n8n, para o caso raro sem foto oficial. Nada de foto gerada por IA (mostra produto que não existe).
+8. **Vender para outros donos de grupo** depois de validar com números reais (ver abaixo).
 
 ## Vender o robô para outros grupos (ideia, 15/10)
 
