@@ -14,7 +14,7 @@ import { MENSAGENS_ROTA } from "@/data/whatsapp";
 const ROTA = `/autor/${AUTOR.slug}`;
 const ANOS = new Date().getFullYear() - AUTOR.anoInicioCarreira;
 const TITLE = `${AUTOR.nome} | ${AUTOR.cargo}`;
-const DESCRIPTION = `${AUTOR.nome}, ${AUTOR.cargo.toLowerCase()}. Engenheiro de Produção, ${ANOS} anos no mercado de seguros e as regras que o robô do grupo segue antes de postar.`;
+const DESCRIPTION = `${AUTOR.nome}, ${AUTOR.cargo.toLowerCase()}. Engenheiro de Produção, ${ANOS} anos no mercado de seguros e as regras de conferência do grupo antes de postar.`;
 
 export const metadata: Metadata = {
   title: TITLE,

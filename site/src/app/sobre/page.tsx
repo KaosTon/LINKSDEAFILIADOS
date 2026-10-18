@@ -11,7 +11,7 @@ import { MENSAGENS_ROTA } from "@/data/whatsapp";
 // aponta o "Guia de ..." das paginas e posts.
 
 const TITLE = `Sobre o ${SITE.nome}: como escolhemos as ofertas`;
-const DESCRIPTION = `Quem faz o ${SITE.nome}, como o robô encontra e confere as ofertas de ${LOJAS.join(", ")} e como ganhamos dinheiro sem mudar o seu preço.`;
+const DESCRIPTION = `Quem faz o ${SITE.nome}, como encontramos e conferimos as ofertas de ${LOJAS.join(", ")} e como ganhamos dinheiro sem mudar o seu preço.`;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -86,7 +86,7 @@ export default function Sobre() {
             ))}
           </div>
           <p className="mt-8 text-sm text-tinta-2">
-            A lista completa do que o robô confere está em{" "}
+            A lista completa do que conferimos está em{" "}
             <Link href="/guias/como-saber-se-a-promocao-e-verdadeira" className="font-semibold text-marca-escura underline decoration-marca/40 underline-offset-4">
               como saber se a promoção é verdadeira
             </Link>

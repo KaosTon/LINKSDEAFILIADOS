@@ -11,7 +11,7 @@ export const HOME = {
   },
   /** cartao do lado do h1: as conferencias de verdade (lib/ofertas.mjs, 16/10/2026) */
   ficha: {
-    titulo: "Antes de postar, o robô confere",
+    titulo: "Antes de postar, conferimos",
     itens: [
       "O preço na página da loja",
       "Se o produto é o mesmo do anúncio",

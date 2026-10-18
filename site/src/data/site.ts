@@ -161,7 +161,7 @@ export const AUTOR = {
   /** do que ele trata no site (schema knowsAbout) */
   sabeSobre: ["Ofertas e promoções online", "Compras na Amazon, Mercado Livre, Shopee e Magalu", "Programas de afiliados", "Seguros"],
   bio: [
-    "Wellington Santos criou o Tem Descontos e escreveu as regras que o robô do grupo segue antes de postar uma oferta: o preço é checado na própria loja, o produto tem que ser o mesmo do anúncio e o link leva direto para a loja oficial. Oferta que não passa nas regras não é postada.",
+    "Wellington Santos criou o Tem Descontos e escreveu as regras que o grupo segue antes de postar uma oferta: o preço é checado na própria loja, o produto tem que ser o mesmo do anúncio e o link leva direto para a loja oficial. Oferta que não passa nas regras não é postada.",
     "Engenheiro de Produção formado pela UniABC, trabalha no mercado de seguros desde 2015 e fundou a Virtus Corretora de Seguros em 2020. Do seguro veio o hábito de ler a regra antes de prometer e de desconfiar de número sem conta, que é o que o Tem Descontos faz com cada promoção.",
   ],
 };

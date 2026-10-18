@@ -47,7 +47,7 @@ export const PAGINAS_SERVICO: PaginaServico[] = [
     resposta:
       "Abra o link e confira na página da loja o preço, o produto e a quantidade. Se o preço riscado (\"De\") parecer alto demais ou a oferta não bater com a loja, desconfie.",
     intro:
-      "Promoção falsa quase nunca é preço inventado do nada. O mais comum é o anúncio mostrar um produto e o link abrir outro, um kit virar unidade, um \"De\" inflado para o desconto parecer maior, ou um preço que já acabou continuar circulando. São exatamente essas as coisas que o nosso robô confere antes de postar.",
+      "Promoção falsa quase nunca é preço inventado do nada. O mais comum é o anúncio mostrar um produto e o link abrir outro, um kit virar unidade, um \"De\" inflado para o desconto parecer maior, ou um preço que já acabou continuar circulando. São exatamente essas as coisas que conferimos antes de postar.",
     numeros: [
       { rotulo: "Conferências por oferta", valor: "7" },
       { rotulo: "Lojas", valor: "4" },
@@ -55,8 +55,8 @@ export const PAGINAS_SERVICO: PaginaServico[] = [
     tabela: {
       eyebrow: "O que conferimos",
       titulo: "As conferências antes de uma oferta sair no grupo",
-      legenda: "Regras do robô do Tem Descontos em 16/10/2026. Oferta que falha em uma delas não é postada, ou sai sem a informação que não deu para confirmar.",
-      colunas: ["Conferência", "O problema que ela pega", "O que o robô faz"],
+      legenda: "Regras de conferência do Tem Descontos em 16/10/2026. Oferta que falha em uma delas não é postada, ou sai sem a informação que não deu para confirmar.",
+      colunas: ["Conferência", "O problema que ela pega", "O que fazemos"],
       linhas: [
         ["Preço na loja", "O preço do anúncio já mudou ou nunca foi aquele.", "Abre a página da loja e usa o preço de lá. Se não bate, vale o da loja."],
         ["Mesmo produto", "O anúncio fala de um produto e o link abre outro.", "Compara o nome do anúncio com o da loja. Diferente, descarta."],
@@ -168,7 +168,7 @@ export const PAGINAS_SERVICO: PaginaServico[] = [
     tabela: {
       eyebrow: "Tipos de cupom",
       titulo: "Os cupons que aparecem na página da Amazon",
-      legenda: "Tipos lidos pelo robô do Tem Descontos na página do produto em 16/10/2026. O exemplo de primeira compra é o que estava na página naquele dia; cupom muda e acaba.",
+      legenda: "Tipos conferidos pelo Tem Descontos na página do produto em 16/10/2026. O exemplo de primeira compra é o que estava na página naquele dia; cupom muda e acaba.",
       colunas: ["Tipo", "Como aparece na página", "Como usar"],
       linhas: [
         ["Cupom de marcar", "Uma caixa \"Aplicar cupom\" com o desconto em % ou em reais, abaixo do preço.", "Marque a caixa antes de pôr no carrinho. O desconto aparece no resumo do pedido."],
