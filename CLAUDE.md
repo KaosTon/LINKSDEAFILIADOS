@@ -42,6 +42,11 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 - Lógica nova de nó Code nasce como função em `lib/` com teste, e o teste
   tem que falhar no código antigo antes de valer.
 - Trabalho direto no `main`.
+- Subir um nó Code pelo MCP do n8n (Railway): `update_workflow` com `setNodeParameter` em `/jsCode` e o código inteiro do export (`infra/n8n/exports/*.json`); depois `get_workflow_details` (sai em arquivo), comparar com o export normalizando os escapes `\u{...}` e `\u....` até dar "igual: true", e só então `publish_workflow`. Editar fluxo publicado cria rascunho: sem publicar, não vale.
+- Conferir variável sem ver o valor: o Ensaio 96 (`V0XEygzTlePVkDCY`, nó "Le o post", rodar com executionMode manual) recebe um código que só devolve tem/não tem ou true/false. Nunca devolver o valor de segredo, token, `?k=` ou link de convite do grupo.
+- No nó Code do n8n `URL` não é global: usar `require('url')`.
+- Teste visual pedido pelo Wellington: mandar a prévia no rascunho antes de ligar no grupo (o robô ignora o que ele mesmo manda, então nada vaza para o grupo).
+- Bateria: `node testes/bateria/todas.mjs` e olhar o código de saída; um `| grep` no meio já escondeu um SyntaxError.
 
 ## Regras que não mudam
 
@@ -66,9 +71,9 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 | 98 Ensaio: abre link curto | `dtJ7lwTKLItlckuD` | manual |
 | 99 Diagnóstico | `ACXO2u8Hk4mjaxmm` | manual; rodar depois de mudar variável |
 
-**Grupos (13/10):** `GRUPO_RASCUNHO` = Rascunho, `GRUPO_OFERTAS` = Grupo de Ofertas teste. Para ir ao grupo de verdade: trocar `GRUPO_OFERTAS` e Deploy. O número do robô ainda aparece com o nome de outra pessoa no perfil; ele troca para PromoX antes do grupo de verdade.
+**Grupos (18/10):** `GRUPO_RASCUNHO` = Rascunho, `GRUPO_OFERTAS` = o grupo que era de teste e virou o oficial (17/10, com foto, nome e descrição; 14 membros em 17/10). O perfil do número do robô já se chama "Tem Descontos Oferta..."; se aparecer outro nome num celular, é o contato salvo na agenda daquele celular. Configuração do grupo recomendada: só admins editam e "Adicionar membros" desligado para membros.
 
-**Railway (15/10):** `GARIMPO_POR_DIA=40`. Parece haver `GARIMPO_INTERVALO_DIA=30` (posts saíram de 30 em 30 min); o padrão do código é 25.
+**Railway (18/10):** todas as variáveis opcionais foram criadas com o valor padrão (lista em PLANEJAMENTO.md), menos `GARIMPO_PROIBIDO` (apagada de propósito), `ML_RETORNO` e `ML_TOKEN_URL`. `GARIMPO_POR_DIA=40` desde 15/10.
 
 **Mudou a lib:** subir de novo os nós Code que a usam (01, 02 e 03) quando a mudança afetar cada um.
 
