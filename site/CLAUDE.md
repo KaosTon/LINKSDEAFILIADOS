@@ -34,6 +34,10 @@ Outras diferenças do modelo, todas fora do motor: o botão verde abre o grupo (
   por Wellington Santos, capas geradas por `scripts/capas-blog.py`. Pesquisa e fontes em `DOCS/fontes-blog/`.
   Nesta sessão a rede bloqueou a abertura direta dos sites oficiais: tudo foi conferido pelo trecho da
   página oficial na busca. Antes de preencher `revisadoEm`, abrir as fontes de `DOCS/REVISAO-BLOG.md`.
+- Próximo (combinado em 18/10/2026): com a rede liberada no ambiente e `GEMINI_API_KEY` nos segredos
+  do ambiente (como na Virtus, que gera a imagem pelo Gemini; ver `DOCS/PROTOCOLO_BLOG.md` §4.5 no
+  projeto-virtus-site), conferir as fontes inteiras, trocar as capas tipográficas por imagem gerada e
+  dar a abertura com gancho aos outros 8 posts.
 
 ## Caminho de volta para a fábrica (obrigatório ao fechar qualquer trabalho)
 
