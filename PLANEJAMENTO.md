@@ -70,7 +70,7 @@ NODE_FUNCTION_ALLOW_BUILTIN=crypto,url
 06/10); sem ele o fluxo 01 responde no rascunho pedindo a variável. No Railway também precisa `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` (feito
 em 05/10, diagnóstico 99 confere).
 
-Variáveis do projeto (no serviço do n8n, nunca no código):
+Variáveis do projeto (no serviço do n8n, nunca no código). Regra da programação: variável preenchida com número válido vale; ausente, vazia ou inválida (texto, negativo, vírgula decimal) usa o padrão. Em 18/10 todas as opcionais foram criadas com o valor padrão, menos `GARIMPO_PROIBIDO`, `ML_RETORNO` e `ML_TOKEN_URL`:
 
 | Variável | O que é |
 |---|---|
@@ -86,9 +86,14 @@ Variáveis do projeto (no serviço do n8n, nunca no código):
 | `GARIMPO_LIGADO` | `sim` para o fluxo 03 postar sozinho; sem isso ele só calcula |
 | `GARIMPO_CANAIS` | opcional: canais públicos do Telegram (padrão `promotop,pechinchou,fadadoscupons,cupomonline`; 13/10 ele pediu somar `tudonapromo`, o canal de referência do padrão de legenda) |
 | `GARIMPO_INICIO`, `GARIMPO_FIM`, `GARIMPO_POR_DIA`, `GARIMPO_CUPONS_POR_DIA`, `GARIMPO_DESCONTO_MIN` | opcionais: 8, 22, 25, 6, 15 |
+| `GARIMPO_INTERVALO_DIA`, `GARIMPO_INTERVALO_NOITE`, `GARIMPO_DESCONTO_SHOPEE`, `GARIMPO_IDADE_SEM_CONFERIR` | opcionais: 25 min, 150 min, 30%, 30 min |
+| `GARIMPO_ELETRONICO_A_CADA`, `GARIMPO_CONVITE_HORA`, `GARIMPO_STATUS_HORA` | opcionais: 2, 19, 12 (`0` desliga cada um) |
+| `GARIMPO_SHOPEE_NOTA_MIN`, `GARIMPO_SHOPEE_VENDAS_MIN`, `GARIMPO_SHOPEE_CARO` | opcionais: 4.5 (com ponto), 50 (`0` desliga), 1000 |
+| `GRUPOS_INTERVALO_SEG` | opcional: 15 s entre um grupo e outro |
+| `GRUPO_LINK` | opcional: `https://temdescontos.com.br/grupo` (o site conta os cliques e manda para o convite; nunca o `chat.whatsapp.com` direto, senão o resumo perde os cliques) |
 | `OPENROUTER_API_KEY` | chave do OpenRouter (segredo): a IA escreve a chamada de cada achado |
-| `OPENROUTER_MODELO` | opcional: padrão `google/gemini-3.1-flash-lite` (US$ 0,25/1,50 por milhão; ~R$ 0,50/mês para 25 por dia) |
-| `GARIMPO_PROIBIDO` | opcional: palavras proibidas separadas por vírgula (padrão: bebida, adulto, aposta, vape, arma) |
+| `OPENROUTER_MODELO` | opcional: padrão `google/gemini-3.1-flash-lite` (US$ 0,25/1,50 por milhão). Gasto real medido em 18/10 pela API do OpenRouter: US$ 0,024 na semana (chamada + checagem de foto), menos de R$ 1 por mês |
+| `GARIMPO_PROIBIDO` | opcional, melhor não criar: se existir, SUBSTITUI a lista padrão (bebida, adulto, aposta, vape, arma) e o Railway corta os espaços que protegem palavras curtas (" gin ", " bet "). Palavra nova: pôr em `PROIBIDO_PADRAO` na lib |
 | `MAGALU_LOJA` | opcional: o nome da sua loja no magazinevoce (troca link de outra loja pela sua) |
 | `WEBHOOK_SEGREDO` | opcional, recomendado: texto aleatório; a URL do webhook na Z-API termina com `?k=` e ele |
 
