@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-modelo.mjs && node scripts/check-tema.mjs && node scripts/check-copy.mjs && node scripts/check-links-internos.mjs && node scripts/check-markdown.mjs && node scripts/check-indice-blog.mjs && node scripts/check-whatsapp.mjs && node scripts/check-paginas.mjs && next build && node scripts/pos-export.mjs",
+    "build": "node scripts/check-modelo.mjs && node scripts/check-tema.mjs && node scripts/check-copy.mjs && node scripts/check-robo.mjs && node scripts/check-links-internos.mjs && node scripts/check-markdown.mjs && node scripts/check-indice-blog.mjs && node scripts/check-whatsapp.mjs && node scripts/check-paginas.mjs && next build && node scripts/pos-export.mjs",
     "check:copy": "node scripts/check-copy.mjs",
+    "check:robo": "node scripts/check-robo.mjs",
     "check:fontes": "node scripts/check-fontes.mjs",
     "check:links": "node scripts/check-links-internos.mjs",
     "start": "next start",

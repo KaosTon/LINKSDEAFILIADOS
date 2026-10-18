@@ -50,6 +50,9 @@ no fim de `skills/n8n/SKILL.md` e em `skills/whatsapp-zapi/SKILL.md`
 
 ## Regras que não mudam
 
+- Site (`site/`): antes de qualquer página ou post, ler `site/DOCS/QUALIDADE.md` (padrão da Virtus e da
+  fábrica). No texto do site, nunca "robô": falar da conferência (18/10/2026, trava no build).
+
 - Segredo (token da Z-API, chaves das lojas, senha) nunca no chat, no git ou
   em documento. Mora nas variáveis do n8n. Se o Wellington colar um, avisar.
 - Dado pessoal (telefone de membro do grupo, conversa) nunca no git. Telefone

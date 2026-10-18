@@ -5,6 +5,8 @@ e as regras de trabalho moram lá; esta pasta tem o site e o conteúdo do Tem De
 dentro do repo do robô (`LINKSDEAFILIADOS`), que trabalha direto no `main`.
 
 ## Comece por aqui, sempre
+0. Leia `DOCS/QUALIDADE.md`: o padrão que todo trabalho no site segue (regras do Tem Descontos,
+   padrão da Virtus e método da fábrica) e o checklist antes do PR.
 1. Leia `BRIEFING.md` inteiro: o que já se sabe (não perguntar de novo), o que falta, as regras do
    segmento (§4) e o que já foi decidido (§5).
 2. Leia o `metodo/METODO.md` do fabrica-sites: SEO medido, blog, design sem cara de IA, travas.
@@ -56,6 +58,8 @@ Para subir (não feito ainda, 16/10/2026): as duas alterações de motor acima c
 estático" (blog vazio), com a saída da pasta privada `_post`.
 
 ## Regras de trabalho
+- Sem "robô" no site: fala da conferência, não da automação (decisão de 18/10/2026; trava
+  `scripts/check-robo.mjs`; motivo em `DOCS/QUALIDADE.md` §1).
 - Sem travessão (traço longo) em copy nem em código.
 - Não inventar dado. Se não está em `src/data/` nem no BRIEFING, é PENDENTE.
 - Preço de produto da Amazon nunca no site (BRIEFING §4).
