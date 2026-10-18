@@ -175,6 +175,16 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('encaminhada com previa: a foto oficial da loja vem antes da miniatura da previa', ep2.imagem === 'https://m.media-amazon.com/images/I/grande.jpg', ep2.imagem);
   const ep3 = await prepararOferta(corpo('Gillette https://amzn.to/abc', { image: { imageUrl: 'https://tmp/foto-grande.jpeg', caption: 'Gillette https://amzn.to/abc' } }), C, { ...rede, pagina: async () => '"hiRes":"https://m.media-amazon.com/images/I/grande.jpg"' });
   caso('foto mandada como imagem: usa a sua foto', ep3.imagem === 'https://tmp/foto-grande.jpeg', ep3.imagem);
+  // Foto com marca de outro grupo (18/10): a IA confere a foto mandada; com marca, vale a foto da loja ou nenhuma.
+  const PAG_G = '"hiRes":"https://m.media-amazon.com/images/I/grande.jpg"';
+  const fm1 = await prepararOferta(corpo('Gillette Styler Barbeador https://www.amazon.com.br/dp/B0AAAAAAAA', { image: { imageUrl: 'https://tmp/com-marca.jpeg', caption: 'Gillette Styler Barbeador https://www.amazon.com.br/dp/B0AAAAAAAA' } }), C, { ...rede, pagina: async () => PAG_G, fotoLimpa: async () => false });
+  caso('foto com marca de outro grupo: troca pela foto da loja e avisa', fm1.acao === 'postar' && fm1.imagem === 'https://m.media-amazon.com/images/I/grande.jpg' && /foto da loja/.test(fm1.aviso || ''), fm1);
+  const fm2 = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: { imageUrl: 'https://tmp/com-marca.jpeg', caption: 'Fone https://amzn.to/abc' } }), C, { ...rede, pagina: async () => '', fotoLimpa: async () => false });
+  caso('foto com marca e sem foto da loja: sai sem foto (nunca a foto marcada) e avisa', fm2.acao === 'postar' && fm2.imagem === '' && /sem foto/.test(fm2.aviso || ''), fm2);
+  const fm3 = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: { imageUrl: 'https://tmp/limpa.jpeg', caption: 'Fone https://amzn.to/abc' } }), C, { ...rede, fotoLimpa: async () => { throw new Error('ia fora'); } });
+  caso('checagem da foto falhou: fica a sua foto (nao some a foto por erro da IA)', fm3.imagem === 'https://tmp/limpa.jpeg' && !fm3.aviso, fm3);
+  const fm4 = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: { imageUrl: 'https://tmp/limpa.jpeg', caption: 'Fone https://amzn.to/abc' } }), C, { ...rede, fotoLimpa: async () => true });
+  caso('foto limpa: fica a sua foto, sem aviso', fm4.imagem === 'https://tmp/limpa.jpeg' && !fm4.aviso, fm4);
   const longo = await prepararOferta(corpo('Fone https://www.amazon.com.br/gp/aw/d/B0FR49NFLT?pd_rd_w=kk&qid=1&ref_=sbx&th=1'), C, rede);
   caso('Amazon no rascunho sai no formato limpo /dp/ASIN?tag=', longo.texto === 'Fone https://www.amazon.com.br/dp/B0FR49NFLT?tag=minha-20', longo.texto);
   const semFoto = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: undefined, text: { message: 'Fone https://amzn.to/abc' } }), C, rede);

@@ -68,8 +68,9 @@ const comoFoi = node({
   config: { name: 'Como foi', position: [960, -100],
     parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
 "const r = $input.first().json || {};",
+"const aviso = ($('Prepara a oferta').first().json || {}).aviso;",
 "return [{ json: { resposta: r.ok",
-"  ? '\\u2705 Postado no grupo de ofertas.'",
+"  ? '\\u2705 Postado no grupo de ofertas.' + (aviso ? '\\n' + aviso : '')",
 "  : '\\u274C Não consegui postar no grupo: ' + (r.erro || 'a Z-API não respondeu') } }];"
 ].join('\n') } },
   output: [{ resposta: 'Postado' }]
