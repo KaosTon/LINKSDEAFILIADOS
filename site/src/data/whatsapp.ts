@@ -17,6 +17,7 @@ export const MENSAGEM_PADRAO = "site";
 export const MENSAGENS_ROTA: Record<string, string> = {
   "/": "home",
   "/sobre": "sobre",
+  "/autor/wellington-santos": "autor",
   "/blog": "blog",
   "/links": "links",
   "/politica-de-privacidade": "privacidade",

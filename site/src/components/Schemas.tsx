@@ -5,7 +5,7 @@ import { AUTOR, LOJAS, SITE } from "@/data/site";
 // lancamento.
 
 export const ID_ORGANIZACAO = `${SITE.url}/#organizacao`;
-export const ID_PESSOA = ID_ORGANIZACAO;
+export const ID_PESSOA = `${SITE.url}/autor/${AUTOR.slug}#pessoa`;
 
 const json = (dado: unknown) => ({ __html: JSON.stringify(dado) });
 
@@ -25,9 +25,21 @@ export function organizacaoNode() {
   };
 }
 
-/** Autor dos guias e posts: a organizacao, enquanto o Wellington nao decidir assinar (BRIEFING §2). */
+/** Autor dos guias e posts: Wellington Santos (decidido em 18/10/2026). Mesmos dados do site da Virtus. */
 export function pessoaNode() {
-  return { ...organizacaoNode(), name: AUTOR.nome };
+  return {
+    "@type": "Person",
+    "@id": ID_PESSOA,
+    name: AUTOR.nome,
+    alternateName: AUTOR.nomeLegal,
+    jobTitle: AUTOR.cargo,
+    url: `${SITE.url}/autor/${AUTOR.slug}`,
+    image: `${SITE.url}${AUTOR.foto}`,
+    worksFor: { "@id": ID_ORGANIZACAO },
+    alumniOf: { "@type": "CollegeOrUniversity", name: "UniABC, Universidade do Grande ABC", alternateName: "Anhanguera" },
+    knowsAbout: AUTOR.sabeSobre,
+    sameAs: [AUTOR.linkedin, AUTOR.instagram],
+  };
 }
 
 export function SchemaOrganizacao() {

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { POSTS } from "@/data/blog";
 import { PAGINAS_SERVICO } from "@/data/paginas-servico";
-import { SITE } from "@/data/site";
+import { AUTOR, SITE } from "@/data/site";
 
 // Export estatico (Cloudflare Pages): gerado uma vez no build.
 export const dynamic = "force-static";
@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     })),
     { url: `${SITE.url}/sobre`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE.url}/autor/${AUTOR.slug}`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE.url}/blog`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE.url}/politica-de-privacidade`, changeFrequency: "yearly", priority: 0.2 },
     ...POSTS.map((p) => ({

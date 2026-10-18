@@ -14,8 +14,9 @@ site e o índice que as travas conferem.
 
 ## 2. Como o post entra
 
-- Dado em `src/data/blog.ts`. Corpo em HTML, começa em `<h2>`, tabela com dado real quando
-  houver. Markdown trava o build (`scripts/check-markdown.mjs`).
+- Dado em `src/data/blog.ts`. Corpo em HTML, tabela com dado real quando houver. Padrão Virtus
+  (18/10/2026): o corpo abre com um parágrafo de gancho na voz do autor e a resposta em `<strong>`,
+  antes do primeiro `<h2>`; lei citada entre aspas, com o artigo. Markdown trava o build (`scripts/check-markdown.mjs`).
 - `resumoRapido` (2 a 4 tópicos, resposta direta), FAQ de 3 a 5 itens, fontes com link.
 - `servico`: a página de serviço dona do assunto. Ela lista o post (link de entrada) e o post
   aponta pra ela (link de saída). No corpo, pelo menos dois links internos.
