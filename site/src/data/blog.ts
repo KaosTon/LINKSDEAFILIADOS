@@ -11,6 +11,17 @@
 
 export type Fonte = { nome: string; url: string };
 
+/** Temas do blog (como as categorias da Virtus): agrupam a lista do /blog e dao o rotulo do post.
+ *  Pagina propria de categoria so a partir de 3 posts no tema (METODO §2.3). */
+export const CATEGORIAS = {
+  "ofertas-e-cupons": { nome: "Ofertas e cupons", desc: "Como aproveitar promoção, cupom e data de desconto sem cair em armadilha." },
+  "garantias-das-lojas": { nome: "Garantias das lojas", desc: "O que Amazon, Mercado Livre e Shopee fazem quando a compra dá errado." },
+  "seus-direitos": { nome: "Seus direitos", desc: "O que a lei garante em compra online: devolução, defeito e prazo." },
+  "pagamento-e-impostos": { nome: "Pagamento e impostos", desc: "Pix, cartão e imposto de compra internacional, com a conta feita." },
+} as const;
+
+export type Categoria = keyof typeof CATEGORIAS;
+
 export type Post = {
   slug: string;
   titulo: string;
@@ -34,6 +45,8 @@ export type Post = {
   urlAntiga?: string;
   /** guia dono do assunto (slug de SERVICOS): link de saida garantido e bloco de CTA */
   servico: string;
+  /** tema do post (CATEGORIAS) */
+  categoria: Categoria;
   /** capa 1200x675 em public/blog/{slug}.webp (imagem propria, casada com o tema; trava check-paginas) */
   imagem: string;
   faq: { q: string; a: string }[];
@@ -57,6 +70,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["black friday 2026", "quando é a black friday", "como se preparar para a black friday", "black friday golpe site falso"],
     servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "ofertas-e-cupons",
     imagem: "/blog/black-friday-2026-quando-e.webp",
     faq: [
       { q: "Quando é a Black Friday 2026?", a: "A Black Friday 2026 é na sexta-feira, 27 de novembro de 2026, a última sexta de novembro. Muitas lojas começam ofertas antes e esticam até o fim de semana, mas isso varia de loja para loja." },
@@ -72,7 +86,9 @@ export const POSTS: Post[] = [
       { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
       { nome: "Decreto 7.962/2013, comércio eletrônico (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/decreto/d7962.htm" },
     ],
-    conteudo: `<h2>Quando é a Black Friday 2026?</h2>
+    conteudo: `<p>Na Black Friday o número de ofertas sobe, e com ele o de ofertas ruins: preço que sobe dias antes para o desconto parecer maior, site copiado de loja famosa, cupom que não funciona na hora de pagar. <strong>Em 2026 a data é sexta-feira, 27 de novembro, e quem compra bem é quem anotou o preço semanas antes.</strong> Este guia mostra o que fazer até lá, como reconhecer o site falso e o que a lei garante se a compra der errado.</p>
+
+<h2>Quando é a Black Friday 2026?</h2>
 <p>A Black Friday 2026 é na <strong>sexta-feira, 27 de novembro de 2026</strong>. A data segue a tradição americana: é a sexta depois do Dia de Ação de Graças (quarta quinta-feira de novembro), que em 2026 cai no dia 26. Na prática, também é a última sexta do mês. Conferimos no calendário.</p>
 <p>Não existe lei que fixe a data, é uma convenção do comércio. Por isso cada loja decide quando começa e quando termina. Algumas fazem "esquenta" dias antes, outras esticam até o domingo ou a segunda seguinte. Não conte com isso como regra: o que vale é o que a loja anuncia para aquele produto.</p>
 
@@ -152,6 +168,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["direito de arrependimento", "devolver compra online", "prazo de 7 dias para devolução", "frete de devolução quem paga", "art. 49 cdc"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "seus-direitos",
     imagem: "/blog/direito-de-arrependimento-compra-online.webp",
     faq: [
       { q: "O prazo de 7 dias para devolver conta da compra ou da entrega?", a: "Conta do recebimento do produto. O art. 49 do CDC diz \"a contar de sua assinatura ou do ato de recebimento do produto ou serviço\", e o Procon-SP orienta que são dias corridos." },
@@ -174,7 +191,9 @@ export const POSTS: Post[] = [
       { nome: "Magalu: Me arrependi da compra. E agora? (atendimento)", url: "https://atendimento.magazineluiza.com.br/hc/pt-br/articles/360045957712-Me-arrependi-da-compra-E-agora" },
       { nome: "Magalu: prazo para devolver o produto nos Correios (atendimento)", url: "https://atendimento.magazineluiza.com.br/hc/pt-br/articles/34393198524301-Qual-o-prazo-para-devolver-meu-produto-nos-correios" },
     ],
-    conteudo: `<h2>O que é o direito de arrependimento?</h2>
+    conteudo: `<p>O pacote chegou, você abriu e não era bem aquilo: a cor é outra, o tamanho não serve ou você simplesmente se arrependeu. <strong>Em compra pela internet, você pode desistir em até 7 dias corridos depois de receber, sem precisar dar motivo, e tem de volta tudo o que pagou, inclusive o frete.</strong> Não é favor da loja, é lei. Este guia mostra de quando contam os 7 dias, quem paga a devolução e o caminho em cada loja, com o artigo da lei ao lado para você conferir.</p>
+
+<h2>O que é o direito de arrependimento?</h2>
 <p>É o direito de desistir de uma compra feita fora da loja física, sem dar motivo, em até 7 dias. Ele está no art. 49 do Código de Defesa do Consumidor (Lei 8.078/1990), que continua vigente no texto compilado do Planalto: "O consumidor pode desistir do contrato, no prazo de 7 dias a contar de sua assinatura ou do ato de recebimento do produto ou serviço, sempre que a contratação de fornecimento de produtos e serviços ocorrer fora do estabelecimento comercial, especialmente por telefone ou a domicílio."</p>
 <p>A lei é de 1990, quando não existia loja online, mas compra pela internet é justamente o caso típico de compra "fora do estabelecimento". Você não pegou o produto na mão antes de pagar, e a lei dá esse período para ver de perto e decidir.</p>
 <p>Repare que o arrependimento não depende de defeito. O produto pode estar perfeito: você só não quer mais. Se o problema é defeito, a regra é outra, com outros prazos, e explicamos em <a href="/blog/produto-com-defeito-comprado-online">produto com defeito comprado online</a>.</p>
@@ -241,6 +260,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["produto com defeito comprado online", "prazo para reclamar de defeito", "garantia legal", "garantia legal e contratual", "troca de produto com defeito"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "seus-direitos",
     imagem: "/blog/produto-com-defeito-comprado-online.webp",
     faq: [
       { q: "Qual o prazo para reclamar de produto com defeito?", a: "Pelo art. 26 do CDC, 30 dias para produto não durável e 90 dias para produto durável, contados da entrega. Se o defeito é oculto, o prazo começa quando ele aparece." },
@@ -328,6 +348,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["taxa de importação", "taxa das blusinhas", "remessa conforme", "icms compra internacional", "imposto compra internacional"],
     servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "pagamento-e-impostos",
     imagem: "/blog/taxa-de-importacao-compra-internacional.webp",
     faq: [
       { q: "Compra internacional de até 50 dólares paga imposto em 2026?", a: "Paga só o ICMS, se o site for do Remessa Conforme. Desde 12/05/2026 o imposto de importação nessa faixa é zero para pessoa física em site certificado, segundo a Receita Federal, mas o ICMS estadual de 17% a 20% continua." },
@@ -361,6 +382,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["pix ou cartão", "pix é seguro para compra online", "med pix", "desconto no pix vale a pena", "estorno pix"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "pagamento-e-impostos",
     imagem: "/blog/pix-ou-cartao-compra-online.webp",
     faq: [
       { q: "Pix tem estorno?", a: "Não do jeito que o cartão tem. O Pix enviado só volta se o recebedor devolver ou, em caso de fraude, pelo Mecanismo Especial de Devolução (MED) do Banco Central, que depende de análise e de haver saldo na conta de destino." },
@@ -395,6 +417,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["loja da shopee é confiável", "garantia shopee", "loja oficial shopee", "vendedor indicado shopee", "como comprar na shopee com segurança"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "garantias-das-lojas",
     imagem: "/blog/como-saber-se-loja-da-shopee-e-confiavel.webp",
     faq: [
       { q: "Como saber se uma loja da Shopee é confiável?", a: "Olhe nota, número de vendas, avaliações com foto, selo (Oficial ou Indicado) e a taxa de resposta do chat na página da loja. No Tem Descontos, só postamos produto com nota 4,5 ou mais e 50 vendas ou mais." },
@@ -508,6 +531,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["cupom shopee", "cupom mercado livre", "cupom indisponível", "moedas shopee", "cupom primeira compra"],
     servico: "cupom-da-amazon-como-usar",
+    categoria: "ofertas-e-cupons",
     imagem: "/blog/cupom-shopee-e-mercado-livre-como-usar.webp",
     faq: [
       { q: "Por que o cupom da Shopee não funciona?", a: "Na maioria das vezes o pedido não cumpre uma condição do cupom: valor mínimo, produto ou categoria, forma de pagamento ou envio, validade ou cota de uso. As condições ficam no regulamento (T&C) de cada cupom, em Eu > Meus Cupons." },
@@ -620,6 +644,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["compra garantida mercado livre", "como pedir reembolso no mercado livre", "produto não chegou mercado livre", "reclamação mercado livre", "mediação mercado livre"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "garantias-das-lojas",
     imagem: "/blog/compra-garantida-mercado-livre.webp",
     faq: [
       { q: "Qual o prazo da Compra Garantida do Mercado Livre?", a: "Segundo a página oficial do programa, são 28 dias a partir da data da compra quando o produto não chega, e até 30 dias a partir do recebimento em caso de arrependimento ou problema no produto, dependendo do motivo." },
@@ -649,6 +674,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["garantia de a a z amazon", "como acionar garantia amazon", "reembolso amazon vendedor parceiro", "produto não chegou amazon", "recorrer garantia de a a z"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "garantias-das-lojas",
     imagem: "/blog/garantia-de-a-a-z-amazon.webp",
     faq: [
       { q: "Qual o prazo para pedir a Garantia de A a Z da Amazon?", a: "São 90 dias após a data máxima estimada de entrega, segundo a central de ajuda da Amazon Brasil." },
@@ -681,6 +707,7 @@ export const POSTS: Post[] = [
     dataPublicacao: "2026-10-18",
     tags: ["link de afiliado", "link de afiliado muda o preço", "como funciona link de afiliado", "amazon associados", "por que grupo de ofertas é de graça"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "ofertas-e-cupons",
     imagem: "/blog/link-de-afiliado-o-preco-muda.webp",
     faq: [
       { q: "Comprar por link de afiliado fica mais caro?", a: "Não. A comissão é paga pela loja ao afiliado. No caso da Amazon, o acordo do Programa de Associados diz que quem chega pelo link é cliente da Amazon e segue os preços e regras da própria Amazon." },

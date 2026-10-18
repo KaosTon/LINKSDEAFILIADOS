@@ -206,7 +206,7 @@ export default async function PaginaGuia(props: PageProps<"/guias/[slug]">) {
       {/* Autoria, revisao e fontes (E-E-A-T) */}
       <section className="max-w-3xl mx-auto px-4 py-12 text-sm text-tinta-2">
         <p>
-          Guia de <Link href="/sobre" className="font-semibold text-tinta hover:text-marca-escura">{AUTOR.nome}</Link>.{" "}
+          Guia de <Link href={`/autor/${AUTOR.slug}`} className="font-semibold text-tinta hover:text-marca-escura">{AUTOR.nome}</Link>.{" "}
           {pagina.revisadoEm ? (
             <>Revisado em {pagina.revisadoEm}.</>
           ) : (

@@ -51,6 +51,11 @@ export default function Sobre() {
               {AUTOR.bio.map((p) => (
                 <p key={p}>{p}</p>
               ))}
+              <p>
+                <Link href={`/autor/${AUTOR.slug}`} className="font-semibold text-marca-escura underline decoration-marca/40 underline-offset-4">
+                  Conheça {AUTOR.nome}
+                </Link>
+              </p>
             </div>
             <a
               href={linkWhats(MENSAGENS_ROTA["/sobre"])}

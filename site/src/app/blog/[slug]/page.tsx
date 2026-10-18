@@ -4,11 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb, { urlAbsoluta } from "@/components/Breadcrumb";
 import { IconeWhats } from "@/components/Icones";
-import { POSTS, POSTS_ORDENADOS, dataPorExtenso, post, tempoLeitura } from "@/data/blog";
+import { CATEGORIAS, POSTS, POSTS_ORDENADOS, dataPorExtenso, post, tempoLeitura } from "@/data/blog";
 import { paginaServico } from "@/data/paginas-servico";
 import { AUTOR, CREDENCIAIS, SERVICOS, SITE, TEXTOS, linkWhats } from "@/data/site";
 import { destinoDaTag } from "@/data/tag-destinos";
-import { pessoaNode } from "@/components/Schemas";
+import { ID_ORGANIZACAO, pessoaNode } from "@/components/Schemas";
 import { MENSAGENS_POST } from "@/data/whatsapp";
 
 // Ate o primeiro post (16/10/2026) esta pagina ficou na pasta privada _post, porque o export
@@ -74,7 +74,7 @@ export default async function PaginaPost(props: Props) {
       inLanguage: "pt-BR",
       author: pessoaNode(),
       ...(p.revisadoEm ? { reviewedBy: pessoaNode() } : {}),
-      publisher: { "@id": pessoaNode()["@id"] },
+      publisher: { "@id": ID_ORGANIZACAO },
       image: [urlAbsoluta(p.imagem)],
       articleSection: servico?.nome,
       keywords: p.tags.join(", "),
@@ -97,10 +97,10 @@ export default async function PaginaPost(props: Props) {
       <article>
         <header className="grao">
           <div className="max-w-3xl mx-auto px-4 pt-12 pb-10 md:pt-16">
-            {servico ? <p className="eyebrow mb-5">{servico.nome}</p> : null}
+            <p className="eyebrow mb-5">{CATEGORIAS[p.categoria].nome}</p>
             <h1 className="font-display text-4xl md:text-5xl font-extrabold leading-[1.05]">{p.titulo}</h1>
             <p className="mt-5 text-sm text-tinta-3">
-              Por <Link href="/sobre" className="text-tinta hover:text-marca-escura">{AUTOR.nome}</Link>
+              Por <Link href={`/autor/${AUTOR.slug}`} className="text-tinta hover:text-marca-escura">{AUTOR.nome}</Link>
               {AUTOR.registro ? `, ${AUTOR.registro}` : ""} · <time dateTime={p.dataPublicacao}>{dataPorExtenso(p.dataPublicacao)}</time> · {tempoLeitura(p)} min de leitura
             </p>
 
@@ -225,7 +225,7 @@ export default async function PaginaPost(props: Props) {
                 {[AUTOR.cargo, AUTOR.registro].filter(Boolean).join(", ")}.
                 {CREDENCIAIS.graduacao ? ` ${CREDENCIAIS.graduacao.curso} (${CREDENCIAIS.graduacao.instituicao}).` : ""}
               </p>
-              <Link href="/sobre" className="mt-2 inline-block text-sm font-semibold text-marca-escura hover:text-tinta">Formação completa</Link>
+              <Link href={`/autor/${AUTOR.slug}`} className="mt-2 inline-block text-sm font-semibold text-marca-escura hover:text-tinta">Formação completa</Link>
             </div>
           </div>
         </aside>
