@@ -97,10 +97,13 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear =
 }
 {
   const como = pegarCodigo('01-entrada.json', 'Como foi');
-  const a = await rodar(como, { itens: [{ json: { ok: false, erro: 'instance not connected' } }] });
+  const nos = { 'Prepara a oferta': [{ json: { aviso: '' } }] };
+  const a = await rodar(como, { itens: [{ json: { ok: false, erro: 'instance not connected' } }], nos });
   caso('Como foi: leva o erro do gateway para o rascunho', /instance not connected/.test(a.saida[0].json.resposta));
-  const b = await rodar(como, { itens: [{ json: { ok: true, id: 'Z1' } }] });
-  const c = await rodar(como, { itens: [{ json: {} }] });
+  const b = await rodar(como, { itens: [{ json: { ok: true, id: 'Z1' } }], nos });
+  const c = await rodar(como, { itens: [{ json: {} }], nos });
+  const d = await rodar(como, { itens: [{ json: { ok: true } }], nos: { 'Prepara a oferta': [{ json: { aviso: 'A sua foto tinha a marca de outro grupo; usei a foto da loja.' } }] } });
+  caso('Como foi: o aviso da foto trocada vai junto do Postado', /Postado[\s\S]*marca de outro grupo/.test(d.saida[0].json.resposta), d.saida[0].json.resposta);
   caso('Como foi: ok vira Postado; sem resposta diz que a Z-API nao respondeu', /Postado/.test(b.saida[0].json.resposta) && /Z-API/.test(c.saida[0].json.resposta));
 }
 

@@ -1,7 +1,8 @@
 // Encurtador próprio: temdescontos.com.br/a7k2p -> link de afiliado.
-// Sem dependência. Roda no Railway como serviço separado do n8n, com um volume em /data.
+// Roda no Railway como serviço separado do n8n, com um volume em /data. Única dependência: sharp (foto.mjs).
 //
 //   GET  /{codigo}          redireciona (302) e conta o clique
+//   GET  /foto?u=&a=        foto do post em 1200x630 com o logo no canto; só com assinatura do n8n (foto.mjs)
 //   POST /api/encurtar      { url } com Authorization: Bearer ENCURTADOR_SEGREDO -> { codigo, curto }
 //   GET  /api/cliques       mesma senha; os links mais clicados
 //   GET  /saude             para o Railway saber que está de pé
@@ -19,6 +20,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { criarRotaFoto } from './foto.mjs';
 
 const LOJAS = /(^|\.)(amazon\.com\.br|amzn\.to|mercadolivre\.com\.br|meli\.la|shopee\.com\.br|magazinevoce\.com\.br|magazineluiza\.com\.br)$/i;
 const ALFABETO = 'abcdefghijkmnpqrstuvwxyz23456789';   // sem l, o, 0, 1 (confundem)
@@ -36,7 +38,7 @@ export function novoCodigo(existe, tamanho = 5) {
   }
 }
 
-export function criarServidor({ pasta, segredo, base, convite, site }) {
+export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto }) {
   const raizSite = String(site || '').replace(/\/+$/, '');
   const convites = String(convite || '').split(/[\s,;]+/).filter(c => /^https:\/\//.test(c));
   fs.mkdirSync(pasta, { recursive: true });
@@ -54,6 +56,7 @@ export function criarServidor({ pasta, segredo, base, convite, site }) {
     fs.renameSync(tmp, arquivo);
     sujo = false;
   };
+  const foto = criarRotaFoto({ pasta, segredo, ...(baixarFoto ? { baixarFoto } : {}) });
   const relogio = setInterval(salvar, 30000);
   relogio.unref();
 
@@ -72,6 +75,7 @@ export function criarServidor({ pasta, segredo, base, convite, site }) {
     const p = u.pathname;
 
     if (p === '/saude') return responde(res, 200, 'ok');
+    if (p === '/foto') return void foto(u, res);
 
     if (p === '/api/encurtar' && req.method === 'POST') {
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });

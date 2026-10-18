@@ -2,6 +2,13 @@
   "name": "encurtador",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
-  "scripts": { "start": "node servidor.mjs" }
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node servidor.mjs"
+  },
+  "dependencies": {
+    "sharp": "0.35.5"
+  }
 }

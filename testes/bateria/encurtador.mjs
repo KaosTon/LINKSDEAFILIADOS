@@ -3,6 +3,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { criarServidor, lojaPermitida, novoCodigo } from '../../encurtador/servidor.mjs';
+import { assinarFoto } from '../../encurtador/foto.mjs';
+import { createRequire } from 'node:module';
+const sharp = createRequire(new URL('../../encurtador/package.json', import.meta.url))('sharp');   // fica em encurtador/node_modules
 
 let falhas = 0;
 const caso = (nome, ok, extra) => { console.log(`  ${ok ? 'PASS' : 'FALHA'}  ${nome}`); if (!ok) { falhas++; if (extra) console.log(extra); } };
@@ -71,6 +74,33 @@ const seg = await fetch(`${raiz}/grupo?n=2`, { redirect: 'manual' });
 caso('/grupo?n=2 abre o segundo', seg.headers.get('location') === 'https://chat.whatsapp.com/G2');
 const fora = await fetch(`${raiz}/grupo?n=9`, { redirect: 'manual' });
 caso('n que nao existe: cai no ultimo', fora.headers.get('location') === 'https://chat.whatsapp.com/G3');
+await new Promise((ok) => s.close(ok));
+
+// Foto com logo (18/10): só com assinatura; 1200x630 com o logo no canto; foto que não abre volta para a original.
+const quadrada = await sharp({ create: { width: 800, height: 800, channels: 3, background: '#3366cc' } }).jpeg().toBuffer();
+let baixadas = 0;
+({ s, raiz } = await sobe({ baixarFoto: async (u) => { baixadas++; if (/quebrada/.test(u)) throw new Error('x'); return quadrada; } }));
+const FOTO = 'https://http2.mlstatic.com/D_NQ_NP_teste.jpg';
+const semAss = await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}`, { redirect: 'manual' });
+caso('/foto sem assinatura: 403 (ninguem usa o dominio de proxy)', semAss.status === 403);
+const assErrada = await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}&a=${assinarFoto('outra-senha', FOTO)}`, { redirect: 'manual' });
+caso('/foto com assinatura de outra senha: 403', assErrada.status === 403);
+const ok1 = await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}&a=${assinarFoto(SENHA, FOTO)}`);
+const jpg = Buffer.from(await ok1.arrayBuffer());
+const meta = await sharp(jpg).metadata();
+caso('/foto assinada: jpeg 1200x630', ok1.status === 200 && ok1.headers.get('content-type') === 'image/jpeg' && meta.width === 1200 && meta.height === 630, meta);
+const px = async (x, y) => [...(await sharp(jpg).extract({ left: x, top: y, width: 1, height: 1 }).raw().toBuffer())];
+const lado = await px(40, 40), meio = await px(600, 315);
+const caixa = await sharp(jpg).extract({ left: 1200 - 22 - 120, top: 630 - 22 - 80, width: 120, height: 80 }).raw().toBuffer();
+let cor = 0; for (let i = 0; i < caixa.length; i += 3) if (Math.min(caixa[i], caixa[i + 1], caixa[i + 2]) < 200) cor++;
+const canto = cor / (caixa.length / 3);
+caso('fundo branco nas laterais e a foto no meio', lado.every(v => v > 245) && meio[2] > 150 && meio[0] < 90, { lado, meio });
+caso('logo no canto de baixo a direita (canto branco ficou colorido)', canto > 0.2, canto);
+await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}&a=${assinarFoto(SENHA, FOTO)}`);
+caso('segunda vez vem do cache (nao baixa de novo)', baixadas === 1, baixadas);
+const QUEBRADA = 'https://http2.mlstatic.com/quebrada.jpg';
+const q = await fetch(`${raiz}/foto?u=${encodeURIComponent(QUEBRADA)}&a=${assinarFoto(SENHA, QUEBRADA)}`, { redirect: 'manual' });
+caso('foto que nao abre: manda para a original (post sai sem logo, mas com foto)', q.status === 302 && q.headers.get('location') === QUEBRADA);
 await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });
 
