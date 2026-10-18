@@ -48,6 +48,8 @@ const garimpa = node({
 "  cuponsPorDia: N('GARIMPO_CUPONS_POR_DIA', 6), descontoMin: N('GARIMPO_DESCONTO_MIN', 15), idadeSemConferirMin: N('GARIMPO_IDADE_SEM_CONFERIR', 30),",
 "  idadeMaxMin: 120, maxTentativas: 8, eletronicoACada: N0('GARIMPO_ELETRONICO_A_CADA', 2),",
 "  conviteHora: N0('GARIMPO_CONVITE_HORA', 19), statusHora: N0('GARIMPO_STATUS_HORA', 12),",
+"  // Loja confiável na Shopee (18/10): nota e vendas mínimas do produto; caro só em loja oficial ou indicada.",
+"  notaMinShopee: N('GARIMPO_SHOPEE_NOTA_MIN', 4.5), vendasMinShopee: N0('GARIMPO_SHOPEE_VENDAS_MIN', 50), caroShopee: N('GARIMPO_SHOPEE_CARO', 1000),",
 "  canais: lista('GARIMPO_CANAIS', 'promotop,pechinchou,fadadoscupons,cupomonline'),",
 "  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",

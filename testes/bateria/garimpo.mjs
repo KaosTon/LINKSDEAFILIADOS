@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -489,6 +489,32 @@ console.log('\n=== Shopee oficial (14/10) ===');
   const m4 = memNova(); m4.produtos['shopee:2.22'] = AGORA.getTime();
   const r4 = await garimpar({ canais: {}, shopee: L, agora: AGORA, cfg: CFG, mem: m4, rede });
   caso('Shopee ja postado na semana: vai para o proximo da lista', r4.link === 'https://s.shopee.com.br/A', r4);
+}
+
+console.log('\n=== Loja confiavel na Shopee (18/10) ===');
+{
+  const L = lerOfertasShopee({ data: { productOfferV2: { nodes: [
+    { productName: 'iPhone Teste 256GB', priceMin: '7700', priceDiscountRate: 49, commissionRate: '0.05', imageUrl: 'https://cf.shopee.com.br/file/i', productLink: 'https://shopee.com.br/product/9/99', offerLink: 'https://s.shopee.com.br/I', ratingStar: '4.9', sales: 1200, shopName: 'Loja Indicada', shopType: [2] } ] } } });
+  caso('le nota, vendas, nome e tipo da loja', L[0].nota === 4.9 && L[0].vendas === 1200 && L[0].loja === 'Loja Indicada' && L[0].tipoLoja[0] === 2, L[0]);
+  const C = {};
+  caso('caro em loja indicada, nota e vendas boas: passa', lojaConfiavel(L[0], C));
+  caso('caro em loja comum: nao passa', !lojaConfiavel({ ...L[0], tipoLoja: [] }, C));
+  caso('barato em loja comum, nota e vendas boas: passa', lojaConfiavel({ preco: 40, nota: 4.8, vendas: 2000, tipoLoja: [] }, C));
+  caso('nota baixa: nao passa', !lojaConfiavel({ preco: 40, nota: 4.2, vendas: 2000, tipoLoja: [1] }, C));
+  caso('poucas vendas: nao passa', !lojaConfiavel({ preco: 40, nota: 4.9, vendas: 10, tipoLoja: [1] }, C));
+  caso('sem os dados na resposta: nao barra', lojaConfiavel({ preco: 9000, nota: null }, C));
+  caso('limites pela configuracao', lojaConfiavel({ preco: 40, nota: 4.2, vendas: 10, tipoLoja: [] }, { notaMinShopee: 4, vendasMinShopee: 0 }) && lojaConfiavel({ preco: 1500, nota: 4.9, vendas: 99, tipoLoja: [] }, { caroShopee: 2000 }));
+  const lista = [{ nome: 'Fone Ruim Teste', preco: 30, desconto: 60, comissao: 0.5, foto: 'f', link: 'https://s.shopee.com.br/R', chave: 'shopee:1.1', nota: 3.9, vendas: 500, tipoLoja: [] },
+    { nome: 'Creatina Boa Teste', preco: 40, desconto: 45, comissao: 0.2, foto: 'f', link: 'https://s.shopee.com.br/B', chave: 'shopee:2.2', nota: 4.9, vendas: 5000, tipoLoja: [1] }];
+  const r = await garimpar({ canais: {}, shopee: lista, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: { ...memNova(), postados: 2 }, rede });
+  caso('lista da Shopee: pula a loja ruim mesmo com comissao maior', r.link === 'https://s.shopee.com.br/B', r);
+  const pc = post('canalum/77', min(5), 'iPhone Teste 256GB Novo\n\n🔥 Por: R$ 7700\n\n🛒 Link: https://s.shopee.com.br/canal', 'https://cdn1.telesco.pe/file/f77');
+  const redeS = { ...rede, abrir: async (u) => (u === 'https://s.shopee.com.br/canal' ? 'https://shopee.com.br/product/9/99' : rede.abrir(u)), shopee: async () => 'https://s.shopee.com.br/MEU',
+    shopeeProduto: async () => ({ ...L[0], tipoLoja: [] }) };
+  const rc = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: redeS });
+  caso('canal com iPhone de loja comum: nao posta, motivo no resumo', rc.acao === 'nada' && rc.tentou.some(([, m]) => m === 'loja_pouco_confiavel'), rc);
+  const ri = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeS, shopeeProduto: async () => L[0] } });
+  caso('canal com iPhone de loja indicada: posta', ri.acao === 'postar' && ri.link === 'https://s.shopee.com.br/MEU', ri);
 }
 
 console.log('\n=== Vez do eletronico (17/10) ===');
