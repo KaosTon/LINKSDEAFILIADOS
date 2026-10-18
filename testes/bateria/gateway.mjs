@@ -54,6 +54,19 @@ const roda = (entrada, responde, env = ENV) => rodar(codigo, { itens: [{ json: {
 }
 
 {
+  // Logo nas fotos (18/10): com o encurtador configurado, o send-link usa /foto assinado (1200x630 com o logo TD).
+  const ENVL = { ...ENV, ENCURTADOR_URL: 'https://temdescontos.example', ENCURTADOR_SEGREDO: 's'.repeat(40) };
+  const http = [{ quando: /z-api\.io/, responde: { zaapId: 'Z1' } }, { quando: /api\/encurtar/, responde: { curto: 'https://temdescontos.example/abcde' } }];
+  const vai = (entrada, env = ENVL) => rodar(codigo, { itens: [{ json: {} }], env, nos: { 'Alguém quer enviar': [{ json: entrada }] }, http })
+    .then(r => r.chamadas.find(c => /z-api/.test(c.url)));
+  const sh = await vai({ phone: 'g', message: 'Oferta https://s.shopee.com.br/x', image: 'https://down-br.img.susercontent.com/file/abc', link: 'https://s.shopee.com.br/x', titulo: 'Fone', origem: '03' });
+  caso('com encurtador: foto da Shopee vai com o logo, assinada, tamanho medio (130)', /^https:\/\/temdescontos\.example\/foto\?u=https%3A%2F%2Fdown-br\.img\.susercontent\.com%2Ffile%2Fabc&a=[0-9a-f]{24}&t=130$/.test(sh.body.image), sh.body.image);
+  const az = await vai({ phone: 'g', message: 'Oferta https://www.amazon.com.br/dp/B0X', image: 'https://m.media-amazon.com/images/I/x.jpg', link: 'https://www.amazon.com.br/dp/B0X', titulo: 'Fone', origem: '03' });
+  caso('foto da Amazon: sem logo (regra da Amazon), so enquadrada', /images\.weserv\.nl/.test(az.body.image), az.body.image);
+  const des = await vai({ phone: 'g', message: 'Oferta https://s.shopee.com.br/x', image: 'https://down-br.img.susercontent.com/file/abc', link: 'https://s.shopee.com.br/x', titulo: 'Fone', origem: '03' }, { ...ENVL, FOTO_COM_LOGO: 'nao' });
+  caso('FOTO_COM_LOGO=nao desliga o logo', /images\.weserv\.nl/.test(des.body.image), des.body.image);
+}
+{
   // Varios grupos (17/10): mesma mensagem em cada um, encurta uma vez so, ok se saiu em pelo menos um.
   const ENVG = { ...ENV, GRUPOS_INTERVALO_SEG: '0' };
   const r = await roda({ phone: 'G1-group, G2-group;G3-group', message: 'Oferta', origem: '03' }, { zaapId: 'Z1' }, ENVG);
