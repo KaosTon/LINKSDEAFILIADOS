@@ -2,7 +2,7 @@
 // postar o link de afiliado de outra pessoa, mandar link quebrado por causa
 // de pontuação grudada, e legenda com preço inventado.
 import crypto from 'node:crypto';
-import { enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
+import { lerPost, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
          magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom } from '../../lib/ofertas.mjs';
@@ -188,6 +188,19 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('meli.la de outra pessoa: acha o produto e posta com a sua etiqueta', ml1.acao === 'postar' && ml1.texto.includes('https://www.mercadolivre.com.br/p/MLB12345678?matt_word=minhaetq&matt_tool=999') && !ml1.texto.includes('meli.la'), ml1);
   const ml2 = await prepararOferta(corpo('Coisa que nao existe na pagina\nhttps://meli.la/OUTRO'), CML, redeML);
   caso('meli.la de outra pessoa sem produto achado: recusa e explica', ml2.acao === 'recusar' && /outra pessoa/.test(ml2.resposta), ml2);
+  // cutt.ly que cai na vitrine de outro afiliado, card no formato novo (18/10; ids inventados).
+  const TXT = '(Lançamento 2026) Smart Tv 65" Samsung 4K M75H + Soundbar B450F 2.1 Canais | De R$4.899 Por R$ 3.899\n\n✅ Em até 10x sem juros\n\n➡️ COMPRE PELO SITE: https://cutt.ly/TESTE1';
+  const VIT = '<a href="https://www.mercadolivre.com.br/samsung-smart-tv-65-miniled-4k-m75h-soundbar-teste/p/MLB70000001?matt_event_ts=1#c_id=/home/card-featured/element">x</a>'
+    + '<script>{"polycards":[{"unique_id":"u1","metadata":{"id":"MLB5100000001","product_id":"MLB70000001","user_product_id":"MLBU4600000001","url":"www.mercadolivre.com.br/samsung-smart-tv-65-miniled-4k-m75h-soundbar-teste/p/MLB70000001"},'
+    + '"components":[{"type":"title","id":"title","title":{"text":"Samsung Smart Tv 65 Miniled 4k M75h + Soundbar Samsung B-series Hw-b450f","long_title":false}},{"type":"price","id":"price","price":{"current_price":{"value":3899,"currency":"BRL"}}}]}]}</script>'
+    + '<meta property="og:image" content="https://http2.mlstatic.com/D_NQ_NP_1-MLA1-F.jpg"/>';
+  const redeC = { ...rede, abrir: async (u) => (u === 'https://cutt.ly/TESTE1' ? 'https://www.mercadolivre.com.br/social/outroafiliado?matt_word=outraetq&matt_tool=1&ref=x' : rede.abrir(u)), pagina: async () => VIT };
+  const lt = lerPost(TXT);
+  caso('nome e preco na mesma linha: nome antes do "De R$", sem o (Lancamento)', lt.nome === 'Smart Tv 65" Samsung 4K M75H + Soundbar B450F 2.1 Canais' && lt.preco === 3899 && lt.precoAntes === 4899, lt);
+  const cc = await prepararOferta(corpo(TXT, { image: { imageUrl: 'https://tmp/tv.jpeg', caption: TXT } }), CML, redeC);
+  caso('cutt.ly de outro afiliado no rascunho: acha o produto da vitrine e posta com a sua etiqueta', cc.acao === 'postar' && cc.texto.includes('https://www.mercadolivre.com.br/p/MLB70000001?matt_word=minhaetq&matt_tool=999') && !cc.texto.includes('cutt.ly') && cc.imagem === 'https://tmp/tv.jpeg', cc);
+  const cx = await prepararOferta(corpo('Cadeira Gamer Teste Reclinavel | De R$900 Por R$500\nhttps://cutt.ly/TESTE1'), CML, redeC);
+  caso('vitrine com outro produto: recusa (nao posta produto errado)', cx.acao === 'recusar', cx);
   const vistos = [];
   const b = corpo('x https://meli.la/1', { messageId: 'IGUAL' });
   const p1 = await prepararOferta(b, C, rede, vistos), p2 = await prepararOferta(b, C, rede, vistos);
