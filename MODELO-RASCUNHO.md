@@ -4,6 +4,16 @@ Guia do Wellington para postar pelo grupo Rascunho sem sair torto no grupo de of
 O robô lê o texto, troca os links pelos seus e monta o post no padrão do grupo.
 Modelo testado em 19/10/2026 (`lerPost` e `legendaAchado`, `lib/ofertas.mjs`).
 
+## Prévia: nada vai ao grupo sem o seu "sim" (19/10)
+
+1. Você manda a oferta no Rascunho.
+2. O robô devolve no próprio Rascunho o post do jeito que vai sair no grupo e pergunta.
+3. Responda **sim** (ou "ok", "pode", "posta") para postar, ou **não** (ou "cancela") para descartar.
+
+- Só a última oferta fica esperando: mandou outra antes de responder, vale a nova.
+- A prévia vence em 6 horas; "sim" depois disso não posta nada.
+- Para voltar a postar direto, sem prévia: variável `RASCUNHO_PREVIA=nao` no Railway (n8n).
+
 ## O modelo (uma informação por linha, nesta ordem)
 
 ```

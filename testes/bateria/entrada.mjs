@@ -107,5 +107,30 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear =
   caso('Como foi: ok vira Postado; sem resposta diz que a Z-API nao respondeu', /Postado/.test(b.saida[0].json.resposta) && /Z-API/.test(c.saida[0].json.resposta));
 }
 
+{
+  // Previa no rascunho (19/10): a oferta volta no rascunho; "sim" posta no grupo, "nao" cancela.
+  const mem = {};
+  const http = [{ quando: /amzn\.to\/prev/, responde: { statusCode: 301, headers: { location: 'https://www.amazon.com.br/dp/B0PREVIA00?tag=outro-20' } } }];
+  const texto = (t) => ({ ...corpo(''), image: undefined, text: { message: t } });
+  const p = await roda(corpo('Fone Teste Previa\nPor R$ 99\nLink: https://amzn.to/prev'), { http, memoria: mem });
+  caso('previa: a oferta vai para o RASCUNHO, nao para o grupo', p.out.postar === true && p.out.previa === true && p.out.grupo === ENV.GRUPO_RASCUNHO && /tag=minha-20/.test(p.out.texto), p.out);
+  const s = await roda(texto('Sim'), { memoria: mem });
+  caso('previa: "Sim" posta no GRUPO a mesma oferta, sem chamar a rede de novo', s.out.postar === true && !s.out.previa && s.out.grupo === ENV.GRUPO_OFERTAS && s.out.texto === p.out.texto && s.chamadas.length === 0, s.out);
+  const s2 = await roda(texto('sim'), { memoria: mem });
+  caso('previa: "sim" de novo nao posta duas vezes', s2.out.postar === false && /esperando/.test(s2.out.resposta), s2.out);
+  await roda(corpo('Fone Teste Previa\nPor R$ 99\nLink: https://amzn.to/prev'), { http, memoria: mem });
+  const n = await roda(texto('Não'), { memoria: mem });
+  caso('previa: "Nao" cancela e avisa', n.out.postar === false && /Cancelado/.test(n.out.resposta) && !mem.pendente, n.out);
+  await roda(corpo('Fone Teste Previa\nPor R$ 99\nLink: https://amzn.to/prev'), { http, memoria: mem });
+  mem.pendente.quando -= 7 * 3600e3;
+  const v = await roda(texto('sim'), { memoria: mem });
+  caso('previa: "sim" depois de 6 horas nao posta oferta velha', v.out.postar === false && /esperando/.test(v.out.resposta), v.out);
+  const off = await roda(corpo('Fone Teste Previa\nPor R$ 99\nLink: https://amzn.to/prev'), { http, memoria: {}, env: { ...ENV, RASCUNHO_PREVIA: 'nao' } });
+  caso('RASCUNHO_PREVIA=nao: posta direto no grupo, como antes', off.out.postar === true && !off.out.previa && off.out.grupo === ENV.GRUPO_OFERTAS, off.out);
+  const como = pegarCodigo('01-entrada.json', 'Como foi');
+  const c = await rodar(como, { itens: [{ json: { ok: true } }], nos: { 'Prepara a oferta': [{ json: { previa: true, aviso: '' } }] } });
+  caso('Como foi da previa: pergunta sim ou nao', /Assim vai sair no grupo[\s\S]*sim[\s\S]*não/.test(c.saida[0].json.resposta), c.saida[0].json.resposta);
+}
+
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;
