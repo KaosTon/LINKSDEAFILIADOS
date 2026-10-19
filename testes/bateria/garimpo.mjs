@@ -515,6 +515,14 @@ console.log('\n=== Loja confiavel na Shopee (18/10) ===');
   caso('canal com iPhone de loja comum: nao posta, motivo no resumo', rc.acao === 'nada' && rc.tentou.some(([, m]) => m === 'loja_pouco_confiavel'), rc);
   const ri = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeS, shopeeProduto: async () => L[0] } });
   caso('canal com iPhone de loja indicada: posta', ri.acao === 'postar' && ri.link === 'https://s.shopee.com.br/MEU', ri);
+  // 19/10: link do canal abria a campanha /m/espaco-tecnologia, nao o produto
+  const redeC = { ...redeS, abrir: async (u) => (u === 'https://s.shopee.com.br/canal' ? 'https://shopee.com.br/m/espaco-tecnologia' : rede.abrir(u)), shopeeProduto: async () => L[0] };
+  const rs = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: redeC });
+  caso('Shopee de campanha sem busca: nao posta', rs.acao === 'nada' && rs.tentou.some(([, m]) => m === 'shopee_sem_produto'), rs);
+  const rb = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeC, shopeeBusca: async () => [{ ...L[0], nome: 'Capinha iPhone Teste' }, L[0]] } });
+  caso('Shopee de campanha: acha o produto pelo nome e posta o link dele', rb.acao === 'postar' && rb.link === 'https://s.shopee.com.br/I' && rb.chave === 'shopee:9.99', rb);
+  const rn = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeC, shopeeBusca: async () => [{ ...L[0], nome: 'Capinha Silicone Teste' }] } });
+  caso('Shopee de campanha: busca sem o mesmo produto, nao posta', rn.acao === 'nada', rn);
 }
 
 console.log('\n=== Vez do eletronico (17/10) ===');
