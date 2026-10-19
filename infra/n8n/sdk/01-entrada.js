@@ -8,6 +8,11 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * GRUPO_OFERTAS com a mesma foto e responde no rascunho se deu certo ou por
  * que não postou. Toda saída passa pelo fluxo 02 (gateway).
  *
+ * Prévia (19/10): a oferta pronta volta primeiro no próprio rascunho, igual
+ * vai sair no grupo, e o robô pergunta. "sim" posta no grupo, "não" cancela.
+ * O mesmo caminho "Posta no grupo" manda a prévia (grupo = rascunho). O robô
+ * ignora o que ele mesmo manda, então a prévia não volta como oferta nova.
+ *
  * Se WEBHOOK_SEGREDO estiver configurado, a URL do webhook na Z-API tem que
  * terminar com ?k=O_SEGREDO; sem isso, qualquer um que achasse a URL poderia
  * mandar o robô postar no grupo.
@@ -43,9 +48,11 @@ const prepara = node({
 "memoria.vistos = memoria.vistos || [];",
 "const cfg = { rascunho: $env.GRUPO_RASCUNHO, grupo: $env.GRUPO_OFERTAS, autor: $env.AUTOR_PHONE,",
 "  instancia: $env.ZAPI_INSTANCE_ID, amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA, mlTool: $env.ML_MATT_TOOL,",
-"  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET) };",
+"  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET),",
+"  // Prévia (19/10): a oferta volta no rascunho e só vai ao grupo com \"sim\". RASCUNHO_PREVIA=nao desliga.",
+"  previa: String($env.RASCUNHO_PREVIA || 'sim').trim().toLowerCase() !== 'nao' };",
 "const rede = redeN8n(this.helpers, $env);",
-"const r = await prepararOferta(w.body, cfg, rede, memoria.vistos);",
+"const r = await prepararOferta(w.body, cfg, rede, memoria.vistos, memoria);",
 "if (r.acao === 'ignorar') return [];",
 "return [{ json: r }];"
 ].join('\n') } },
@@ -68,7 +75,11 @@ const comoFoi = node({
   config: { name: 'Como foi', position: [960, -100],
     parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
 "const r = $input.first().json || {};",
-"const aviso = ($('Prepara a oferta').first().json || {}).aviso;",
+"const prep = $('Prepara a oferta').first().json || {};",
+"const aviso = prep.aviso;",
+"if (prep.previa) return [{ json: { resposta: r.ok",
+"  ? '\\u{1F446} Assim vai sair no grupo.' + (aviso ? '\\n' + aviso : '') + '\\nResponda *sim* para postar ou *não* para cancelar.'",
+"  : '\\u274C Não consegui mostrar a prévia: ' + (r.erro || 'a Z-API não respondeu') } }];",
 "return [{ json: { resposta: r.ok",
 "  ? '\\u2705 Postado no grupo de ofertas.' + (aviso ? '\\n' + aviso : '')",
 "  : '\\u274C Não consegui postar no grupo: ' + (r.erro || 'a Z-API não respondeu') } }];"
