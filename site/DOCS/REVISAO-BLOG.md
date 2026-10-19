@@ -68,4 +68,5 @@ os 10 com `revisadoEm: "outubro de 2026"` e `dataRevisao: "2026-10-19"`, depois 
 **Risco de negócio achado na revisão (não é texto):** a página oficial "O que fazer e não fazer no
 Programa de Associados" da Amazon (amazon.com.br/b?node=104008255011) traz restrições a link em app
 de mensagem privado, a preço e porcentagem de desconto nas comunicações e a sites só de ofertas.
-Conferir com o Wellington antes de seguir postando Amazon no grupo.
+**Resolvido em 19/10/2026:** o Wellington falou direto com a Amazon e está liberado postar Amazon
+no grupo como hoje. Não levantar de novo.
