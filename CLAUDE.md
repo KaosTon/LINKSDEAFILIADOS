@@ -10,7 +10,9 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
    resposta dele. É o estado de verdade.
 2. `LICOES-DO-NETMAX.md`: o que deu errado no projeto da NetMax (mesma
    ferramenta: n8n + Z-API) e como não repetir.
-3. `lib/ofertas.mjs`: as funções que viram nós Code (links, plataforma,
+3. `MODELO-RASCUNHO.md`: como o Wellington deve escrever a oferta no Rascunho (modelo testado).
+   Post que sair torto do Rascunho: corrigir a leitura e acrescentar o caso lá e na bateria.
+4. `lib/ofertas.mjs`: as funções que viram nós Code (links, plataforma,
    Amazon, Shopee, legenda), testadas em `testes/bateria/ofertas.mjs`.
 
 ## O caminho do grupo (a prioridade, não perder)
