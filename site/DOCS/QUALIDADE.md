@@ -22,7 +22,7 @@ Criado em 18/10/2026, a pedido do Wellington: "para nunca esquecer da qualidade 
 - **Autor:** Wellington Santos, com os dados do site da Virtus (`src/data/site.ts`, `AUTOR`).
   Nada além disso sobre ele sem ele confirmar.
 - **Divulgar sempre `temdescontos.com.br/grupo`**, nunca o convite direto do WhatsApp.
-- **Sem travessão** (—) em nada (trava `check-copy`).
+- **Sem travessão** (o traço longo) em nada (trava `check-copy`).
 
 ## 2. O padrão da Virtus (o que faz o post "ficar bom")
 
