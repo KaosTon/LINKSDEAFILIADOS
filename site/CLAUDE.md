@@ -63,7 +63,8 @@ estático" (blog vazio), com a saída da pasta privada `_post`.
 - Sem travessão (traço longo) em copy nem em código.
 - Não inventar dado. Se não está em `src/data/` nem no BRIEFING, é PENDENTE.
 - Preço de produto da Amazon nunca no site (BRIEFING §4).
-- `robots: noindex` (em `src/app/layout.tsx`) até o lançamento.
+- No Google desde 19/10/2026. Post sem `revisadoEm` fica com `noindex` e fora do sitemap até o
+  Wellington revisar; página de oferta encerrada e /links seguem fora.
 - `npm run build` tem que passar antes de subir (travas, type-check e pós-export).
 - Conferir no simulador do Cloudflare: `npx wrangler pages dev out --port 8788`. Foto em 1280 e
   390, console sem erro.
