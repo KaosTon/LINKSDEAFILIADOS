@@ -2,7 +2,7 @@
 // postar o link de afiliado de outra pessoa, mandar link quebrado por causa
 // de pontuação grudada, e legenda com preço inventado.
 import crypto from 'node:crypto';
-import { lerPost, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
+import { lerPost, legendaAchado, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
          magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom } from '../../lib/ofertas.mjs';
@@ -221,6 +221,14 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('linha de descricao ("Compativel com...") antes do preco nao toma o lugar do nome', ll.nome === 'Havit Gamenote Fuxi-H6' && ll.preco === 176.4 && ll.precoAntes === 258.57, ll);
   caso('nome logo antes do preco continua valendo', lerPost('BAIXOU DEMAIS\nOlha que achado para a cozinha\nAir Fryer Mondial 4L Preta\nDe R$ 400 por R$ 250\nhttps://amzn.to/x').nome === 'Air Fryer Mondial 4L Preta');
   caso('link no meio do texto nao perde o _ do endereco', lerPost('Kit Teste Legging Bolso\nPor R$ 50\nhttps://produto.mercadolivre.com.br/MLB-1-kit-teste-_JM').link === 'https://produto.mercadolivre.com.br/MLB-1-kit-teste-_JM');
+  // 19/10: nome na linha do preco e "Entrega Gratis" na linha de baixo; parcela "12x de R$" no cartao
+  const TXTJ = '🤯 *Soundbar JBL BAR 1000MK2 7.1.4 Canais Dolby Atmos* | De ~R$6.799,00~ Por *R$ 3.799,90* (valor no Pix)\n\n📦 *Entrega Grátis* (para Prime)\n✅ Ou *12x de R$ 333,32* no cartão\n\n❗ *PREÇÃO! Menor valor postado!*\n\n➡️ *COMPRE PELO SITE:* https://cutt.ly/TESTE9';
+  const lj = lerPost(TXTJ);
+  caso('nome na linha do preco ganha da linha "Entrega Gratis"', lj.nome === 'Soundbar JBL BAR 1000MK2 7.1.4 Canais Dolby Atmos' && lj.preco === 3799.9 && lj.precoAntes === 6799, lj);
+  caso('"Entrega Gratis (para Prime)" vira frete gratis para Prime', lj.frete === 'Frete grátis para assinantes Prime', lj);
+  caso('parcela "12x de R$ 333,32 no cartao" mantem o 12x', lj.outroPreco && lj.outroPreco.parcelas === 12 && lj.outroPreco.preco === 333.32, lj);
+  const legJ = legendaAchado({ ...lj, link: 'https://x', chave: 'amazon:B0TESTE000' });
+  caso('legenda: "ou 12x de R$333,32 no cartão" e sem "Menor valor postado"', legJ.includes('ou 12x de R$333,32 no cartão') && !/Menor valor/i.test(legJ), legJ);
   caso('nome e preco na mesma linha: nome antes do "De R$", sem o (Lancamento)', lt.nome === 'Smart Tv 65" Samsung 4K M75H + Soundbar B450F 2.1 Canais' && lt.preco === 3899 && lt.precoAntes === 4899, lt);
   const cc = await prepararOferta(corpo(TXT, { image: { imageUrl: 'https://tmp/tv.jpeg', caption: TXT } }), CML, redeC);
   caso('cutt.ly de outro afiliado no rascunho: acha o produto da vitrine e posta com a sua etiqueta', cc.acao === 'postar' && cc.texto.includes('https://www.mercadolivre.com.br/p/MLB70000001?matt_word=minhaetq&matt_tool=999') && !cc.texto.includes('cutt.ly') && cc.imagem === 'https://tmp/tv.jpeg', cc);
