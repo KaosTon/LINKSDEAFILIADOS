@@ -19,7 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/autor/${AUTOR.slug}`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE.url}/blog`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE.url}/politica-de-privacidade`, changeFrequency: "yearly", priority: 0.2 },
-    ...POSTS.map((p) => ({
+    // so post revisado pelo autor (os outros estao com noindex na pagina)
+    ...POSTS.filter((p) => p.revisadoEm).map((p) => ({
       url: `${SITE.url}/blog/${p.slug}`,
       lastModified: p.dataPublicacao,
       changeFrequency: "monthly" as const,

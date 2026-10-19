@@ -28,7 +28,9 @@ Legenda: [ ] pendente · [x] resolvido · [~] parcial
 - [x] 2. Projeto no Cloudflare Pages (`linksdeafiliados`), `www.temdescontos.com.br` ativo com SSL (16/10/2026).
 - [x] 3. `SITE_URL` no ENCURTADOR (16/10/2026). Conferido pelo n8n: raiz 301 para o www com o `?utm`, código vencido 302 para `/oferta-encerrada`, `/grupo` 302 para o convite, link curto 302 para a loja.
 - [x] 4. `CONVITE_GRUPO`: o grupo que já estava configurado virou o oficial (17/10, decisão do Wellington).
-- [ ] 5. Search Console com o domínio, para tirar o `noindex` no lançamento.
+- [~] 5. `noindex` tirado em 19/10/2026 (lançamento, pedido do Wellington). Posts sem `revisadoEm` seguem
+  fora do Google até a revisão. Falta: Search Console com o domínio (propriedade de domínio, verificação
+  pelo Cloudflare) e enviar o sitemap.
 
 ### Marca
 - [x] 6. Arquivo do logo (16/10/2026): recortado e com as cores medidas. Se houver versão em SVG

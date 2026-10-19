@@ -39,3 +39,34 @@ escrito como "varia".
 10. A bio do autor (página Sobre e fim de cada post) e as frases em primeira pessoa: "como
     engenheiro, eu desconfio de número sem conta" (Black Friday e Shopee) e o parágrafo "por que
     eu criei o Tem Descontos" (link de afiliado). Trocar o que não soar como você.
+
+## Revisão feita em 19/10/2026 (a pedido do Wellington: "Pode revisar você mesmo. Igual virtus faz")
+
+O agente refez a checagem de cada afirmação dos 10 posts com buscas independentes, uma frente por
+lote, aceitando só trecho de domínio oficial (Planalto, gov.br, bcb.gov.br, Receita, Procon, central
+de ajuda da loja) ou duas fontes independentes que concordam. A rede desta sessão ainda bloqueia a
+abertura direta desses sites (DNS), então a régua foi o trecho oficial indexado. Resultado: todos
+os 10 com `revisadoEm: "outubro de 2026"` e `dataRevisao: "2026-10-19"`, depois destas correções:
+
+- **Taxa de importação:** incluída a Lei 15.502/2026 (conversão da MP em 10/09/2026, autoriza a
+  Fazenda a baixar a faixa de 60% para até 30%, ainda sem ato). US$ 30 confirmado como desconto
+  atual (US$ 20 era a regra de 2024). Tirada a frase "o cupom reduz a base do imposto": a própria
+  Shopee se contradiz.
+- **Pix ou cartão:** fatos confirmados (80 dias, 7 dias, MED 2.0 em 02/02/2026 pelo Voto BCB 49/2026,
+  IN BCB 766). Só ajuste de concordância.
+- **Arrependimento:** Shopee conta 7 dias a partir do recebimento; tirada a frase solta "vale contra
+  loja que vende para o Brasil"; "antes de postar" virou "antes de enviar o produto".
+- **Defeito:** os 30 dias do art. 18 § 1º contam da reclamação ou da entrega na assistência (a lei não
+  fixa o início; Procon-SP).
+- **Shopee confiável / Cupom:** "Shopee Mall" saiu de todo o blog (no Brasil é "Loja Oficial"); a meta
+  do Vendedor Indicado ficou "a central de ajuda não informa"; exceção do cupom de frete nas
+  categorias restritas; suporte é o da plataforma, não o chat da loja.
+- **Compra Garantida / A a Z / Link de afiliado:** devolução coberta pela A a Z é quando o vendedor
+  não responde em 2 dias úteis; afiliado não vê "dados pessoais" (vê o item comprado); regra da
+  Amazon sobre preços completada; "sempre que a loja permite" na conferência de preço.
+
+**Risco de negócio achado na revisão (não é texto):** a página oficial "O que fazer e não fazer no
+Programa de Associados" da Amazon (amazon.com.br/b?node=104008255011) traz restrições a link em app
+de mensagem privado, a preço e porcentagem de desconto nas comunicações e a sites só de ofertas.
+**Resolvido em 19/10/2026:** o Wellington falou direto com a Amazon e está liberado postar Amazon
+no grupo como hoje. Não levantar de novo.

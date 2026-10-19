@@ -31,8 +31,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: SITE.tituloSeo,
   description: SITE.descricao,
-  // SITE EM CONSTRUCAO: fica fora do Google ate o lancamento. Remover ao publicar.
-  robots: { index: false, follow: false },
+  // No Google desde 19/10/2026 (lancamento, pedido do Wellington). Post sem revisao do autor fica
+  // fora (noindex na propria pagina, src/app/blog/[slug]/page.tsx) ate ter `revisadoEm`.
+  robots: { index: true, follow: true },
   twitter: { card: "summary_large_image" },
   openGraph: {
     title: SITE.tituloSeo,

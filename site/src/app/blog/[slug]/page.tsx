@@ -31,6 +31,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     description: p.metaDescription,
     keywords: p.tags,
     alternates: { canonical: url },
+    // Post sem revisao do Wellington nao vai pro Google (19/10/2026): a pagina abre para quem tem o
+    // link, mas so entra na busca depois de `revisadoEm` (DOCS/REVISAO-BLOG.md).
+    ...(p.revisadoEm ? {} : { robots: { index: false, follow: true } }),
     twitter: { card: "summary_large_image", title: p.metaTitle, description: p.metaDescription, images: [p.imagem] },
     // openGraph da pagina substitui o do layout inteiro (inclusive a imagem): por isso a imagem vai aqui
     openGraph: {
