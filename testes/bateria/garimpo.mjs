@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
+import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
 
@@ -413,6 +413,22 @@ console.log('\n=== Mercado Livre de catalogo pela API (16/10) ===');
   const certo = await garimpar({ canais: { canalum: pagina(post('canalum/72', min(5), 'Air Fryer Teste 4L\n\n🔥 Por: R$ 305 no Pix\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f72')) }, agora: AGORA, cfg: CML, mem: memNova(), rede: redeML });
   caso('ML confere: preco da API, De/Por e foto oficial', certo.acao === 'postar' && pedidos.includes('MLB12345678') && certo.preco_loja === 299.9
     && /De R\$450 por R\$299,90/.test(certo.texto) && certo.imagem === 'https://http2.mlstatic.com/oficial.jpg', certo);
+  // 21/10: foto de ambiente da galeria oficial do ML, escolhida pela IA; na duvida, a principal
+  const g = lerProdutoML({ ...prod, pictures: [{ url: 'http://x/1.jpg' }, { url: 'https://x/2.jpg' }, { url: 'https://x/3.jpg' }] }, [{ price: 10 }]);
+  caso('le a galeria do ML (https, a principal primeiro)', g.foto === 'https://x/1.jpg' && g.fotos.length === 3 && g.fotos[0] === g.foto, g);
+  caso('resposta da IA: numero valido ou 0', escolhaDaGaleria('2', 4) === 2 && escolhaDaGaleria('Foto 3.', 4) === 3 && escolhaDaGaleria('0', 4) === 0 && escolhaDaGaleria('9', 4) === 0 && escolhaDaGaleria('nenhuma', 4) === 0);
+  const pg = pedidoGaleria(['https://x/2.jpg', 'https://x/3.jpg']);
+  caso('pedido leva todas as fotos e proibe fundo branco e texto', pg.messages[0].content.length === 3 && /fundo branco/.test(pg.messages[0].content[0].text) && /texto/.test(pg.messages[0].content[0].text));
+  const GAL = ['https://http2.mlstatic.com/oficial.jpg', 'https://http2.mlstatic.com/branco.jpg', 'https://http2.mlstatic.com/sala.jpg'];
+  const redeG = (escolher) => ({ ...redeML, escolherFoto: escolher, mlCatalogo: async () => ({ nome: 'Air Fryer Teste 4L Oficial', foto: GAL[0], fotos: GAL, preco: 299.9, precoDe: 450, aberta: true }) });
+  const pc = (id) => ({ canalum: pagina(post('canalum/' + id, min(5), 'Air Fryer Teste 4L\n\n🔥 Por: R$ 305 no Pix\n\n🛒 Link: ' + LINK, 'https://cdn1.telesco.pe/file/f' + id)) });
+  let viu = null;
+  const amb = await garimpar({ canais: pc(73), agora: AGORA, cfg: CML, mem: memNova(), rede: redeG(async (u) => { viu = u; return 2; }) });
+  caso('galeria: usa a foto de ambiente que a IA escolheu (so entre as outras fotos da loja)', amb.acao === 'postar' && amb.imagem === GAL[2] && viu.length === 2 && !viu.includes(GAL[0]), { img: amb.imagem, viu });
+  const nenhuma = await garimpar({ canais: pc(74), agora: AGORA, cfg: CML, mem: memNova(), rede: redeG(async () => 0) });
+  caso('galeria: IA diz nenhuma, fica a principal', nenhuma.imagem === GAL[0], nenhuma.imagem);
+  const erro = await garimpar({ canais: pc(75), agora: AGORA, cfg: CML, mem: memNova(), rede: redeG(async () => { throw new Error('openrouter fora'); }) });
+  caso('galeria: IA fora do ar, fica a principal e posta igual', erro.acao === 'postar' && erro.imagem === GAL[0], erro.imagem);
 }
 
 console.log('\n=== Cupom da Amazon na pagina (16/10) ===');
