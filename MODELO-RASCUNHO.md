@@ -56,6 +56,11 @@ Soundbar JBL BAR 1000MK2 Dolby Atmos
 
 ## Foto
 
+**Para um post caprichado, mande a foto bonita junto** (foto de ambiente, produto em uso): encaminhe a
+oferta de outro grupo com a foto, ou anexe a foto com o texto na legenda. A sua foto vai no post; você vê
+na prévia antes do "sim". Sem foto, no Mercado Livre o robô procura na galeria da loja uma foto de
+ambiente (21/10); sem achar, vai a principal.
+
 - Pode mandar a foto junto (texto na legenda). Com marca de outro grupo, o robô troca pela foto da loja.
 - Sem foto, ele busca a da loja (Amazon, Shopee e ML de catálogo). Anúncio comum do ML (/up/MLBU) não tem
   foto pela API: para foto boa, mande a foto do produto.
