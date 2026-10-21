@@ -111,6 +111,15 @@ caso('fundo branco nas laterais e a foto no meio', lado.every(v => v > 245) && m
 caso('logo no canto de baixo a direita (canto branco ficou colorido)', canto > 0.2, canto);
 await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}&a=${assinarFoto(SENHA, FOTO)}`);
 caso('segunda vez vem do cache (nao baixa de novo)', baixadas === 1, baixadas);
+// 21/10: formatos novos (teste no rascunho): f=q quadrado branco, f=m quadrado com fundo do TD e selo do desconto
+const quad = Buffer.from(await (await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}&a=${assinarFoto(SENHA, FOTO)}&f=q`)).arrayBuffer());
+const mq = await sharp(quad).metadata();
+caso('/foto f=q: quadrado 1080x1080', mq.width === 1080 && mq.height === 1080, mq);
+const marca = Buffer.from(await (await fetch(`${raiz}/foto?u=${encodeURIComponent(FOTO)}&a=${assinarFoto(SENHA, FOTO)}&f=m&d=44`)).arrayBuffer());
+const pxm = async (x, y) => [...(await sharp(marca).extract({ left: x, top: y, width: 1, height: 1 }).raw().toBuffer())];
+const borda = await pxm(20, 540), selo = await pxm(960, 70);
+caso('/foto f=m: fundo azul do TD na borda e selo laranja no canto', borda[2] > borda[0] + 40 && selo[0] > 200 && selo[2] < 120, { borda, selo });
+caso('/foto f=m e f=q nao pegam o cache do formato deitado', baixadas === 3, baixadas);
 const QUEBRADA = 'https://http2.mlstatic.com/quebrada.jpg';
 const q = await fetch(`${raiz}/foto?u=${encodeURIComponent(QUEBRADA)}&a=${assinarFoto(SENHA, QUEBRADA)}`, { redirect: 'manual' });
 caso('foto que nao abre: manda para a original (post sai sem logo, mas com foto)', q.status === 302 && q.headers.get('location') === QUEBRADA);
