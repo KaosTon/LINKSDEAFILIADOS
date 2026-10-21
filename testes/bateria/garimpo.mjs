@@ -431,6 +431,14 @@ console.log('\n=== Mercado Livre de catalogo pela API (16/10) ===');
   caso('galeria: IA fora do ar, fica a principal e posta igual', erro.acao === 'postar' && erro.imagem === GAL[0], erro.imagem);
 }
 
+console.log('\n=== Propaganda do canal e Amazon que nao e produto (21/10) ===');
+{
+  const pub = post('canalum/90', min(5), '#publi · você me paga um café sem custo extra!\n\nPor R$ 194,92 no Pix\nFrete grátis\n\n🛒 https://www.amazon.com.br/gp/goldbox?tag=outro-20', 'https://cdn1.telesco.pe/file/f90');
+  const r = await garimpar({ canais: { canalum: pagina(pub) }, agora: AGORA, cfg: CFG, mem: memNova(), rede });
+  caso('#publi com link /gp/goldbox: nao posta, motivo no resumo', r.acao !== 'postar' && JSON.stringify(r.tentou).includes('amazon_sem_produto'), r);
+  caso('"#publi ... cafe" nao e nome de produto', nomeFraco('#publi · você me paga um café sem custo extra!') && !nomeFraco('Cafeteira Expresso Oster Teste'));
+}
+
 console.log('\n=== Cupom da Amazon na pagina (16/10) ===');
 {
   // Recorte do HTML real (B0DHWFBYVC, 16/10), com o texto escondido que repete o codigo.
