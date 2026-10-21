@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { criarServidor, lojaPermitida, novoCodigo } from '../../encurtador/servidor.mjs';
+import { criarServidor, lojaPermitida, novoCodigo, ehRobo } from '../../encurtador/servidor.mjs';
 import { assinarFoto } from '../../encurtador/foto.mjs';
 import { createRequire } from 'node:module';
 const sharp = createRequire(new URL('../../encurtador/package.json', import.meta.url))('sharp');   // fica em encurtador/node_modules
@@ -38,6 +38,13 @@ caso('abre: 302 para o link de afiliado intacto', ida.status === 302 && ida.head
 caso('codigo que nao existe: 404', (await fetch(`${raiz}/zzzzz`, { redirect: 'manual' })).status === 404);
 const cl = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
 caso('conta o clique', cl.top[0].codigo === r1.codigo && cl.top[0].cliques === 1, cl);
+// 21/10: robo (Google, previa do WhatsApp) e redirecionado mas nao conta
+const GENTE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1';
+caso('reconhece robos e gente', ['Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'WhatsApp/2.24.1 A', 'facebookexternalhit/1.1',
+  'Mozilla/5.0 (compatible; bingbot/2.0)', 'curl/8.0', ''].every(ehRobo) && !ehRobo(GENTE) && !ehRobo('Mozilla/5.0 (Linux; Android 14) Chrome/128.0 Mobile Safari/537.36'));
+const rb = await fetch(`${raiz}/${r1.codigo}`, { redirect: 'manual', headers: { 'User-Agent': 'WhatsApp/2.24.1 A' } });
+const cl2 = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('previa do WhatsApp: redireciona mas nao conta clique', rb.status === 302 && cl2.top[0].cliques === 1 && cl2.robos.links === 1, cl2);
 caso('cliques pede senha', (await fetch(`${raiz}/api/cliques`)).status === 401);
 
 await new Promise((ok) => s.close(ok));
@@ -51,6 +58,12 @@ caso('/grupo leva ao convite', g.status === 302 && g.headers.get('location') ===
 await fetch(`${raiz}/grupo?de=<script>`, { redirect: 'manual' });
 const cg = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
 caso('/grupo conta a origem e ignora origem estranha', cg.grupo['guia:cupom-amazon'] === 1 && cg.grupo.direto === 1 && !cg.grupo['<script>'], cg.grupo);
+const gb = await fetch(`${raiz}/grupo?de=post:black-friday`, { redirect: 'manual', headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' } });
+await fetch(`${raiz}/grupo?de=post:pix`, { redirect: 'manual', headers: { 'User-Agent': GENTE } });
+const cg2 = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('/grupo: Googlebot vai ao convite mas nao conta', gb.status === 302 && !cg2.grupo['post:black-friday'] && cg2.robos.grupo === 1, cg2);
+const ult1 = cg2.grupoRecentes[cg2.grupoRecentes.length - 1];
+caso('/grupo: guarda a hora e a origem do clique de gente (sem IP)', ult1.de === 'post:pix' && Math.abs(Date.parse(ult1.quando) - Date.now()) < 60000 && Object.keys(ult1).length === 2, cg2.grupoRecentes);
 await new Promise((ok) => s.close(ok));
 
 // com o site no www: o dominio sem www so guarda os links curtos
