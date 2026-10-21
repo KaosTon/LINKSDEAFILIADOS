@@ -4,7 +4,11 @@
 //   GET  /{codigo}          redireciona (302) e conta o clique
 //   GET  /foto?u=&a=        foto do post em 1200x630 com o logo no canto; só com assinatura do n8n (foto.mjs)
 //   POST /api/encurtar      { url } com Authorization: Bearer ENCURTADOR_SEGREDO -> { codigo, curto }
-//   GET  /api/cliques       mesma senha; os links mais clicados
+//   GET  /api/cliques       mesma senha; os links mais clicados, cliques no convite por origem e os últimos
+//                           cliques no convite com a hora (grupoRecentes), para cruzar com quem entrou no grupo
+//
+// Robô não conta (21/10): Google, Bing, a prévia de link do WhatsApp e do Facebook abrem o link
+// e não são gente. Eles ainda são redirecionados normalmente; só ficam fora da contagem (robos).
 //   GET  /saude             para o Railway saber que está de pé
 //   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
 //                           CONVITE_GRUPO pode ter vários convites separados por vírgula (17/10):
@@ -30,6 +34,12 @@ export function lojaPermitida(url) {
   return u.protocol === 'https:' && LOJAS.test(u.hostname);
 }
 
+// User-Agent de robô de busca, de prévia de link ou de ferramenta. Sem User-Agent também é robô.
+const ROBO = /bot\b|bot\/|crawl|spider|slurp|facebookexternalhit|facebot|whatsapp|telegram|twitterbot|linkedin|discord|skypeuripreview|preview|headless|lighthouse|pingdom|uptime|python|curl|wget|go-http|okhttp|java\/|axios|ahrefs|semrush|mj12|petal|bytespider|gpt|claude|perplexity|applebot|yandex|baidu|duckduck/i;
+export function ehRobo(ua) { return !ua || ROBO.test(String(ua)); }
+
+const RECENTES = 300, RECENTES_DIAS = 14;
+
 export function novoCodigo(existe, tamanho = 5) {
   for (;;) {
     const b = crypto.randomBytes(tamanho);
@@ -46,6 +56,8 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
   let dados = { links: {} };
   try { dados = JSON.parse(fs.readFileSync(arquivo, 'utf8')); } catch (e) { /* primeira vez */ }
   dados.grupo = dados.grupo || {};
+  dados.grupoRecentes = dados.grupoRecentes || [];
+  dados.robos = dados.robos || { grupo: 0, links: 0 };
   const porUrl = new Map(Object.entries(dados.links).map(([c, l]) => [l.url, c]));
 
   let sujo = false;
@@ -101,13 +113,21 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
       const top = Object.entries(dados.links).sort((a, b) => b[1].cliques - a[1].cliques).slice(0, 50)
         .map(([codigo, l]) => ({ codigo, cliques: l.cliques, url: l.url, criado: new Date(l.criado).toISOString() }));
-      return responde(res, 200, { total: Object.keys(dados.links).length, top, grupo: dados.grupo });
+      return responde(res, 200, { total: Object.keys(dados.links).length, top, grupo: dados.grupo,
+        grupoRecentes: dados.grupoRecentes, robos: dados.robos });
     }
 
     if (p === '/grupo') {
       // origem curta e sem nada de quem clicou: só a página do site ("home", "guia:cupom-amazon")
       const de = /^[a-z0-9:-]{1,60}$/.test(u.searchParams.get('de') || '') ? u.searchParams.get('de') : 'direto';
-      dados.grupo[de] = (dados.grupo[de] || 0) + 1; sujo = true;
+      if (ehRobo(req.headers['user-agent'])) dados.robos.grupo++;
+      else {
+        dados.grupo[de] = (dados.grupo[de] || 0) + 1;
+        // só a hora e a origem; nada de quem clicou (sem IP, sem aparelho)
+        const limite = Date.now() - RECENTES_DIAS * 864e5;
+        dados.grupoRecentes = [...dados.grupoRecentes.filter(x => Date.parse(x.quando) > limite), { quando: new Date().toISOString(), de }].slice(-RECENTES);
+      }
+      sujo = true;
       const n = Number(u.searchParams.get('n'));
       const destino = (Number.isInteger(n) && n >= 1 && convites[n - 1]) || convites[convites.length - 1] || raizSite;
       return destino ? responde(res, 302, '', { Location: destino, 'Cache-Control': 'no-store' }) : responde(res, 404, 'Grupo ainda não configurado.');
@@ -124,7 +144,8 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
       if (/^\/[a-km-np-z2-9]{5}$/.test(p)) return responde(res, 302, '', { Location: raizSite + '/oferta-encerrada', 'Cache-Control': 'no-store' });
       return responde(res, 301, '', { Location: raizSite + p + u.search });
     }
-    l.cliques++; sujo = true;
+    if (ehRobo(req.headers['user-agent'])) dados.robos.links++; else l.cliques++;
+    sujo = true;
     responde(res, 302, '', { Location: l.url, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer-when-downgrade' });
   });
   servidor.on('close', () => { clearInterval(relogio); salvar(); });
