@@ -219,6 +219,8 @@ console.log('\n=== Esteira (fluxo 01) ===');
   const ll = lerPost(TXTL);
   caso('cupom geral em maiusculas e negrito (CUPOM: *MELIHOJE*) entra no post', ll.cupons.includes('MELIHOJE'), ll);
   caso('linha de descricao ("Compativel com...") antes do preco nao toma o lugar do nome', ll.nome === 'Havit Gamenote Fuxi-H6' && ll.preco === 176.4 && ll.precoAntes === 258.57, ll);
+  const sw = lerPost('*🛡️PRA QUEM QUER JOGAR O ZELDA* \n\n*NINTENDO SWITCH 2*\n\n256GB - 12 Meses Garantia\n\n~De: R$ 4.399,00~\n*Por: R$ 3.586,16 (Pix)*\n\nLink para compra:\nhttps://s.shopee.com.br/abc');
+  caso('nome em maiuscula acima da linha de versao (Switch 2)', sw.nome === 'Nintendo Switch 2 256GB' && sw.preco === 3586.16);
   caso('nome logo antes do preco continua valendo', lerPost('BAIXOU DEMAIS\nOlha que achado para a cozinha\nAir Fryer Mondial 4L Preta\nDe R$ 400 por R$ 250\nhttps://amzn.to/x').nome === 'Air Fryer Mondial 4L Preta');
   caso('link no meio do texto nao perde o _ do endereco', lerPost('Kit Teste Legging Bolso\nPor R$ 50\nhttps://produto.mercadolivre.com.br/MLB-1-kit-teste-_JM').link === 'https://produto.mercadolivre.com.br/MLB-1-kit-teste-_JM');
   // 19/10: nome na linha do preco e "Entrega Gratis" na linha de baixo; parcela "12x de R$" no cartao
