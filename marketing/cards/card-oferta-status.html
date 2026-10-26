@@ -1,0 +1,81 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; }
+  body {
+    font-family: 'Inter', 'Noto Color Emoji', sans-serif;
+    background:
+      radial-gradient(900px 700px at 85% 8%, rgba(247,148,29,.45), transparent 60%),
+      radial-gradient(800px 800px at 10% 95%, rgba(229,59,44,.40), transparent 60%),
+      linear-gradient(170deg, #0d2f66 0%, #0a1f45 55%, #07142e 100%);
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .topo { position: absolute; top: 110px; left: 0; right: 0; text-align: center; }
+  .pill {
+    display: inline-block; padding: 16px 38px; border-radius: 999px;
+    background: linear-gradient(90deg, #f7941d, #e53b2c);
+    font-weight: 900; font-size: 34px; letter-spacing: 4px;
+    box-shadow: 0 10px 30px rgba(229,59,44,.45);
+  }
+  .frase { margin-top: 36px; font-family: 'Inter Display', 'Inter', 'Noto Color Emoji'; font-weight: 800;
+    font-size: 66px; line-height: 1.1; padding: 0 70px; }
+  .frase span { color: #ffb347; }
+
+  .card {
+    position: absolute; top: 410px; left: 160px; width: 760px; height: 590px;
+    background: #fff; border-radius: 48px;
+    box-shadow: 0 40px 90px rgba(0,0,0,.45), 0 0 0 8px rgba(255,255,255,.08);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .card img { width: 550px; height: 550px; object-fit: contain; }
+  .selo {
+    position: absolute; top: 360px; right: 90px; width: 230px; height: 230px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff5a3c, #d8261b 70%);
+    border: 10px solid #fff; box-shadow: 0 20px 50px rgba(0,0,0,.4);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transform: rotate(10deg); z-index: 3;
+  }
+  .selo b { font-size: 92px; font-weight: 900; line-height: .9; letter-spacing: -3px; }
+  .selo small { font-size: 34px; font-weight: 800; letter-spacing: 4px; margin-top: 4px; }
+
+  .info { position: absolute; top: 1040px; left: 0; right: 0; text-align: center; }
+  .nome { font-family: 'Inter Display', 'Inter'; font-weight: 900; font-size: 76px; letter-spacing: -1px; }
+  .spec { margin-top: 6px; font-size: 36px; font-weight: 500; color: #b9c7e6; }
+  .de { margin-top: 18px; font-size: 48px; font-weight: 600; color: #b9c7e6; }
+  .de s { text-decoration-thickness: 5px; text-decoration-color: #ff5a3c; }
+  .por { margin-top: 6px; font-family: 'Inter Display', 'Inter'; font-weight: 900; font-size: 130px; line-height: 1;
+    letter-spacing: -4px; color: #ffb347; text-shadow: 0 8px 30px rgba(247,148,29,.35); }
+  .por small { font-size: 64px; font-weight: 800; letter-spacing: 0; vertical-align: 52px; margin-right: 8px; color: #fff; }
+  .eco { display: inline-block; margin-top: 16px; padding: 12px 30px; border-radius: 999px;
+    background: rgba(255,255,255,.12); font-size: 36px; font-weight: 700; }
+
+  .cta { position: absolute; bottom: 150px; left: 90px; right: 90px; text-align: center; }
+  .botao { display: block; padding: 28px 20px; border-radius: 999px; background: #fff; color: #0a1f45;
+    font-weight: 900; font-size: 50px; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+  .url { margin-top: 22px; font-size: 38px; font-weight: 700; color: #ffd08a; }
+  .nota { margin-top: 18px; font-size: 24px; color: #8fa2cc; }
+</style></head>
+<body>
+  <div class="topo">
+    <div class="pill">OFERTA DO DIA</div>
+    <div class="frase">Esse grupo de ofertas tá <span>valendo a pena</span> 👀</div>
+  </div>
+
+  <div class="selo"><b>{{DESCONTO}}%</b><small>OFF</small></div>
+  <div class="card"><img src="{{FOTO}}"></div>
+
+  <div class="info">
+    <div class="nome">{{NOME}}</div>
+    <div class="spec">{{DETALHE}}</div>
+    <div class="de">De <s>R$ {{DE}}</s></div>
+    <div class="por"><small>R$</small>{{POR}}</div>
+    <div class="eco">Economia de R$ {{ECONOMIA}}</div>
+  </div>
+
+  <div class="cta">
+    <div class="botao">Entra no grupo, é grátis 👇</div>
+    <div class="url">temdescontos.com.br/grupo</div>
+    <div class="nota">{{NOTA}}</div>
+  </div>
+</body></html>
