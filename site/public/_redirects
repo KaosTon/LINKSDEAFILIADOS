@@ -1,0 +1,5 @@
+# Redirecionamentos do Cloudflare Pages (www.temdescontos.com.br).
+# O convite do grupo mora no encurtador, na raiz sem www (temdescontos.com.br/grupo), que conta o clique
+# por origem (?de=). Quem digitar com www (bio do Instagram, anuncio, card do status) caia no mesmo lugar
+# (26/10/2026: www.temdescontos.com.br/grupo dava 404). O Cloudflare Pages repassa o ?de= junto.
+/grupo  https://temdescontos.com.br/grupo  302
