@@ -13,7 +13,9 @@ e legenda. Respostas a ele em português, objetivas, com as perguntas no fim.
 3. `MODELO-RASCUNHO.md`: como o Wellington deve escrever a oferta no Rascunho (modelo testado) e a prévia
    (19/10: a oferta volta no Rascunho e só vai ao grupo com "sim"; `RASCUNHO_PREVIA=nao` desliga).
    Post que sair torto do Rascunho: corrigir a leitura e acrescentar o caso lá e na bateria.
-4. `lib/ofertas.mjs`: as funções que viram nós Code (links, plataforma,
+4. `MARKETING.md`: Instagram, status e anúncios para crescer o grupo (26/10), no método da Virtus
+   (lote, mosaico, aprovação, campanha pausada até aprovar). Card de oferta em `marketing/cards/`.
+5. `lib/ofertas.mjs`: as funções que viram nós Code (links, plataforma,
    Amazon, Shopee, legenda), testadas em `testes/bateria/ofertas.mjs`.
 
 ## O caminho do grupo (a prioridade, não perder)
