@@ -67,10 +67,13 @@ console.log('\n=== Padrao dos grupos de oferta ===');
   caso('"De" menor que o "por" nao vale (nao inventa desconto)', lerPreco('De R$50 por R$80').precoAntes === null);
   const P = lerPost('VOU DEIXAR SUA COZINHA SEM OLEO\n\nAir Fryer Teste 6,5L 1700W\n\n💵 De R$456 por R$266 pix\n🛒 https://amzn.to/aaa\n\n🏷️ Use o cupom TESTECUPOM0510 + Selecione PIX');
   caso('post no padrao: nome (pula a chamada), precos e cupom (sem "Selecione")', P.nome === 'Air Fryer Teste 6,5L 1700W' && P.preco === 266 && P.precoAntes === 456 && P.cupons.join() === 'TESTECUPOM0510', P);
+  const crase = lerPost('PANDORA PRA ELA\n\nBracelete Teste de Prata\n\n💵 R$549 até 10x sem juros\n🛒 https://meli.la/aaa\n\n🏷️ Use o cupom `TESTEMODA`');
+  caso('cupom em `crase` (fonte de codigo): le o codigo', crase.cupons.join() === 'TESTEMODA', crase.cupons);
+  caso('legenda: codigo do cupom em `crase`', /Use o cupom `TESTEMODA`/.test(legendaAchado({ ...crase, link: 'https://x' })));
   caso('dois cupons, o segundo na linha de baixo com "+"', lerPost('X Teste\n\n💵 Por R$9\n🛒 https://amzn.to/b\n\n🏷️ Use o cupom TESTEUM\n+ TESTEDOIS').cupons.join() === 'TESTEUM,TESTEDOIS');
   const L = legendaAchado({ ...P, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'amazon:B0X' });
   const linhas = L.split('\n');
-  caso('legenda: chamada, nome, De/por com pix, link, cupom, nessa ordem', linhas[0] === '42% OFF, CORRE' && linhas[2] === 'Air Fryer Teste 6,5L 1700W' && linhas[4] === '\u{1F4B5} De R$456 por R$266 no Pix' && linhas[5] === '\u{1F6D2} https://www.amazon.com.br/dp/B0X?tag=minha-20' && linhas[7] === '\u{1F3F7}\uFE0F Use o cupom TESTECUPOM0510 + Selecione PIX' && linhas.length === 8, linhas);
+  caso('legenda: chamada, nome, De/por com pix, link, cupom, nessa ordem', linhas[0] === '42% OFF, CORRE' && linhas[2] === 'Air Fryer Teste 6,5L 1700W' && linhas[4] === '\u{1F4B5} De R$456 por R$266 no Pix' && linhas[5] === '\u{1F6D2} https://www.amazon.com.br/dp/B0X?tag=minha-20' && linhas[7] === '\u{1F3F7}\uFE0F Use o cupom `TESTECUPOM0510` + Selecione PIX' && linhas.length === 8, linhas);
   caso('a chamada e nossa, nao a do canal', !L.includes('COZINHA SEM OLEO'));
   caso('sem desconto grande: chamada da lista, sempre a mesma para o mesmo produto', gancho('amazon:Z', 10) === gancho('amazon:Z', 10) && !/OFF/.test(gancho('amazon:Z', 10)) && gancho('amazon:Z', 30) === '30% OFF, CORRE');
   caso('preco curto como nos grupos', reaisCurto(456) === '456' && reaisCurto(2667) === '2.667' && reaisCurto(67.6) === '67,60');
@@ -137,7 +140,7 @@ console.log('\n=== Post completo (como os grupos fazem) ===');
   caso('dois precos: pix e parcelado', B.preco === 343.12 && B.pagamento === 'no Pix' && B.outroPreco.preco === 395.91 && B.outroPreco.pagamento === 'em até 7x sem juros', B);
   caso('frete gratis e a dica do cupom', B.frete === 'Frete grátis' && B.cupons.join() === 'TESTEGAME5' && B.dicaCupom === 'Aplicar cupom de 10% abaixo do valor', B);
   const L = legendaAchado({ ...B, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'k', chamada: 'SUA DIVERSAO GARANTIDA' }).split('\n');
-  caso('legenda completa: os dois precos, frete, link e cupom com a dica', L.includes('\u{1F4B5} Por R$343,12 no Pix') && L.includes('\u{1F4B3} ou R$395,91 em até 7x sem juros') && L.includes('\u{1F69A} Frete grátis') && L.includes('\u{1F3F7}\uFE0F Use o cupom TESTEGAME5 + Aplicar cupom de 10% abaixo do valor'), L);
+  caso('legenda completa: os dois precos, frete, link e cupom com a dica', L.includes('\u{1F4B5} Por R$343,12 no Pix') && L.includes('\u{1F4B3} ou R$395,91 em até 7x sem juros') && L.includes('\u{1F69A} Frete grátis') && L.includes('\u{1F3F7}\uFE0F Use o cupom `TESTEGAME5` + Aplicar cupom de 10% abaixo do valor'), L);
   const C = lerPost('PERFEITO PRO DIA DAS CRIANCAS 😍\n\n📦 Frete Grátis assinantes Meli+\n•\u2060  Patinete Teste Agil\n\n🔥 R$ 810 Pix\nAchado Mercado Livre 👇🏻\n🛒 https://pechin.co/1\n➡ Cupom: TESTEMELI\n\n⚠️ Cupom exclusivo para assinantes Amazon Prime');
   caso('frete so para assinantes e aviso do cupom', C.frete === 'Frete grátis para assinantes Meli+' && C.avisos[0] === 'Cupom exclusivo para assinantes Amazon Prime' && C.cupons.join() === 'TESTEMELI', C);
   const D = lerPost('Teste Produto\n\n🔥 Por: R$64 no Pix\n⚠️ Desconto na tela de pagamento ao alterar para pix!\n🛒 Link: https://link.amazon/B1\n\n🚨Cupom pode não aparecer para todas as contas!');
@@ -398,7 +401,7 @@ console.log('\n=== Conferir preco com a loja (16/10) ===');
   caso('loja mais barata que o canal: vale o da loja', subiu.ok && subiu.campos.preco === 75);
   caso('sem preco da loja: segue como o canal', conferirPreco({ preco: 50 }, null).ok);
   const txt = legendaAchado({ nome: 'Fone Teste Bluetooth', preco: 90, semCupom: 100, cupons: ['DESC10'], link: 'L', chamada: 'X TESTE CHAMADA' });
-  caso('legenda com cupom mostra o preco sem cupom', txt.includes('Por R$90') && txt.includes('Sem cupom: R$100') && txt.includes('Use o cupom DESC10'), txt);
+  caso('legenda com cupom mostra o preco sem cupom', txt.includes('Por R$90') && txt.includes('Sem cupom: R$100') && txt.includes('Use o cupom `DESC10`'), txt);
 }
 
 console.log('\n=== Mercado Livre de catalogo pela API (16/10) ===');
@@ -468,7 +471,7 @@ console.log('\n=== Cupom da Amazon na pagina (16/10) ===');
   caso('cupom de marcar: preco com cupom e a dica', marcar.ok && marcar.campos.preco === 225 && /Marque o cupom de 10%/.test(marcar.campos.dicaCupom), marcar);
   caso('canal bem abaixo ate do preco com cupom, sem cupom: nao posta', !conferirPreco({ preco: 600, cupons: [] }, { preco: 829, cupom: c1 }).ok);
   const txt = legendaAchado({ nome: 'Fone Teste Bluetooth', ...semMencao.campos, link: 'L', chamada: 'X TESTE CHAMADA' });
-  caso('legenda: Por R$809, Sem cupom R$829, Use o cupom COMPRANOAPP', txt.includes('Por R$809') && txt.includes('Sem cupom: R$829') && txt.includes('Use o cupom COMPRANOAPP'), txt);
+  caso('legenda: Por R$809, Sem cupom R$829, Use o cupom COMPRANOAPP', txt.includes('Por R$809') && txt.includes('Sem cupom: R$829') && txt.includes('Use o cupom `COMPRANOAPP`'), txt);
 }
 
 console.log('\n=== Horario e limite ===');

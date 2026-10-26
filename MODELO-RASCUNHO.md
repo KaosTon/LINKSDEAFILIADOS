@@ -37,7 +37,7 @@ Soundbar JBL BAR 1000MK2 Dolby Atmos
 🚚 Frete grátis para assinantes Prime
 🛒 (seu link de afiliado)
 
-🏷️ Use o cupom JBL10
+🏷️ Use o cupom `JBL10`
 ```
 
 ## Linha por linha
@@ -46,7 +46,8 @@ Soundbar JBL BAR 1000MK2 Dolby Atmos
 2. **Preço**: "De R$ X por R$ Y". Sem preço antigo, só "Por R$ Y". Pode terminar com "no Pix" ou "à vista".
 3. **Parcelado** (opcional): "ou 12x de R$ Z no cartão".
 4. **Frete** (opcional): "Frete grátis" ou "Frete grátis para Prime".
-5. **Cupom** (opcional): "Cupom: CODIGO", código em maiúsculas.
+5. **Cupom** (opcional): "Cupom: CODIGO", código em maiúsculas. Pode vir entre crases (`CODIGO`, fonte de código no
+   WhatsApp); no grupo o código sai sempre assim.
 6. **Link** por último: "Link: " e o link. Pode ser de outra pessoa ou de outro grupo: o robô troca pelo seu.
 
 ## O que não colocar
