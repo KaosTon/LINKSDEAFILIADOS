@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { lerPost, legendaAchado, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
-         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom } from '../../lib/ofertas.mjs';
+         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -247,6 +247,15 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('abrirLink segue mais de um salto ate a loja', fim === 'https://www.amazon.com.br/dp/B0Y', fim);
   let e2 = null; try { await abrirLink('https://amzn.to/a', async () => ({ headers: {} })); } catch (x) { e2 = x.message; }
   caso('abrirLink sem destino: erro (nao devolve o link curto como se fosse produto)', /nao abriu|não abriu/.test(e2 || ''));
+  // Pechinchou (27/10): pechin.co/N abre a página deles; o link da oferta principal vem do schema.org.
+  const PAG = '<script type="application/ld+json">{"@type":"Product","offers":{"@type":"Offer","url":"https://www.amazon.com.br/dp/B0PECHIN01?tag=outro-20&th=1","price":"10"}}</script>'
+    + '<script>{"long_url":"https://www.amazon.com.br/dp/B0PECHIN01?tag=outro-20\\u0026th=1"}</script> outras: https://meli.la/outra https://amzn.to/outra';
+  caso('pechinchou: le o link da oferta principal', linkDaPechinchou(PAG) === 'https://www.amazon.com.br/dp/B0PECHIN01?tag=outro-20&th=1', linkDaPechinchou(PAG));
+  caso('pechinchou: sem offers.url, usa o long_url', linkDaPechinchou('{"long_url":"https://meli.la/abc\\u0026x=1"}') === 'https://meli.la/abc&x=1');
+  caso('pechinchou: pagina sem link, null', linkDaPechinchou('<html>nada</html>') === null);
+  const saltosP = { 'https://pechin.co/9': 'https://pechinchou.com.br/oferta/9' };
+  const fimP = await abrirLink('https://pechin.co/9', async (u) => (saltosP[u] ? { headers: { location: saltosP[u] } } : { headers: {}, body: u.includes('/oferta/9') ? PAG : '' }));
+  caso('abrirLink: pechin.co passa pela pagina da Pechinchou ate a loja', fimP === 'https://www.amazon.com.br/dp/B0PECHIN01?tag=outro-20&th=1', fimP);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

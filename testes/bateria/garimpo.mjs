@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -590,6 +590,50 @@ console.log('\n=== Vez do eletronico (17/10) ===');
   caso('cupom nao conta; eletronico zera', m.semEletronico === 0);
 }
 
+console.log('\n=== Banco de cupons (27/10) ===');
+{
+  const c1 = condicaoCupom('R$20 OFF nas compras acima de R$60');
+  caso('condicao: R$ OFF e minimo', c1 && c1.tipo === 'R$' && c1.valor === 20 && c1.minimo === 60, c1);
+  const c2 = condicaoCupom('15% OFF acima de R$ 99, Limite de R$ 50 OFF');
+  caso('condicao: % OFF, minimo e limite', c2 && c2.tipo === '%' && c2.valor === 15 && c2.minimo === 99 && c2.limite === 50, c2);
+  caso('condicao: sem valor, null', condicaoCupom('Cupom bom hoje') === null);
+  const CUP = (id, texto) => post(id, min(300), texto);
+  const shopeeCupom = '☑️ Cupom Shopee!!!\n\n▪️ R$10 OFF nas compras acima de R$30\n\n🎯 Usem o Cupom: TESTESHP10\n\n🛒 Resgate aqui: https://s.shopee.com.br/cupomtst';
+  const ps = lerCanalTelegram(pagina(CUP('canalum/c1', shopeeCupom),
+    CUP('canalum/c2', '🔥 Cupom Mercado Livre\n\n▪️ 20% OFF acima de R$ 99\n\n🎯 Usem o cupom: TESTEMLB20\n\n🛒 https://meli.la/mlcupom'),
+    CUP('canalum/c3', '☑️ Cupom Shopee\n\n▪️ R$15 OFF em produtos selecionados\n\n🎯 Usem o Cupom: TESTESELEC\n\n🛒 https://s.shopee.com.br/sel'),
+    CUP('canalum/c4', '☑️ Cupom Shopee\n\n▪️ R$30 OFF na primeira compra\n\n🎯 Usem o Cupom: TESTE1COMPRA\n\n🛒 https://s.shopee.com.br/pri'))).map(p => ({ ...p, ...lerPost(p.texto) }));
+  caso('loja do cupom pelo link', lojaDoCupom(ps[0]) === 'shopee' && lojaDoCupom(ps[1]) === null, [lojaDoCupom(ps[0]), lojaDoCupom(ps[1])]);
+  const mem = memNova();
+  colherCupons(mem, ps, AGORA);
+  caso('banco: guarda so o cupom geral da Shopee (ML, selecionados e primeira compra ficam de fora)', mem.cuponsBanco.length === 1 && mem.cuponsBanco[0].codigo === 'TESTESHP10' && mem.cuponsBanco[0].minimo === 30, mem.cuponsBanco);
+  colherCupons(mem, ps, AGORA);
+  caso('banco: nao repete o mesmo codigo', mem.cuponsBanco.length === 1);
+  caso('banco: cupom com o nome do canal nao entra', colherCupons(memNova(), [{ ...ps[0], cupons: ['CANALUM10'] }], AGORA, (c) => /CANALUM/.test(c)).length === 0);
+  const m1 = melhorCupom(mem, 'shopee', 50, AGORA);
+  caso('melhor cupom: preco acima do minimo, preco final calculado', m1 && m1.codigo === 'TESTESHP10' && m1.precoCom === 40 && m1.texto === 'R$10 OFF acima de R$30', m1);
+  caso('melhor cupom: preco abaixo do minimo, nenhum', melhorCupom(mem, 'shopee', 25, AGORA) === null);
+  caso('melhor cupom: outra loja, nenhum', melhorCupom(mem, 'amazon', 50, AGORA) === null);
+  caso('melhor cupom: vencido (mais de 24h), nenhum', melhorCupom(mem, 'shopee', 50, new Date(AGORA.getTime() + 25 * 36e5)) === null);
+  const pc = { ...memNova(), cuponsBanco: [{ codigo: 'PCT', loja: 'shopee', tipo: '%', valor: 20, minimo: null, limite: 15, visto: AGORA.getTime() }] };
+  caso('melhor cupom: % respeita o limite', melhorCupom(pc, 'shopee', 200, AGORA).desconto === 15);
+  const leg = legendaAchado({ nome: 'Fone Teste', preco: 50, link: 'https://x', cupomBanco: m1 });
+  caso('legenda: cupom do banco com o preco final', leg.includes('Use o cupom `TESTESHP10` e pague R$40 (R$10 OFF acima de R$30)'), leg);
+  caso('legenda: cupom proprio do post ganha do banco', !legendaAchado({ nome: 'Fone Teste', preco: 50, link: 'https://x', cupons: ['PROPRIO'], cupomBanco: m1 }).includes('TESTESHP10'));
+
+  const ofertas = [{ nome: 'Fone Bluetooth Teste', preco: 50, desconto: 40, comissao: 10, foto: 'f', link: 'https://s.shopee.com.br/b', chave: 'shopee:2.2' }];
+  const r = await garimpar({ canais: { canalum: pagina(CUP('canalum/c1', shopeeCupom)) }, shopee: ofertas, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: { ...memNova(), postados: 2 }, rede });
+  caso('garimpo: produto da API da Shopee sai com o cupom geral que um canal postou', r.acao === 'postar' && r.fonte === 'shopee/ofertas' && r.comCupom === true && r.texto.includes('`TESTESHP10` e pague R$40'), r);
+
+  const semCupom = 'Monitor Teste Um 24 75hz\n\n🔥 Por: R$ 458 no Pix\n\n🛒 Link: https://amzn.to/aaa';
+  const comCupom = 'Fone Teste Dois Bluetooth\n\n🔥 Por: R$ 99 no Pix\n🎯 Use o cupom: TESTEFONE10\n\n🛒 Link: https://link.amazon/Bccc';
+  const rp = await garimpar({ canais: { canalum: pagina(post('canalum/p1', min(5), semCupom, 'https://cdn1.telesco.pe/file/p1'), post('canalum/p2', min(40), comCupom, 'https://cdn1.telesco.pe/file/p2')) }, agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, fotoLimpa: async () => true } });
+  caso('prioridade: post com cupom passa na frente do mais novo sem cupom', rp.acao === 'postar' && rp.chave === 'amazon:B0CCCCCCCC' && rp.comCupom === true, rp);
+
+  const mr = memNova(); mr.resumo.lojas = { shopee: 3, amazon: 1 }; mr.resumo.comCupom = 3;
+  caso('resumo: mostra quantos sairam com cupom', textoResumo(mr, AGORA).includes('Com cupom: 3 de 4 (75%)'), textoResumo(mr, AGORA));
+}
+
 console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
 {
   const codigo = pegarCodigo('03-garimpo.json', 'Garimpa');
@@ -676,6 +720,10 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('Anota: oferta sem foto nao vira status', m2.melhorDoDia.desconto === 50);
   await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m2, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'ml:1', link: 'https://www.mercadolivre.com.br/p/MLB1?x=1', titulo: 'Sorveteira Teste', texto: 'x', imagem: '' } }] } });
   caso('Anota: guarda o nome do link para o resumo', m2.titulos['https://www.mercadolivre.com.br/p/MLB1?x=1'] === 'Sorveteira Teste');
+  const m3 = { dia: '2026-10-06', postados: 0, produtos: {}, resumo: { lojas: {}, descartes: {} } };
+  await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m3, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'shopee:9.9', comCupom: true } }] } });
+  await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m3, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'shopee:9.8' } }] } });
+  caso('Anota: conta os posts com cupom', m3.resumo.comCupom === 1 && m3.postados === 2, m3.resumo);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

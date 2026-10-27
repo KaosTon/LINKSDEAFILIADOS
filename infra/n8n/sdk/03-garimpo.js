@@ -124,6 +124,8 @@ const anota = node({
 "  mem.resumo = mem.resumo || { lojas: {}, descartes: {} };",
 "  const loja = String(g.chave || '').split(':')[0] || 'outra';",
 "  mem.resumo.lojas[loja] = (mem.resumo.lojas[loja] || 0) + 1;",
+"  // Quantos saíram com cupom (27/10): o resumo mostra a porcentagem.",
+"  if (g.comCupom || g.tipo === 'cupom') mem.resumo.comCupom = (mem.resumo.comCupom || 0) + 1;",
 "  mem.ultimo = Date.now();",
 "  if (g.tipo === 'cupom') mem.cupons = (mem.cupons || 0) + 1;",
 "  mem.produtos = mem.produtos || {};",
