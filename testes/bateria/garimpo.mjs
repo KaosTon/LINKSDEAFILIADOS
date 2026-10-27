@@ -70,6 +70,8 @@ console.log('\n=== Padrao dos grupos de oferta ===');
   const crase = lerPost('PANDORA PRA ELA\n\nBracelete Teste de Prata\n\n💵 R$549 até 10x sem juros\n🛒 https://meli.la/aaa\n\n🏷️ Use o cupom `TESTEMODA`');
   caso('cupom em `crase` (fonte de codigo): le o codigo', crase.cupons.join() === 'TESTEMODA', crase.cupons);
   caso('legenda: codigo do cupom em `crase`', /Use o cupom `TESTEMODA`/.test(legendaAchado({ ...crase, link: 'https://x' })));
+  const abaixo = lerPost('Smart TV Teste 65 4K\n\n🔥 Por: R$ 2.763 no Pix\n➡️ Ative o CUPOM ABAIXO do produto para chegar ao valor\n\n🛒 Link: https://pechin.co/1');
+  caso('"CUPOM ABAIXO" nao e codigo: vira a dica de ativar o cupom', abaixo.cupons.length === 0 && /Ative o CUPOM ABAIXO do produto/.test(abaixo.dicaCupom || ''), abaixo);
   caso('dois cupons, o segundo na linha de baixo com "+"', lerPost('X Teste\n\n💵 Por R$9\n🛒 https://amzn.to/b\n\n🏷️ Use o cupom TESTEUM\n+ TESTEDOIS').cupons.join() === 'TESTEUM,TESTEDOIS');
   const L = legendaAchado({ ...P, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'amazon:B0X' });
   const linhas = L.split('\n');
