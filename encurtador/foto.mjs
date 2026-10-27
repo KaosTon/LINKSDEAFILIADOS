@@ -31,7 +31,7 @@ export async function fotoComLogo(original, larguraLogo = 120) {
     .jpeg({ quality: 86, mozjpeg: true }).toBuffer();
 }
 
-async function baixar(url) {
+export async function baixar(url) {
   const r = await fetch(url, { signal: AbortSignal.timeout(10000), headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TemDescontos/1.0)' } });
   if (!r.ok || !/^image\//i.test(r.headers.get('content-type') || '')) throw new Error('nao_e_foto');
   const b = Buffer.from(await r.arrayBuffer());

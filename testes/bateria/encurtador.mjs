@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { criarServidor, lojaPermitida, novoCodigo, ehRobo } from '../../encurtador/servidor.mjs';
 import { assinarFoto } from '../../encurtador/foto.mjs';
+import { assinarCard, dadosDoCard, linhasDoNome } from '../../encurtador/card.mjs';
 import { createRequire } from 'node:module';
 const sharp = createRequire(new URL('../../encurtador/package.json', import.meta.url))('sharp');   // fica em encurtador/node_modules
 
@@ -114,6 +115,23 @@ caso('segunda vez vem do cache (nao baixa de novo)', baixadas === 1, baixadas);
 const QUEBRADA = 'https://http2.mlstatic.com/quebrada.jpg';
 const q = await fetch(`${raiz}/foto?u=${encodeURIComponent(QUEBRADA)}&a=${assinarFoto(SENHA, QUEBRADA)}`, { redirect: 'manual' });
 caso('foto que nao abre: manda para a original (post sai sem logo, mas com foto)', q.status === 302 && q.headers.get('location') === QUEBRADA);
+
+// Card do status (27/10): 1080x1920, só assinado, de maior que por.
+const D = dadosDoCard({ n: 'Fone Teste Bluetooth Com Cancelamento De Ruido Ativo', de: 500, por: 249.9, f: FOTO, l: 'Mercado Livre', v: '27/10 às 12h00' });
+const cSem = await fetch(`${raiz}/card?d=${D}`);
+caso('/card sem assinatura: 403', cSem.status === 403);
+const cOk = await fetch(`${raiz}/card?d=${D}&a=${assinarCard(SENHA, D)}`);
+const cJpg = Buffer.from(await cOk.arrayBuffer());
+const cMeta = await sharp(cJpg).metadata();
+caso('/card assinado: jpeg 1080x1920', cOk.status === 200 && cMeta.width === 1080 && cMeta.height === 1920, cMeta);
+const cPx = async (x, y) => [...(await sharp(cJpg).extract({ left: x, top: y, width: 1, height: 1 }).raw().toBuffer())];
+const cFoto = await cPx(540, 705), cSelo = await cPx(875, 420);
+caso('foto no card branco e selo vermelho por cima', cFoto[2] > 150 && cFoto[0] < 90 && cSelo[0] > 180 && cSelo[1] < 110, { cFoto, cSelo });
+const ruim = dadosDoCard({ n: 'X', de: 100, por: 150 });
+caso('/card com "de" menor que "por": 403', (await fetch(`${raiz}/card?d=${ruim}&a=${assinarCard(SENHA, ruim)}`)).status === 403);
+const semFoto = dadosDoCard({ n: 'Sem Foto', de: 100, por: 50, f: 'https://http2.mlstatic.com/quebrada.jpg' });
+caso('/card com foto que nao abre: sai sem foto', (await fetch(`${raiz}/card?d=${semFoto}&a=${assinarCard(SENHA, semFoto)}`)).status === 200);
+caso('nome em ate 2 linhas, por palavra', JSON.stringify(linhasDoNome('Chave De Impacto Kinetx 68vf Brushless 880nm 2 Baterias')) === JSON.stringify(['Chave De Impacto', 'Kinetx 68vf Brushless']));
 await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });
 

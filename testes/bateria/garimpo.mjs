@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -70,6 +70,8 @@ console.log('\n=== Padrao dos grupos de oferta ===');
   const crase = lerPost('PANDORA PRA ELA\n\nBracelete Teste de Prata\n\n💵 R$549 até 10x sem juros\n🛒 https://meli.la/aaa\n\n🏷️ Use o cupom `TESTEMODA`');
   caso('cupom em `crase` (fonte de codigo): le o codigo', crase.cupons.join() === 'TESTEMODA', crase.cupons);
   caso('legenda: codigo do cupom em `crase`', /Use o cupom `TESTEMODA`/.test(legendaAchado({ ...crase, link: 'https://x' })));
+  const abaixo = lerPost('Smart TV Teste 65 4K\n\n🔥 Por: R$ 2.763 no Pix\n➡️ Ative o CUPOM ABAIXO do produto para chegar ao valor\n\n🛒 Link: https://pechin.co/1');
+  caso('"CUPOM ABAIXO" nao e codigo: vira a dica de ativar o cupom', abaixo.cupons.length === 0 && /Ative o CUPOM ABAIXO do produto/.test(abaixo.dicaCupom || ''), abaixo);
   caso('dois cupons, o segundo na linha de baixo com "+"', lerPost('X Teste\n\n💵 Por R$9\n🛒 https://amzn.to/b\n\n🏷️ Use o cupom TESTEUM\n+ TESTEDOIS').cupons.join() === 'TESTEUM,TESTEDOIS');
   const L = legendaAchado({ ...P, link: 'https://www.amazon.com.br/dp/B0X?tag=minha-20', chave: 'amazon:B0X' });
   const linhas = L.split('\n');
@@ -387,6 +389,20 @@ console.log('\n=== Painel do resumo: membros, cliques e Shopee (17/10) ===');
   caso('coletar: o que falha fica de fora', falha.membros === null && falha.cliques && falha.shopee === null, falha);
   const dois = await coletarPainel({ membrosDoGrupo: async (g) => (g === 'g1' ? 10 : 5), cliques: async () => null, shopeeVendas: async (ini, fim) => ({ ini, fim }) }, ['g1', 'g2'], D2);
   caso('coletar: soma os grupos e pede a Shopee do inicio do dia em SP', dois.membros === 15 && dois.shopee.ini === Date.parse('2026-10-06T03:00:00Z') / 1000, dois);
+  // Entradas e saídas (27/10): compara a lista de hoje com a da véspera, sem guardar telefone.
+  const tel = (n) => Array.from({ length: n }, (_, k) => '5500000000' + String(k).padStart(3, '0'));
+  const lista = await coletarPainel({ membrosDoGrupo: async () => tel(5), cliques: async () => null, shopeeVendas: async () => null }, ['g1'], D2);
+  caso('coletar: lista vira contagem e resumos', lista.membros === 5 && lista.ids.length === 5 && lista.ids.every(x => /^[0-9a-f]{12}$/.test(x)), lista);
+  caso('coletar: telefone nao fica guardado', !JSON.stringify(lista).includes('5500000000'));
+  const me = {};
+  const e1 = guardarPainel(me, D1, { membros: 5, ids: tel(5).map(idDoMembro), cliques: null, shopee: null });
+  caso('entradas: primeiro dia sem comparacao', e1.entraram === null && !/Entraram/.test(textoResumo({ resumo: { lojas: {}, descartes: {} } }, D1, e1)), e1);
+  const hoje = [...tel(5).slice(2), '5599999999001', '5599999999002', '5599999999003', '5599999999004'].map(idDoMembro);
+  const e2 = guardarPainel(me, D2, { membros: 7, ids: hoje, cliques: null, shopee: null });
+  caso('entradas e saidas do dia', e2.entraram === 4 && e2.sairam === 2 && /Entraram 4, saíram 2/.test(textoResumo({ resumo: { lojas: {}, descartes: {} } }, D2, e2)), e2);
+  const e3 = guardarPainel(me, D2, { membros: 8, ids: [...hoje, idDoMembro('5599999999005')], cliques: null, shopee: null });
+  caso('rodar de novo no mesmo dia compara com a vespera', e3.entraram === 5 && e3.sairam === 2, e3);
+  caso('memoria so guarda resumos', !JSON.stringify(me).includes('55999'));
 }
 
 console.log('\n=== Conferir preco com a loja (16/10) ===');
@@ -683,6 +699,24 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('status: sem oferta de hoje, nao manda', st2.tipo !== 'status', st2);
   const st3 = (await roda({ env: { ...LIG, GRUPO_LINK: 'https://outro.com.br/entrar/' }, memoria: { dia: '2026-10-06', melhorDoDia: melhor } })).saida[0].json;
   caso('GRUPO_LINK troca o link do grupo', st3.texto.endsWith('https://outro.com.br/entrar?de=status'), st3.texto);
+  // Card do status (27/10): melhor oferta fora da Amazon vira o card assinado do encurtador.
+  const mcard = { dia: '2026-10-06', nota: 53, chave: 'ml:MLB9', quando: Date.parse('2026-10-06T14:05:00Z'), imagem: 'https://encurta.teste/foto?u=' + encodeURIComponent('https://http2.mlstatic.com/D_NQ_NP_9.jpg') + '&a=x&t=130',
+    texto: 'APERTE TUDO\n\nChave De Impacto Teste\n\n💵 De R$312,33 por R$179,10 no Pix\n🛒 https://x\n\n🏷️ Use o cupom `OFFTESTE` e pague R$146,86 (R$35 OFF)' };
+  const envC = { ...LIG, ENCURTADOR_URL: 'https://encurta.teste/', ENCURTADOR_SEGREDO: 'S' };
+  const sc = (await roda({ env: envC, http: [...http, { quando: /encurta\.teste\/card\?d=/, responde: { statusCode: 200, body: '' } }], memoria: { dia: '2026-10-06', melhorDoDia: melhor, melhorCard: mcard, ultimo: AGORA.getTime() - 60 * 6e4 } })).saida[0].json;
+  const dC = ((sc.imagem || '').match(/\/card\?d=([^&]+)&a=([0-9a-f]+)$/) || []);
+  const { assinarCard } = await import('../../encurtador/card.mjs');
+  const lido = dC[1] ? JSON.parse(Buffer.from(dC[1], 'base64url').toString('utf8')) : {};
+  caso('12h com card: imagem e o /card assinado e a legenda curta', sc.tipo === 'status' && sc.imagem.startsWith('https://encurta.teste/card?d=') && dC[2] === assinarCard('S', dC[1]) && sc.texto.startsWith('Esse grupo de ofertas tá valendo a pena') && sc.texto.endsWith('https://temdescontos.com.br/grupo?de=status'), sc);
+  caso('card: nome, de, por com o cupom, foto original, loja e hora', lido.n === 'Chave De Impacto Teste' && lido.de === 312.33 && lido.por === 146.86 && lido.f === 'https://http2.mlstatic.com/D_NQ_NP_9.jpg' && lido.l === 'Mercado Livre' && lido.v === '06/10 às 11h05', lido);
+  const sc2 = (await roda({ env: LIG, memoria: { dia: '2026-10-06', melhorDoDia: melhor, melhorCard: mcard, ultimo: AGORA.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('card sem o encurtador configurado: status como antes', sc2.imagem === melhor.imagem && sc2.texto.startsWith('FONE BOM'), sc2);
+  const scX = (await roda({ env: envC, http: [...http, { quando: /encurta\.teste\/card\?d=/, responde: { statusCode: 404, body: '' } }], memoria: { dia: '2026-10-06', melhorDoDia: melhor, melhorCard: mcard, ultimo: AGORA.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('card que nao abre (encurtador sem /card): status como antes', scX.imagem === melhor.imagem && scX.texto.startsWith('FONE BOM'), scX);
+  const sc3 = (await roda({ env: envC, memoria: { dia: '2026-10-06', melhorDoDia: melhor, melhorCard: { ...mcard, dia: '2026-10-05' }, ultimo: AGORA.getTime() - 60 * 6e4 } })).saida[0].json;
+  caso('card de ontem: status como antes', sc3.imagem === melhor.imagem, sc3);
+  caso('dadosDoStatus: Amazon e "a partir de" nao viram card', dadosDoStatus({ ...mcard, chave: 'amazon:B1' }) === null && dadosDoStatus({ ...mcard, texto: mcard.texto.replace('por R$', 'por a partir de R$') }) === null);
+  caso('dadosDoStatus: sem "De" nao vira card', dadosDoStatus({ ...mcard, texto: 'X\n\nNome\n\n💵 Por R$20' }) === null);
   const NOITE22 = new Date('2026-10-07T01:10:00Z');   // 22h10 em SP
   const httpR = [...http,
     { quando: /light-group-metadata\/120363000000000002-group/, responde: { participants: [{ phone: 'a' }, { phone: 'b' }, { phone: 'c' }] } },
@@ -724,6 +758,15 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m3, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'shopee:9.9', comCupom: true } }] } });
   await rodar(anota, { itens: [{ json: { ok: true } }], memoria: m3, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave: 'shopee:9.8' } }] } });
   caso('Anota: conta os posts com cupom', m3.resumo.comCupom === 1 && m3.postados === 2, m3.resumo);
+  const m4 = { dia: '2026-10-06', postados: 0, produtos: {}, resumo: { lojas: {}, descartes: {} } };
+  const pc = (chave, texto) => rodar(anota, { itens: [{ json: { ok: true } }], memoria: m4, nos: { 'Garimpa': [{ json: { tipo: 'produto', chave, texto, imagem: 'https://f/1' } }] } });
+  await pc('amazon:B1', 'X\n\nTV\n\n💵 De R$5.000 por R$1.000 (80% OFF)');
+  caso('Anota: Amazon nao vira card', !m4.melhorCard && m4.melhorDoDia.desconto === 80, m4);
+  await pc('ml:1', 'X\n\nFone\n\n💵 De R$400 por R$200 (50% OFF)');
+  await pc('shopee:1.1', 'X\n\nCapinha\n\n💵 De R$40 por R$10 (75% OFF)');
+  caso('Anota: card prefere o de R$60 para cima ao barato com mais %', m4.melhorCard && m4.melhorCard.chave === 'ml:1' && m4.melhorCard.quando > 0, m4.melhorCard);
+  await pc('ml:2', 'X\n\nCaixa de som\n\n💵 De R$1.000 por R$400 (60% OFF)');
+  caso('Anota: card troca para o de maior %', m4.melhorCard.chave === 'ml:2', m4.melhorCard);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

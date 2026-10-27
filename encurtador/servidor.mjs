@@ -1,8 +1,9 @@
 // Encurtador próprio: temdescontos.com.br/a7k2p -> link de afiliado.
-// Roda no Railway como serviço separado do n8n, com um volume em /data. Única dependência: sharp (foto.mjs).
+// Roda no Railway como serviço separado do n8n, com um volume em /data. Única dependência: sharp (foto.mjs, card.mjs).
 //
 //   GET  /{codigo}          redireciona (302) e conta o clique
 //   GET  /foto?u=&a=        foto do post em 1200x630 com o logo no canto; só com assinatura do n8n (foto.mjs)
+//   GET  /card?d=&a=        card do status 1080x1920 (de, por, % OFF), mesma assinatura (card.mjs)
 //   POST /api/encurtar      { url } com Authorization: Bearer ENCURTADOR_SEGREDO -> { codigo, curto }
 //   GET  /api/cliques       mesma senha; os links mais clicados, cliques no convite por origem e os últimos
 //                           cliques no convite com a hora (grupoRecentes), para cruzar com quem entrou no grupo
@@ -24,7 +25,8 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { criarRotaFoto } from './foto.mjs';
+import { criarRotaFoto, baixar } from './foto.mjs';
+import { criarRotaCard } from './card.mjs';
 
 const LOJAS = /(^|\.)(amazon\.com\.br|amzn\.to|mercadolivre\.com\.br|meli\.la|shopee\.com\.br|magazinevoce\.com\.br|magazineluiza\.com\.br)$/i;
 const ALFABETO = 'abcdefghijkmnpqrstuvwxyz23456789';   // sem l, o, 0, 1 (confundem)
@@ -69,6 +71,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
     sujo = false;
   };
   const foto = criarRotaFoto({ pasta, segredo, ...(baixarFoto ? { baixarFoto } : {}) });
+  const card = criarRotaCard({ pasta, segredo, baixarFoto: baixarFoto || baixar });
   const relogio = setInterval(salvar, 30000);
   relogio.unref();
 
@@ -88,6 +91,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
 
     if (p === '/saude') return responde(res, 200, 'ok');
     if (p === '/foto') return void foto(u, res);
+    if (p === '/card') return void card(u, res);
 
     if (p === '/api/encurtar' && req.method === 'POST') {
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
