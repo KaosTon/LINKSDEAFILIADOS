@@ -174,11 +174,13 @@ console.log('\n=== Esteira (fluxo 01) ===');
   const e1 = await prepararOferta(enc, C, rede);
   caso('encaminhada com previa: usa a foto da previa', e1.acao === 'postar' && e1.imagem === 'https://tmp/previa.jpeg', e1);
   caso('encaminhada com previa: manda link e titulo para o send-link', e1.link === 'https://www.amazon.com.br/dp/B0X?tag=minha-20' && e1.titulo === 'Gillette Styler Barbeador', e1);
+  caso('encaminhada so com a miniatura: avisa que vai sair borrada', /miniatura do link/.test(e1.aviso || ''), e1.aviso);
   const encA = corpo('', { image: undefined, text: { message: 'Gillette Styler Barbeador\nhttps://www.amazon.com.br/dp/B0AAAAAAAA', thumbnailUrl: 'https://tmp/previa.jpeg' } });
   const ep2 = await prepararOferta(encA, C, { ...rede, pagina: async () => '<span id="productTitle">Gillette Styler</span> "hiRes":"https://m.media-amazon.com/images/I/grande.jpg"' });
   caso('encaminhada com previa: a foto oficial da loja vem antes da miniatura da previa', ep2.imagem === 'https://m.media-amazon.com/images/I/grande.jpg', ep2.imagem);
   const ep3 = await prepararOferta(corpo('Gillette https://amzn.to/abc', { image: { imageUrl: 'https://tmp/foto-grande.jpeg', caption: 'Gillette https://amzn.to/abc' } }), C, { ...rede, pagina: async () => '"hiRes":"https://m.media-amazon.com/images/I/grande.jpg"' });
   caso('foto mandada como imagem: usa a sua foto', ep3.imagem === 'https://tmp/foto-grande.jpeg', ep3.imagem);
+  caso('foto da loja ou foto anexada: sem aviso de miniatura', !ep2.aviso && !ep3.aviso, [ep2.aviso, ep3.aviso]);
   // Foto com marca de outro grupo (18/10): a IA confere a foto mandada; com marca, vale a foto da loja ou nenhuma.
   const PAG_G = '"hiRes":"https://m.media-amazon.com/images/I/grande.jpg"';
   const fm1 = await prepararOferta(corpo('Gillette Styler Barbeador https://www.amazon.com.br/dp/B0AAAAAAAA', { image: { imageUrl: 'https://tmp/com-marca.jpeg', caption: 'Gillette Styler Barbeador https://www.amazon.com.br/dp/B0AAAAAAAA' } }), C, { ...rede, pagina: async () => PAG_G, fotoLimpa: async () => false });
