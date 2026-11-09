@@ -57,6 +57,12 @@ const P1 = 'Monitor Gamer Teste 25 144hz\n\n🔥 Por: R$ 458 no Pix\n\n🛒 Link
   caso('post de cupom: tipo, codigos e linhas', e.tipo === 'cupom' && e.cupons.join() === 'TESTEUM,TESTE0510' && e.linhasCupom.length === 2 && /20% OFF/.test(e.linhasCupom[0]), e);
   const f = lerPost('🚨 Cupom Magalu APP\n\n🎟 15% OFF em compras de até R$500 - TESTE15\n\n✅ Resgate aqui:\nhttps://divulgador.magalu.com/Xyz');
   caso('cupom depois de " - "; "Magalu" e "APP" nao viram codigo', f.cupons.join() === 'TESTE15', f.cupons);
+  const g = lerPost('WHEY\n\nWhey Teste 900g\n\n💵 De R$149 por R$78 pix\n🛒 https://meli.la/w\n\n🏷️ Use o cupom TESTEUM ou TESTEDOIS + Selecione PIX');
+  const lg = legendaAchado({ ...g, link: 'https://l', chamada: 'X' });
+  caso('cupom "A ou B": os dois codigos, com "ou" na legenda', g.cupons.join() === 'TESTEUM,TESTEDOIS' && g.dicaCupom === 'Selecione PIX'
+    && /Use o cupom `TESTEUM` ou `TESTEDOIS` \+ Selecione PIX$/.test(lg), lg);
+  const h = lerPost('X\n\nCoisa Teste\n\n💵 R$50\n🛒 https://meli.la/h\n\n🏷️ Use o cupom TESTEUM + TESTEDOIS');
+  caso('cupom "A + B" continua com "+"', /`TESTEUM` \+ `TESTEDOIS`$/.test(legendaAchado({ ...h, link: 'https://l', chamada: 'X' })), h.cupons);
 }
 console.log('\n=== Padrao dos grupos de oferta ===');
 {
