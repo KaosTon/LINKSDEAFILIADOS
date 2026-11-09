@@ -4,7 +4,7 @@
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
-import { chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
+import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
@@ -791,6 +791,21 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('Anota: card prefere o de R$60 para cima ao barato com mais %', m4.melhorCard && m4.melhorCard.chave === 'ml:1' && m4.melhorCard.quando > 0, m4.melhorCard);
   await pc('ml:2', 'X\n\nCaixa de som\n\n💵 De R$1.000 por R$400 (60% OFF)');
   caso('Anota: card troca para o de maior %', m4.melhorCard.chave === 'ml:2', m4.melhorCard);
+}
+
+{
+  console.log('\n# Anúncios no resumo e story no Instagram (09/11)');
+  const a = lerAnuncios({ data: [{ spend: '12.5', impressions: '3000', actions: [{ action_type: 'link_click', value: '50' }] }] });
+  caso('anuncios: gasto e cliques no link', a && a.gasto === 12.5 && a.cliques === 50 && a.impressoes === 3000, a);
+  caso('anuncios: sem gasto ou sem dados, fica de fora', lerAnuncios({ data: [{ spend: '0' }] }) === null && lerAnuncios({ data: [] }) === null && lerAnuncios(null) === null);
+  const mem = { resumo: { lojas: { ml: 2 }, descartes: {}, comCupom: 1 } };
+  const t = textoResumo(mem, new Date('2026-11-10T01:00:00Z'), { membros: 30, anuncios: a });
+  caso('resumo: linha dos anuncios com custo por clique', /Anúncios hoje\*\n\u2022 R\$ 12,50 gastos, 50 cliques no link, R\$ 0,25 por clique/.test(t), t);
+  caso('resumo: sem anuncios, sem a linha', !/Anúncios/.test(textoResumo(mem, new Date('2026-11-10T01:00:00Z'), { membros: 30 })));
+  const st = pedidosStoryIG('1789', 'TOKEN_TESTE', 'https://enc.test/card?d=x&a=y');
+  caso('story: contêiner STORIES com a imagem do card', st && /\/1789\/media$/.test(st.criar.url) && st.criar.body.media_type === 'STORIES' && st.criar.body.image_url === 'https://enc.test/card?d=x&a=y');
+  caso('story: publica o contêiner criado', st.publicar('55').body.creation_id === '55' && /media_publish$/.test(st.publicar('55').url));
+  caso('story: sem conta, token ou imagem https, nada', pedidosStoryIG('', 'T', 'https://x') === null && pedidosStoryIG('1', '', 'https://x') === null && pedidosStoryIG('1', 'T', 'http://x') === null);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
