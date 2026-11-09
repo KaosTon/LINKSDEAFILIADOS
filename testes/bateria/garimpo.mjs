@@ -4,7 +4,7 @@
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
-import { lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
+import { chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
@@ -224,6 +224,11 @@ console.log('\n=== Chamada criativa (IA) ===');
   const ped = pedidoChamada(N);
   caso('pedido: modelo barato por padrao, resposta curta, regras no sistema', ped.model === MODELO_CHAMADA && ped.max_tokens <= 60 && /Proibido/.test(ped.messages[0].content) && ped.messages[1].content.includes(N));
   caso('OPENROUTER_MODELO troca o modelo', pedidoChamada(N, 'outro/modelo').model === 'outro/modelo');
+  caso('pedido: sabor nao e o produto, frase com sentido, menos sorteio', /sabor/.test(ped.messages[0].content) && /sentido/.test(ped.messages[0].content) && ped.temperature <= 0.7);
+  caso('rascunho: primeira linha em maiuscula vira a chamada', chamadaDoRascunho('PROTEINA PRO TREINO 💪\n\nWhey Teste 900g\nR$ 78\nhttps://x', 'Whey Teste 900g') === 'PROTEINA PRO TREINO');
+  caso('rascunho: sem maiuscula, preco ou so o nome: fica a da IA', chamadaDoRascunho('Olha esse whey\nhttps://x', 'Whey') === null
+    && chamadaDoRascunho('SÓ R$ 78 HOJE\nWhey', 'Whey') === null && chamadaDoRascunho('WHEY TESTE 900G\nR$ 78', 'Whey Teste 900g') === null
+    && chamadaDoRascunho('MENOR PREÇO DO ANO\nWhey', 'Whey') === null);
   const L = legendaAchado({ nome: N, preco: 266, precoAntes: 456, link: 'https://x', chave: 'k', chamada: 'VOU APOSENTAR O ÓLEO DA SUA CASA' });
   caso('com chamada da IA: ela vai na primeira linha', L.split('\n')[0] === 'VOU APOSENTAR O ÓLEO DA SUA CASA');
   const mem = memNova();
