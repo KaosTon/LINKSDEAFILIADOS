@@ -53,3 +53,27 @@ NÃO CONFIRMEI (fora do texto ou escrito como "confira na página")
 - Shopee: valor mínimo vigente e teto do cupom geral (só exemplo antigo de R$ 20 e tabela do lado do vendedor): escrito como "aparece no cupom". Se R$ 9,90 do ShopeeVIP é literalmente "por mês" na FAQ (a imprensa diz mensal).
 - Magalu: qual limite de Móveis vale e se a retirada em loja é grátis: fora do texto.
 - Número do artigo do Decreto 7.962 (art. 2º) veio de memória; o inciso IV foi confirmado literal.
+
+---
+
+## Post: historico-de-preco-como-consultar
+
+Fatos usados (fonte oficial, trecho da busca em 10/11/2026)
+- Senacon, cartilha Black Friday edição 2025: https://www.gov.br/mj/pt-br/assuntos/arquivos-imprensa/senacon/cartilha-black-friday-senacon-2025 "Pesquise o histórico de preços para confirmar se o desconto é real."; notícia de 24/11/2025: "comparadores de preços e sites confiáveis que mostram o histórico de valor de cada item".
+- Procon-SP 2025 (recomendação a fornecedores): https://www.procon.sp.gov.br/de-olho-na-black-friday-procon-sp-promove-iniciativas-para-auxiliar-o-consumidor-paulista-que-pretende-realizar-compras-neste-periodo/ "aplicar o desconto sobre o menor preço dos últimos 60 dias". É recomendação, não lei.
+- Procon-ES, 28/10/2026: https://www.es.gov.br/procon-es-orienta-consumidores-a-monitorar-precos-antes-da-black-friday (monitorar preços antes, guardar capturas com data).
+- Procon-PR: https://www.parana.pr.gov.br/aen/Noticia/Economia-sem-dor-de-cabeca-Procon-PR-alerta-para-cuidados-essenciais-na-Black-Friday "verificar o histórico de preços do produto desejado, conferindo os valores praticados há três, seis meses ou um ano".
+- Zoom, ajuda: https://tiresuaduvida.zoom.com.br/hc/pt-br/articles/360018658371 (períodos de 40 dias, 3 meses, 6 meses ou 1 ano); "É possível descobrir os valores mínimos que o produto já atingiu e criar alertas de preço mais precisos."; alerta por WhatsApp e e-mail; nem todo produto tem histórico.
+- Buscapé: https://www.buscape.com.br/landing-page/historico-de-precos-buscape (gráfico na página do produto; 40 dias e 6 meses); alerta por e-mail ou WhatsApp.
+- CDC art. 30, 31 e 37 caput ("É proibida toda publicidade enganosa ou abusiva.") no Planalto, texto compilado.
+- Decreto 5.903/2006, art. 2º, § 1º, I: "correção, a informação verdadeira que não seja capaz de induzir o consumidor em erro".
+- União Europeia: Diretiva (UE) 2019/2161, art. 6.º-A da Diretiva 98/6/CE: "preço mais baixo praticado pelo comerciante durante um período que não seja inferior a 30 dias". Brasil: nenhuma norma federal equivalente achada; PL 2849/2015 (histórico de 30 dias) em tramitação na Câmara.
+- Procon-SP, consulta 2025 (329 consumidores, 30/10 a 17/11/2025, enquete de adesão voluntária): 76,47% dos compradores já se sentiram enganados ao menos uma vez. https://www.procon.sp.gov.br/consulta-inedita-do-procon-sp-revela-que-consumidores-desconfiam-das-ofertas-mas-reagem-aos-gatilhos-de-marketing-da-black-friday/
+- Procon Vitória (ES), 2025: 10 produtos em 5 lojas, de 30/10 a 24/11/2025: "80% dos produtos monitorados ficaram mais caros às vésperas da Black Friday". https://www.vitoria.es.gov.br/noticia/black-friday-procon-vitoria-publica-pesquisa-que-aponta-aumento-de-precos-e-alerta-consumidor-55138
+
+NÃO CONFIRMEI (fora do texto)
+- Google Shopping e Keepa no Brasil: a documentação oficial não confirma (Google cita outros países; Keepa não lista .com.br no Chrome). Não recomendados no texto.
+- Períodos exatos do gráfico do Buscapé (páginas divergem): o texto diz 40 dias e 6 meses e manda conferir na tela.
+- Situação do PL 2849/2015 em novembro de 2026; inteiro teor do PL 2017/2025 (não citado).
+- Texto literal do art. 37, §§ 1º a 3º (o post cita só o caput).
+- Frase da "metade do dobro" na cartilha de 2025 (veio de edição anterior): o post não atribui à Senacon.
