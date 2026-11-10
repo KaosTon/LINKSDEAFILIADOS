@@ -33,3 +33,23 @@ NÃO CONFIRMEI (ficou fora do texto ou escrito como "varia")
 - Validade do saldo do Méliuz; percentuais e teto do Meli Dólar (3% ou 4%; R$ 5 por compra); percentuais do cartão Amazon; validade exata das Moedas Shopee; prazo do Dinheiro de Volta do Magalu (20 ou 45 dias). Tudo escrito como "confira na página da loja".
 - Posição da Receita sobre cashback de consumo para pessoa física: não achada. Não afirmar.
 - Que o clique num link de afiliado de terceiro anula o cashback: as regras falam em "outro link", comparadores e sites de cupom; escrito com essas palavras, sem "last click".
+
+---
+
+## Post: frete-gratis-amazon-mercado-livre-shopee
+
+Fatos usados (fonte oficial, trecho da busca em 10/11/2026; quase nenhuma página mostra data)
+- Amazon, mínimo sem Prime: ajuda "Pedido com Frete Grátis da Amazon" (nodeId=201910160) "Todos os pedidos a partir de um determinado valor com produtos elegíveis enviados pela Amazon se qualificam para o Frete GRÁTIS. Se você já é cliente da Amazon, o valor mínimo do pedido para frete GRÁTIS é de R$ 19."; About Amazon: "oferecemos frete grátis em compras acima de R$ 19 para itens enviados pela Amazon." Itens de terceiros não contam para o mínimo; a oferta pode ser alterada.
+- Amazon Prime, frete: "com o Amazon Prime, você tem acesso ilimitado à entrega GRATUITA de produtos elegíveis, sem valor mínimo de compra". Preço (ajuda nodeId=G34EUPKVMYFW8N2U e /prime): "Plano mensal: R$ 19,90 por mês; Plano anual: R$ 166,80 por ano".
+- Mercado Livre: https://www.mercadolivre.com.br/l/fretegratis "O benefício do frete grátis está disponível em compras a partir de R$ 19 e leva em consideração diversos fatores"; "procure a legenda verde no detalhe do anúncio ou verifique no carrinho de compras"; "Não aplicável para produtos da categoria Supermercado e para Compras Internacionais." Blog oficial: "Caso o benefício do frete grátis não esteja disponível, você poderá receber um desconto no frete." Mudança de R$ 79 para R$ 19 em 06/06/2025 (imprensa: CNN Brasil).
+- Meli+: página de planos (melimaisv2/planos) "Frete grátis rápido a partir de R$ 19"; FAQ: não vale para Supermercado, Compras Internacionais e "compras cujo custo de envio (frete) ultrapasse o valor de R$20"; "você pode ter até R$ 15 de desconto no envio rápido em vez de frete grátis"; "válido para produtos selecionados com a etiqueta Meli+". Preços vistos: Essencial R$ 9,90; Total "a partir de R$ 19,90"; Mega "a partir de R$ 74,90".
+- Shopee: help.shopee.com.br artigo 76220 "O uso de cupons de frete grátis é válido somente no aplicativo e em pedidos acima de um valor pré-estabelecido."; mínimo calculado por loja; limite de 10 cupons de frete grátis por semana. ShopeeVIP (artigo 223874): R$ 9,90; "cupons de frete grátis ilimitados para compras acima de R$10 em para fretes de até R$20" (sic). Lançado em 29/04/2026 (imprensa).
+- Magalu: "Regra Frete Grátis" (especiais.magazineluiza.com.br/app-webviews/regra-frete-gratis/): no app, a partir de R$ 99, com exceções (região Norte, Móveis, parceiros do marketplace).
+- CDC art. 30 e 31 (Planalto, compilado). Decreto 7.962/2013, art. 2º, IV: "discriminação, no preço, de quaisquer despesas adicionais ou acessórias, tais como as de entrega ou seguros;".
+
+NÃO CONFIRMEI (fora do texto ou escrito como "confira na página")
+- Amazon: há páginas oficiais antigas com R$ 79 e R$ 129; o texto usa R$ 19 (ajuda e About Amazon) e manda conferir no carrinho. Se o mínimo exige "vendido e enviado" ou só "enviado" pela Amazon. Data do último reajuste do Prime (abril de 2025 só na imprensa): fora.
+- Mercado Livre: se o Meli+ é "a partir de R$ 19" (página de planos) ou "sem valor mínimo" (blog): o texto segue a página de planos. Preços do Meli+ sem promoção em 10/11/2026 (a página diz "a partir de").
+- Shopee: valor mínimo vigente e teto do cupom geral (só exemplo antigo de R$ 20 e tabela do lado do vendedor): escrito como "aparece no cupom". Se R$ 9,90 do ShopeeVIP é literalmente "por mês" na FAQ (a imprensa diz mensal).
+- Magalu: qual limite de Móveis vale e se a retirada em loja é grátis: fora do texto.
+- Número do artigo do Decreto 7.962 (art. 2º) veio de memória; o inciso IV foi confirmado literal.
