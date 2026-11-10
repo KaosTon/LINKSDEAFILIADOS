@@ -25,6 +25,12 @@ CAPAS = {
     "compra-garantida-mercado-livre": ("MERCADO LIVRE", "Compra Garantida: como pedir o dinheiro de volta", "R$", AZUL, LARANJA, 340, "circulos"),
     "garantia-de-a-a-z-amazon": ("AMAZON", "Garantia de A a Z da Amazon: quando vale", "A a Z", MARINHO, LARANJA, 80, "faixas"),
     "link-de-afiliado-o-preco-muda": ("COMO FUNCIONA", "Link de afiliado: o preço muda para quem compra?", "link", VERMELHO, AZUL, 280, "faixas"),
+    "historico-de-preco-como-consultar": ("PREÇO", "Histórico de preço: como consultar e ler", "R$?", AZUL, VERMELHO, 60, "grade"),
+    "esquenta-black-friday-comprar-antes-ou-esperar": ("BLACK FRIDAY", "Esquenta Black Friday: comprar antes ou esperar?", "antes", LARANJA, AZUL, 135, "circulos"),
+    "cyber-monday-2026-quando-e": ("CYBER MONDAY", "Cyber Monday 2026: quando é e o que muda", "30/11", AZUL, LARANJA_CLARO, 225, "pontos"),
+    "frete-gratis-amazon-mercado-livre-shopee": ("FRETE", "Frete grátis na Amazon, Mercado Livre e Shopee", "R$ 0", MARINHO, LARANJA_CLARO, 320, "linhas"),
+    "cashback-como-funciona": ("CASHBACK", "Cashback: como funciona e quando vale a pena", "5%", VERMELHO, LARANJA_CLARO, 100, "faixas"),
+    "calendario-de-promocoes-datas-de-desconto": ("CALENDÁRIO", "Calendário de promoções: 11.11, 12.12 e datas de 2027", "11.11", LARANJA_CLARO, MARINHO, 15, "circulos"),
 }
 
 

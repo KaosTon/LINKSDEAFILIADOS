@@ -44,6 +44,12 @@ export const MENSAGENS_POST: Record<string, string> = {
   "compra-garantida-mercado-livre": "post:compra-garantida-ml",
   "garantia-de-a-a-z-amazon": "post:garantia-a-a-z",
   "link-de-afiliado-o-preco-muda": "post:link-de-afiliado",
+  "historico-de-preco-como-consultar": "post:historico-de-preco",
+  "esquenta-black-friday-comprar-antes-ou-esperar": "post:esquenta-black-friday",
+  "cyber-monday-2026-quando-e": "post:cyber-monday-2026",
+  "frete-gratis-amazon-mercado-livre-shopee": "post:frete-gratis",
+  "cashback-como-funciona": "post:cashback",
+  "calendario-de-promocoes-datas-de-desconto": "post:calendario-promocoes",
 };
 
 /** botoes com assunto proprio dentro de uma pagina */

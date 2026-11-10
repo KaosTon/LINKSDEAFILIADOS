@@ -77,3 +77,56 @@ NÃO CONFIRMEI (fora do texto)
 - Situação do PL 2849/2015 em novembro de 2026; inteiro teor do PL 2017/2025 (não citado).
 - Texto literal do art. 37, §§ 1º a 3º (o post cita só o caput).
 - Frase da "metade do dobro" na cartilha de 2025 (veio de edição anterior): o post não atribui à Senacon.
+
+---
+
+## Post: esquenta-black-friday-comprar-antes-ou-esperar
+
+Fatos usados (trecho da busca em 10/11/2026; números de mercado são da Confi Neotrust vistos via imprensa)
+- Não há regra de data: InvestNews https://investnews.com.br/economia/quando-black-friday-2026-ofertas/ ("não existe uma regulamentação que determine quando essas promoções devem começar ou terminar"; Shopee: 11.11 de 28/10 a 12/11 e Black Friday de 13 a 29/11).
+- Amazon 2026: https://www.amazon.com.br/blackfriday "As ofertas antecipadas da Black dos Sonhos da Amazon Brasil acontecem de 03/11 a 19/11."
+- Mercado Livre 2026: Exame (título): mais de R$ 100 milhões em cupons e 24x sem juros a partir de 11/11.
+- Magalu 2025 (RI, release de 25/11/2025): "'Agora ou Nunca' - preços que não voltam mais baratos no dia 28." Magalu 2026: Dia D em 27/11 (lp/black-friday).
+- Black November 2024 (1 a 30/11): R$ 36,7 bilhões; a Black Friday respondeu por 24,6% do faturamento do mês. https://www.ecommercebrasil.com.br/noticias/black-november-faturamento-total-no-mes-foi-de-r-367-bilhoes-mostra-confi-neotrust
+- Sexta 28/11/2025: R$ 4,76 bilhões (+11,2%), 8,69 milhões de pedidos (CNN Brasil, Exame). Véspera, quinta 27/11/2025: R$ 2,28 bilhões (+34,1%) (E-Commerce Brasil).
+- Projeção 2026 (13/10/2026): R$ 13,3 bilhões entre 26 e 29/11; "apenas 23,5% do faturamento de novembro de 2025 ficou concentrado nos quatro dias da Black Friday" (CNN Brasil).
+- Amazon, sem equiparação: ajuda nodeId=G9EAYKPV5YYDB8P7 "Por isso, não oferecemos equiparação de preço."; pré-venda com Preço Mais Baixo Garantido (nodeId=G4BRP7LCB9DSDNCR); "Colocar um item no carrinho não reserva o preço mostrado naquele momento." (nodeId=GF3GA88LAZ36ZMSQ).
+- Senacon 26/11/2025: 7 dias a partir do recebimento, "independentemente do motivo (art. 49 do CDC). O reembolso deve ser integral, incluindo o frete de envio e devolução."
+- Procon-SP: pesquisar com antecedência, monitorar, guardar prints.
+
+NÃO CONFIRMEI (fora do texto ou dito como "não encontramos")
+- Política de devolução de diferença de preço no Mercado Livre, Magalu e Shopee (o texto diz que não encontramos, não que não existe). Regulamento do "Agora ou Nunca" e se ele vale em 2026.
+- Desde que ano as lojas antecipam; desconto médio no esquenta contra o do dia (não há dado).
+- Total de quatro dias de 2025 (R$ 10,19 bi ou R$ 11,03 bi): fora do texto.
+
+---
+
+## Post: cyber-monday-2026-quando-e
+
+Fatos usados
+- Data: segunda-feira, 30/11/2026 (calendário conferido por script). Em 2027: 29/11.
+- Origem: termo lançado em 2005 pela Shop.org, braço online da National Retail Federation (Forbes 2016, CNBC 2009). Nomes de pessoas e dia exato do release: fora do texto.
+- Brasil 2024 (segunda 02/12/2024), Confi Neotrust via E-Commerce Brasil: R$ 1,47 bilhão, 4,65 milhões de pedidos, tíquete médio de R$ 317, +17,1% sobre 2023. Sexta de Black Friday 2024: R$ 4,27 bilhões (CNN Brasil). A conta "cerca de um terço" é nossa (1,47 / 4,27 = 34%).
+- Lojas: não achamos campanha com o nome Cyber Monday nas páginas oficiais; em 2025 a imprensa mostrou a Black Friday estendida até a segunda (IstoÉ Dinheiro, 29/11/2025).
+
+NÃO CONFIRMEI
+- Faturamento da Cyber Monday 2025 no Brasil (fora do texto). Campanhas de 2026 para a segunda (o texto manda conferir na loja).
+
+---
+
+## Post: calendario-de-promocoes-datas-de-desconto
+
+Fatos usados
+- Datas calculadas por script: 11/11/2026 quarta; 27/11 sexta; 30/11 segunda; 12/12 sábado. 2027: 15/03 segunda; 09/05 (2º domingo de maio); 12/06 sábado; 07/07 quarta; 08/08 (2º domingo de agosto); 09/09 quinta; 10/10 domingo; 12/10 terça; 11/11 quinta; 26/11 sexta (Black Friday); 29/11 segunda; 12/12 domingo.
+- Origem do 11.11: Alizila (site de notícias do Alibaba): 2009, 27 lojistas, liquidação de 24 horas; Blog da Lu (Magalu) repete.
+- Shopee: nomes das datas (9.9, 10.10, 11.11, 12.12) e 7.7 como aniversário da chegada ao Brasil (blog/sobre-nos); "mais de 68 campanhas de datas duplas" em seis anos.
+- Mercado Livre: página de promoções com "11.11"; Liquida 10.10; blog cita cupons de datas duplas (9/9 e 11/11).
+- Magalu: lp/11.11 "esquenta Black das Blacks"; Liquidação Fantástica 2026 em 09/01 (até 12/01).
+- Amazon: Prime Day 2026 de 1º a 7 de julho (ajuda nodeId=GUZZFPRQHPWM6DK5); Mega Oferta Amazon Prime de 5 a 11 de outubro de 2026 (About Amazon).
+- AliExpress: aniversário em março (comunicados de 2025 e 2026 na PR Newswire); 11.11 de 2026 só por imprensa.
+- Mercado: datas duplas de 01/01 a 09/09/2026 somaram R$ 14,40 bilhões, a de 09/09 com R$ 2,28 bilhões; 11.11 de 2025 com R$ 2,78 bilhões (Confi Neotrust com E-Commerce Brasil, via Forbes Brasil, 10/2026). Projeção 2026: 11.11 em R$ 3,17 bilhões e Black Friday (26 a 29/11) em R$ 13,3 bilhões (confi.com.vc, 13/10/2026).
+
+NÃO CONFIRMEI (fora do texto)
+- Semana do Brasil em 2026 e 2027 (sem anúncio oficial): o texto não dá data.
+- Datas de 2027 dos eventos próprios (Prime Day, Liquidação Fantástica, aniversários): o texto diz que a loja anuncia perto da data.
+- Campanhas 9.9 e 10.10 na Amazon e no AliExpress; 12.12 no Mercado Livre e no Magalu; ranking de "qual data vende mais".

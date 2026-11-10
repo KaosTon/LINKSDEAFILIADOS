@@ -745,6 +745,690 @@ export const POSTS: Post[] = [
     ],
     conteudo: `<h2>O preço muda quando você compra por link de afiliado?</h2><p>Não. No link de afiliado, quem paga a comissão é a loja, e não quem compra. Você clica, cai na página oficial do produto e paga o preço que a loja está cobrando naquele momento, o mesmo que veria se tivesse chegado lá pela busca.</p><p>A Amazon deixa isso claro no Acordo Operacional do Programa de Associados: quem chega por um link de associado é cliente da Amazon, e todos os preços, termos de venda, regras e políticas da Amazon valem para essa pessoa. O afiliado não define preço, não cobra nada de você e não tem acesso ao seu pagamento.</p><h2>Como funciona um link de afiliado, de forma simples?</h2><p>Pense no link de afiliado como uma indicação com etiqueta. O endereço leva para a loja de sempre, mas carrega um pequeno código que diz "quem indicou foi fulano". Na Amazon, esse código se chama <strong>tag</strong>: é a identificação do associado, colocada como parâmetro no final do endereço. Quando alguém compra a partir daquele clique, a Amazon sabe de onde veio a venda e paga uma comissão a quem indicou.</p><p>Três coisas que a etiqueta <strong>não</strong> faz:</p><ul><li>Não muda o preço do produto.</li><li>Não muda o vendedor, o frete ou a garantia.</li><li>Não dá ao afiliado acesso ao seu cartão, ao seu endereço nem aos seus dados pessoais.</li></ul><p>A própria ajuda da Amazon Associados explica que nem é preciso que a identificação apareça no endereço até o fim da compra: a sessão de quem clicou é marcada automaticamente. Ou seja, se você apagar o final do link, nada muda para você. Só a indicação deixa de contar.</p><h2>Se o preço é o mesmo, por que grupos de oferta existem?</h2><p>Porque procurar oferta dá trabalho, e a loja paga por quem traz cliente. A Amazon descreve o seu programa como um programa de <strong>publicidade, e não de descontos</strong>. O grupo de ofertas é isso: um canal que encontra a promoção, confere e avisa você, e a loja remunera essa divulgação quando a compra acontece. Para você, o serviço sai de graça; para a loja, é um anúncio que só custa quando vende.</p><p>O que separa um grupo bom de um grupo ruim é o critério. Comissão existe nos dois. A diferença é se alguém conferiu se o desconto é real antes de postar. Para checar por conta própria, veja o guia <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a>.</p><h2>Como diferenciar link oficial da loja de link de golpe?</h2><p>O link de afiliado sério abre o site ou o app oficial da loja, e a compra acontece lá dentro; link que leva para outro endereço, pede Pix direto ou "confirmação de dados" é golpe, e explicamos os sinais no guia <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a>.</p><p>Comprar dentro da loja também mantém as proteções dela, como a <a href="/blog/garantia-de-a-a-z-amazon">Garantia de A a Z da Amazon</a> e a <a href="/blog/compra-garantida-mercado-livre">Compra Garantida do Mercado Livre</a>. Pagamento feito por fora não tem nenhuma das duas.</p><h2>Quem divulga oferta precisa avisar que ganha comissão?</h2><p>Sim, e há regra para isso em dois lugares.</p><h3>O que diz o CONAR?</h3><p>O CONAR, órgão de autorregulamentação da publicidade no Brasil, lançou em dezembro de 2020 o Guia de Publicidade por Influenciadores Digitais. Em 2026 ele ganhou uma nova edição, o Guia de Marketing e Publicidade por Influenciadores Digitais, aprovada pelo Conselho do Conteúdo do CONAR. Entre os temas está a transparência e a identificação publicitária: quem recebe para divulgar precisa deixar isso claro para quem vê.</p><h3>O que exige a Amazon?</h3><p>O Programa de Associados da Amazon Brasil exige que o associado exiba de forma clara a frase: <strong>"Como associado da Amazon, eu recebo por compras qualificadas."</strong> A Amazon também proíbe que associados ofereçam incentivos (como cashback ou doações) para alguém comprar pelo link, e pede que preços e promoções eventualmente divulgados estejam corretos e atualizados, com os links removidos quando a promoção acaba.</p><h2>O que o Tem Descontos faz com os links?</h2><table><thead><tr><th>O que nós fazemos</th><th>Por que importa para você</th></tr></thead><tbody><tr><td>Link sempre para a loja oficial, nunca para site intermediário</td><td>A compra acontece na loja, com as proteções dela</td></tr><tr><td>Aviso de afiliado no rodapé do site</td><td>Você sabe que recebemos comissão da loja</td></tr><tr><td>Confere o preço na própria loja antes de postar, sempre que a loja permite</td><td>Oferta com preço mais de 3% abaixo do da loja, sem cupom que explique, é descartada</td></tr><tr><td>Descarta link que leva a produto diferente do texto</td><td>Nada de kit com 3 anunciado como 1 unidade</td></tr><tr><td>Tira do post o preço riscado com mais de 70% de desconto que a loja não confirma</td><td>Menos "De" inflado para enganar</td></tr><tr><td>Não pede dado, Pix ou código no privado</td><td>Se alguém pedir em nosso nome, é golpe</td></tr></tbody></table><p>Na Amazon, conferimos o preço na página do produto. Na Shopee, usamos a API oficial de afiliados. No Mercado Livre, consultamos a API da loja para produtos de catálogo. A comissão não entra nessa conta: oferta que não passa na conferência não sai, mesmo que renda comissão.</p><h2>Por que eu criei o Tem Descontos?</h2><p>Sou o Wellington Santos, engenheiro de produção e no mercado de seguros desde 2015, e criei o Tem Descontos para ter um grupo de ofertas que fizesse o que eu faria por conta própria antes de comprar. Conferimos o preço na loja antes de postar, descartamos o que não bate e mandamos sempre o link direto da loja. O aviso de afiliado fica à vista porque a comissão é o que mantém o grupo de graça para quem participa. Se quiser saber mais sobre quem está por trás do grupo, está tudo em <a href="/sobre">sobre o Tem Descontos</a>.</p><h2>Resumo para não esquecer</h2><ul><li>O link de afiliado leva para a loja oficial com uma etiqueta de indicação.</li><li>Quem paga a comissão é a loja; o preço, o frete e a garantia são os da loja.</li><li>Link que sai da loja ou pede Pix direto não é link de afiliado, é golpe.</li><li>Quem divulga precisa avisar que ganha comissão, pelo CONAR e pelas regras da Amazon.</li></ul>`,
   },
+  {
+    slug: "historico-de-preco-como-consultar",
+    titulo: "Histórico de preço: como consultar e ler antes de comprar",
+    metaTitle: "Histórico de preço: como consultar e ler antes de comprar",
+    metaDescription: "Veja onde consultar o histórico de preço de um produto, como ler o gráfico em 4 passos e o que fazer quando ele não existe, para saber se o desconto é real.",
+    resumo: "O histórico de preço mostra quanto o produto custava antes da promoção. Veja onde consultar, como ler o gráfico e o que fazer quando o produto não tem histórico.",
+    resumoRapido: [
+      "Zoom e Buscapé mostram o gráfico de histórico na página do produto, de graça.",
+      "Compare o preço de hoje com o menor preço do período, não com o preço riscado.",
+      "Produto sem gráfico: anote o preço com data ou guarde print, como orientam os Procons.",
+      "No Brasil não achamos lei que obrigue a loja a mostrar o menor preço dos últimos dias; vale a proibição de publicidade enganosa do CDC."
+    ],
+    dataPublicacao: "2026-11-10",
+    tags: ["histórico de preço", "como ver histórico de preço", "gráfico de preço", "alerta de preço", "menor preço dos últimos 30 dias"],
+    servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "ofertas-e-cupons",
+    imagem: "/blog/historico-de-preco-como-consultar.webp",
+    faq: [
+      { q: "Onde vejo o histórico de preço de um produto?", a: "Em comparadores como Zoom e Buscapé, que mostram um gráfico na página do produto. O Zoom informa períodos de 40 dias, 3 meses, 6 meses ou 1 ano. Nem todo produto tem histórico." },
+      { q: "Como saber se o desconto é real pelo gráfico?", a: "Compare o preço de hoje com o menor preço do período e veja se ele subiu nas semanas antes da promoção. Se o preço \"com desconto\" está igual ou acima do que o produto custava antes, o desconto não existe." },
+      { q: "A loja é obrigada a mostrar o menor preço dos últimos 30 dias?", a: "Na União Europeia, sim, quando anuncia redução de preço. No Brasil não encontramos norma federal equivalente. O que vale é o Código de Defesa do Consumidor, que proíbe publicidade enganosa (art. 37)." },
+      { q: "O que fazer se o produto não tem histórico de preço?", a: "Anote o preço com a data ou guarde uma captura de tela, e repita por algumas semanas. Os Procons orientam monitorar os preços antes das promoções e guardar os registros." },
+      { q: "Alerta de preço funciona?", a: "Funciona para avisar quando o produto chega no valor que você escolheu. Zoom e Buscapé oferecem alerta por e-mail ou WhatsApp. O alerta não confere se é o mesmo modelo ou o frete: isso continua com você." },
+    ],
+    fontes: [
+      { nome: "Senacon: cartilha Black Friday, boas compras exigem atenção (edição 2025)", url: "https://www.gov.br/mj/pt-br/assuntos/arquivos-imprensa/senacon/cartilha-black-friday-senacon-2025" },
+      { nome: "Zoom, central de ajuda: histórico de preços", url: "https://tiresuaduvida.zoom.com.br/hc/pt-br/articles/360018658371" },
+      { nome: "Buscapé: histórico de preços", url: "https://www.buscape.com.br/landing-page/historico-de-precos-buscape" },
+      { nome: "Procon-SP: de olho na Black Friday, recomendações (2025)", url: "https://www.procon.sp.gov.br/de-olho-na-black-friday-procon-sp-promove-iniciativas-para-auxiliar-o-consumidor-paulista-que-pretende-realizar-compras-neste-periodo/" },
+      { nome: "Procon-SP: consulta sobre a Black Friday com 329 consumidores (2025)", url: "https://www.procon.sp.gov.br/consulta-inedita-do-procon-sp-revela-que-consumidores-desconfiam-das-ofertas-mas-reagem-aos-gatilhos-de-marketing-da-black-friday/" },
+      { nome: "Procon Vitória: pesquisa de preços antes da Black Friday (2025)", url: "https://www.vitoria.es.gov.br/noticia/black-friday-procon-vitoria-publica-pesquisa-que-aponta-aumento-de-precos-e-alerta-consumidor-55138" },
+      { nome: "Procon-ES: orientação para monitorar preços antes da Black Friday (2026)", url: "https://www.es.gov.br/procon-es-orienta-consumidores-a-monitorar-precos-antes-da-black-friday" },
+      { nome: "Procon-PR: cuidados essenciais na Black Friday", url: "https://www.parana.pr.gov.br/aen/Noticia/Economia-sem-dor-de-cabeca-Procon-PR-alerta-para-cuidados-essenciais-na-Black-Friday" },
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+      { nome: "Decreto 5.903/2006, oferta e afixação de preços (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/decreto/d5903.htm" },
+      { nome: "Diretiva (UE) 2019/2161, indicação de redução de preço (EUR-Lex)", url: "https://eur-lex.europa.eu/legal-content/PT/TXT/?uri=CELEX:32019L2161" },
+    ],
+    conteudo: `<p>Todo "50% OFF" parte de um preço que você não viu. O histórico de preço mostra quanto o produto custava de verdade nas últimas semanas, e é a conferência que a Senacon recomenda antes de comprar em promoção. <strong>Para consultar, abra a página do produto em um comparador como Zoom ou Buscapé e veja o gráfico; para ler, compare o preço de hoje com o menor preço do período, não com o preço riscado.</strong> Abaixo estão o passo a passo e o que fazer quando o produto não tem gráfico.</p>
+
+<h2>O que é o histórico de preço?</h2>
+<p>É o registro de quanto um produto custou ao longo do tempo, normalmente em forma de gráfico: no eixo de baixo ficam as datas, no eixo do lado fica o preço. Com ele você responde a única pergunta que importa em uma promoção: o preço de hoje é baixo perto do que esse produto costuma custar?</p>
+<p>A Senacon, órgão do Ministério da Justiça, coloca isso na cartilha de Black Friday (edição 2025): "Pesquise o histórico de preços para confirmar se o desconto é real."</p>
+
+<h2>Onde consultar o histórico de preço?</h2>
+<p>Em comparadores de preço, que guardam o valor do produto em várias lojas. Os dois abaixo mostram o gráfico de graça, na página do produto.</p>
+<table>
+<thead><tr><th>Onde</th><th>O que mostra</th><th>Período</th><th>Alerta de preço</th></tr></thead>
+<tbody>
+<tr><td>Zoom</td><td>Gráfico na página do produto, com o menor valor que ele já atingiu</td><td>40 dias, 3 meses, 6 meses ou 1 ano</td><td>WhatsApp e e-mail</td></tr>
+<tr><td>Buscapé</td><td>Gráfico na página do produto</td><td>40 dias e 6 meses (confira na tela, pode variar)</td><td>E-mail ou WhatsApp</td></tr>
+<tr><td>Seu próprio registro</td><td>O preço que você anotou, com data e loja</td><td>O tempo que você acompanhar</td><td>Não tem</td></tr>
+</tbody>
+</table>
+<p>Um aviso que o próprio Zoom faz: nem todo produto tem histórico. Produto novo, modelo pouco vendido ou vendido só em uma loja costuma ficar sem gráfico. Para esses casos vale o registro próprio, explicado mais abaixo.</p>
+
+<h2>Como ler o gráfico em 4 passos?</h2>
+<ol>
+<li><strong>Escolha o período mais longo.</strong> Quarenta dias mostram só o mês da promoção. O Procon do Paraná orienta conferir os valores de três meses, seis meses ou um ano atrás.</li>
+<li><strong>Ache o menor preço do período.</strong> É com ele que o preço de hoje deve ser comparado. O preço riscado ao lado do desconto é escolhido pela loja; o menor preço do gráfico é fato.</li>
+<li><strong>Olhe as semanas antes da promoção.</strong> Se a linha sobe pouco antes de cair, o desconto pode ser só a devolução do aumento.</li>
+<li><strong>Confirme que é o mesmo produto.</strong> Modelo, voltagem, cor e quantidade precisam bater. E some o frete: um preço menor com frete alto pode sair mais caro.</li>
+</ol>
+<p>Um exemplo com a conta feita. Um produto custou R$ 200 durante meses, subiu para R$ 260 e agora aparece "de R$ 260 por R$ 208, 20% OFF". O anúncio não mente na matemática, mas o gráfico mostra que R$ 208 é 4% mais caro do que os R$ 200 de antes. Como engenheiro, eu só acredito no desconto depois dessa conta.</p>
+<p>O preço riscado inflado tem um guia só dele: <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a>.</p>
+
+<h2>E quando o produto não tem histórico?</h2>
+<p>Você monta o seu. É simples e é o que os Procons orientam: o Procon do Espírito Santo, em outubro de 2026, recomendou monitorar os preços antes da Black Friday e guardar capturas de tela com a data.</p>
+<ul>
+<li>Anote o produto com modelo exato, a loja, o preço e a data.</li>
+<li>Repita uma vez por semana, no mesmo dia.</li>
+<li>Guarde print da página com a data visível. Se o preço anunciado não for cumprido, é a sua prova.</li>
+<li>Se a loja tiver alerta de preço ou lista de desejos, ative: ajuda a não esquecer.</li>
+</ul>
+<p>Quatro anotações já mostram se o preço está parado, subindo ou caindo. Quem começa agora chega na <a href="/blog/black-friday-2026-quando-e">Black Friday 2026</a> com um histórico próprio de várias semanas.</p>
+
+<h2>A loja é obrigada a mostrar o menor preço dos últimos dias?</h2>
+<p>No Brasil, não encontramos norma federal que obrigue. É diferente da União Europeia, onde a Diretiva 2019/2161 determina que todo anúncio de redução indique o preço anterior, definido como o menor preço praticado pela loja em um período de pelo menos 30 dias antes da redução.</p>
+<p>Por aqui o que existe é:</p>
+<ul>
+<li><strong>Recomendação do Procon-SP às lojas</strong> (2025): aplicar o desconto sobre "o menor preço dos últimos 60 dias". É uma boa prática sugerida, não uma lei.</li>
+<li><strong>Código de Defesa do Consumidor, art. 37:</strong> "É proibida toda publicidade enganosa ou abusiva." Desconto calculado sobre um preço que nunca foi praticado pode ser enquadrado aqui.</li>
+<li><strong>Decreto 5.903/2006:</strong> a informação de preço precisa ter "correção", definida como "a informação verdadeira que não seja capaz de induzir o consumidor em erro".</li>
+<li><strong>Projeto de lei:</strong> o PL 2849/2015, na Câmara dos Deputados, propõe a exibição do histórico de 30 dias. Não é lei.</li>
+</ul>
+<p>Encontrou desconto falso? Guarde os prints e registre a reclamação no consumidor.gov.br ou no Procon do seu estado.</p>
+
+<h2>O preço sobe mesmo antes da Black Friday?</h2>
+<p>Há levantamentos de Procons que mostram que sim, em parte dos produtos. Dois de 2025:</p>
+<ul>
+<li>O Procon de Vitória (ES) acompanhou 10 produtos em 5 lojas entre 30 de outubro e 24 de novembro de 2025 e informou que 80% dos produtos monitorados ficaram mais caros às vésperas da Black Friday. A amostra é pequena e local, mas é preço medido.</li>
+<li>O Procon-SP ouviu 329 consumidores entre 30 de outubro e 17 de novembro de 2025: 76,47% dos que já tinham comprado na Black Friday disseram ter se sentido enganados ao menos uma vez. É uma enquete de adesão voluntária, não uma pesquisa estatística.</li>
+</ul>
+<p>Nenhum dos dois prova que toda oferta é falsa. Eles mostram por que vale gastar dois minutos no gráfico antes de pagar. Se a dúvida é comprar agora ou esperar a sexta, veja <a href="/blog/esquenta-black-friday-comprar-antes-ou-esperar">esquenta Black Friday: comprar antes ou esperar</a>.</p>
+
+<h2>O que o Tem Descontos confere no preço?</h2>
+<p>Não temos gráfico de histórico no grupo. O que fazemos é conferir o preço na própria loja antes de enviar a oferta, com estas regras:</p>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
+<tbody>
+<tr><td>Preço anunciado contra o preço na loja (página da Amazon, API oficial de afiliados da Shopee, API do Mercado Livre para produto de catálogo)</td><td>Mais de 3% abaixo do preço da loja sem cupom que explique: oferta descartada</td></tr>
+<tr><td>Preço riscado com mais de 70% de desconto</td><td>Se a loja não confirma, o preço riscado sai do post</td></tr>
+<tr><td>Produto do link contra o produto do texto (nome e quantidade)</td><td>Produto diferente: oferta descartada</td></tr>
+</tbody>
+</table>
+<p>Essa conferência diz que o preço do post é o preço da loja naquele momento. Ela não diz se aquele é o menor preço do ano: essa parte é o histórico, e continua valendo a pena olhar. Mais sobre o nosso método em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Histórico de preço é o gráfico de quanto o produto custou ao longo do tempo.</li>
+<li>Zoom e Buscapé mostram de graça; escolha o período mais longo.</li>
+<li>Compare com o menor preço do período e desconfie de alta pouco antes da promoção.</li>
+<li>Sem gráfico, anote preço e data toda semana e guarde print.</li>
+<li>Desconto sobre preço que nunca existiu é publicidade enganosa (CDC, art. 37).</li>
+</ul>`,
+  },
+  {
+    slug: "esquenta-black-friday-comprar-antes-ou-esperar",
+    titulo: "Esquenta Black Friday: comprar antes ou esperar o dia?",
+    metaTitle: "Esquenta Black Friday: comprar antes ou esperar o dia?",
+    metaDescription: "A Black Friday 2026 é em 27 de novembro, mas as ofertas já começaram. Veja quando vale comprar no esquenta, quando esperar e o que fazer se o preço cair.",
+    resumo: "As lojas começaram as ofertas semanas antes de 27 de novembro. Veja a regra para decidir entre comprar no esquenta ou esperar, e o que a lei garante se o preço cair depois.",
+    resumoRapido: [
+      "Esquenta é a antecipação de ofertas antes da Black Friday, que em 2026 cai em 27 de novembro. Não existe regra de data: cada loja decide.",
+      "Compre antes se o preço de hoje é o menor do seu histórico e você precisa do produto; se não, espere.",
+      "A lei não obriga a loja a devolver a diferença se o preço cair depois.",
+      "Em compra online, o art. 49 do CDC dá 7 dias, contados do recebimento, para desistir sem dar motivo."
+    ],
+    dataPublicacao: "2026-11-10",
+    tags: ["esquenta black friday", "esquenta black friday vale a pena", "black november", "comprar antes da black friday", "preço caiu depois da compra"],
+    servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "ofertas-e-cupons",
+    imagem: "/blog/esquenta-black-friday-comprar-antes-ou-esperar.webp",
+    faq: [
+      { q: "O que é o esquenta Black Friday?", a: "É o período em que as lojas antecipam ofertas nas semanas antes da Black Friday. Em 2026 a data oficial é sexta-feira, 27 de novembro, mas não existe regra que diga quando as promoções começam: cada loja define." },
+      { q: "Vale a pena comprar no esquenta?", a: "Vale quando o preço de hoje é o menor do histórico que você acompanhou e você precisa do produto. Se o preço está igual ou acima do que era semanas atrás, é melhor esperar e continuar acompanhando." },
+      { q: "Se o preço cair depois que eu comprar, a loja devolve a diferença?", a: "A lei não obriga. A Amazon informa na central de ajuda que não oferece equiparação de preço. Nas outras lojas não encontramos política de devolução de diferença. O que a lei garante é o arrependimento em 7 dias na compra online." },
+      { q: "A Black Friday ainda concentra as vendas de novembro?", a: "Cada vez menos. Segundo a Confi Neotrust, só 23,5% do faturamento do e-commerce em novembro de 2025 ficou nos quatro dias da Black Friday. Mesmo assim, a sexta continuou sendo o maior dia de vendas." },
+    ],
+    fontes: [
+      { nome: "Senacon, Ministério da Justiça: Black Friday 2025, orientações (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-2025-senacon-orienta-consumidores-a-evitar-golpes-e-comprar-com-seguranca" },
+      { nome: "Procon-SP: Black Friday, orientações", url: "https://www.procon.sp.gov.br/black-friday-procon-sp-orienta/" },
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+      { nome: "Amazon, central de ajuda: equiparação de preço", url: "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=G9EAYKPV5YYDB8P7" },
+      { nome: "Amazon, central de ajuda: pré-venda com Preço Mais Baixo Garantido", url: "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=G4BRP7LCB9DSDNCR" },
+      { nome: "Amazon Brasil: página da Black Friday 2026", url: "https://www.amazon.com.br/blackfriday" },
+      { nome: "Magazine Luiza, relações com investidores: comunicado de 25/11/2025", url: "https://ri.magazineluiza.com.br/Download.aspx?Arquivo=0CCMAFtkSMACp8HoEgGP4A%3D%3D" },
+      { nome: "CNN Brasil: Black Friday 2026 deve movimentar R$ 13,3 bi, projeção Confi Neotrust (2026)", url: "https://www.cnnbrasil.com.br/economia/money/macroeconomia/black-friday-2026-deve-movimentar-r-133-bi-no-e-commerce-diz-pesquisa/" },
+      { nome: "CNN Brasil: faturamento do e-commerce na Black Friday 2025, Confi Neotrust (2025)", url: "https://www.cnnbrasil.com.br/economia/macroeconomia/faturamento-do-e-commerce-atinge-r-476-bi-na-black-friday-diz-pesquisa/" },
+      { nome: "E-Commerce Brasil: véspera da Black Friday 2025, Confi Neotrust (2025)", url: "https://www.ecommercebrasil.com.br/noticias/vespera-da-black-friday-registra-aumento-de-34-no-faturamento-do-e-commerce-mostra-confi-neotrust" },
+      { nome: "E-Commerce Brasil: Black November 2024, Confi Neotrust (2024)", url: "https://www.ecommercebrasil.com.br/noticias/black-november-faturamento-total-no-mes-foi-de-r-367-bilhoes-mostra-confi-neotrust" },
+      { nome: "Magazine Luiza: página da Black Friday 2026", url: "https://www.magazineluiza.com.br/lp/black-friday" },
+      { nome: "InvestNews: quando é a Black Friday 2026 e quando começam as ofertas (2026)", url: "https://investnews.com.br/economia/quando-black-friday-2026-ofertas/" },
+      { nome: "Exame: Mercado Livre na Black Friday 2026 (2026)", url: "https://exame.com/invest/mercados/mercado-livre-tera-24x-sem-juros-e-mais-de-r-100-mi-em-cupons-na-black-friday-2026/" },
+    ],
+    conteudo: `<p>Faltam poucos dias para a Black Friday e as lojas já estão em promoção há semanas. A dúvida de quem tem uma compra planejada é sempre a mesma: levo agora ou espero a sexta? <strong>Compre no esquenta se o preço de hoje é o menor do histórico que você acompanhou e você precisa do produto; se o preço está igual ou acima do que era semanas atrás, espere.</strong> E se comprar online e o preço cair depois, a lei não garante a diferença, mas garante 7 dias para desistir.</p>
+
+<h2>O que é o esquenta Black Friday?</h2>
+<p>É a antecipação das ofertas nas semanas antes da data oficial, que em 2026 é sexta-feira, 27 de novembro. O mês inteiro de promoção ganhou até apelido no comércio: Black November.</p>
+<p>Não existe regra que diga quando a promoção começa ou termina. Cada loja define o próprio calendário, e algumas começaram em outubro. O que cada uma anunciou para 2026:</p>
+<table>
+<thead><tr><th>Loja</th><th>O que foi anunciado para 2026</th><th>De onde vem a informação</th></tr></thead>
+<tbody>
+<tr><td>Amazon</td><td>Ofertas antecipadas de 3 a 19 de novembro</td><td>Página da Black Friday da Amazon Brasil</td></tr>
+<tr><td>Mercado Livre</td><td>Mais de R$ 100 milhões em cupons e parcelamento em até 24 vezes sem juros a partir de 11 de novembro</td><td>Exame</td></tr>
+<tr><td>Shopee</td><td>Campanha do 11.11 de 28 de outubro a 12 de novembro e Black Friday de 13 a 29 de novembro</td><td>InvestNews</td></tr>
+<tr><td>Magalu</td><td>Dia principal em 27 de novembro, com ofertas ao longo do mês</td><td>Página da Black Friday do Magalu</td></tr>
+</tbody>
+</table>
+<p>Datas de campanha mudam. Antes de se programar, confira na página da loja. O calendário das outras datas está em <a href="/blog/calendario-de-promocoes-datas-de-desconto">calendário de promoções</a>.</p>
+
+<h2>O esquenta já vende mais que a sexta?</h2>
+<p>Somado, sim. A sexta-feira ainda é o maior dia isolado, mas a maior parte das vendas de novembro acontece fora dela. Os números são da Confi Neotrust, que mede o e-commerce brasileiro:</p>
+<ul>
+<li>Em novembro de 2024, a Black Friday respondeu por 24,6% do faturamento do mês.</li>
+<li>Em novembro de 2025, só 23,5% do faturamento ficou nos quatro dias da Black Friday, de quinta a domingo.</li>
+<li>Na sexta, 28 de novembro de 2025, o e-commerce faturou R$ 4,76 bilhões, alta de 11,2% sobre 2024. Na véspera, quinta-feira, foram R$ 2,28 bilhões, alta de 34,1%.</li>
+<li>Para 2026, a projeção é de R$ 13,3 bilhões entre 26 e 29 de novembro.</li>
+</ul>
+<p>O que esses números dizem: tem muita gente comprando antes. O que eles não dizem: se o preço de antes é melhor que o do dia. Não encontramos dado confiável que compare o desconto médio do esquenta com o da sexta. Por isso a decisão precisa ser por produto, com o seu histórico.</p>
+
+<h2>Como decidir entre comprar agora ou esperar?</h2>
+<p>Com três perguntas, nessa ordem.</p>
+<ol>
+<li><strong>O preço de hoje é o menor do meu histórico?</strong> Se você anotou o preço nas últimas semanas ou consultou o gráfico em um comparador, a resposta está ali. Explicamos como em <a href="/blog/historico-de-preco-como-consultar">histórico de preço: como consultar e ler</a>.</li>
+<li><strong>Eu preciso disso antes do dia 27?</strong> Se precisa, o risco de esperar é ficar sem estoque ou receber depois. Se não precisa, esperar custa pouco.</li>
+<li><strong>A loja promete alguma coisa sobre o preço do dia?</strong> Algumas ofertas vêm com promessa de que o preço não vai baixar. Leia a regra antes de contar com ela.</li>
+</ol>
+<p>A regra prática: preço no menor valor do histórico e produto necessário, compre. Preço no patamar de sempre com uma etiqueta de esquenta, espere e continue anotando. A Senacon alerta que, em alguns casos, os valores são aumentados dias antes da Black Friday para parecerem grandes promoções. O sinal disso é o preço riscado inflado, que mostramos como checar no guia <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a>.</p>
+
+<h2>Se o preço cair depois, a loja devolve a diferença?</h2>
+<p>Não existe lei que obrigue. Depende da política de cada loja, e o que encontramos foi isto:</p>
+<table>
+<thead><tr><th>Loja</th><th>O que encontramos sobre queda de preço depois da compra</th></tr></thead>
+<tbody>
+<tr><td>Amazon</td><td>A central de ajuda informa que a loja não oferece equiparação de preço. A exceção é a pré-venda com "Preço Mais Baixo Garantido", em que a diferença até a data de lançamento é reembolsada automaticamente. A ajuda também avisa que colocar o item no carrinho não reserva o preço</td></tr>
+<tr><td>Mercado Livre</td><td>Não encontramos política de devolução de diferença de preço</td></tr>
+<tr><td>Shopee</td><td>Não encontramos política de devolução de diferença de preço</td></tr>
+<tr><td>Magalu</td><td>Na campanha de 2025, o comunicado da empresa falava em ofertas "Agora ou Nunca", com "preços que não voltam mais baratos" no dia da Black Friday. Não encontramos o regulamento. Em 2026, confira a regra da oferta na página da loja</td></tr>
+</tbody>
+</table>
+<p>"Não encontramos" quer dizer isso mesmo: procuramos nas páginas oficiais e não achamos. Se a loja tiver uma regra nova, vale o que está escrito na oferta. Promessa de preço anunciada obriga a loja a cumprir (CDC, art. 30), então guarde o print.</p>
+
+<h2>O que a lei garante se eu me arrepender?</h2>
+<p>Em compra pela internet, você pode desistir em 7 dias sem explicar o motivo. O art. 49 do Código de Defesa do Consumidor diz: "O consumidor pode desistir do contrato, no prazo de 7 dias a contar de sua assinatura ou do ato de recebimento do produto ou serviço, sempre que a contratação de fornecimento de produtos e serviços ocorrer fora do estabelecimento comercial, especialmente por telefone ou a domicílio."</p>
+<p>A Senacon explica que o prazo conta do recebimento, vale independentemente do motivo, e que o reembolso deve ser integral, incluindo o frete. Isso não vale para compra feita dentro da loja física.</p>
+<p>Na prática: se você comprou no esquenta, o produto chegou e o preço caiu de forma relevante dentro dos 7 dias, desistir é um direito seu. Pese o trabalho de devolver e o risco de o estoque acabar antes de recomprar. O passo a passo está em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</p>
+
+<h2>O que o Tem Descontos confere nas ofertas de esquenta?</h2>
+<p>As mesmas coisas que confere o ano todo. Em novembro o volume de ofertas sobe, a régua não muda:</p>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
+<tbody>
+<tr><td>Preço anunciado contra o preço na própria loja</td><td>Mais de 3% abaixo do preço da loja sem cupom que explique: oferta descartada</td></tr>
+<tr><td>Preço riscado com mais de 70% de desconto</td><td>Se a loja não confirma, o preço riscado sai do post</td></tr>
+<tr><td>Produto do link contra o produto do texto</td><td>Nome ou quantidade diferente: oferta descartada</td></tr>
+<tr><td>Destino do link</td><td>Sempre a loja oficial, nunca site intermediário</td></tr>
+</tbody>
+</table>
+<p>Nós conferimos se o preço do post é o da loja naquele momento. Se ele é o melhor do mês, quem responde é o seu histórico.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Esquenta é oferta antecipada; cada loja define as datas.</li>
+<li>Menor preço do seu histórico e produto necessário: compre. Preço de sempre com etiqueta nova: espere.</li>
+<li>A lei não garante a diferença se o preço cair; a Amazon informa que não faz equiparação.</li>
+<li>Compra online tem 7 dias para arrependimento, contados do recebimento (CDC, art. 49).</li>
+<li>Guarde print de toda promessa de preço.</li>
+</ul>`,
+  },
+  {
+    slug: "cyber-monday-2026-quando-e",
+    titulo: "Cyber Monday 2026: quando é e o que muda da Black Friday",
+    metaTitle: "Cyber Monday 2026: quando é e o que muda da Black Friday",
+    metaDescription: "A Cyber Monday 2026 é na segunda-feira, 30 de novembro. Veja de onde vem a data, o tamanho dela no Brasil e se vale esperar por ela depois da Black Friday.",
+    resumo: "A Cyber Monday 2026 cai na segunda-feira, 30 de novembro, três dias depois da Black Friday. Veja a diferença entre as duas datas e se vale a pena esperar.",
+    resumoRapido: [
+      "A Cyber Monday 2026 é na segunda-feira, 30 de novembro, a segunda depois da Black Friday (27 de novembro).",
+      "O nome foi criado em 2005 nos Estados Unidos pela Shop.org, ligada à federação do varejo americano.",
+      "No Brasil ela é bem menor: em 2024 faturou R$ 1,47 bilhão, cerca de um terço da sexta de Black Friday (Confi Neotrust).",
+      "Seus direitos são os mesmos de qualquer compra online, incluindo os 7 dias de arrependimento."
+    ],
+    dataPublicacao: "2026-11-10",
+    tags: ["cyber monday 2026", "quando é a cyber monday", "o que é cyber monday", "diferença entre black friday e cyber monday", "cyber monday brasil"],
+    servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "ofertas-e-cupons",
+    imagem: "/blog/cyber-monday-2026-quando-e.webp",
+    faq: [
+      { q: "Quando é a Cyber Monday 2026?", a: "Na segunda-feira, 30 de novembro de 2026. A Cyber Monday é sempre a segunda-feira seguinte à Black Friday, que em 2026 cai em 27 de novembro." },
+      { q: "Qual a diferença entre Black Friday e Cyber Monday?", a: "A Black Friday nasceu no comércio de rua e acontece na sexta depois do Dia de Ação de Graças americano. A Cyber Monday foi criada em 2005 para as lojas online, na segunda seguinte. No Brasil as duas acontecem principalmente na internet e a Cyber Monday é bem menor." },
+      { q: "Os descontos da Cyber Monday são melhores?", a: "Não há dado confiável que mostre isso. Depende do produto e da loja. O que funciona é comparar o preço do dia com o histórico que você acompanhou nas semanas anteriores." },
+      { q: "Quando é a Cyber Monday 2027?", a: "Em 29 de novembro de 2027, segunda-feira. A Black Friday de 2027 cai em 26 de novembro." },
+    ],
+    fontes: [
+      { nome: "E-Commerce Brasil: Black November e Cyber Monday 2024, dados da Confi Neotrust (2024)", url: "https://www.ecommercebrasil.com.br/noticias/black-november-faturamento-total-no-mes-foi-de-r-367-bilhoes-mostra-confi-neotrust" },
+      { nome: "CNN Brasil: vendas online na Black Friday 2024, Confi Neotrust (2024)", url: "https://www.cnnbrasil.com.br/economia/macroeconomia/vendas-online-batem-recorde-de-r-427-bilhoes-na-black-friday-deste-ano/" },
+      { nome: "Forbes: Cyber Monday set to dominate holiday sales (2016)", url: "https://www.forbes.com/sites/deborahweinswig/2016/11/17/cyber-monday-set-to-dominate-holiday-sales/" },
+      { nome: "CNBC: Cyber Monday, the last vestige of dotcom hype (2009)", url: "https://www.cnbc.com/2009/11/30/cyber-monday-the-last-vestige-of-dotcom-hype.html" },
+      { nome: "IstoÉ Dinheiro: varejo segue com promoções após a Black Friday (2025)", url: "https://istoedinheiro.com.br/varejo-segue-com-promocoes-apos-black-friday" },
+      { nome: "Senacon, Ministério da Justiça: Black Friday 2025, orientações (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-2025-senacon-orienta-consumidores-a-evitar-golpes-e-comprar-com-seguranca" },
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+    ],
+    conteudo: `<p>Passou a sexta e você não comprou? Ainda tem a segunda. A Cyber Monday é a data que fecha a semana de promoções de novembro, e muita gente só descobre que ela existe quando vê a oferta. <strong>Em 2026 a Cyber Monday é na segunda-feira, 30 de novembro, três dias depois da Black Friday.</strong> No Brasil ela é bem menor que a sexta, e a regra para comprar bem é a mesma: comparar com o preço das semanas anteriores.</p>
+
+<h2>Quando é a Cyber Monday 2026?</h2>
+<p>Na <strong>segunda-feira, 30 de novembro de 2026</strong>. A conta é simples: a Black Friday é a sexta depois do Dia de Ação de Graças americano (quarta quinta-feira de novembro, dia 26 em 2026), e a Cyber Monday é a segunda-feira seguinte. Conferimos no calendário.</p>
+<table>
+<thead><tr><th>Ano</th><th>Black Friday</th><th>Cyber Monday</th></tr></thead>
+<tbody>
+<tr><td>2026</td><td>Sexta, 27 de novembro</td><td>Segunda, 30 de novembro</td></tr>
+<tr><td>2027</td><td>Sexta, 26 de novembro</td><td>Segunda, 29 de novembro</td></tr>
+</tbody>
+</table>
+<p>Como a Black Friday, a Cyber Monday não é fixada por lei. É uma convenção do comércio, e cada loja decide se participa e por quanto tempo. O que fazer até a sexta está em <a href="/blog/black-friday-2026-quando-e">Black Friday 2026: quando é e como se preparar</a>.</p>
+
+<h2>De onde vem a Cyber Monday?</h2>
+<p>O nome foi lançado em 2005 nos Estados Unidos pela Shop.org, o braço de comércio eletrônico da National Retail Federation, a federação do varejo americano. A entidade tinha notado que as vendas das lojas online subiam na segunda-feira depois do feriado de Ação de Graças, quando as pessoas voltavam ao trabalho e compravam pela internet. A segunda-feira ganhou um nome e virou data de promoção das lojas virtuais.</p>
+<p>A divisão original era esta: Black Friday para a loja de rua, Cyber Monday para a loja online. Hoje as duas acontecem na internet e a diferença ficou mais no calendário do que no tipo de loja.</p>
+
+<h2>Qual a diferença entre Black Friday e Cyber Monday?</h2>
+<table>
+<thead><tr><th></th><th>Black Friday</th><th>Cyber Monday</th></tr></thead>
+<tbody>
+<tr><td>Quando</td><td>Sexta depois do Dia de Ação de Graças</td><td>Segunda-feira seguinte</td></tr>
+<tr><td>Data em 2026</td><td>27 de novembro</td><td>30 de novembro</td></tr>
+<tr><td>Origem</td><td>Comércio de rua dos Estados Unidos</td><td>Lojas online dos Estados Unidos, em 2005</td></tr>
+<tr><td>Tamanho no e-commerce brasileiro em 2024</td><td>R$ 4,27 bilhões na sexta</td><td>R$ 1,47 bilhão na segunda</td></tr>
+<tr><td>Seus direitos</td><td>Os do Código de Defesa do Consumidor</td><td>Os mesmos</td></tr>
+</tbody>
+</table>
+<p>Os valores são da Confi Neotrust, que mede o e-commerce brasileiro.</p>
+
+<h2>A Cyber Monday é grande no Brasil?</h2>
+<p>É bem menor que a Black Friday. Em 2024, segundo a Confi Neotrust, a Cyber Monday (2 de dezembro daquele ano) faturou R$ 1,47 bilhão no e-commerce brasileiro, com 4,65 milhões de pedidos e tíquete médio de R$ 317. Foi 17,1% a mais que em 2023.</p>
+<p>Fazendo a conta: R$ 1,47 bilhão é cerca de um terço dos R$ 4,27 bilhões da sexta-feira de Black Friday do mesmo ano. O tíquete médio mais baixo sugere compra de itens mais baratos. Para 2025, não encontramos número com fonte confiável.</p>
+<p>Também não encontramos, nas páginas oficiais das grandes lojas, campanha com o nome "Cyber Monday". O que a imprensa registrou em 2025 foi a própria campanha de Black Friday esticada até a segunda-feira, com cupons e ofertas valendo até 1º de dezembro daquele ano. Em 2026, o que vale é o que a loja anunciar para o dia 30.</p>
+
+<h2>Vale a pena esperar a Cyber Monday?</h2>
+<p>Só se o seu histórico disser que sim. Não há dado confiável mostrando que o preço da segunda é melhor ou pior que o da sexta. Três situações em que a segunda-feira ajuda:</p>
+<ul>
+<li><strong>O produto que você queria não baixou na sexta.</strong> Se a campanha da loja vai até segunda, vale olhar de novo antes de desistir.</li>
+<li><strong>Você não conseguiu comparar na sexta.</strong> O fim de semana dá tempo de consultar o gráfico em um comparador. Mostramos como em <a href="/blog/historico-de-preco-como-consultar">histórico de preço: como consultar e ler</a>.</li>
+<li><strong>Acabou o estoque e voltou.</strong> Acontece, mas não dá para contar com isso.</li>
+</ul>
+<p>E uma situação em que esperar atrapalha: o produto já está no menor preço que você anotou e você precisa dele. Nesse caso, a segunda só acrescenta o risco de ficar sem. A mesma lógica vale para as ofertas antecipadas, que explicamos em <a href="/blog/esquenta-black-friday-comprar-antes-ou-esperar">esquenta Black Friday: comprar antes ou esperar</a>.</p>
+<p>O cuidado com golpe continua. Site copiado de loja famosa e link de "última chance" aparecem até o fim da campanha. Os sinais de alerta estão no guia <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a></p>
+
+<h2>Quais são os seus direitos na Cyber Monday?</h2>
+<p>Os mesmos de qualquer dia. Em compra pela internet, o art. 49 do Código de Defesa do Consumidor dá 7 dias, contados do recebimento do produto, para desistir sem dar motivo. A Senacon reforça que o reembolso deve ser integral, incluindo o frete. Veja o caminho em cada loja em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</p>
+<p>Oferta anunciada precisa ser cumprida, e desconto sobre preço que nunca existiu é publicidade enganosa. Guarde print da oferta e do pagamento.</p>
+
+<h2>O que o Tem Descontos faz na Cyber Monday?</h2>
+<p>O mesmo de todos os dias: conferimos cada oferta antes de enviar ao grupo, das 8h às 22h.</p>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
+<tbody>
+<tr><td>Preço anunciado contra o preço na própria loja</td><td>Mais de 3% abaixo do preço da loja sem cupom que explique: oferta descartada</td></tr>
+<tr><td>Produto do link contra o produto do texto</td><td>Nome ou quantidade diferente: oferta descartada</td></tr>
+<tr><td>Shopee: nota e vendas do produto</td><td>Só sai com nota 4,5 ou mais e 50 vendas ou mais</td></tr>
+<tr><td>Destino do link</td><td>Sempre a loja oficial</td></tr>
+</tbody>
+</table>
+<p>Quem somos e como trabalhamos está em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Cyber Monday 2026: segunda-feira, 30 de novembro. Em 2027: 29 de novembro.</li>
+<li>Nasceu em 2005 nos Estados Unidos como a data das lojas online.</li>
+<li>No Brasil faturou R$ 1,47 bilhão em 2024, cerca de um terço da sexta de Black Friday.</li>
+<li>Não há prova de que o preço da segunda seja melhor: compare com o seu histórico.</li>
+<li>Os 7 dias de arrependimento valem normalmente.</li>
+</ul>`,
+  },
+  {
+    slug: "frete-gratis-amazon-mercado-livre-shopee",
+    titulo: "Frete grátis na Amazon, Mercado Livre e Shopee: as regras",
+    metaTitle: "Frete grátis na Amazon, Mercado Livre e Shopee: as regras",
+    metaDescription: "Veja a partir de quanto o frete é grátis na Amazon, no Mercado Livre, na Shopee e no Magalu, o que muda com assinatura e como conferir o total antes de pagar.",
+    resumo: "Cada loja tem um valor mínimo e uma lista de exceções para o frete grátis. Veja as regras da Amazon, do Mercado Livre, da Shopee e do Magalu lado a lado.",
+    resumoRapido: [
+      "Amazon: frete grátis em pedidos a partir de R$ 19 com produtos elegíveis enviados pela Amazon; com Prime, sem valor mínimo nos elegíveis.",
+      "Mercado Livre: disponível em compras a partir de R$ 19, com exceções; procure a legenda verde no anúncio.",
+      "Shopee: funciona por cupom de frete grátis, só no aplicativo e acima do valor mínimo escrito no cupom.",
+      "Frete grátis não quer dizer menor preço: compare sempre o total, produto mais entrega."
+    ],
+    dataPublicacao: "2026-11-10",
+    tags: ["frete grátis", "frete grátis amazon", "frete grátis mercado livre", "frete grátis shopee", "valor mínimo frete grátis"],
+    servico: "cupom-da-amazon-como-usar",
+    categoria: "ofertas-e-cupons",
+    imagem: "/blog/frete-gratis-amazon-mercado-livre-shopee.webp",
+    faq: [
+      { q: "A partir de quanto o frete é grátis na Amazon?", a: "Segundo a central de ajuda da Amazon, pedidos a partir de R$ 19 com produtos elegíveis enviados pela Amazon têm frete grátis. Com o Amazon Prime, os produtos elegíveis têm entrega gratuita sem valor mínimo. O valor pode mudar: confira no carrinho." },
+      { q: "A partir de quanto o frete é grátis no Mercado Livre?", a: "O Mercado Livre informa que o frete grátis está disponível em compras a partir de R$ 19 e depende de outros fatores. Não vale para Supermercado nem para Compras Internacionais. O anúncio com o benefício mostra uma legenda verde." },
+      { q: "Como ter frete grátis na Shopee?", a: "Com cupom de frete grátis. Pela central de ajuda da Shopee, ele vale somente no aplicativo e em pedidos acima do valor mínimo indicado no próprio cupom, calculado por loja." },
+      { q: "Frete grátis é sempre mais barato?", a: "Não. O custo da entrega pode estar embutido no preço do produto. Compare o total (produto mais frete) entre as lojas antes de decidir." },
+      { q: "A loja pode cobrar frete diferente do anunciado?", a: "Não. Pelo art. 30 do Código de Defesa do Consumidor, a oferta anunciada obriga a loja. O Decreto 7.962/2013 também exige que o site discrimine no preço as despesas de entrega." },
+    ],
+    fontes: [
+      { nome: "Amazon, central de ajuda: pedido com frete grátis da Amazon", url: "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=201910160" },
+      { nome: "Amazon Prime: página do programa", url: "https://www.amazon.com.br/prime" },
+      { nome: "Mercado Livre: frete grátis", url: "https://www.mercadolivre.com.br/l/fretegratis" },
+      { nome: "Mercado Livre: planos do Meli+", url: "https://www.mercadolivre.com.br/melimaisv2/planos" },
+      { nome: "Shopee, central de ajuda: cupons de frete grátis", url: "https://help.shopee.com.br/portal/4/article/76220" },
+      { nome: "Shopee, central de ajuda: ShopeeVIP", url: "https://help.shopee.com.br/portal/4/article/223874" },
+      { nome: "Magazine Luiza: regra do frete grátis no aplicativo", url: "https://especiais.magazineluiza.com.br/app-webviews/regra-frete-gratis/" },
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+      { nome: "Decreto 7.962/2013, comércio eletrônico (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/decreto/d7962.htm" },
+    ],
+    conteudo: `<p>O frete decide muita compra. Um produto mais barato com entrega cara perde para outro mais caro com entrega grátis, e cada loja tem uma regra diferente para dar o benefício. <strong>Em novembro de 2026, Amazon e Mercado Livre informam frete grátis a partir de R$ 19 em produtos elegíveis, e a Shopee trabalha com cupom de frete grátis no aplicativo.</strong> Em todas existem exceções, e a conta que vale é sempre a do total no carrinho.</p>
+
+<h2>A partir de quanto o frete é grátis em cada loja?</h2>
+<p>A tabela resume o que as páginas oficiais informavam em novembro de 2026. Valores e regras mudam: o que vale é o que aparece no seu carrinho.</p>
+<table>
+<thead><tr><th>Loja</th><th>Regra informada</th><th>Principais exceções</th></tr></thead>
+<tbody>
+<tr><td>Amazon</td><td>Pedidos a partir de R$ 19 com produtos elegíveis enviados pela Amazon</td><td>Itens enviados por vendedores parceiros não contam para o mínimo</td></tr>
+<tr><td>Mercado Livre</td><td>Disponível em compras a partir de R$ 19, considerando "diversos fatores"</td><td>Supermercado e Compras Internacionais</td></tr>
+<tr><td>Shopee</td><td>Cupom de frete grátis, só no aplicativo, acima do valor mínimo do cupom</td><td>Mínimo calculado por loja; limite de cupons por semana</td></tr>
+<tr><td>Magalu</td><td>No aplicativo, a partir de R$ 99</td><td>Região Norte, Móveis e produtos de parceiros do marketplace</td></tr>
+</tbody>
+</table>
+
+<h2>Como funciona o frete grátis na Amazon?</h2>
+<p>Pela central de ajuda, pedidos a partir de R$ 19 com produtos elegíveis enviados pela Amazon se qualificam para o frete grátis. A palavra que importa é "enviados pela Amazon": na página do produto, veja quem envia. Item enviado por vendedor parceiro tem o frete definido por ele e não entra na soma do mínimo.</p>
+<p>Com o Amazon Prime, a loja informa entrega gratuita de produtos elegíveis sem valor mínimo de compra. O Prime é uma assinatura paga, com plano mensal ou anual, e o valor está na página do programa. Para saber se compensa, some o frete que você pagou nos últimos meses e compare com o valor da assinatura.</p>
+<p>A própria Amazon avisa que a oferta de frete pode ser alterada. Se o seu pedido vai usar cupom, veja como ele entra na conta no guia <a href="/guias/cupom-da-amazon-como-usar">cupom da Amazon: como usar</a>.</p>
+
+<h2>Como funciona o frete grátis no Mercado Livre?</h2>
+<p>A página oficial diz que "o benefício do frete grátis está disponível em compras a partir de R$ 19 e leva em consideração diversos fatores". Na prática, não é todo anúncio acima de R$ 19 que tem. Para saber, a orientação do próprio Mercado Livre é procurar a legenda verde no detalhe do anúncio ou verificar no carrinho.</p>
+<p>O valor mínimo era de R$ 79 e caiu para R$ 19 em junho de 2025. O benefício não se aplica a produtos da categoria Supermercado nem a Compras Internacionais. Quando o frete grátis não está disponível, o Mercado Livre informa que pode haver um desconto no frete.</p>
+<p>A assinatura Meli+ acrescenta frete grátis rápido a partir de R$ 19 em produtos selecionados com a etiqueta Meli+. A página de perguntas do programa lista limites: não vale quando o custo do envio passa de R$ 20, e em alguns casos o benefício vira um desconto no envio rápido. Os planos e preços estão na página do Meli+. Se a compra der problema na entrega, o caminho está em <a href="/blog/compra-garantida-mercado-livre">Compra Garantida do Mercado Livre</a>.</p>
+
+<h2>Como funciona o frete grátis na Shopee?</h2>
+<p>Por cupom. A central de ajuda da Shopee informa que "o uso de cupons de frete grátis é válido somente no aplicativo e em pedidos acima de um valor pré-estabelecido". Três detalhes que confundem:</p>
+<ul>
+<li><strong>O mínimo é por loja.</strong> Dois produtos de vendedores diferentes no mesmo carrinho não somam para o mesmo cupom.</li>
+<li><strong>O cupom tem teto.</strong> O valor máximo de frete coberto aparece no próprio cupom. Se o frete passar disso, você paga a diferença.</li>
+<li><strong>Há limite de uso.</strong> A ajuda informa um limite de 10 cupons de frete grátis por semana.</li>
+</ul>
+<p>Em 2026 a Shopee lançou o ShopeeVIP, assinatura de R$ 9,90 que, segundo a central de ajuda, dá cupons de frete grátis ilimitados para compras acima de R$ 10 com frete de até R$ 20. Confira as condições atuais antes de assinar.</p>
+<p>O cupom de frete pode ser combinado com outros cupons no mesmo pedido. Como empilhar está em <a href="/blog/cupom-shopee-e-mercado-livre-como-usar">cupom da Shopee e do Mercado Livre: como usar</a>.</p>
+
+<h2>E no Magalu?</h2>
+<p>A regra publicada pelo Magalu vale para compras no aplicativo a partir de R$ 99, com exceções: região Norte, categoria Móveis e produtos vendidos por parceiros do marketplace. Na página do produto, veja quem vende e simule o frete com o seu CEP antes de fechar.</p>
+
+<h2>Frete grátis é sempre o melhor negócio?</h2>
+<p>Não. Entrega tem custo, e alguém paga: às vezes a loja, às vezes o vendedor, às vezes você, dentro do preço do produto. Por isso a comparação certa é pelo total.</p>
+<p>Um exemplo com a conta feita. Loja A: produto por R$ 89,90 com frete grátis, total de R$ 89,90. Loja B: o mesmo produto por R$ 74,90 com frete de R$ 9,90, total de R$ 84,80. A loja com frete pago sai R$ 5,10 mais barata. Como engenheiro, eu comparo o total e o prazo, nunca só a etiqueta.</p>
+<p>Três cuidados antes de pagar:</p>
+<ol>
+<li><strong>Não encha o carrinho só para bater o mínimo.</strong> Gastar R$ 15 a mais para economizar R$ 8 de frete é prejuízo de R$ 7.</li>
+<li><strong>Olhe o prazo.</strong> Frete grátis pode vir com entrega mais lenta. Se tem data, confira a previsão.</li>
+<li><strong>Confira na última tela.</strong> O frete que vale é o do resumo do pedido, com o seu CEP.</li>
+</ol>
+
+<h2>O que a lei diz sobre o frete anunciado?</h2>
+<p>Que ele precisa ser cumprido e estar claro antes do pagamento. O art. 30 do Código de Defesa do Consumidor diz que toda informação ou publicidade suficientemente precisa "obriga o fornecedor que a fizer veicular ou dela se utilizar e integra o contrato que vier a ser celebrado". Se o anúncio promete frete grátis e a cobrança aparece no fim, guarde o print e reclame na loja, no consumidor.gov.br ou no Procon.</p>
+<p>O Decreto 7.962/2013, que trata do comércio eletrônico, exige no art. 2º, inciso IV, a "discriminação, no preço, de quaisquer despesas adicionais ou acessórias, tais como as de entrega ou seguros".</p>
+<p>E se você desistir da compra dentro dos 7 dias do art. 49, a Senacon orienta que o reembolso inclua o frete. Detalhes em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</p>
+
+<h2>O que o Tem Descontos confere sobre frete?</h2>
+<p>Sendo direto: o frete depende do seu CEP, e isso nós não temos como conferir por você. O que conferimos é o preço do produto na própria loja e o destino do link.</p>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que fica com você</th></tr></thead>
+<tbody>
+<tr><td>Preço anunciado contra o preço na loja; mais de 3% abaixo sem cupom que explique, a oferta é descartada</td><td>Simular o frete com o seu CEP</td></tr>
+<tr><td>Produto do link igual ao do texto, em nome e quantidade</td><td>Ver quem vende e quem envia</td></tr>
+<tr><td>Link direto para a loja oficial</td><td>Conferir o total na última tela antes de pagar</td></tr>
+</tbody>
+</table>
+<p>Quando o post diz que tem frete grátis, a informação veio da oferta. A confirmação é no seu carrinho.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Amazon: a partir de R$ 19 em produtos elegíveis enviados pela Amazon; Prime tira o mínimo nos elegíveis.</li>
+<li>Mercado Livre: a partir de R$ 19, com exceções; procure a legenda verde.</li>
+<li>Shopee: cupom de frete grátis no aplicativo, com mínimo por loja e teto.</li>
+<li>Magalu: no aplicativo, a partir de R$ 99, com exceções.</li>
+<li>Compare o total e confira o frete na última tela.</li>
+</ul>`,
+  },
+  {
+    slug: "cashback-como-funciona",
+    titulo: "Cashback: como funciona e quando vale a pena usar",
+    metaTitle: "Cashback: como funciona e quando vale a pena usar",
+    metaDescription: "Cashback devolve parte do valor da compra, mas tem prazo, valor mínimo de resgate e regras que anulam o saldo. Veja como funciona e quando vale a pena usar.",
+    resumo: "Cashback é dinheiro de volta pago com parte da comissão da loja. Veja como ativar, quanto demora, o que faz o saldo ser cancelado e quando compensa.",
+    resumoRapido: [
+      "Cashback é a devolução de parte do valor da compra, paga por um site ou aplicativo parceiro com o dinheiro que a loja paga a ele.",
+      "Tem que ativar antes de comprar; o saldo entra como pendente e só vira dinheiro depois que a loja confirma.",
+      "Cupom de fora, comparador de preço aberto no meio da compra, troca de pagamento e devolução costumam cancelar o cashback.",
+      "Vale a pena quando o total com cashback é menor que o total com o melhor cupom, e só para compra que você já ia fazer."
+    ],
+    dataPublicacao: "2026-11-10",
+    tags: ["cashback", "cashback como funciona", "cashback vale a pena", "cashback não caiu", "cashback ou cupom"],
+    servico: "cupom-da-amazon-como-usar",
+    categoria: "ofertas-e-cupons",
+    imagem: "/blog/cashback-como-funciona.webp",
+    faq: [
+      { q: "O que é cashback?", a: "É a devolução de uma parte do valor da compra. Em sites e aplicativos de cashback, a loja paga uma comissão ao parceiro que levou o cliente, e o parceiro divide esse valor com quem comprou." },
+      { q: "Quanto tempo o cashback demora para cair?", a: "Varia por programa e por loja. No Méliuz, a loja tem de 2 a 15 dias para avisar da compra e o saldo fica pendente até a confirmação, que em algumas lojas leva até 90 ou 120 dias. O Inter informa que em casos excepcionais o pagamento pode demorar até 120 dias." },
+      { q: "Por que meu cashback foi cancelado?", a: "Os motivos mais citados nas regras dos programas são: usar cupom que não é do programa, abrir comparador de preço ou outro link durante a compra, trocar a forma de pagamento, alterar, cancelar ou devolver o pedido." },
+      { q: "Dá para usar cupom e cashback juntos?", a: "Só quando o cupom é o que o próprio programa de cashback oferece. Cupom de fora costuma anular o cashback. Por isso vale fazer a conta e escolher o que dá o menor total." },
+      { q: "O Tem Descontos dá cashback?", a: "Não. Nós divulgamos ofertas com link de afiliado e conferimos o preço na loja. Se você ativar um cashback antes de comprar, a comissão daquela compra vai para o programa de cashback, e está tudo certo." },
+    ],
+    fontes: [
+      { nome: "Méliuz: como funciona", url: "https://www.meliuz.com.br/como-funciona" },
+      { nome: "Méliuz, blog: o que é cashback", url: "https://www.meliuz.com.br/blog/o-que-e-cashback/" },
+      { nome: "Inter, central de ajuda: como funciona o cashback no Shopping do Inter", url: "https://ajuda.inter.co/cashback/como-funciona-o-cashback-no-shopping-do-inter" },
+      { nome: "Cuponomia: termos de uso", url: "https://www.cuponomia.com.br/termos-uso" },
+      { nome: "PicPay, central de ajuda: cashback nas lojas parceiras", url: "https://meajuda.picpay.com/hc/pt-br/articles/4411050744467" },
+      { nome: "Shopee, central de ajuda: Moedas Shopee", url: "https://help.shopee.com.br/portal/4/article/76257" },
+      { nome: "Mercado Pago, blog: como receber cashback em Meli Dólar", url: "https://www.mercadopago.com.br/blog/como-receber-cashback-meli-dolar" },
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+    ],
+    conteudo: `<p>"Ganhe 10% de volta" parece desconto, mas funciona de outro jeito: você paga o preço cheio hoje e recebe uma parte depois, se cumprir as regras. <strong>Cashback é a devolução de parte do valor da compra, paga por um programa parceiro da loja; vale a pena quando o total com cashback fica menor que o total com o melhor cupom, e só em compra que você já ia fazer.</strong> O que mais dá problema é o saldo que não cai, e quase sempre por um detalhe na hora de comprar.</p>
+
+<h2>O que é cashback e de onde vem o dinheiro?</h2>
+<p>Cashback quer dizer "dinheiro de volta". Você compra, e uma parte do valor volta para você depois. O dinheiro não aparece do nada: a loja paga uma comissão a quem levou o cliente até ela, e o programa de cashback divide essa comissão com o cliente.</p>
+<p>O Méliuz explica assim: "As lojas parceiras pagam para anunciar no site e no app do Méliuz e nós dividimos esse valor com quem comprou." É o mesmo mecanismo do link de afiliado, com a diferença de que parte da comissão volta para o comprador. Explicamos esse mecanismo em <a href="/blog/link-de-afiliado-o-preco-muda">link de afiliado: o preço muda para quem compra?</a></p>
+
+<h2>Como o cashback funciona, passo a passo?</h2>
+<ol>
+<li><strong>Você ativa antes de comprar.</strong> Entra no site ou aplicativo do programa, escolhe a loja e clica em ativar. O programa abre a loja em uma janela própria.</li>
+<li><strong>Compra nessa janela.</strong> O Méliuz orienta "concluir a compra na janela que abrirá automaticamente". Sair dela no meio do caminho é o erro mais comum.</li>
+<li><strong>O saldo aparece como pendente.</strong> No Méliuz, as lojas têm de 2 a 15 dias para avisar da compra.</li>
+<li><strong>A loja confirma.</strong> Só depois de passar o prazo de troca e devolução a loja libera, e o saldo vira confirmado. Esse prazo varia por loja.</li>
+<li><strong>Você resgata.</strong> Com saldo confirmado acima do mínimo, pede a transferência para a sua conta.</li>
+</ol>
+<p>O cálculo costuma ser sobre o valor dos produtos, sem o frete.</p>
+
+<h2>Quais são os prazos e o mínimo de cada programa?</h2>
+<p>Estas são as regras que as páginas oficiais informavam em novembro de 2026. Todas podem mudar.</p>
+<table>
+<thead><tr><th>Programa</th><th>Quando o saldo aparece</th><th>Resgate</th><th>O que as regras destacam</th></tr></thead>
+<tbody>
+<tr><td>Méliuz</td><td>Loja tem de 2 a 15 dias para avisar; confirmação varia por loja</td><td>Mínimo de R$ 20 em saldo confirmado</td><td>Comprar na janela aberta pela ativação</td></tr>
+<tr><td>Cuponomia</td><td>Pendente em até 5 dias</td><td>Mínimo de R$ 20</td><td>Não usar outra plataforma de cupom, cashback ou comparador de preço</td></tr>
+<tr><td>Shopping do Inter</td><td>Até 1 dia útil em compra no aplicativo do Inter; até 30 dias em compra no site da loja; em casos excepcionais, até 120 dias</td><td>Na conta do Inter</td><td>Não interagir com outro link ou buscador de preço durante a compra</td></tr>
+<tr><td>PicPay</td><td>Varia por loja</td><td>Na conta do PicPay</td><td>Usar apenas cupons oferecidos pelo PicPay</td></tr>
+</tbody>
+</table>
+
+<h2>Por que o cashback não caiu?</h2>
+<p>Quase sempre porque a loja não conseguiu ligar a sua compra ao programa, ou porque o pedido mudou depois. As regras dos programas repetem os mesmos motivos:</p>
+<ul>
+<li><strong>Carrinho montado antes de ativar.</strong> Produto que já estava no carrinho pode não contar. Ative primeiro, monte o carrinho depois.</li>
+<li><strong>Outro link no meio da compra.</strong> Abrir comparador de preço, site de cupom ou e-mail da loja depois da ativação troca a origem da visita.</li>
+<li><strong>Cupom de fora.</strong> O PicPay pede para usar apenas cupons oferecidos por ele. A Cuponomia pede para não usar nenhuma outra plataforma de cupom ou cashback.</li>
+<li><strong>Aplicativo da loja.</strong> Em algumas lojas, a compra pelo aplicativo não vale. A regra está na página da loja dentro do programa.</li>
+<li><strong>Pedido alterado.</strong> O PicPay resume: quem altera a forma de pagamento, pede devolução, troca ou cancela a compra tem o cashback anulado.</li>
+<li><strong>Bloqueador de anúncios.</strong> A Cuponomia inclui bloqueadores na lista do que não usar.</li>
+</ul>
+<p>Se você seguiu tudo e o saldo não apareceu no prazo, abra uma reclamação no próprio programa com o número do pedido. E guarde print das condições no dia da compra: pelo art. 30 do Código de Defesa do Consumidor, a oferta anunciada "obriga o fornecedor que a fizer veicular".</p>
+
+<h2>Cashback da própria loja é a mesma coisa?</h2>
+<p>Não exatamente. Algumas lojas devolvem em saldo que só pode ser usado nelas mesmas. Funciona mais como desconto na próxima compra do que como dinheiro.</p>
+<ul>
+<li><strong>Shopee.</strong> As Moedas Shopee valem desconto: cada 100 moedas equivalem a R$ 1, e podem abater até 25% do valor da compra. Não viram dinheiro na conta. Mais em <a href="/blog/cupom-shopee-e-mercado-livre-como-usar">cupom da Shopee e do Mercado Livre</a>.</li>
+<li><strong>Mercado Livre e Mercado Pago.</strong> O cashback em Meli Dólar depende da assinatura Meli+ e de pagar com o cartão Mercado Pago no crédito. Percentuais e limites estão na página do programa.</li>
+<li><strong>Magalu.</strong> O programa Dinheiro de Volta credita o valor no MagaluPay. Confira o prazo na página da oferta.</li>
+</ul>
+<p>Antes de contar com esse saldo, veja se ele tem validade e onde pode ser usado.</p>
+
+<h2>Cashback ou cupom: qual escolher?</h2>
+<p>O que der o menor total, lembrando que o cupom desconta na hora e o cashback só depois, e com condições. Faça a conta dos dois.</p>
+<p>Um exemplo. Compra de R$ 300 em produtos. Opção 1: cupom de R$ 30, você paga R$ 270 hoje. Opção 2: cashback de 5%, você paga R$ 300 hoje e recebe R$ 15 semanas depois, se nada for cancelado. O cupom ganha por R$ 15, e sem espera. Com cashback de 12% (R$ 36), o cashback ganha por R$ 6, desde que você possa esperar e cumpra as regras.</p>
+<p>Como engenheiro, eu coloco um desconto na conta do cashback: dinheiro que pode não chegar vale menos que desconto que já saiu do preço. Três perguntas ajudam:</p>
+<ol>
+<li>Eu já ia comprar esse produto, nessa loja, por esse preço? Cashback não transforma compra desnecessária em economia.</li>
+<li>O preço da loja com cashback é o menor? Às vezes outra loja vende mais barato sem devolver nada. Veja <a href="/blog/historico-de-preco-como-consultar">como consultar o histórico de preço</a>.</li>
+<li>O saldo vai passar do mínimo de resgate? R$ 6 parados em uma conta que só libera a partir de R$ 20 ainda não são seus.</li>
+</ol>
+<p>Um aviso sobre o nome: em 2026 a Receita Federal passou a chamar de "cashback" a restituição automática do Imposto de Renda. É outro assunto, sem relação com compra em loja.</p>
+
+<h2>O Tem Descontos dá cashback?</h2>
+<p>Não, e é melhor deixar claro. Nós ganhamos comissão das lojas quando alguém compra pelos links do grupo, e essa comissão é o que mantém o grupo de graça. Não devolvemos parte dela, e o Programa de Associados da Amazon proíbe que associados ofereçam esse tipo de incentivo.</p>
+<table>
+<thead><tr><th>O que nós fazemos</th><th>O que um programa de cashback faz</th></tr></thead>
+<tbody>
+<tr><td>Conferimos o preço na loja antes de enviar a oferta</td><td>Devolve parte do valor depois da compra confirmada</td></tr>
+<tr><td>Descartamos oferta com preço mais de 3% abaixo do da loja sem cupom que explique</td><td>Não confere se o preço é bom</td></tr>
+<tr><td>Mandamos o cupom junto quando ele existe</td><td>Costuma aceitar só os próprios cupons</td></tr>
+<tr><td>Não pedimos cadastro nem dado pessoal</td><td>Exige conta para receber o saldo</td></tr>
+</tbody>
+</table>
+<p>Se você viu uma oferta no grupo e preferir ativar um cashback antes de comprar, a comissão daquela compra vai para o programa de cashback, não para nós. Sem problema: a conta que importa é a sua. Quem somos está em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Cashback é parte da comissão da loja devolvida para você, depois da compra.</li>
+<li>Ative antes, compre na janela aberta e não use cupom de fora.</li>
+<li>O saldo fica pendente até a loja confirmar; o prazo varia e pode passar de três meses.</li>
+<li>Compare o total: cupom desconta na hora, cashback depende de condições.</li>
+<li>Saldo que só vale na própria loja funciona como desconto na próxima compra.</li>
+</ul>`,
+  },
+  {
+    slug: "calendario-de-promocoes-datas-de-desconto",
+    titulo: "Calendário de promoções: 11.11, 12.12 e datas de 2027",
+    metaTitle: "Calendário de promoções: 11.11, 12.12 e datas de 2027",
+    metaDescription: "Veja o calendário de promoções do e-commerce: 11.11, Black Friday, Cyber Monday e 12.12 em 2026 e todas as datas de 2027, com o que cada uma costuma trazer.",
+    resumo: "As datas de desconto do e-commerce em um lugar só: o que falta em 2026 e o calendário de 2027, das datas duplas à Black Friday, com as campanhas próprias de cada loja.",
+    resumoRapido: [
+      "Ainda em 2026: 11.11 (quarta, 11 de novembro), Black Friday (sexta, 27 de novembro), Cyber Monday (segunda, 30 de novembro) e 12.12 (sábado, 12 de dezembro).",
+      "Datas duplas são as que repetem dia e mês (7.7, 9.9, 10.10, 11.11, 12.12); a mais conhecida, o 11.11, nasceu na China em 2009.",
+      "Em 2027 a Black Friday cai em 26 de novembro e o Dia do Consumidor em 15 de março.",
+      "Data de promoção não garante desconto: compare com o preço das semanas anteriores."
+    ],
+    dataPublicacao: "2026-11-10",
+    tags: ["calendário de promoções", "datas de promoção 2027", "11.11", "12.12", "datas duplas", "dia do consumidor 2027", "black friday 2027"],
+    servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "ofertas-e-cupons",
+    imagem: "/blog/calendario-de-promocoes-datas-de-desconto.webp",
+    faq: [
+      { q: "O que é o 11.11?", a: "É a data dupla de 11 de novembro. Nasceu como promoção em 2009, na China, quando o Alibaba fez uma liquidação online de 24 horas no Dia dos Solteiros. No Brasil, Shopee, Mercado Livre, Magalu e AliExpress fazem campanha na data." },
+      { q: "O que são datas duplas?", a: "São as datas em que o dia e o mês têm o mesmo número, como 7.7, 9.9, 10.10, 11.11 e 12.12. Viraram dias de campanha no e-commerce, com cupons e frete grátis, principalmente em marketplaces." },
+      { q: "Quando é a Black Friday 2027?", a: "Em 26 de novembro de 2027, sexta-feira. A Cyber Monday de 2027 cai em 29 de novembro." },
+      { q: "Quando é o Dia do Consumidor 2027?", a: "Em 15 de março de 2027, uma segunda-feira. As lojas costumam fazer a Semana do Consumidor em torno da data." },
+      { q: "Qual é a melhor data para comprar?", a: "Não existe uma resposta única. Depende do produto e da loja. A melhor data é aquela em que o preço chega ao menor valor do histórico que você acompanhou." },
+    ],
+    fontes: [
+      { nome: "Alizila (Alibaba): histórico do 11.11", url: "https://www.alizila.com/a-brief-history-of-an-online-phenomenon/" },
+      { nome: "Magazine Luiza, Blog da Lu: o que é o 11.11", url: "https://www.magazineluiza.com.br/blog-da-lu/c/dl/dlgc/o-que-e-11-11-entenda-a-data-que-virou-referencia-em-descontos/14440/" },
+      { nome: "Shopee, blog: datas duplas", url: "https://shopee.com.br/blog/datas-duplas-shopee/" },
+      { nome: "Shopee, blog: sobre nós", url: "https://shopee.com.br/blog/sobre-nos/" },
+      { nome: "Mercado Livre: página de promoções", url: "https://www.mercadolivre.com.br/l/promocoes" },
+      { nome: "Amazon, central de ajuda: Prime Day 2026", url: "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=GUZZFPRQHPWM6DK5" },
+      { nome: "Magazine Luiza: Liquidação Fantástica 2026", url: "https://especiais.magazineluiza.com.br/liquidacao-fantastica/" },
+      { nome: "Confi Neotrust: projeção para a Black Friday 2026 (2026)", url: "https://www.confi.com.vc/blog/black-friday-2026-projecao-neotrust" },
+      { nome: "Forbes Brasil: datas duplas no e-commerce, dados Confi Neotrust (2026)", url: "https://forbes.com.br/forbes-money/2026/10/datas-duplas-e-commerce-brasil-consumo/" },
+      { nome: "Senacon: Black Friday, como identificar descontos enganosos", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-saiba-como-identificar-descontos-enganosos" },
+    ],
+    conteudo: `<p>Promoção boa quase nunca é surpresa: o comércio repete as mesmas datas todo ano, e quem sabe quando elas chegam consegue acompanhar o preço antes. <strong>Ainda em 2026 faltam o 11.11 (11 de novembro), a Black Friday (27 de novembro), a Cyber Monday (30 de novembro) e o 12.12 (12 de dezembro); em 2027, o calendário começa nas liquidações de janeiro e passa pelo Dia do Consumidor em 15 de março.</strong> As tabelas abaixo trazem todas as datas, conferidas no calendário.</p>
+
+<h2>Quais datas de promoção ainda faltam em 2026?</h2>
+<table>
+<thead><tr><th>Data</th><th>Dia</th><th>O que é</th></tr></thead>
+<tbody>
+<tr><td>11.11</td><td>Quarta, 11 de novembro</td><td>Data dupla mais conhecida, com campanha em Shopee, Mercado Livre, Magalu e AliExpress</td></tr>
+<tr><td>Black Friday</td><td>Sexta, 27 de novembro</td><td>Maior data de vendas do e-commerce no ano</td></tr>
+<tr><td>Cyber Monday</td><td>Segunda, 30 de novembro</td><td>Fecha a semana da Black Friday</td></tr>
+<tr><td>12.12</td><td>Sábado, 12 de dezembro</td><td>Última data dupla do ano; na Shopee, liquidação de Natal</td></tr>
+<tr><td>Natal</td><td>Sexta, 25 de dezembro</td><td>Compras de presente; confira o prazo de entrega</td></tr>
+</tbody>
+</table>
+<p>Para a reta final de novembro temos três posts: <a href="/blog/black-friday-2026-quando-e">Black Friday 2026: quando é e como se preparar</a>, <a href="/blog/esquenta-black-friday-comprar-antes-ou-esperar">esquenta Black Friday: comprar antes ou esperar</a> e <a href="/blog/cyber-monday-2026-quando-e">Cyber Monday 2026</a>.</p>
+
+<h2>O que são as datas duplas e de onde vem o 11.11?</h2>
+<p>Datas duplas são aquelas em que o dia e o mês têm o mesmo número: 7.7, 9.9, 10.10, 11.11, 12.12. Viraram dias de campanha no e-commerce, com cupons e frete grátis concentrados em 24 horas.</p>
+<p>A origem é o 11.11. Segundo o Alibaba, a primeira edição foi em 2009, na China: uma liquidação online de 24 horas no Dia dos Solteiros, com 27 lojistas participando. A data deu tão certo que o formato foi copiado para os outros meses.</p>
+<p>No Brasil, a Shopee é a loja que mais usa o calendário. Ela dá nome a cada data (o 11.11 é "a maior liquidação do ano" e o 12.12 é a "liquidação de Natal") e informa já ter feito mais de 68 campanhas de datas duplas em seis anos no país. O Mercado Livre e o Magalu também fazem campanha no 11.11, e o Magalu trata a data como esquenta da Black Friday.</p>
+<p>O tamanho disso, nos dados da Confi Neotrust: as nove datas duplas de janeiro a setembro de 2026 somaram R$ 14,40 bilhões no e-commerce brasileiro, e a maior foi o 9.9, com R$ 2,28 bilhões. O 11.11 de 2025 faturou R$ 2,78 bilhões. Para comparar, a projeção para os quatro dias da Black Friday de 2026 é de R$ 13,3 bilhões.</p>
+
+<h2>Qual é o calendário de promoções de 2027?</h2>
+<p>As datas abaixo são fixas ou seguem regra de calendário (segundo domingo de maio, sexta depois do Dia de Ação de Graças americano). Conferimos uma a uma.</p>
+<table>
+<thead><tr><th>Mês</th><th>Data</th><th>Dia da semana</th><th>O que é</th></tr></thead>
+<tbody>
+<tr><td>Janeiro</td><td>Liquidações de início de ano</td><td>Cada loja define</td><td>Queima de estoque depois do Natal</td></tr>
+<tr><td>Março</td><td>15 de março</td><td>Segunda</td><td>Dia do Consumidor, com a Semana do Consumidor em volta</td></tr>
+<tr><td>Maio</td><td>9 de maio</td><td>Domingo</td><td>Dia das Mães</td></tr>
+<tr><td>Junho</td><td>12 de junho</td><td>Sábado</td><td>Dia dos Namorados</td></tr>
+<tr><td>Julho</td><td>7 de julho (7.7)</td><td>Quarta</td><td>Data dupla; aniversário da Shopee no Brasil</td></tr>
+<tr><td>Agosto</td><td>8 de agosto</td><td>Domingo</td><td>Dia dos Pais</td></tr>
+<tr><td>Setembro</td><td>9 de setembro (9.9)</td><td>Quinta</td><td>Data dupla</td></tr>
+<tr><td>Outubro</td><td>10 de outubro (10.10)</td><td>Domingo</td><td>Data dupla</td></tr>
+<tr><td>Outubro</td><td>12 de outubro</td><td>Terça</td><td>Dia das Crianças</td></tr>
+<tr><td>Novembro</td><td>11 de novembro (11.11)</td><td>Quinta</td><td>Data dupla</td></tr>
+<tr><td>Novembro</td><td>26 de novembro</td><td>Sexta</td><td>Black Friday</td></tr>
+<tr><td>Novembro</td><td>29 de novembro</td><td>Segunda</td><td>Cyber Monday</td></tr>
+<tr><td>Dezembro</td><td>12 de dezembro (12.12)</td><td>Domingo</td><td>Data dupla</td></tr>
+<tr><td>Dezembro</td><td>25 de dezembro</td><td>Sábado</td><td>Natal</td></tr>
+</tbody>
+</table>
+<p>Nenhuma dessas datas obriga a loja a dar desconto. São convenções do comércio, e cada loja decide se participa, quando começa e quando termina.</p>
+
+<h2>Quais são as datas próprias de cada loja?</h2>
+<p>Além do calendário comum, cada loja tem campanhas só dela. As de 2027 ainda não foram anunciadas: a tabela mostra quando aconteceram em 2026, para você ter uma ideia da época.</p>
+<table>
+<thead><tr><th>Loja</th><th>Campanha</th><th>Quando foi em 2026</th></tr></thead>
+<tbody>
+<tr><td>Amazon</td><td>Prime Day, para assinantes Prime</td><td>De 1º a 7 de julho</td></tr>
+<tr><td>Amazon</td><td>Mega Oferta Amazon Prime</td><td>De 5 a 11 de outubro</td></tr>
+<tr><td>Shopee</td><td>7.7, aniversário da chegada ao Brasil</td><td>7 de julho</td></tr>
+<tr><td>Magalu</td><td>Liquidação Fantástica</td><td>A partir de 9 de janeiro</td></tr>
+<tr><td>AliExpress</td><td>Campanha de aniversário</td><td>De 16 a 25 de março</td></tr>
+<tr><td>Mercado Livre</td><td>Liquida nas datas duplas (9.9, 10.10)</td><td>Nas próprias datas</td></tr>
+</tbody>
+</table>
+<p>As lojas costumam confirmar a data poucas semanas antes. Vale conferir na página oficial de cada uma.</p>
+
+<h2>Data de promoção garante desconto de verdade?</h2>
+<p>Não. A data garante campanha, não preço baixo. A Senacon recomenda fazer um acompanhamento prévio dos preços dos produtos que você pretende comprar, usando comparadores e sites que mostram o histórico de valor de cada item.</p>
+<p>Com o calendário na mão, isso fica fácil de organizar:</p>
+<ol>
+<li><strong>Escolha a data pelo produto.</strong> Presente de Dia das Mães se pesquisa em abril, não na véspera.</li>
+<li><strong>Comece a anotar o preço quatro semanas antes.</strong> Produto, modelo, loja, preço e data. Mostramos como em <a href="/blog/historico-de-preco-como-consultar">histórico de preço: como consultar e ler</a>.</li>
+<li><strong>No dia, compare com o menor preço anotado.</strong> Se o preço da campanha não bate o menor que você já viu, a próxima data dupla chega em um mês.</li>
+<li><strong>Desconfie do preço riscado.</strong> O guia <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a> mostra como checar.</li>
+</ol>
+<p>Como engenheiro, eu gosto do calendário por um motivo simples: ele tira a pressa. Quem sabe que tem outra data no mês seguinte não compra por medo de perder.</p>
+
+<h2>O que o Tem Descontos faz nas datas de promoção?</h2>
+<p>O mesmo que nos outros dias, com mais volume. As ofertas saem das 8h às 22h, e cada uma passa por esta conferência antes de ir para o grupo:</p>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
+<tbody>
+<tr><td>Preço anunciado contra o preço na própria loja</td><td>Mais de 3% abaixo do preço da loja sem cupom que explique: oferta descartada</td></tr>
+<tr><td>Preço riscado com mais de 70% de desconto</td><td>Se a loja não confirma, o preço riscado sai do post</td></tr>
+<tr><td>Shopee: nota e vendas do produto</td><td>Só sai com nota 4,5 ou mais e 50 vendas ou mais</td></tr>
+<tr><td>Destino do link</td><td>Sempre a loja oficial, nunca site intermediário</td></tr>
+</tbody>
+</table>
+<p>Nas datas de campanha chegam mais cupons, e eles vão junto com a oferta. Como usar cada um está em <a href="/blog/cupom-shopee-e-mercado-livre-como-usar">cupom da Shopee e do Mercado Livre</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Faltam em 2026: 11.11, Black Friday (27/11), Cyber Monday (30/11) e 12.12.</li>
+<li>Datas duplas repetem dia e mês; o 11.11 nasceu na China em 2009.</li>
+<li>Em 2027: Dia do Consumidor em 15/03, Black Friday em 26/11, Cyber Monday em 29/11.</li>
+<li>Cada loja tem campanhas próprias e confirma a data perto do dia.</li>
+<li>Data de promoção não garante desconto: acompanhe o preço quatro semanas antes.</li>
+</ul>`,
+  },
 ];
 
 export function post(slug: string): Post | undefined {
