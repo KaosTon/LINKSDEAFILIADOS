@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tem Descontos: video v1 (9:16, 18 s)</title>
+<style>
+@font-face{font-family:Inter;font-weight:500;src:url(../../encurtador/fontes/Inter-Medium.otf)}
+@font-face{font-family:Inter;font-weight:600;src:url(../../encurtador/fontes/Inter-SemiBold.otf)}
+@font-face{font-family:Inter;font-weight:700;src:url(../../encurtador/fontes/Inter-Bold.otf)}
+@font-face{font-family:Inter;font-weight:800;src:url(../../encurtador/fontes/Inter-ExtraBold.otf)}
+@font-face{font-family:Inter;font-weight:900;src:url(../../encurtador/fontes/Inter-Black.otf)}
+:root{
+  --W:1080px; --H:1920px;
+  --bg:#07142e; --bg2:#0d2f66; --ink:#fff; --mut:#9fb0d6; --card:#fff; --tinta:#0a1f45;
+  --a1:#f7941d; --a2:#e53b2c; --am:#ffb347;   /* o degrade laranja-vermelho e o unico destaque */
+  --pad:84px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:var(--W);height:var(--H);overflow:hidden;background:var(--bg);color:var(--ink);font-family:Inter,sans-serif}
+#stage{position:relative;width:var(--W);height:var(--H);overflow:hidden;
+  background:radial-gradient(1000px 800px at 95% 0%,rgba(247,148,29,.30),transparent 60%),radial-gradient(900px 800px at 0% 100%,rgba(229,59,44,.26),transparent 60%),linear-gradient(170deg,var(--bg2),#0a1f45 55%,var(--bg))}
+.scene{position:absolute;inset:0;padding:0 var(--pad);opacity:0}
+.eye{font-size:30px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--am)}
+.h1{font-size:136px;line-height:1.02;font-weight:900;letter-spacing:-.035em;text-wrap:balance}
+.h2{font-size:92px;line-height:1.05;font-weight:900;letter-spacing:-.03em;text-wrap:balance}
+.grad{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.word{display:inline-block}
+#prog{position:absolute;top:70px;left:var(--pad);right:var(--pad);height:8px;border-radius:8px;background:rgba(255,255,255,.14);overflow:hidden;z-index:5}
+#prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a1),var(--a2))}
+
+/* celular */
+.fone{position:absolute;left:120px;right:120px;top:600px;height:860px;border-radius:72px;background:#0b1220;padding:16px;box-shadow:0 60px 120px -40px rgba(0,0,0,.7)}
+.tela{width:100%;height:100%;border-radius:56px;background:#e9e3d8;overflow:hidden;position:relative}
+.topo{height:128px;background:#0d2f66;display:flex;align-items:center;gap:22px;padding:0 34px;color:#fff}
+.topo img{width:76px;height:76px;border-radius:50%;background:#fff;object-fit:contain;padding:6px}
+.topo b{display:block;font-size:32px;font-weight:700}.topo small{font-size:24px;color:#b9c7e6;font-weight:500}
+.msgs{padding:30px 26px;display:flex;flex-direction:column;gap:22px}
+.msg{background:#fff;color:var(--tinta);border-radius:8px 30px 30px 30px;padding:24px 28px;width:92%;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.msg .cham{font-size:26px;font-weight:800;letter-spacing:.02em;color:#3b4566}
+.msg .lin{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:10px}
+.msg p{font-size:36px;font-weight:700;line-height:1.15}
+.msg small{display:block;font-size:26px;font-weight:500;color:#5b6b8c;margin-top:8px}
+.tag{flex-shrink:0;background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-weight:900;font-size:36px;padding:12px 20px;border-radius:16px}
+.tag.c{background:#0d2f66;font-size:30px}
+
+/* conferencias */
+.itens{margin-top:70px;display:flex;flex-direction:column;gap:28px}
+.item{display:flex;align-items:center;gap:30px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:36px;padding:36px 40px;font-size:46px;font-weight:700}
+.chk{width:76px;height:76px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center}
+.chk svg{width:44px;height:44px;fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+
+.lojas{margin-top:60px;display:flex;flex-direction:column;gap:14px}
+.loja{font-size:84px;font-weight:900;letter-spacing:-.02em}
+.pill{display:inline-flex;align-items:center;gap:20px;background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-weight:800;font-size:52px;padding:38px 64px;border-radius:999px;box-shadow:0 30px 60px -24px rgba(229,59,44,.8)}
+.pill svg{width:60px;height:60px;fill:#fff}
+.nota{font-size:28px;color:var(--mut);font-weight:500;line-height:1.35}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="prog"><i></i></div>
+
+  <!-- 1. gancho -->
+  <section class="scene" id="s1">
+    <div style="position:absolute;top:560px;left:var(--pad);right:var(--pad)">
+      <div class="eye" id="e1">Grupo de ofertas</div>
+      <div class="h1" style="margin-top:44px"><span class="word w">Quanto</span> <span class="word w">cupom</span> <span class="word w">você</span> <span class="word w">já</span> <span class="word w grad">deixou</span> <span class="word w grad">passar?</span></div>
+    </div>
+  </section>
+
+  <!-- 2. o grupo -->
+  <section class="scene" id="s2">
+    <div style="position:absolute;top:250px;left:var(--pad);right:var(--pad)">
+      <div class="eye">No seu WhatsApp</div>
+      <div class="h2" style="margin-top:26px">As ofertas chegam <span class="grad">assim</span></div>
+    </div>
+    <div class="fone" id="fone"><div class="tela">
+      <div class="topo"><img src="../../site/marca/td-icone.png" alt=""><div><b>Tem Descontos | Ofertas e Cupons</b><small>Avisos</small></div></div>
+      <div class="msgs">
+        <div class="msg m"><div class="cham">PROTEÍNA PRO TREINO</div><div class="lin"><p>Whey Protein 900g<small>Preço conferido na loja</small></p><span class="tag">48% OFF</span></div></div>
+        <div class="msg m"><div class="cham">IMPRIMA SUAS IDEIAS EM CASA</div><div class="lin"><p>Impressora 3D<small>Com cupom da loja</small></p><span class="tag">35% OFF</span></div></div>
+        <div class="msg m"><div class="cham">TELA GRANDE PRA JOGAR</div><div class="lin"><p>Monitor 27 polegadas<small>Link da loja oficial</small></p><span class="tag c">CUPOM</span></div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 3. conferencia -->
+  <section class="scene" id="s3">
+    <div style="position:absolute;top:330px;left:var(--pad);right:var(--pad)">
+      <div class="eye">Antes de postar</div>
+      <div class="h2" style="margin-top:26px">A gente <span class="grad">confere</span> na loja</div>
+      <div class="itens">
+        <div class="item it"><span class="chk"><svg viewBox="0 0 24 24"><path class="tk" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>O preço na página da loja</div>
+        <div class="item it"><span class="chk"><svg viewBox="0 0 24 24"><path class="tk" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Se o produto é o do anúncio</div>
+        <div class="item it"><span class="chk"><svg viewBox="0 0 24 24"><path class="tk" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Se o cupom vale para todos</div>
+      </div>
+      <div class="h2" id="falha" style="margin-top:70px;font-size:64px;font-weight:800">Oferta que falha, não sai.</div>
+    </div>
+  </section>
+
+  <!-- 4. lojas -->
+  <section class="scene" id="s4">
+    <div style="position:absolute;top:420px;left:var(--pad);right:var(--pad)">
+      <div class="eye">Ofertas de</div>
+      <div class="lojas">
+        <div class="loja lj">Amazon</div><div class="loja lj">Mercado Livre</div><div class="loja lj">Shopee</div><div class="loja lj">Magalu</div>
+      </div>
+      <div class="h2" id="gratis" style="margin-top:80px;font-size:76px">Grátis. <span class="grad">Sem cadastro.</span></div>
+    </div>
+  </section>
+
+  <!-- 5. CTA -->
+  <section class="scene" id="s5">
+    <div style="position:absolute;top:400px;left:var(--pad);right:var(--pad);text-align:center">
+      <img id="logo" src="../../site/assets/logo/tem-descontos-claro.png" alt="" style="height:300px">
+      <div class="h2" id="c1" style="margin-top:70px">Entre no grupo e deixe a gente <span class="grad">garimpar</span></div>
+      <div id="c2" style="margin-top:80px"><span class="pill"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.4 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.6-.6-2.9-1.2-4.700-4.100-4.900-4.300-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.3.5-.5.5c-.2.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.200 1 2.100 1.400 2.400 1.500.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>Grupo grátis no WhatsApp</span></div>
+      <div id="c3" style="margin-top:44px;font-size:44px;font-weight:700;color:var(--am)">temdescontos.com.br/grupo</div>
+    </div>
+    <div class="nota" id="nota" style="position:absolute;left:var(--pad);right:var(--pad);bottom:300px;text-align:center">Exemplos de ofertas postadas no grupo em 09/11/2026.<br>Link de afiliado. Preço e estoque são da loja e podem mudar.</div>
+  </section>
+</div>
+
+<script>
+window.DURATION = 18;
+const cl = x => Math.max(0, Math.min(1, x));
+const p  = (t, a, b) => cl((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const T = { micro:.08, fast:.18, normal:.35, slow:.6, crawl:1.0 };
+const D = { xs:16, sm:32, md:56, lg:80, xl:110 };
+const EXIT = .6;
+const bez = (x1, y1, x2, y2) => x => {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  let u = x; for (let i = 0; i < 8; i++) {
+    const bx = 3*x1*u*(1-u)**2 + 3*x2*u*u*(1-u) + u**3 - x;
+    const d = 3*x1*(1-u)**2 + 6*(x2-x1)*u*(1-u) + 3*(1-x2)*u*u; if (Math.abs(d) < 1e-6) break; u -= bx / d; }
+  return 3*y1*u*(1-u)**2 + 3*y2*u*u*(1-u) + u**3;
+};
+const smooth = bez(.22, 1, .36, 1), sharp = bez(.4, 0, .2, 1);
+const SPR = { noBounce:{k:170,c:26}, gentle:{k:120,c:14}, snappy:{k:300,c:30} };
+function spring(s, {k, c} = SPR.noBounce) {
+  if (s <= 0) return 0;
+  const w0 = Math.sqrt(k), z = c / (2 * w0);
+  if (z < 1) { const wd = w0 * Math.sqrt(1 - z*z); return 1 - Math.exp(-z*w0*s) * (Math.cos(wd*s) + (z*w0/wd) * Math.sin(wd*s)); }
+  return 1 - Math.exp(-w0*s) * (1 + w0*s);
+}
+const stagger = (i, a, step = .07, first = .1) => a + first + i * step;
+function enter(el, t, a, {dur = T.normal, dist = D.sm, blur = 10, scale = 1, ease = smooth} = {}) {
+  const q = ease(p(t, a, a + dur));
+  el.style.opacity = q;
+  el.style.filter = blur ? `blur(${(1 - q) * blur}px)` : "";
+  el.style.transform = `translateY(${(1 - q) * dist}px) scale(${lerp(scale, 1, q)})`;
+  return q;
+}
+function show(el, t, a, b, dist = D.md) {
+  const i = smooth(p(t, a, a + T.slow)), o = sharp(p(t, b - T.slow * EXIT, b));
+  el.style.opacity = Math.min(i, 1 - o);
+  el.style.transform = `translateY(${(1 - i) * dist - o * dist / 2}px)`;
+}
+const $ = id => document.getElementById(id);
+const all = s => [...document.querySelectorAll(s)];
+
+// uma ideia por cena; a ultima passa da DURATION para o CTA ficar inteiro no ultimo quadro
+const S = { s1:[0,3.0], s2:[2.8,8.4], s3:[8.2,12.6], s4:[12.4,15.0], s5:[14.8,18.4] };
+
+function render(t) {
+  $("prog").firstElementChild.style.width = (cl(t / DURATION) * 100) + "%";
+  for (const k in S) show($(k), t, S[k][0], S[k][1]);
+
+  // 1. gancho: palavra por palavra
+  enter($("e1"), t, .05, {dur: T.normal, dist: D.xs});
+  all("#s1 .w").forEach((w, i) => enter(w, t, stagger(i, .15, .09), {dur: T.slow, dist: D.lg}));
+
+  // 2. celular sobe; as ofertas chegam uma por vez (uma a cada 1,2 s)
+  const f = spring(t - (S.s2[0] + .35), SPR.gentle);
+  $("fone").style.transform = `translateY(${(1 - f) * D.xl}px) scale(${lerp(.96, 1, cl(f))})`;
+  $("fone").style.opacity = cl(f * 1.4);
+  all("#s2 .m").forEach((m, i) => {
+    const a = S.s2[0] + 1.3 + i * 1.2;
+    const q = enter(m, t, a, {dur: T.normal, dist: D.sm, blur: 0, scale: .95});
+    const tag = m.querySelector(".tag");
+    const k = spring(t - (a + .3), SPR.snappy);
+    tag.style.transform = `scale(${lerp(.8, 1, cl(k))})`; tag.style.opacity = cl(k * 1.5) * q;
+  });
+
+  // 3. conferencias: o item entra e o visto desenha
+  all("#s3 .it").forEach((it, i) => {
+    const a = S.s3[0] + .7 + i * .75;
+    enter(it, t, a, {dur: T.normal, dist: D.sm, blur: 6});
+    const tk = it.querySelector(".tk"), L = 24;
+    tk.style.strokeDasharray = L; tk.style.strokeDashoffset = L * (1 - smooth(p(t, a + .3, a + .65)));
+  });
+  enter($("falha"), t, S.s3[0] + 3.1, {dur: T.slow, dist: D.sm});
+
+  // 4. lojas em cascata
+  all("#s4 .lj").forEach((l, i) => enter(l, t, stagger(i, S.s4[0] + .25, .12), {dur: T.normal, dist: D.md}));
+  enter($("gratis"), t, S.s4[0] + 1.2, {dur: T.slow, dist: D.sm});
+
+  // 5. CTA: logo, frase, botao, endereco; segura ate o fim
+  enter($("logo"), t, S.s5[0] + .2, {dur: T.slow, dist: D.sm, scale: .96});
+  enter($("c1"), t, S.s5[0] + .55, {dur: T.slow, dist: D.md});
+  const b = spring(t - (S.s5[0] + 1.1), SPR.gentle);
+  $("c2").style.opacity = cl(b * 1.5); $("c2").style.transform = `translateY(${(1 - cl(b)) * D.sm}px) scale(${lerp(.95, 1, b)})`;
+  enter($("c3"), t, S.s5[0] + 1.5, {dur: T.normal, dist: D.xs});
+  enter($("nota"), t, S.s5[0] + 1.8, {dur: T.normal, dist: 0, blur: 0});
+}
+window.render = render;
+render(0);
+if (!window.__capture) {
+  const st = performance.now();
+  (function loop(){ render(((performance.now() - st) / 1000) % DURATION); requestAnimationFrame(loop); })();
+}
+</script>
+</body>
+</html>
