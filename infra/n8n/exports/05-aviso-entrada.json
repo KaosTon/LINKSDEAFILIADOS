@@ -1,0 +1,207 @@
+{
+  "name": "[Ofertas] 05 Aviso de entrada na comunidade",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "61b088d9-a04a-5a5e-bd02-8729b2e198b4",
+      "name": "A cada 5 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\n\nfunction idDoMembro(telefone) {\n  const t = String(telefone || '');\n  return crypto ? crypto.createHash('sha256').update('membro:' + t).digest('hex').slice(0, 12) : t.slice(-6);\n}\n\nfunction novosNoGrupo(mem, participantes) {\n  if (!Array.isArray(participantes) || !participantes.length) return 0;\n  const ids = [...new Set(participantes.map(idDoMembro))];\n  const antes = Array.isArray(mem.entradaIds) ? mem.entradaIds : null;\n  mem.entradaIds = ids;\n  if (!antes) return 0;\n  const a = new Set(antes);\n  return Math.max(0, Math.min(ids.filter(x => !a.has(x)).length, ids.length - antes.length));\n}\n\nfunction grupoDoAvisoDeEntrada(env) {\n  const v = String((env && env.AVISO_ENTRADA_GRUPO) || '').trim();\n  if (v === '0') return '';\n  if (v) return v;\n  const g = [...new Set(String((env && env.GRUPO_OFERTAS) || '').split(/[\\s,;]+/).map(x => x.trim()).filter(Boolean))];\n  return g.length > 1 ? g[g.length - 1] : '';\n}\n\nconst horaSP = (agora) => Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false }).format(agora));\n\nconst horaDoAvisoDeEntrada = (agora) => horaSP(agora) >= 7 && horaSP(agora) < 23;\n\nfunction textoEntrada(n, total) {\n  return [`\\u{1F44B} *${n === 1 ? 'Entrou 1 pessoa' : `Entraram ${n} pessoas`} na comunidade* (agora ${total})`, '',\n    'Quem entra vê o grupo vazio. Abra o grupo de Avisos e envie o histórico de mensagens para quem chegou.'].join('\\n');\n}\n\nasync function participantesDoGrupo(http, env, grupo) {\n  if (!env.ZAPI_BASE_URL || !env.ZAPI_INSTANCE_ID || !env.ZAPI_INSTANCE_TOKEN) return null;\n  const raiz = `${String(env.ZAPI_BASE_URL).replace(/\\/+$/, '')}/instances/${env.ZAPI_INSTANCE_ID}/token/${env.ZAPI_INSTANCE_TOKEN}`;\n  const r = await http.httpRequest({ method: 'GET', url: `${raiz}/light-group-metadata/${encodeURIComponent(grupo)}`, json: true, timeout: 15000,\n    headers: env.ZAPI_CLIENT_TOKEN ? { 'client-token': env.ZAPI_CLIENT_TOKEN } : {} });\n  return r && Array.isArray(r.participants) ? r.participants.map(x => (x && (x.phone || x.lid)) || JSON.stringify(x)) : null;\n}\n\nconst mem = $getWorkflowStaticData('global');\nconst agora = new Date();\n// Rodado na mão no editor: mostra o que leu e não avisa (a memória só grava em produção).\nconst teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);\nconst grupo = grupoDoAvisoDeEntrada($env);\nif (!$env.GRUPO_RASCUNHO || !grupo) return [{ json: { avisar: false, motivo: 'sem_grupo' } }];\nif (!horaDoAvisoDeEntrada(agora) && !teste) return [{ json: { avisar: false, motivo: 'fora_do_horario' } }];\nlet part = null;\ntry { part = await participantesDoGrupo(this.helpers, $env, grupo); } catch (e) { part = null; }\nif (!part) return [{ json: { avisar: false, motivo: 'sem_lista' } }];\nconst entrou = novosNoGrupo(mem, part);\nconst total = mem.entradaIds.length;\nif (!entrou || teste) return [{ json: { avisar: false, motivo: teste ? 'teste' : 'ninguem_novo', total, entrou } }];\nreturn [{ json: { avisar: true, entrou, total, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) } }];"
+      },
+      "id": "49d88fce-8d7f-5092-800a-41b40b798acf",
+      "name": "Confere quem entrou",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.avisar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "cdf3a58c-7951-5bab-a0eb-d7a7a41a5c60",
+      "name": "Avisa?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "0lJeNYqZyDG9Rq2J"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "origem",
+              "displayName": "origem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "titulo",
+              "displayName": "titulo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "value": {
+            "phone": "={{ $json.grupo }}",
+            "message": "={{ $json.texto }}",
+            "image": "",
+            "origem": "05-aviso-entrada",
+            "link": "",
+            "titulo": ""
+          }
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "52940896-be24-511e-b1b3-578ced96a770",
+      "name": "Avisa no rascunho",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        -100
+      ]
+    }
+  ],
+  "connections": {
+    "A cada 5 minutos": {
+      "main": [
+        [
+          {
+            "node": "Confere quem entrou",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisa?": {
+      "main": [
+        [
+          {
+            "node": "Avisa no rascunho",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confere quem entrou": {
+      "main": [
+        [
+          {
+            "node": "Avisa?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
