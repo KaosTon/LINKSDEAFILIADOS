@@ -1,0 +1,9 @@
+@font-face { font-family: Inter; font-weight: 500; src: url(../../encurtador/fontes/Inter-Medium.otf); }
+@font-face { font-family: Inter; font-weight: 600; src: url(../../encurtador/fontes/Inter-SemiBold.otf); }
+@font-face { font-family: Inter; font-weight: 700; src: url(../../encurtador/fontes/Inter-Bold.otf); }
+@font-face { font-family: Inter; font-weight: 800; src: url(../../encurtador/fontes/Inter-ExtraBold.otf); }
+@font-face { font-family: Inter; font-weight: 900; src: url(../../encurtador/fontes/Inter-Black.otf); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 1080px; height: 1350px; font-family: Inter, sans-serif; overflow: hidden; }
+.pill { display: inline-flex; align-items: center; gap: 16px; background: linear-gradient(90deg, #f7941d, #e53b2c); color: #fff; font-weight: 800; font-size: 44px; padding: 30px 56px; border-radius: 999px; box-shadow: 0 24px 50px -20px rgba(229,59,44,.7); }
+.pill svg { width: 52px; height: 52px; fill: #fff; }

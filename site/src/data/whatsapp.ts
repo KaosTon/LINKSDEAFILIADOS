@@ -20,6 +20,7 @@ export const MENSAGENS_ROTA: Record<string, string> = {
   "/autor/wellington-santos": "autor",
   "/blog": "blog",
   "/links": "links",
+  "/entrar": "anuncio",
   "/politica-de-privacidade": "privacidade",
   "/oferta-encerrada": "oferta-encerrada",
 };
@@ -64,4 +65,13 @@ export function mensagemDaRota(pathname: string | null): string {
 
 export function whatsDaRota(pathname: string | null): string {
   return linkWhats(mensagemDaRota(pathname));
+}
+
+/**
+ * Origem do botao da pagina /entrar: "anuncio" ou "anuncio:codigo" quando o anuncio manda ?c=codigo
+ * (um codigo por criativo). So letras, numeros e "-", no maximo 20, para nao virar lixo na contagem.
+ */
+export function origemAnuncio(codigo: string | null): string {
+  const c = (codigo || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 20);
+  return c ? `${MENSAGENS_ROTA["/entrar"]}:${c}` : MENSAGENS_ROTA["/entrar"];
 }
