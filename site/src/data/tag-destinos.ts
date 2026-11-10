@@ -20,6 +20,12 @@ const DESTINOS: Destino[] = [
   { href: "/blog/compra-garantida-mercado-livre", tags: ["compra garantida mercado livre", "como pedir reembolso no mercado livre", "mediação mercado livre"] },
   { href: "/blog/garantia-de-a-a-z-amazon", tags: ["garantia de a a z amazon", "como acionar garantia amazon", "reembolso amazon vendedor parceiro"] },
   { href: "/blog/link-de-afiliado-o-preco-muda", tags: ["link de afiliado", "link de afiliado muda o preço", "como funciona link de afiliado"] },
+  { href: "/blog/historico-de-preco-como-consultar", tags: ["histórico de preço", "como ver histórico de preço", "gráfico de preço", "alerta de preço", "menor preço dos últimos 30 dias"] },
+  { href: "/blog/esquenta-black-friday-comprar-antes-ou-esperar", tags: ["esquenta black friday", "esquenta black friday vale a pena", "black november", "comprar antes da black friday", "preço caiu depois da compra"] },
+  { href: "/blog/cyber-monday-2026-quando-e", tags: ["cyber monday 2026", "quando é a cyber monday", "o que é cyber monday", "diferença entre black friday e cyber monday", "cyber monday brasil"] },
+  { href: "/blog/frete-gratis-amazon-mercado-livre-shopee", tags: ["frete grátis", "frete grátis amazon", "frete grátis mercado livre", "frete grátis shopee", "valor mínimo frete grátis"] },
+  { href: "/blog/cashback-como-funciona", tags: ["cashback", "cashback como funciona", "cashback vale a pena", "cashback não caiu", "cashback ou cupom"] },
+  { href: "/blog/calendario-de-promocoes-datas-de-desconto", tags: ["calendário de promoções", "datas de promoção 2027", "11.11", "12.12", "datas duplas", "dia do consumidor 2027", "black friday 2027"] },
 ];
 
 const MAPA = new Map<string, string>();

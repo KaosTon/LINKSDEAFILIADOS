@@ -70,3 +70,43 @@ Programa de Associados" da Amazon (amazon.com.br/b?node=104008255011) traz restr
 de mensagem privado, a preço e porcentagem de desconto nas comunicações e a sites só de ofertas.
 **Resolvido em 19/10/2026:** o Wellington falou direto com a Amazon e está liberado postar Amazon
 no grupo como hoje. Não levantar de novo.
+
+## Lote 2: posts 11 a 16 (10/11/2026)
+
+Pedido do Wellington: "pode fazer todos mas com padrão de qualidade revisado e confirmado". Seguiu o
+mesmo rito do lote 1 (19/10/2026): pesquisa por frente, texto escrito só com o que tinha fonte, e
+depois uma revisão independente (dois revisores que não participaram da escrita) refazendo a
+checagem de cada número, data, citação e URL. A rede ainda bloqueia a abertura direta dos sites
+oficiais, então a régua foi o trecho oficial indexado ou duas fontes independentes que concordam.
+Fontes e frases em `DOCS/fontes-blog/notas-e.md`.
+
+Resultado da revisão: nenhum erro de fato nos posts de histórico de preço, esquenta, Cyber Monday e
+cashback; dois erros corrigidos (exceção de Móveis no frete do Magalu; nome da campanha
+"A Maior Liquida do Ano" da Shopee). Ajustes de precisão aplicados:
+
+- **Histórico de preço:** Buscapé passou a "de 40 dias a 1 ano, conforme a página"; os 76,47% do
+  Procon-SP são dos que costumam comprar na Black Friday; a recomendação dos 60 dias foi enviada a
+  empresas com mais reclamações; a frase da cartilha da Senacon virou paráfrase (sem aspas).
+- **Esquenta:** datas da Amazon atribuídas ao InvestNews; parcelamento do Mercado Livre com a
+  condição (cartão Mercado Pago, produtos selecionados).
+- **Cyber Monday:** link da CNBC trocado pelo que a busca indexa.
+- **Frete grátis:** Amazon "para quem já é cliente"; Meli+ sem valor de teto (as páginas divergem
+  entre R$ 20 e R$ 15); ShopeeVIP "por mês"; fonte da queda de R$ 79 para R$ 19 (06/06/2025).
+- **Cashback:** tirado o "2 a 15 dias" do Méliuz (as páginas divergem entre 10 e 15); frase do
+  Méliuz virou paráfrase; Inter com a condição do pagamento (cartão Inter, Pix ou débito).
+- **Calendário:** tirados o "9.9 foi a maior" e o faturamento do 11.11 de 2025 (fontes divergem);
+  ficou a projeção da Confi para 2026.
+
+Os 6 entraram com `revisadoEm: "novembro de 2026"`. Se preferir ler antes de indexar, é só apagar
+essa linha do post em `src/data/blog.ts` (volta a "revisão pendente" e noindex).
+
+### O que vale o Wellington bater o olho (muda rápido)
+1. **Frete grátis:** os mínimos (Amazon R$ 19, Mercado Livre R$ 19, Magalu R$ 99) e o ShopeeVIP.
+   Abrir a ajuda de cada loja.
+2. **Esquenta:** as datas das campanhas de 2026 na tabela (vieram da imprensa, não da loja).
+3. **Cashback:** mínimo de resgate de R$ 20 no Méliuz e na Cuponomia; prazos do Inter.
+4. **Frases em primeira pessoa:** "como engenheiro, eu só acredito no desconto depois dessa conta"
+   (histórico), "eu comparo o total e o prazo" (frete), "eu coloco um desconto na conta do
+   cashback" (cashback), "eu gosto do calendário" (calendário). Trocar o que não soar como você.
+5. **Cashback, seção "O Tem Descontos dá cashback?":** diz que, se a pessoa ativar cashback antes
+   de comprar, a comissão vai para o programa de cashback e "sem problema". Confirmar se é esse o tom.
