@@ -61,10 +61,14 @@ Criado em 18/10/2026, a pedido do Wellington: "para nunca esquecer da qualidade 
 
 **Imagem**
 - Imagem própria por post, 1200x675, WebP, nunca repetir fundo, casada com o tema.
-- Padrão da Virtus desde 20/07/2026: o agente gera com o Imagen 4
-  (`opensquad-virtus/skills/image-generator/scripts/generate.js`, lê `GEMINI_API_KEY`), converte
-  para WebP e **mostra a imagem no chat antes do commit** (no máximo 2 rodadas de ajuste). Sem a
-  chave no ambiente, a capa tipográfica de `scripts/capas-blog.py` segura.
+- Padrão da Virtus desde 20/07/2026: o agente gera a capa por IA, converte para WebP e **mostra a
+  imagem antes de publicar** (no máximo 2 rodadas de ajuste). Aqui: `python3 scripts/capas-gemini.py slug`
+  (Gemini, lê `GEMINI_API_KEY`; uma cena por slug no próprio script). Sem a chave no ambiente, a capa
+  tipográfica de `scripts/capas-blog.py` segura.
+- Estilo (11/11/2026): um objeto só, grande e literal, em fundo de cor cheia da marca (marinho, azul,
+  laranja ou vermelho, alternando). Sem texto e sem logo na imagem (o Google pede isso para mostrar
+  a capa grande, e o título já aparece escrito ao lado), sem rosto, sem marca de loja e sem cena
+  exagerada (fogo, raio): tem cara de isca e briga com a proposta de conferir antes de confiar.
 
 ## 3. Método da Fábrica de Sites (resumo; a íntegra está no `METODO.md`)
 

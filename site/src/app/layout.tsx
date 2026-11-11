@@ -33,7 +33,8 @@ export const metadata: Metadata = {
   description: SITE.descricao,
   // No Google desde 19/10/2026 (lancamento, pedido do Wellington). Post sem revisao do autor fica
   // fora (noindex na propria pagina, src/app/blog/[slug]/page.tsx) ate ter `revisadoEm`.
-  robots: { index: true, follow: true },
+  // max-image-preview:large (11/11/2026): sem isso o Google não mostra a capa grande no Discover nem na busca.
+  robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   twitter: { card: "summary_large_image" },
   openGraph: {
     title: SITE.tituloSeo,
