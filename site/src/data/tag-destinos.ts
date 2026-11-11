@@ -26,6 +26,9 @@ const DESTINOS: Destino[] = [
   { href: "/blog/frete-gratis-amazon-mercado-livre-shopee", tags: ["frete grátis", "frete grátis amazon", "frete grátis mercado livre", "frete grátis shopee", "valor mínimo frete grátis"] },
   { href: "/blog/cashback-como-funciona", tags: ["cashback", "cashback como funciona", "cashback vale a pena", "cashback não caiu", "cashback ou cupom"] },
   { href: "/blog/calendario-de-promocoes-datas-de-desconto", tags: ["calendário de promoções", "datas de promoção 2027", "11.11", "12.12", "datas duplas", "dia do consumidor 2027", "black friday 2027"] },
+  { href: "/blog/como-saber-se-um-site-e-confiavel", tags: ["site confiável", "como saber se um site é confiável", "site falso", "consultar cnpj de loja", "evite esses sites procon", "loja online é segura"] },
+  { href: "/blog/compra-online-nao-chegou-o-que-fazer", tags: ["compra não chegou", "pedido atrasado o que fazer", "atraso na entrega", "produto não entregue", "cancelar compra por atraso"] },
+  { href: "/blog/loja-cancelou-compra-preco-errado", tags: ["loja cancelou minha compra", "preço errado loja é obrigada a vender", "erro de preço", "oferta não cumprida", "pedido cancelado pela loja"] },
 ];
 
 const MAPA = new Map<string, string>();

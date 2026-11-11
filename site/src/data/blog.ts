@@ -1437,6 +1437,378 @@ export const POSTS: Post[] = [
 <li>Data de promoção não garante desconto: acompanhe o preço quatro semanas antes.</li>
 </ul>`,
   },
+  {
+    slug: "como-saber-se-um-site-e-confiavel",
+    titulo: "Como saber se um site de compras é confiável antes de pagar",
+    metaTitle: "Como saber se um site de compras é confiável: 5 checagens",
+    metaDescription: "Confira o endereço, o CNPJ na Receita, o dono do domínio, a reputação e a lista do Procon-SP antes de pagar. Veja os sinais de site falso e o que fazer.",
+    resumo: "Cinco checagens gratuitas, em fontes oficiais, para saber se uma loja online existe de verdade antes de pagar. E o que fazer se o site era falso.",
+    resumoRapido: [
+      "Confira o endereço letra por letra: site falso costuma copiar o nome da loja com uma letra trocada.",
+      "Consulte o CNPJ na Receita Federal (grátis) e o dono do domínio no Registro.br.",
+      "Veja a reputação no consumidor.gov.br e a lista \"Evite esses sites\" do Procon-SP.",
+      "Cadeado no navegador não prova que a loja é honesta, e site que só aceita Pix ou boleto pede cuidado dobrado."
+    ],
+    dataPublicacao: "2026-11-11",
+    tags: ["site confiável", "como saber se um site é confiável", "site falso", "consultar cnpj de loja", "evite esses sites procon", "loja online é segura"],
+    servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "seus-direitos",
+    imagem: "/blog/como-saber-se-um-site-e-confiavel.webp",
+    faq: [
+      { q: "Como saber se um site de compras é confiável?", a: "Confira se o endereço é exatamente o da loja, consulte o CNPJ na Receita Federal, veja quem registrou o domínio no Registro.br, pesquise a reputação no consumidor.gov.br e veja se o site está na lista \"Evite esses sites\" do Procon-SP." },
+      { q: "O cadeado no navegador garante que o site é seguro?", a: "Não. O cadeado indica só que a conexão é criptografada. Site falso também pode ter cadeado, então ele não prova que a loja existe nem que vai entregar." },
+      { q: "Onde consultar o CNPJ de uma loja online?", a: "No site da Receita Federal, no serviço de Comprovante de Inscrição e de Situação Cadastral. A consulta é gratuita e mostra se o CNPJ está ativo. O nome que aparece deve bater com o da loja." },
+      { q: "Paguei por Pix em um site falso. O que fazer?", a: "Avise o seu banco o quanto antes e peça a abertura do Mecanismo Especial de Devolução (MED). Segundo o Banco Central, o pedido vale para transações feitas há no máximo 80 dias, em caso de suspeita de fraude." },
+      { q: "Site que não está na lista do Procon é confiável?", a: "Não necessariamente. A lista reúne sites que receberam reclamação, foram notificados e não responderam ou não foram encontrados. Um site novo de golpe pode ainda não ter entrado nela." },
+    ],
+    fontes: [
+      { nome: "Procon-SP: lista Evite esses sites", url: "https://sistemas.procon.sp.gov.br/evitesite/list/evitesites.php" },
+      { nome: "Decreto 7.962/2013, comércio eletrônico (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/decreto/d7962.htm" },
+      { nome: "Receita Federal: comprovante de inscrição e de situação cadastral do CNPJ", url: "https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" },
+      { nome: "Registro.br: consulta Whois", url: "https://registro.br/tecnologia/ferramentas/whois/" },
+      { nome: "NIC.br: 8 formas de identificar se um site é seguro ou falso", url: "https://www.nic.br/noticia/na-midia/8-formas-de-identificar-se-um-site-e-seguro-ou-falso/" },
+      { nome: "consumidor.gov.br: empresas participantes e indicadores", url: "https://www.consumidor.gov.br/" },
+      { nome: "Senacon, Ministério da Justiça: Black Friday 2025, orientações (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-2025-senacon-orienta-consumidores-a-evitar-golpes-e-comprar-com-seguranca" },
+      { nome: "Febraban: golpe da falsa venda, 1º semestre de 2025 (2025)", url: "https://portal.febraban.org.br/noticia/4381/pt-br/" },
+      { nome: "Banco Central: guia do Mecanismo Especial de Devolução (MED)", url: "https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Guia_MED.pdf" },
+      { nome: "Google: status do site no Navegação segura", url: "https://transparencyreport.google.com/safe-browsing/search?hl=pt_BR" },
+      { nome: "Serasa Experian: anúncios falsos na semana da Black Friday 2025 (2025)", url: "https://www.serasaexperian.com.br/sala-de-imprensa/prevencao-a-fraude/anuncios-falsos-disparam-147-na-semana-da-black-friday-aponta-serasa-experian/" },
+      { nome: "Procon-SP: balanço da Black Friday 2025 (2025)", url: "https://www.procon.sp.gov.br/black-friday-2025-procon-sp-recebe-mais-de-3-mil-interacoes-e-encontra-irregularidades-em-mais-de-340-estabelecimentos-em-todo-o-estado/" },
+    ],
+    conteudo: `<p>O preço está ótimo, a loja você nunca viu, e o anúncio apareceu no meio do seu feed. Antes de digitar o cartão ou mandar o Pix, dá para descobrir em cinco minutos se aquela loja existe. <strong>Confira cinco coisas, todas de graça: o endereço do site letra por letra, o CNPJ na Receita Federal, o dono do domínio no Registro.br, a reputação no consumidor.gov.br e a lista "Evite esses sites" do Procon-SP.</strong> Se o site falhar em uma delas, não compre.</p>
+
+<h2>O que a lei obriga um site de compras a mostrar?</h2>
+<p>O Decreto 7.962/2013, que regula o comércio eletrônico, determina no art. 2º que o site mostre, em local de destaque e de fácil visualização, o nome empresarial e o número do CNPJ (ou CPF) de quem vende, além do endereço físico e eletrônico e das informações para contato.</p>
+<p>Na prática: role até o rodapé. Loja séria mostra razão social, CNPJ e endereço. Se não tem nada disso, ou se só existe um formulário de contato, o site já está descumprindo a regra antes de vender qualquer coisa.</p>
+
+<h2>Como conferir a loja em 5 passos?</h2>
+<table>
+<thead><tr><th>O que conferir</th><th>Onde</th><th>O que você quer ver</th></tr></thead>
+<tbody>
+<tr><td>Endereço do site</td><td>Barra do navegador</td><td>Exatamente o endereço da loja, sem letra a mais ou trocada</td></tr>
+<tr><td>CNPJ</td><td>Receita Federal, comprovante de situação cadastral</td><td>Situação ativa e nome igual ao da loja</td></tr>
+<tr><td>Dono do domínio</td><td>Registro.br, consulta Whois (sites terminados em .br)</td><td>O mesmo CNPJ do rodapé e um domínio que não foi criado na semana passada</td></tr>
+<tr><td>Reputação</td><td>consumidor.gov.br e sites de reclamação</td><td>Empresa que responde e resolve</td></tr>
+<tr><td>Lista de sites a evitar</td><td>Procon-SP, "Evite esses sites"</td><td>O site fora da lista</td></tr>
+</tbody>
+</table>
+<h3>1. Leia o endereço letra por letra</h3>
+<p>A Febraban alerta para sites clonados com uma pequena alteração no endereço: uma letra a mais, um zero no lugar da letra "o". A orientação é digitar o endereço da loja no navegador em vez de clicar em link recebido por mensagem ou anúncio.</p>
+<h3>2. Consulte o CNPJ na Receita Federal</h3>
+<p>O serviço de Comprovante de Inscrição e de Situação Cadastral é gratuito e não pede login: você digita o CNPJ que está no rodapé do site e vê se ele existe e se está ativo. Compare o nome que aparece com o nome da loja. CNPJ de uma empresa que não tem relação com o que o site vende é sinal de dado copiado.</p>
+<h3>3. Veja quem registrou o domínio</h3>
+<p>Para sites terminados em .br, a consulta Whois do Registro.br mostra quem é o titular do domínio. Para empresa, aparecem o nome empresarial e o CNPJ. Vale olhar também há quanto tempo o domínio existe: quanto mais recente, maior o risco. Uma "loja tradicional" com domínio de poucos dias não fecha a conta.</p>
+<h3>4. Pesquise a reputação</h3>
+<p>No consumidor.gov.br, plataforma do governo federal, o perfil de cada empresa mostra o índice de solução das reclamações, a satisfação de quem reclamou e o prazo médio de resposta. A participação das empresas é voluntária, então não achar a loja lá não prova nada contra ela. Complete a pesquisa em sites de reclamação e leia as queixas mais recentes, não só a nota.</p>
+<h3>5. Consulte a lista do Procon-SP</h3>
+<p>O Procon-SP mantém a lista "Evite esses sites", com endereços que tiveram reclamações de consumidores, foram notificados e não responderam ou não foram encontrados. Vale para o Brasil todo como consulta. Só não leia ao contrário: site fora da lista não está aprovado, ele só não foi denunciado ainda.</p>
+<p>Um extra para quem quer ir além: a ferramenta "Navegação segura", do Google, informa se um endereço está marcado como perigoso por vírus ou roubo de dados. Ela não avalia se a loja entrega.</p>
+
+<h2>O cadeado garante que o site é seguro?</h2>
+<p>Não. O cadeado ao lado do endereço indica que a conexão entre você e o site é criptografada, e só isso. Em material divulgado pelo NIC.br, o órgão que cuida dos domínios .br, o aviso é que nada impede criminosos de usar o cadeado para o site parecer legítimo.</p>
+<p>O cadeado continua sendo necessário: sem ele, não digite dado nenhum. Ele só não é suficiente. Como engenheiro, eu trato o cadeado como o cinto de segurança: obrigatório, mas não me diz quem está dirigindo.</p>
+
+<h2>Quais sinais indicam um site falso?</h2>
+<p>Os alertas da Senacon, do Ministério da Justiça, e da Febraban apontam os mesmos sinais:</p>
+<ul>
+<li><strong>Preço muito abaixo do mercado.</strong> Para a Senacon, oferta extremamente baixa pode indicar fraude ou produto falsificado. Se você acompanha o preço, sabe o que é baixo demais: veja <a href="/blog/historico-de-preco-como-consultar">como consultar o histórico de preço</a>.</li>
+<li><strong>Só aceita Pix, boleto ou transferência.</strong> A Senacon explica que golpistas preferem esses meios porque dificultam o reembolso.</li>
+<li><strong>Loja recém-criada em rede social.</strong> A Febraban cita perfis novos, com ofertas muito vantajosas e só depoimentos positivos.</li>
+<li><strong>Sem CNPJ, sem endereço e sem canal de atendimento.</strong> A Senacon recomenda conferir se o CNPJ está ativo e se há canais de atendimento.</li>
+<li><strong>Endereço parecido com o de loja famosa.</strong> É o site clonado do passo 1.</li>
+</ul>
+<p>Um sinal sozinho pode ser coincidência. Dois ou mais, feche a aba. Golpe também chega por mensagem, e os sinais em grupo de ofertas estão no guia <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a></p>
+
+<h2>Como pagar com menos risco em loja que você não conhece?</h2>
+<p>A Senacon recomenda priorizar o cartão de crédito em loja desconhecida. Se for pagar por Pix, o Banco Central orienta conferir sempre o nome do destinatário antes de confirmar: o aplicativo mostra quem vai receber. Nome de pessoa física ou de empresa diferente da loja é motivo para cancelar.</p>
+<p>A comparação completa entre os dois meios está em <a href="/blog/pix-ou-cartao-compra-online">Pix ou cartão na compra online</a>.</p>
+
+<h2>Os golpes aumentam na Black Friday?</h2>
+<p>Aumentam, e há número para isso:</p>
+<ul>
+<li>A Serasa Experian informou que os anúncios falsos subiram 147% na semana da Black Friday de 2025, e que mapeou 103 sites falsos no período.</li>
+<li>A Febraban registrou o golpe da falsa venda como o mais relatado por clientes de bancos no 1º semestre de 2025: 174 mil ocorrências, 314% a mais que no mesmo período de 2024.</li>
+<li>O Procon-SP recebeu 2.979 reclamações na Black Friday de 2025, contra 2.133 no ano anterior.</li>
+</ul>
+<p>Em 2026 a data cai em 27 de novembro. O que fazer antes dela está em <a href="/blog/black-friday-2026-quando-e">Black Friday 2026: quando é e como se preparar</a>.</p>
+
+<h2>Paguei e era golpe: o que fazer?</h2>
+<ol>
+<li><strong>Avise o seu banco na hora.</strong> No Pix, peça a abertura do Mecanismo Especial de Devolução (MED). Segundo o guia do Banco Central, o pedido vale para transações feitas há no máximo 80 dias, e o MED serve para suspeita de fraude. Ele não cobre desacordo com loja verdadeira, como atraso na entrega.</li>
+<li><strong>No cartão, conteste a compra</strong> com a operadora e bloqueie o cartão se digitou os dados em site suspeito.</li>
+<li><strong>Guarde as provas:</strong> prints do site, do anúncio, da conversa e do comprovante.</li>
+<li><strong>Registre boletim de ocorrência</strong> e denuncie o site ao Procon do seu estado.</li>
+</ol>
+<p>Quanto mais rápido o aviso ao banco, maior a chance de ainda haver dinheiro na conta de destino.</p>
+
+<h2>O que o Tem Descontos faz para você não cair em site falso?</h2>
+<table>
+<thead><tr><th>O que nós fazemos</th><th>Por que importa</th></tr></thead>
+<tbody>
+<tr><td>Link sempre para a loja oficial (Amazon, Mercado Livre, Shopee, Magalu), nunca para site intermediário</td><td>A compra acontece na loja, com as proteções dela</td></tr>
+<tr><td>Conferimos o preço na própria loja antes de enviar</td><td>Preço mais de 3% abaixo do da loja sem cupom que explique: oferta descartada</td></tr>
+<tr><td>Shopee: só produto com nota 4,5 ou mais e 50 vendas ou mais</td><td>Menos risco de vendedor que não entrega</td></tr>
+<tr><td>Não pedimos dado pessoal, Pix ou código no privado</td><td>Se alguém pedir em nosso nome, é golpe</td></tr>
+</tbody>
+</table>
+<p>Mesmo assim, confira o endereço antes de pagar: é um hábito de dez segundos. Quem somos está em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Endereço exato, CNPJ ativo, dono do domínio, reputação e lista do Procon-SP: cinco checagens grátis.</li>
+<li>A lei obriga o site a mostrar nome empresarial, CNPJ e endereço.</li>
+<li>Cadeado é necessário, mas não prova que a loja é honesta.</li>
+<li>Preço baixo demais e pagamento só por Pix ou boleto são os sinais mais comuns.</li>
+<li>Caiu em golpe no Pix: avise o banco na hora e peça o MED.</li>
+</ul>`,
+  },
+  {
+    slug: "compra-online-nao-chegou-o-que-fazer",
+    titulo: "Compra online não chegou ou atrasou: o que fazer",
+    metaTitle: "Compra online não chegou ou atrasou: o que fazer",
+    metaDescription: "O prazo de entrega venceu e a compra não chegou? Veja os 3 direitos do art. 35 do CDC, o caminho em cada loja e como reclamar se a loja não resolver.",
+    resumo: "Passou o prazo e o pedido não chegou: você pode exigir a entrega, aceitar outro produto ou cancelar e receber tudo de volta. Veja o caminho em cada loja.",
+    resumoRapido: [
+      "Atraso na entrega é descumprimento de oferta: pelo art. 35 do CDC você escolhe entre exigir a entrega, aceitar produto equivalente ou cancelar com o dinheiro de volta.",
+      "Comece pelo canal da própria loja, por escrito, e guarde protocolo e prints.",
+      "Cada loja tem prazo para abrir a reclamação: confira no seu pedido e não deixe passar.",
+      "Sem solução: consumidor.gov.br (a empresa tem 10 dias para responder), Procon e Juizado Especial Cível."
+    ],
+    dataPublicacao: "2026-11-11",
+    tags: ["compra não chegou", "pedido atrasado o que fazer", "atraso na entrega", "produto não entregue", "cancelar compra por atraso"],
+    servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
+    categoria: "seus-direitos",
+    imagem: "/blog/compra-online-nao-chegou-o-que-fazer.webp",
+    faq: [
+      { q: "A compra não chegou no prazo. Posso cancelar?", a: "Sim. Pelo art. 35 do Código de Defesa do Consumidor, se a loja não cumpre a oferta você pode rescindir o contrato e receber de volta o que pagou, com correção. O Procon-SP orienta que esse cancelamento é imediato à solicitação." },
+      { q: "A loja pode me obrigar a esperar mais?", a: "Não. A escolha é sua: exigir a entrega, aceitar outro produto equivalente ou cancelar com devolução do valor. A loja pode propor uma nova data, mas você não é obrigado a aceitar." },
+      { q: "O pedido aparece como entregue, mas não recebi. E agora?", a: "Avise a loja imediatamente pelo canal oficial e peça o comprovante de entrega. O prazo para contestar costuma ser curto: no Magalu, por exemplo, são 7 dias corridos a partir da data de entrega que consta no pedido." },
+      { q: "Tenho direito a indenização por atraso na entrega?", a: "Não automaticamente. O STJ entende que a falha na entrega é, em princípio, descumprimento de contrato, e que o dano moral depende de prova de uma situação excepcional. A devolução do valor pago, com correção, é garantida." },
+      { q: "Posso pedir estorno no cartão se o produto não chegou?", a: "Pode pedir a contestação da compra ao banco emissor, que costuma exigir prova de que você tentou resolver com a loja. Atenção: a Amazon informa que quem contesta a cobrança no cartão perde o direito à Garantia de A a Z." },
+    ],
+    fontes: [
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+      { nome: "Decreto 7.962/2013, comércio eletrônico (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/decreto/d7962.htm" },
+      { nome: "Procon-SP: guia de comércio eletrônico", url: "https://www.procon.sp.gov.br/wp-content/uploads/2024/08/Guia_de_Comercio_Eletronico.pdf" },
+      { nome: "Senacon, Ministério da Justiça: guia para compras seguras na Black Friday (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/senacon-lanca-guia-para-compras-seguras-na-black-friday" },
+      { nome: "consumidor.gov.br: como funciona", url: "https://www.consumidor.gov.br/pages/principal/como-funciona" },
+      { nome: "STJ: falta de estoque não impede consumidor de exigir entrega do produto anunciado (2021)", url: "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias/26042021-Falta-de-estoque-nao-impede-consumidor-de-exigir-entrega-do-produto-anunciado.aspx" },
+      { nome: "STJ: dano moral e o esforço para evitar a indústria das indenizações (2015)", url: "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias-antigas/2015/2015-02-08_08-00_Dano-moral-o-esforco-diario-da-Justica-para-evitar-a-industria-das-indenizacoes.aspx" },
+      { nome: "Amazon, central de ajuda: entregas atrasadas", url: "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=GL669SSDXFCJ2ZA6" },
+      { nome: "Amazon, central de ajuda: Garantia de A a Z", url: "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=GQ37ZCNECJKTFYQV" },
+      { nome: "Mercado Livre: Compra Garantida", url: "https://www.mercadolivre.com.br/compra-garantida" },
+      { nome: "Shopee, central de ajuda: Garantia Shopee", url: "https://help.shopee.com.br/portal/4/article/76327" },
+      { nome: "Magazine Luiza, atendimento: pedido consta como entregue", url: "https://atendimento.magazineluiza.com.br/hc/pt-br/articles/360045464832" },
+      { nome: "Correios: rastreamento de objetos", url: "https://rastreamento.correios.com.br/" },
+      { nome: "Procon-SP: balanço da Black Friday 2025 (2025)", url: "https://www.procon.sp.gov.br/black-friday-2025-procon-sp-recebe-mais-de-3-mil-interacoes-e-encontra-irregularidades-em-mais-de-340-estabelecimentos-em-todo-o-estado/" },
+    ],
+    conteudo: `<p>O prazo passou, o rastreio parou de atualizar e a loja responde com mensagem automática. É o problema mais comum da Black Friday: no balanço do Procon-SP de 2025, a não entrega ou a entrega com atraso respondeu por 31,62% das reclamações. <strong>Se a compra não chegou no prazo, a loja descumpriu a oferta, e o art. 35 do Código de Defesa do Consumidor deixa a escolha com você: exigir a entrega, aceitar um produto equivalente ou cancelar e receber de volta tudo o que pagou.</strong> O caminho começa na própria loja e tem prazo.</p>
+
+<h2>O que a lei garante quando a compra não chega?</h2>
+<p>Três saídas, e quem escolhe é você. O art. 35 do Código de Defesa do Consumidor (Lei 8.078/1990) diz que, se o fornecedor recusar cumprimento à oferta, o consumidor pode, "alternativamente e à sua livre escolha":</p>
+<ul>
+<li>"exigir o cumprimento forçado da obrigação, nos termos da oferta, apresentação ou publicidade";</li>
+<li>"aceitar outro produto ou prestação de serviço equivalente";</li>
+<li>"rescindir o contrato, com direito à restituição de quantia eventualmente antecipada, monetariamente atualizada, e a perdas e danos".</li>
+</ul>
+<p>O Procon-SP confirma, no guia de comércio eletrônico, que a não entrega caracteriza descumprimento de oferta, e que o cancelamento por esse motivo é imediato à solicitação: a loja não pode cobrar nada e deve devolver o que já foi pago.</p>
+<p>Outros dois pontos da lei ajudam:</p>
+<ul>
+<li><strong>Prazo é obrigatório.</strong> O art. 39, inciso XII, do CDC considera prática abusiva "deixar de estipular prazo para o cumprimento de sua obrigação". E o Decreto 7.962/2013 exige que o site informe o prazo de entrega antes da compra.</li>
+<li><strong>"Acabou o estoque" não encerra a conversa.</strong> O STJ decidiu em 2021 que, se a loja ainda tiver como entregar o produto, mesmo precisando comprá-lo de outra empresa, o consumidor continua podendo exigir a entrega.</li>
+</ul>
+
+<h2>O que fazer, passo a passo?</h2>
+<ol>
+<li><strong>Confira o prazo e o rastreio.</strong> Veja a data prometida no pedido e o último registro do rastreamento. Print dos dois.</li>
+<li><strong>Reclame pelo canal oficial da loja, por escrito.</strong> Chat, e-mail ou a área do pedido. Diga o que você escolheu: nova data de entrega, produto equivalente ou cancelamento com reembolso. Anote o protocolo.</li>
+<li><strong>Use a proteção da plataforma dentro do prazo.</strong> Em marketplace, a reclamação formal dentro do sistema é o que libera o reembolso. A tabela abaixo mostra onde.</li>
+<li><strong>Sem resposta, suba a reclamação.</strong> consumidor.gov.br, Procon e, se precisar, Juizado Especial Cível.</li>
+</ol>
+<p>A Senacon recomenda guardar prints, e-mails e comprovantes da compra: são a prova da oferta e de que você tentou resolver.</p>
+
+<h2>Qual é o caminho em cada loja?</h2>
+<p>As regras abaixo são as que as centrais de ajuda informavam em novembro de 2026. Elas mudam, e o prazo que vale é o que aparece no seu pedido.</p>
+<table>
+<thead><tr><th>Loja</th><th>O que fazer</th><th>Prazo informado</th></tr></thead>
+<tbody>
+<tr><td>Amazon, pedido enviado pela Amazon</td><td>Esperar um dia útil depois da data estimada e falar com o atendimento</td><td>Até 30 dias depois da data estimada de entrega</td></tr>
+<tr><td>Amazon, vendedor parceiro</td><td>Falar com o vendedor; sem solução, pedir a Garantia de A a Z</td><td>Até 90 dias depois da data máxima estimada de entrega</td></tr>
+<tr><td>Mercado Livre</td><td>Abrir reclamação pela Compra Garantida</td><td>28 dias a partir da data da compra para produto que não chegou</td></tr>
+<tr><td>Shopee</td><td>Pedir reembolso no aplicativo com o motivo de pedido não recebido, sem marcar o pedido como recebido</td><td>Dentro do período da Garantia Shopee, que aparece no pedido</td></tr>
+<tr><td>Magalu</td><td>Em "Meus pedidos", abrir o pedido e usar a opção de entrega atrasada</td><td>Se constar como entregue, 7 dias corridos para contestar</td></tr>
+</tbody>
+</table>
+<p>Na Shopee, o detalhe que mais custa dinheiro: o pagamento fica retido até você confirmar o recebimento ou a garantia expirar. Quem toca em "Pedido recebido" sem ter recebido libera o dinheiro para o vendedor.</p>
+<p>Cada programa tem um post nosso com o passo a passo: <a href="/blog/compra-garantida-mercado-livre">Compra Garantida do Mercado Livre</a>, <a href="/blog/garantia-de-a-a-z-amazon">Garantia de A a Z da Amazon</a> e <a href="/blog/como-saber-se-loja-da-shopee-e-confiavel">como saber se uma loja da Shopee é confiável</a>.</p>
+
+<h2>O pedido aparece como entregue e eu não recebi. E agora?</h2>
+<p>Aja no mesmo dia. Esse é o caso com prazo mais curto.</p>
+<ul>
+<li>Confira com quem mora com você, com a portaria e com vizinhos.</li>
+<li>Peça à loja o comprovante de entrega: quem assinou, onde e quando.</li>
+<li>Abra a contestação pelo canal oficial e guarde o protocolo.</li>
+</ul>
+<p>Se a entrega foi pelos Correios, você pode acompanhar pelo site de rastreamento, com o código do objeto. A reclamação por objeto não entregue cabe a quem enviou, então o seu caminho continua sendo a loja.</p>
+
+<h2>A loja não resolveu. Onde reclamar?</h2>
+<table>
+<thead><tr><th>Onde</th><th>Como funciona</th></tr></thead>
+<tbody>
+<tr><td>consumidor.gov.br</td><td>Plataforma do governo federal. A empresa tem até 10 dias para responder e você tem até 20 dias para avaliar se foi resolvido. Só atende empresas cadastradas</td></tr>
+<tr><td>Procon do seu estado ou cidade</td><td>Registra a reclamação e notifica a empresa</td></tr>
+<tr><td>Juizado Especial Cível</td><td>Para pedir na Justiça a entrega ou a devolução do valor. Em causas de até 20 salários mínimos, não precisa de advogado</td></tr>
+</tbody>
+</table>
+<p>Esses são os três canais que a Senacon indica. Leve os prints, o protocolo da loja e o comprovante de pagamento.</p>
+
+<h2>Posso pedir estorno no cartão?</h2>
+<p>Pode pedir a contestação da compra ao banco que emitiu o cartão. Produto não recebido está entre os motivos de contestação aceitos pelas bandeiras, e os bancos costumam pedir prova de que você tentou resolver com a loja antes. O prazo varia por banco e bandeira: pergunte ao seu.</p>
+<p>Um cuidado: na Amazon, quem contesta a cobrança no cartão deixa de ser elegível para o reembolso da Garantia de A a Z. Escolha um caminho de cada vez. A diferença de proteção entre os meios de pagamento está em <a href="/blog/pix-ou-cartao-compra-online">Pix ou cartão na compra online</a>.</p>
+
+<h2>Tenho direito a indenização pelo atraso?</h2>
+<p>Não automaticamente. O STJ já decidiu, em caso de produto comprado pela internet para o Natal e não entregue, que a falha na entrega é, em princípio, descumprimento de contrato, e que o dano moral só cabe em situação excepcional, com prova do prejuízo. O que está garantido é a devolução do valor, com correção, e a reparação de prejuízo material que você conseguir comprovar.</p>
+<p>Como engenheiro, eu separo o que é certo do que é possível: o reembolso é certo, a indenização depende do caso. Vale conversar com um advogado ou com a Defensoria se o atraso causou prejuízo real.</p>
+
+<h2>E se a loja nem existir?</h2>
+<p>Se o site sumiu, não responde e não tem CNPJ, o problema deixa de ser atraso e passa a ser golpe. Avise o banco na hora. O que conferir antes de comprar está em <a href="/blog/como-saber-se-um-site-e-confiavel">como saber se um site de compras é confiável</a>, e os sinais de golpe em grupo estão no guia <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a></p>
+
+<h2>O que o Tem Descontos faz para reduzir esse risco?</h2>
+<p>Nós não entregamos nada: a compra é feita na loja, e a entrega é responsabilidade dela. O que fazemos é escolher para onde o link aponta.</p>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que isso evita</th></tr></thead>
+<tbody>
+<tr><td>Link sempre para a loja oficial, nunca para site intermediário</td><td>Compra fora das proteções da plataforma</td></tr>
+<tr><td>Shopee: só produto com nota 4,5 ou mais e 50 vendas ou mais; acima de R$ 1.000, só de Loja Oficial ou loja indicada</td><td>Vendedor sem histórico de entrega</td></tr>
+<tr><td>Produto do link igual ao do texto, em nome e quantidade</td><td>Receber algo diferente do anunciado</td></tr>
+</tbody>
+</table>
+<p>Se o pedido atrasar, o caminho é o deste post, direto com a loja. Quem somos está em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Atraso é descumprimento de oferta: entrega, produto equivalente ou dinheiro de volta, à sua escolha (CDC, art. 35).</li>
+<li>Reclame por escrito no canal da loja e guarde protocolo e prints.</li>
+<li>Em marketplace, abra a reclamação dentro do prazo do programa de proteção.</li>
+<li>Na Shopee, não marque o pedido como recebido antes de receber.</li>
+<li>Sem solução: consumidor.gov.br, Procon e Juizado Especial Cível.</li>
+</ul>`,
+  },
+  {
+    slug: "loja-cancelou-compra-preco-errado",
+    titulo: "Loja cancelou a compra por preço errado: é obrigada a vender?",
+    metaTitle: "Loja cancelou a compra por preço errado: pode fazer isso?",
+    metaDescription: "A oferta anunciada obriga a loja, mas erro grosseiro de preço é exceção. Veja quando a loja tem de cumprir, quando pode cancelar e como exigir seu direito.",
+    resumo: "Oferta anunciada obriga a loja a cumprir, mas a Justiça abre exceção para erro grosseiro de preço. Veja a diferença e o que fazer se cancelarem o seu pedido.",
+    resumoRapido: [
+      "Regra: a oferta anunciada obriga a loja (CDC, art. 30), e cancelar pedido já pago alegando erro de sistema ou falta de estoque é prática abusiva, segundo a Senacon.",
+      "Exceção: erro grosseiro de preço, evidente para qualquer pessoa e corrigido rápido, não obriga a loja, segundo o STJ.",
+      "Falta de estoque não é desculpa: o STJ decidiu que o consumidor pode exigir a entrega enquanto o produto existir no mercado.",
+      "Guarde prints do anúncio e do pedido: sem prova da oferta, não há como exigir."
+    ],
+    dataPublicacao: "2026-11-11",
+    tags: ["loja cancelou minha compra", "preço errado loja é obrigada a vender", "erro de preço", "oferta não cumprida", "pedido cancelado pela loja"],
+    servico: "como-saber-se-a-promocao-e-verdadeira",
+    categoria: "seus-direitos",
+    imagem: "/blog/loja-cancelou-compra-preco-errado.webp",
+    faq: [
+      { q: "A loja anunciou um preço errado. Ela é obrigada a vender?", a: "Em regra, sim: pelo art. 30 do Código de Defesa do Consumidor, a oferta obriga quem a anunciou. A exceção é o erro grosseiro, quando o preço é tão baixo que qualquer pessoa percebe o engano. Nesse caso, o STJ já decidiu que a loja não é obrigada a cumprir." },
+      { q: "A loja pode cancelar um pedido que eu já paguei?", a: "Não por conta própria e sem motivo justo. A Senacon classifica como prática abusiva o cancelamento depois do pagamento com alegação de erro de sistema ou falta de estoque. Você pode exigir a entrega, aceitar produto equivalente ou receber o dinheiro de volta com correção." },
+      { q: "O que é erro grosseiro de preço?", a: "É o erro evidente: um preço muito abaixo do valor de mercado, que o consumidor percebe com facilidade. No caso julgado pelo STJ em 2020, pesaram também o cancelamento rápido da reserva e o fato de nada ter sido cobrado no cartão." },
+      { q: "O preço no carrinho apareceu maior que o do anúncio. Qual vale?", a: "A Lei 10.962/2004 determina que, havendo divergência de preços para o mesmo produto entre os sistemas de informação do estabelecimento, o consumidor paga o menor. Guarde o print do anúncio com o preço menor." },
+      { q: "Onde reclamar se a loja não cumprir a oferta?", a: "Primeiro na própria loja, por escrito. Depois no consumidor.gov.br, no Procon e, se necessário, no Juizado Especial Cível, onde causas de até 20 salários mínimos dispensam advogado." },
+    ],
+    fontes: [
+      { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
+      { nome: "Lei 10.962/2004, oferta e afixação de preços (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.962.htm" },
+      { nome: "Lei 13.543/2017, preço no comércio eletrônico (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13543.htm" },
+      { nome: "Lei 9.099/1995, Juizados Especiais (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l9099.htm" },
+      { nome: "STJ, Informativo 671: REsp 1.794.991/SE, erro grosseiro de preço (2020)", url: "https://scon.stj.jus.br/jurisprudencia/externo/informativo/?acao=pesquisarumaedicao&livre=%270671%27.cod." },
+      { nome: "STJ: falta de estoque não impede consumidor de exigir entrega do produto anunciado (2021)", url: "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias/26042021-Falta-de-estoque-nao-impede-consumidor-de-exigir-entrega-do-produto-anunciado.aspx" },
+      { nome: "Senacon, Ministério da Justiça: Black Friday 2025, orientações (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-2025-senacon-orienta-consumidores-a-evitar-golpes-e-comprar-com-seguranca" },
+      { nome: "Procon Goiás: orientação sobre divergência de preços", url: "https://goias.gov.br/procon/procon-goias-orienta-sobre-divergencia-de-precos/" },
+      { nome: "consumidor.gov.br: como funciona", url: "https://www.consumidor.gov.br/pages/principal/como-funciona" },
+      { nome: "Mercado Livre, central de vendedores: cancelamentos", url: "https://vendedores.mercadolivre.com.br/nota/cancelamentos-como-evita-los" },
+      { nome: "Procon-SP: balanço da Black Friday 2025 (2025)", url: "https://www.procon.sp.gov.br/black-friday-2025-procon-sp-recebe-mais-de-3-mil-interacoes-e-encontra-irregularidades-em-mais-de-340-estabelecimentos-em-todo-o-estado/" },
+    ],
+    conteudo: `<p>Você achou o preço, pagou, comemorou, e no dia seguinte chegou o e-mail: "seu pedido foi cancelado por um erro no sistema". Na Black Friday de 2025, pedido cancelado pelo fornecedor foi o segundo motivo de reclamação no Procon-SP, com 15,51% das queixas. <strong>A regra é que a oferta anunciada obriga a loja a cumprir, e cancelar pedido já pago é prática abusiva; a exceção é o erro grosseiro de preço, evidente para qualquer pessoa, em que a Justiça desobriga a loja.</strong> Saber de que lado o seu caso está muda o que vale a pena exigir.</p>
+
+<h2>O que a lei diz sobre a oferta anunciada?</h2>
+<p>Que ela vale como contrato. O art. 30 do Código de Defesa do Consumidor (Lei 8.078/1990) diz:</p>
+<p>"Toda informação ou publicidade, suficientemente precisa, veiculada por qualquer forma ou meio de comunicação, com relação a produtos e serviços oferecidos ou apresentados, obriga o fornecedor que a fizer veicular ou dela se utilizar e integra o contrato que vier a ser celebrado."</p>
+<p>Se a loja se recusa a cumprir, o art. 35 dá três saídas, à escolha do consumidor: exigir o cumprimento forçado da oferta, aceitar outro produto equivalente ou rescindir o contrato, com devolução do valor pago, corrigido, e perdas e danos.</p>
+<p>A Senacon, do Ministério da Justiça, aplicou isso à Black Friday na nota de 2025: cancelamento indevido depois do pagamento, com alegação de erro de sistema ou falta de estoque, configura prática abusiva.</p>
+
+<h2>Quando a loja não é obrigada a cumprir?</h2>
+<p>Quando o erro de preço é grosseiro. O caso de referência é do STJ (REsp 1.794.991, 3ª Turma, julgado em 2020): um casal reservou passagens internacionais por um preço muito baixo, a reserva foi cancelada dois dias depois e nada chegou a ser cobrado no cartão. O tribunal decidiu que as empresas não precisavam emitir os bilhetes. A tese registrada foi que erro grosseiro de preço e comunicação imediata afastam a vinculação da oferta.</p>
+<p>Os critérios que aparecem nessa linha de decisões:</p>
+<ul>
+<li><strong>Preço muito abaixo do mercado</strong>, fora de qualquer promoção plausível.</li>
+<li><strong>Erro que o consumidor percebe com facilidade.</strong> A boa-fé vale para os dois lados.</li>
+<li><strong>Correção e aviso rápidos</strong> por parte da loja.</li>
+<li><strong>Nenhuma cobrança</strong>, ou devolução imediata do que foi pago.</li>
+</ul>
+<p>Um exemplo com a conta feita. Uma TV que custa R$ 3.000 aparece por R$ 2.400: são 20% de desconto, coisa normal em promoção, e a loja tem de cumprir. A mesma TV aparece por R$ 30: é 1% do preço, ninguém acredita que seja de propósito, e a tendência é a Justiça tratar como erro grosseiro. Entre um extremo e outro, a análise é caso a caso.</p>
+
+<h2>Como saber de que lado o meu caso está?</h2>
+<table>
+<thead><tr><th>Situação</th><th>O que costuma valer</th></tr></thead>
+<tbody>
+<tr><td>Desconto alto, mas possível em promoção, e a loja cancela dizendo que errou</td><td>A oferta obriga: você pode exigir o cumprimento</td></tr>
+<tr><td>Pedido pago e cancelado por "falta de estoque"</td><td>A oferta obriga: o STJ decidiu que o consumidor pode exigir a entrega enquanto o produto existir no mercado</td></tr>
+<tr><td>Preço irrisório, evidentemente errado, cancelado logo e sem cobrança</td><td>Erro grosseiro: a loja não é obrigada a entregar, mas tem de devolver o que foi pago</td></tr>
+<tr><td>Preço do carrinho maior que o do anúncio</td><td>Vale o menor preço (Lei 10.962/2004)</td></tr>
+<tr><td>Vendedor de marketplace cancela a venda</td><td>O reembolso é feito pela plataforma; a oferta continua obrigando quem anunciou</td></tr>
+</tbody>
+</table>
+<p>Sobre a falta de estoque, vale o detalhe: no REsp 1.872.048 (3ª Turma, 2021), o STJ entendeu que o cumprimento forçado só fica afastado se o produto não existir mais no mercado. Se existir, a loja pode ter de comprá-lo de outra empresa para entregar.</p>
+
+<h2>E quando o preço muda entre o anúncio e o carrinho?</h2>
+<p>Vale o menor. A Lei 10.962/2004 determina, no art. 5º, que em caso de divergência de preços para o mesmo produto entre os sistemas de informação de preços usados pelo estabelecimento, o consumidor paga o menor dentre eles. Desde 2017, a mesma lei trata do comércio eletrônico e exige que o site mostre o preço à vista de forma ostensiva, junto à imagem do produto.</p>
+<p>Dois cuidados antes de reclamar:</p>
+<ul>
+<li>Confira se é o mesmo produto: cor, tamanho e vendedor diferentes têm preços diferentes.</li>
+<li>Veja se a diferença é o frete ou um cupom que não entrou. Explicamos esses casos em <a href="/blog/frete-gratis-amazon-mercado-livre-shopee">frete grátis na Amazon, Mercado Livre e Shopee</a> e em <a href="/blog/cupom-shopee-e-mercado-livre-como-usar">cupom da Shopee e do Mercado Livre</a>.</li>
+</ul>
+
+<h2>O que fazer se a loja cancelar o seu pedido?</h2>
+<ol>
+<li><strong>Junte as provas.</strong> Print do anúncio com preço e data, e-mail de confirmação do pedido, comprovante de pagamento e a mensagem de cancelamento. Sem o print da oferta, fica a sua palavra contra a da loja.</li>
+<li><strong>Responda por escrito e diga o que quer.</strong> Cite o art. 35 do CDC e escolha: entrega do produto pelo preço anunciado, produto equivalente ou devolução do valor corrigido.</li>
+<li><strong>Dê um prazo e anote o protocolo.</strong></li>
+<li><strong>Sem acordo, registre no consumidor.gov.br.</strong> A empresa tem até 10 dias para responder.</li>
+<li><strong>Procon e Juizado Especial Cível.</strong> No Juizado, causas de até 20 salários mínimos não exigem advogado (Lei 9.099/1995, art. 9º).</li>
+</ol>
+<p>Se você só quer o dinheiro de volta, o reembolso é obrigatório em qualquer cenário, inclusive no de erro grosseiro. Se a loja reteve o valor ou demora a devolver, o caminho é parecido com o de <a href="/blog/compra-online-nao-chegou-o-que-fazer">compra online que não chegou</a>.</p>
+
+<h2>E em marketplace, quando quem cancela é o vendedor?</h2>
+<p>O dinheiro volta pela própria plataforma. A Shopee informa que processa o reembolso quando o vendedor cancela, pelo mesmo meio de pagamento. O Mercado Livre orienta abrir uma reclamação se o vendedor cancelou a compra, e avisa aos vendedores que cancelar venda por preço desatualizado prejudica a reputação e pode levar à suspensão da conta.</p>
+<p>Isso resolve o reembolso. Se você quer o produto pelo preço anunciado, a discussão é com quem anunciou, pelos mesmos passos acima.</p>
+
+<h2>Vale a pena correr atrás de erro de preço?</h2>
+<p>Minha opinião, como engenheiro que desconfia de número bom demais: não. Preço irrisório tem três explicações, e só uma é boa para você. Pode ser erro que a loja vai cancelar, pode ser anúncio de vendedor que não vai entregar, ou pode ser site falso. Antes de pagar, confira o preço no <a href="/blog/historico-de-preco-como-consultar">histórico</a> e a loja em <a href="/blog/como-saber-se-um-site-e-confiavel">como saber se um site de compras é confiável</a>.</p>
+<p>Promoção de verdade tem desconto que faz sentido. O guia <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a> mostra como separar uma coisa da outra.</p>
+
+<h2>O que o Tem Descontos confere no preço?</h2>
+<table>
+<thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
+<tbody>
+<tr><td>Preço anunciado contra o preço na própria loja</td><td>Mais de 3% abaixo do preço da loja sem cupom que explique: oferta descartada</td></tr>
+<tr><td>Preço riscado com mais de 70% de desconto</td><td>Se a loja não confirma, o preço riscado sai do post</td></tr>
+<tr><td>Produto do link contra o produto do texto</td><td>Nome ou quantidade diferente: oferta descartada</td></tr>
+</tbody>
+</table>
+<p>Isso garante que o preço do post era o da loja na hora da conferência. Se a loja cancelar o pedido depois, o direito é seu contra ela, e o print do post ajuda como prova da oferta. Mais em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+
+<h2>Resumo para não esquecer</h2>
+<ul>
+<li>Oferta anunciada obriga a loja (CDC, art. 30); cancelar pedido pago é prática abusiva.</li>
+<li>Exceção: erro grosseiro de preço, evidente e corrigido rápido (STJ, 2020).</li>
+<li>Falta de estoque não desobriga enquanto o produto existir no mercado (STJ, 2021).</li>
+<li>Preço diferente entre anúncio e carrinho: vale o menor.</li>
+<li>Print do anúncio, pedido por escrito, consumidor.gov.br, Procon e Juizado.</li>
+</ul>`,
+  },
 ];
 
 export function post(slug: string): Post | undefined {

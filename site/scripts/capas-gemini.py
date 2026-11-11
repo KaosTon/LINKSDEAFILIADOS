@@ -30,6 +30,9 @@ ESTILO = ("Clean premium 3D render, one single large subject centered and fillin
 
 # slug: (cena, fundo)
 CENAS = {
+    "como-saber-se-um-site-e-confiavel": ("A large laptop with a blank web page on its screen and a big magnifying glass in front of it, with a shield bearing a check mark seen through the lens.", "azul"),
+    "compra-online-nao-chegou-o-que-fazer": ("A large empty doormat in front of a closed front door, with a big round clock leaning beside it and the dotted outline of a missing parcel on the mat.", "marinho"),
+    "loja-cancelou-compra-preco-errado": ("A large blank price tag torn in half, with a shopping cart tipped on its side behind it.", "vermelho"),
     "black-friday-2026-quando-e": ("A large glossy black price tag with a string, leaning against a desk calendar that has one day circled.", "vermelho"),
     "direito-de-arrependimento-compra-online": ("A large open cardboard box with a thick curved return arrow looping around it.", "azul"),
     "produto-com-defeito-comprado-online": ("A large smartphone with a cracked screen, with a wrench and a screwdriver crossed in front of it.", "laranja"),

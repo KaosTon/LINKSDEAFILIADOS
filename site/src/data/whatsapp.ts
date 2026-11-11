@@ -50,6 +50,9 @@ export const MENSAGENS_POST: Record<string, string> = {
   "frete-gratis-amazon-mercado-livre-shopee": "post:frete-gratis",
   "cashback-como-funciona": "post:cashback",
   "calendario-de-promocoes-datas-de-desconto": "post:calendario-promocoes",
+  "como-saber-se-um-site-e-confiavel": "post:site-confiavel",
+  "compra-online-nao-chegou-o-que-fazer": "post:compra-nao-chegou",
+  "loja-cancelou-compra-preco-errado": "post:preco-errado",
 };
 
 /** botoes com assunto proprio dentro de uma pagina */
