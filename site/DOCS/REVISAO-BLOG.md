@@ -110,3 +110,28 @@ essa linha do post em `src/data/blog.ts` (volta a "revisão pendente" e noindex)
    cashback" (cashback), "eu gosto do calendário" (calendário). Trocar o que não soar como você.
 5. **Cashback, seção "O Tem Descontos dá cashback?":** diz que, se a pessoa ativar cashback antes
    de comprar, a comissão vai para o programa de cashback e "sem problema". Confirmar se é esse o tom.
+
+## Lote 3: posts 17 a 19 (11/11/2026)
+
+Mesmo rito do lote 2: pesquisa por frente, texto só com o que tinha fonte e revisão independente
+(revisor que não participou da escrita). Fontes em `DOCS/fontes-blog/notas-f.md`. A revisão não achou
+erro de número, data, artigo de lei ou decisão. Ajustes aplicados:
+
+- **Preço errado:** tirada uma vírgula da citação do art. 30 (a versão da Câmara e a do STJ não têm);
+  "cancelar pedido já pago" virou "cancelar indevidamente"; "a loja tem de cumprir" e "vale o menor"
+  viraram "em regra"; a decisão do STJ sobre erro grosseiro ficou como "pode afastar".
+- **Compra que não chegou:** "o reembolso é certo" virou "é direito previsto em lei"; o critério do
+  dano moral ficou como ofensa que vá além do aborrecimento; fonte da Senacon trocada pela nota de 2025.
+- **Site confiável:** a frase "se falhar em uma delas, não compre" ficou restrita a endereço, CNPJ e
+  lista do Procon (as outras checagens não reprovam sozinhas).
+
+Os 3 entraram com `revisadoEm: "novembro de 2026"`.
+
+### O que vale o Wellington bater o olho
+1. **Prazos das lojas no post da compra que não chegou** (Amazon: 1 dia útil, 30 e 90 dias; Magalu:
+   7 dias corridos; Mercado Livre: 28 dias). O revisor não conseguiu confirmar os da Amazon e do Magalu
+   em página oficial aberta; vieram de trecho de busca. Abrir a ajuda de cada loja.
+2. **Lista do Procon-SP:** em 2026 uma portaria ampliou a lista para perfis de rede social e pode ter
+   mudado o nome. O post usa "Evite esses sites".
+3. **Opinião na sua voz:** a seção "Vale a pena correr atrás de erro de preço?" responde "não", em
+   primeira pessoa. Confirmar se é a sua posição.

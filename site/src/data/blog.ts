@@ -1450,6 +1450,7 @@ export const POSTS: Post[] = [
       "Cadeado no navegador não prova que a loja é honesta, e site que só aceita Pix ou boleto pede cuidado dobrado."
     ],
     dataPublicacao: "2026-11-11",
+    revisadoEm: "novembro de 2026",
     tags: ["site confiável", "como saber se um site é confiável", "site falso", "consultar cnpj de loja", "evite esses sites procon", "loja online é segura"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
     categoria: "seus-direitos",
@@ -1475,7 +1476,7 @@ export const POSTS: Post[] = [
       { nome: "Serasa Experian: anúncios falsos na semana da Black Friday 2025 (2025)", url: "https://www.serasaexperian.com.br/sala-de-imprensa/prevencao-a-fraude/anuncios-falsos-disparam-147-na-semana-da-black-friday-aponta-serasa-experian/" },
       { nome: "Procon-SP: balanço da Black Friday 2025 (2025)", url: "https://www.procon.sp.gov.br/black-friday-2025-procon-sp-recebe-mais-de-3-mil-interacoes-e-encontra-irregularidades-em-mais-de-340-estabelecimentos-em-todo-o-estado/" },
     ],
-    conteudo: `<p>O preço está ótimo, a loja você nunca viu, e o anúncio apareceu no meio do seu feed. Antes de digitar o cartão ou mandar o Pix, dá para descobrir em cinco minutos se aquela loja existe. <strong>Confira cinco coisas, todas de graça: o endereço do site letra por letra, o CNPJ na Receita Federal, o dono do domínio no Registro.br, a reputação no consumidor.gov.br e a lista "Evite esses sites" do Procon-SP.</strong> Se o site falhar em uma delas, não compre.</p>
+    conteudo: `<p>O preço está ótimo, a loja você nunca viu, e o anúncio apareceu no meio do seu feed. Antes de digitar o cartão ou mandar o Pix, dá para descobrir em cinco minutos se aquela loja existe. <strong>Confira cinco coisas, todas de graça: o endereço do site letra por letra, o CNPJ na Receita Federal, o dono do domínio no Registro.br, a reputação no consumidor.gov.br e a lista "Evite esses sites" do Procon-SP.</strong> Se o endereço não bate, o CNPJ não existe ou o site está na lista do Procon, não compre.</p>
 
 <h2>O que a lei obriga um site de compras a mostrar?</h2>
 <p>O Decreto 7.962/2013, que regula o comércio eletrônico, determina no art. 2º que o site mostre, em local de destaque e de fácil visualização, o nome empresarial e o número do CNPJ (ou CPF) de quem vende, além do endereço físico e eletrônico e das informações para contato.</p>
@@ -1524,7 +1525,7 @@ export const POSTS: Post[] = [
 <p>A comparação completa entre os dois meios está em <a href="/blog/pix-ou-cartao-compra-online">Pix ou cartão na compra online</a>.</p>
 
 <h2>Os golpes aumentam na Black Friday?</h2>
-<p>Aumentam, e há número para isso:</p>
+<p>Aumentam, e há números para isso:</p>
 <ul>
 <li>A Serasa Experian informou que os anúncios falsos subiram 147% na semana da Black Friday de 2025, e que mapeou 103 sites falsos no período.</li>
 <li>A Febraban registrou o golpe da falsa venda como o mais relatado por clientes de bancos no 1º semestre de 2025: 174 mil ocorrências, 314% a mais que no mesmo período de 2024.</li>
@@ -1575,6 +1576,7 @@ export const POSTS: Post[] = [
       "Sem solução: consumidor.gov.br (a empresa tem 10 dias para responder), Procon e Juizado Especial Cível."
     ],
     dataPublicacao: "2026-11-11",
+    revisadoEm: "novembro de 2026",
     tags: ["compra não chegou", "pedido atrasado o que fazer", "atraso na entrega", "produto não entregue", "cancelar compra por atraso"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
     categoria: "seus-direitos",
@@ -1583,14 +1585,14 @@ export const POSTS: Post[] = [
       { q: "A compra não chegou no prazo. Posso cancelar?", a: "Sim. Pelo art. 35 do Código de Defesa do Consumidor, se a loja não cumpre a oferta você pode rescindir o contrato e receber de volta o que pagou, com correção. O Procon-SP orienta que esse cancelamento é imediato à solicitação." },
       { q: "A loja pode me obrigar a esperar mais?", a: "Não. A escolha é sua: exigir a entrega, aceitar outro produto equivalente ou cancelar com devolução do valor. A loja pode propor uma nova data, mas você não é obrigado a aceitar." },
       { q: "O pedido aparece como entregue, mas não recebi. E agora?", a: "Avise a loja imediatamente pelo canal oficial e peça o comprovante de entrega. O prazo para contestar costuma ser curto: no Magalu, por exemplo, são 7 dias corridos a partir da data de entrega que consta no pedido." },
-      { q: "Tenho direito a indenização por atraso na entrega?", a: "Não automaticamente. O STJ entende que a falha na entrega é, em princípio, descumprimento de contrato, e que o dano moral depende de prova de uma situação excepcional. A devolução do valor pago, com correção, é garantida." },
+      { q: "Tenho direito a indenização por atraso na entrega?", a: "Não automaticamente. O STJ entende que a falha na entrega é, em princípio, descumprimento de contrato, e que o dano moral depende de prova de uma situação excepcional. A devolução do valor pago, com correção, é direito previsto no art. 35." },
       { q: "Posso pedir estorno no cartão se o produto não chegou?", a: "Pode pedir a contestação da compra ao banco emissor, que costuma exigir prova de que você tentou resolver com a loja. Atenção: a Amazon informa que quem contesta a cobrança no cartão perde o direito à Garantia de A a Z." },
     ],
     fontes: [
       { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
       { nome: "Decreto 7.962/2013, comércio eletrônico (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/decreto/d7962.htm" },
       { nome: "Procon-SP: guia de comércio eletrônico", url: "https://www.procon.sp.gov.br/wp-content/uploads/2024/08/Guia_de_Comercio_Eletronico.pdf" },
-      { nome: "Senacon, Ministério da Justiça: guia para compras seguras na Black Friday (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/senacon-lanca-guia-para-compras-seguras-na-black-friday" },
+      { nome: "Senacon, Ministério da Justiça: Black Friday 2025, orientações (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-2025-senacon-orienta-consumidores-a-evitar-golpes-e-comprar-com-seguranca" },
       { nome: "consumidor.gov.br: como funciona", url: "https://www.consumidor.gov.br/pages/principal/como-funciona" },
       { nome: "STJ: falta de estoque não impede consumidor de exigir entrega do produto anunciado (2021)", url: "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias/26042021-Falta-de-estoque-nao-impede-consumidor-de-exigir-entrega-do-produto-anunciado.aspx" },
       { nome: "STJ: dano moral e o esforço para evitar a indústria das indenizações (2015)", url: "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias-antigas/2015/2015-02-08_08-00_Dano-moral-o-esforco-diario-da-Justica-para-evitar-a-industria-das-indenizacoes.aspx" },
@@ -1620,7 +1622,7 @@ export const POSTS: Post[] = [
 
 <h2>O que fazer, passo a passo?</h2>
 <ol>
-<li><strong>Confira o prazo e o rastreio.</strong> Veja a data prometida no pedido e o último registro do rastreamento. Print dos dois.</li>
+<li><strong>Confira o prazo e o rastreio.</strong> Veja a data prometida no pedido e o último registro do rastreamento. Tire print dos dois.</li>
 <li><strong>Reclame pelo canal oficial da loja, por escrito.</strong> Chat, e-mail ou a área do pedido. Diga o que você escolheu: nova data de entrega, produto equivalente ou cancelamento com reembolso. Anote o protocolo.</li>
 <li><strong>Use a proteção da plataforma dentro do prazo.</strong> Em marketplace, a reclamação formal dentro do sistema é o que libera o reembolso. A tabela abaixo mostra onde.</li>
 <li><strong>Sem resposta, suba a reclamação.</strong> consumidor.gov.br, Procon e, se precisar, Juizado Especial Cível.</li>
@@ -1628,7 +1630,7 @@ export const POSTS: Post[] = [
 <p>A Senacon recomenda guardar prints, e-mails e comprovantes da compra: são a prova da oferta e de que você tentou resolver.</p>
 
 <h2>Qual é o caminho em cada loja?</h2>
-<p>As regras abaixo são as que as centrais de ajuda informavam em novembro de 2026. Elas mudam, e o prazo que vale é o que aparece no seu pedido.</p>
+<p>As regras abaixo vêm das centrais de ajuda das lojas, consultadas em novembro de 2026. Elas mudam, e o prazo que vale é o que aparece no seu pedido.</p>
 <table>
 <thead><tr><th>Loja</th><th>O que fazer</th><th>Prazo informado</th></tr></thead>
 <tbody>
@@ -1667,8 +1669,8 @@ export const POSTS: Post[] = [
 <p>Um cuidado: na Amazon, quem contesta a cobrança no cartão deixa de ser elegível para o reembolso da Garantia de A a Z. Escolha um caminho de cada vez. A diferença de proteção entre os meios de pagamento está em <a href="/blog/pix-ou-cartao-compra-online">Pix ou cartão na compra online</a>.</p>
 
 <h2>Tenho direito a indenização pelo atraso?</h2>
-<p>Não automaticamente. O STJ já decidiu, em caso de produto comprado pela internet para o Natal e não entregue, que a falha na entrega é, em princípio, descumprimento de contrato, e que o dano moral só cabe em situação excepcional, com prova do prejuízo. O que está garantido é a devolução do valor, com correção, e a reparação de prejuízo material que você conseguir comprovar.</p>
-<p>Como engenheiro, eu separo o que é certo do que é possível: o reembolso é certo, a indenização depende do caso. Vale conversar com um advogado ou com a Defensoria se o atraso causou prejuízo real.</p>
+<p>Não automaticamente. O STJ já decidiu, em caso de produto comprado pela internet para o Natal que não chegou a tempo, que a falha na entrega é, em princípio, descumprimento de contrato, e que o dano moral só cabe em situação excepcional, com ofensa que vá além do aborrecimento. O que a lei prevê é a devolução do valor, com correção, e a reparação de prejuízo material que você conseguir comprovar.</p>
+<p>Como engenheiro, eu separo o que é certo do que é possível: o reembolso é direito previsto em lei, a indenização depende do caso. Vale conversar com um advogado ou com a Defensoria se o atraso causou prejuízo real.</p>
 
 <h2>E se a loja nem existir?</h2>
 <p>Se o site sumiu, não responde e não tem CNPJ, o problema deixa de ser atraso e passa a ser golpe. Avise o banco na hora. O que conferir antes de comprar está em <a href="/blog/como-saber-se-um-site-e-confiavel">como saber se um site de compras é confiável</a>, e os sinais de golpe em grupo estão no guia <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a></p>
@@ -1701,12 +1703,13 @@ export const POSTS: Post[] = [
     metaDescription: "A oferta anunciada obriga a loja, mas erro grosseiro de preço é exceção. Veja quando a loja tem de cumprir, quando pode cancelar e como exigir seu direito.",
     resumo: "Oferta anunciada obriga a loja a cumprir, mas a Justiça abre exceção para erro grosseiro de preço. Veja a diferença e o que fazer se cancelarem o seu pedido.",
     resumoRapido: [
-      "Regra: a oferta anunciada obriga a loja (CDC, art. 30), e cancelar pedido já pago alegando erro de sistema ou falta de estoque é prática abusiva, segundo a Senacon.",
+      "Regra: a oferta anunciada obriga a loja (CDC, art. 30), e cancelar indevidamente pedido já pago, alegando erro de sistema ou falta de estoque, é prática abusiva, segundo a Senacon.",
       "Exceção: erro grosseiro de preço, evidente para qualquer pessoa e corrigido rápido, não obriga a loja, segundo o STJ.",
       "Falta de estoque não é desculpa: o STJ decidiu que o consumidor pode exigir a entrega enquanto o produto existir no mercado.",
       "Guarde prints do anúncio e do pedido: sem prova da oferta, não há como exigir."
     ],
     dataPublicacao: "2026-11-11",
+    revisadoEm: "novembro de 2026",
     tags: ["loja cancelou minha compra", "preço errado loja é obrigada a vender", "erro de preço", "oferta não cumprida", "pedido cancelado pela loja"],
     servico: "como-saber-se-a-promocao-e-verdadeira",
     categoria: "seus-direitos",
@@ -1728,19 +1731,19 @@ export const POSTS: Post[] = [
       { nome: "Senacon, Ministério da Justiça: Black Friday 2025, orientações (2025)", url: "https://www.gov.br/mj/pt-br/assuntos/noticias/black-friday-2025-senacon-orienta-consumidores-a-evitar-golpes-e-comprar-com-seguranca" },
       { nome: "Procon Goiás: orientação sobre divergência de preços", url: "https://goias.gov.br/procon/procon-goias-orienta-sobre-divergencia-de-precos/" },
       { nome: "consumidor.gov.br: como funciona", url: "https://www.consumidor.gov.br/pages/principal/como-funciona" },
-      { nome: "Mercado Livre, central de vendedores: cancelamentos", url: "https://vendedores.mercadolivre.com.br/nota/cancelamentos-como-evita-los" },
+      { nome: "Mercado Livre, central de vendedores: cancelamentos", url: "https://vendedores.mercadolivre.com.br/aprender/nota/cancelamentos-como-evita-los" },
       { nome: "Procon-SP: balanço da Black Friday 2025 (2025)", url: "https://www.procon.sp.gov.br/black-friday-2025-procon-sp-recebe-mais-de-3-mil-interacoes-e-encontra-irregularidades-em-mais-de-340-estabelecimentos-em-todo-o-estado/" },
     ],
-    conteudo: `<p>Você achou o preço, pagou, comemorou, e no dia seguinte chegou o e-mail: "seu pedido foi cancelado por um erro no sistema". Na Black Friday de 2025, pedido cancelado pelo fornecedor foi o segundo motivo de reclamação no Procon-SP, com 15,51% das queixas. <strong>A regra é que a oferta anunciada obriga a loja a cumprir, e cancelar pedido já pago é prática abusiva; a exceção é o erro grosseiro de preço, evidente para qualquer pessoa, em que a Justiça desobriga a loja.</strong> Saber de que lado o seu caso está muda o que vale a pena exigir.</p>
+    conteudo: `<p>Você achou o preço, pagou, comemorou, e no dia seguinte chegou o e-mail: "seu pedido foi cancelado por um erro no sistema". Na Black Friday de 2025, pedido cancelado pelo fornecedor foi o segundo motivo de reclamação no Procon-SP, com 15,51% das queixas. <strong>A regra é que a oferta anunciada obriga a loja a cumprir, e cancelar indevidamente pedido já pago é prática abusiva; a exceção é o erro grosseiro de preço, evidente para qualquer pessoa, em que a Justiça desobriga a loja.</strong> Saber de que lado o seu caso está muda o que vale a pena exigir.</p>
 
 <h2>O que a lei diz sobre a oferta anunciada?</h2>
 <p>Que ela vale como contrato. O art. 30 do Código de Defesa do Consumidor (Lei 8.078/1990) diz:</p>
-<p>"Toda informação ou publicidade, suficientemente precisa, veiculada por qualquer forma ou meio de comunicação, com relação a produtos e serviços oferecidos ou apresentados, obriga o fornecedor que a fizer veicular ou dela se utilizar e integra o contrato que vier a ser celebrado."</p>
+<p>"Toda informação ou publicidade, suficientemente precisa, veiculada por qualquer forma ou meio de comunicação com relação a produtos e serviços oferecidos ou apresentados, obriga o fornecedor que a fizer veicular ou dela se utilizar e integra o contrato que vier a ser celebrado."</p>
 <p>Se a loja se recusa a cumprir, o art. 35 dá três saídas, à escolha do consumidor: exigir o cumprimento forçado da oferta, aceitar outro produto equivalente ou rescindir o contrato, com devolução do valor pago, corrigido, e perdas e danos.</p>
 <p>A Senacon, do Ministério da Justiça, aplicou isso à Black Friday na nota de 2025: cancelamento indevido depois do pagamento, com alegação de erro de sistema ou falta de estoque, configura prática abusiva.</p>
 
 <h2>Quando a loja não é obrigada a cumprir?</h2>
-<p>Quando o erro de preço é grosseiro. O caso de referência é do STJ (REsp 1.794.991, 3ª Turma, julgado em 2020): um casal reservou passagens internacionais por um preço muito baixo, a reserva foi cancelada dois dias depois e nada chegou a ser cobrado no cartão. O tribunal decidiu que as empresas não precisavam emitir os bilhetes. A tese registrada foi que erro grosseiro de preço e comunicação imediata afastam a vinculação da oferta.</p>
+<p>Quando o erro de preço é grosseiro. O caso de referência é do STJ (REsp 1.794.991, 3ª Turma, julgado em 2020): um casal reservou passagens internacionais por um preço muito baixo, a reserva foi cancelada dois dias depois e nada chegou a ser cobrado no cartão. O tribunal decidiu que as empresas não precisavam emitir os bilhetes. O entendimento foi que erro grosseiro de preço, com comunicação rápida ao consumidor, pode afastar a obrigação de cumprir a oferta.</p>
 <p>Os critérios que aparecem nessa linha de decisões:</p>
 <ul>
 <li><strong>Preço muito abaixo do mercado</strong>, fora de qualquer promoção plausível.</li>
@@ -1748,23 +1751,23 @@ export const POSTS: Post[] = [
 <li><strong>Correção e aviso rápidos</strong> por parte da loja.</li>
 <li><strong>Nenhuma cobrança</strong>, ou devolução imediata do que foi pago.</li>
 </ul>
-<p>Um exemplo com a conta feita. Uma TV que custa R$ 3.000 aparece por R$ 2.400: são 20% de desconto, coisa normal em promoção, e a loja tem de cumprir. A mesma TV aparece por R$ 30: é 1% do preço, ninguém acredita que seja de propósito, e a tendência é a Justiça tratar como erro grosseiro. Entre um extremo e outro, a análise é caso a caso.</p>
+<p>Um exemplo com a conta feita. Uma TV que custa R$ 3.000 aparece por R$ 2.400: são 20% de desconto, coisa normal em promoção, e, em regra, a loja tem de cumprir. A mesma TV aparece por R$ 30: é 1% do preço, ninguém acredita que seja de propósito, e a tendência é a Justiça tratar como erro grosseiro. Entre um extremo e outro, a análise é caso a caso.</p>
 
 <h2>Como saber de que lado o meu caso está?</h2>
 <table>
 <thead><tr><th>Situação</th><th>O que costuma valer</th></tr></thead>
 <tbody>
-<tr><td>Desconto alto, mas possível em promoção, e a loja cancela dizendo que errou</td><td>A oferta obriga: você pode exigir o cumprimento</td></tr>
-<tr><td>Pedido pago e cancelado por "falta de estoque"</td><td>A oferta obriga: o STJ decidiu que o consumidor pode exigir a entrega enquanto o produto existir no mercado</td></tr>
+<tr><td>Desconto alto, mas possível em promoção, e a loja cancela dizendo que errou</td><td>Em regra, a oferta obriga: você pode exigir o cumprimento</td></tr>
+<tr><td>Pedido pago e cancelado por "falta de estoque"</td><td>Em regra, a oferta obriga: o STJ decidiu que o consumidor pode exigir a entrega enquanto o produto existir no mercado</td></tr>
 <tr><td>Preço irrisório, evidentemente errado, cancelado logo e sem cobrança</td><td>Erro grosseiro: a loja não é obrigada a entregar, mas tem de devolver o que foi pago</td></tr>
-<tr><td>Preço do carrinho maior que o do anúncio</td><td>Vale o menor preço (Lei 10.962/2004)</td></tr>
+<tr><td>Preço do carrinho maior que o do anúncio</td><td>A regra é pagar o menor preço (Lei 10.962/2004)</td></tr>
 <tr><td>Vendedor de marketplace cancela a venda</td><td>O reembolso é feito pela plataforma; a oferta continua obrigando quem anunciou</td></tr>
 </tbody>
 </table>
 <p>Sobre a falta de estoque, vale o detalhe: no REsp 1.872.048 (3ª Turma, 2021), o STJ entendeu que o cumprimento forçado só fica afastado se o produto não existir mais no mercado. Se existir, a loja pode ter de comprá-lo de outra empresa para entregar.</p>
 
 <h2>E quando o preço muda entre o anúncio e o carrinho?</h2>
-<p>Vale o menor. A Lei 10.962/2004 determina, no art. 5º, que em caso de divergência de preços para o mesmo produto entre os sistemas de informação de preços usados pelo estabelecimento, o consumidor paga o menor dentre eles. Desde 2017, a mesma lei trata do comércio eletrônico e exige que o site mostre o preço à vista de forma ostensiva, junto à imagem do produto.</p>
+<p>A regra é pagar o menor. A Lei 10.962/2004 determina, no art. 5º, que em caso de divergência de preços para o mesmo produto entre os sistemas de informação de preços usados pelo estabelecimento, o consumidor paga o menor dentre eles. Desde 2017, a mesma lei trata do comércio eletrônico e exige que o site mostre o preço à vista de forma ostensiva, junto à imagem do produto.</p>
 <p>Dois cuidados antes de reclamar:</p>
 <ul>
 <li>Confira se é o mesmo produto: cor, tamanho e vendedor diferentes têm preços diferentes.</li>
@@ -1802,10 +1805,10 @@ export const POSTS: Post[] = [
 
 <h2>Resumo para não esquecer</h2>
 <ul>
-<li>Oferta anunciada obriga a loja (CDC, art. 30); cancelar pedido pago é prática abusiva.</li>
+<li>Oferta anunciada obriga a loja (CDC, art. 30); cancelar indevidamente pedido pago é prática abusiva.</li>
 <li>Exceção: erro grosseiro de preço, evidente e corrigido rápido (STJ, 2020).</li>
 <li>Falta de estoque não desobriga enquanto o produto existir no mercado (STJ, 2021).</li>
-<li>Preço diferente entre anúncio e carrinho: vale o menor.</li>
+<li>Preço diferente entre anúncio e carrinho: a regra é pagar o menor.</li>
 <li>Print do anúncio, pedido por escrito, consumidor.gov.br, Procon e Juizado.</li>
 </ul>`,
   },
