@@ -1,10 +1,10 @@
 {
   "fps": 30,
-  "duracao": 17.6,
+  "duracao": 18.2,
   "s1": { "selo": 0.1, "mascote": 0.0 },
-  "s2": { "corte": 1.62, "titulo": 1.72 },
-  "s3": { "corte": 3.25, "cartao": 3.35, "risca": 3.85, "revela": 5.78 },
-  "s4": { "corte": 6.87, "grafico": 7.38, "menor": 8.15 },
-  "s5": { "corte": 10.23, "bloco": 10.5, "escreve": 10.91, "bf": 13.13 },
-  "s6": { "corte": 14.1, "fim": 14.2, "arroba": 14.88 }
+  "s2": { "corte": 2.4, "titulo": 2.52 },
+  "s3": { "corte": 4.65, "cartao": 4.78, "risca": 5.2, "revela": 7.0 },
+  "s4": { "corte": 8.15, "grafico": 8.52, "menor": 9.18 },
+  "s5": { "corte": 11.22, "bloco": 11.4, "escreve": 11.92, "bf": 14.22 },
+  "s6": { "corte": 15.28, "fim": 15.38, "arroba": 15.9 }
 }

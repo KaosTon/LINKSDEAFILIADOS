@@ -7,7 +7,8 @@ Reels do Instagram feitos por codigo (React + Remotion), com narracao, legenda s
 - `src/Preco.tsx`: Reel "50% sobre qual preco?", tambem com personagens do LottieFiles.
 - `src/Arrependimento.tsx`: versao antiga com boneco desenhado por codigo; fornece titulo, legenda e cartoes aos outros.
 - `src/palavras*.json`: tempo de cada palavra da narracao (ElevenLabs), usado na legenda.
-- `public/<video>/voz.mp3`: narracao (ElevenLabs, voz Monica).
+- `public/<video>/voz.mp3`: narracao (ElevenLabs, voz Monica, modelo eleven_v4; o v2 ficou pior e foi descartado).
+  O tempo das palavras vem do alinhamento forcado do ElevenLabs sobre o mesmo audio.
 - `sfx/sint.mjs` + `sfx/<video>.mjs`: efeitos sonoros sintetizados por codigo, sem arquivos de terceiros.
 
 ## Como gerar
