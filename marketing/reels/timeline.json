@@ -1,0 +1,10 @@
+{
+  "fps": 30,
+  "duracao": 19.2,
+  "s1": { "toque": 0.55, "pedido": 0.95, "caixa": 1.6, "pousa": 1.95, "abre": 2.5, "triste": 2.9, "duvida": 3.2, "sai": 3.8 },
+  "s2": { "calma": 4.04, "sai": 4.7 },
+  "s3": { "cal": 4.8, "dias": 5.3, "passo": 0.19, "chip1": 7.0, "chip2": 8.5, "sai": 9.9 },
+  "s4": { "caixaSai": 10.0, "titulo": 10.1, "moedas": 10.45, "volta": 10.75, "frete": 11.5, "comemora": 11.95, "sai": 12.45 },
+  "s5": { "lei": 12.6, "artigo": 13.1, "codigo": 14.3, "sai": 16.0 },
+  "s6": { "fim": 16.3, "arroba": 16.95 }
+}

@@ -12,7 +12,7 @@
     "id": "reel-dica-arrependimento",
     "data": "2026-11-15",
     "video": "reel-dica-arrependimento.mp4",
-    "fonte": "reels/dica-arrependimento.html",
+    "fonte": "../reels/src/Arrependimento.tsx",
     "legenda": "Comprou pela internet e se arrependeu? Você tem 7 dias corridos, contados do dia em que o produto chega, para desistir sem dar motivo. E o que você pagou volta, inclusive o frete.\n\nEstá no art. 49 do Código de Defesa do Consumidor.\n\nO passo a passo em cada loja está no blog (link na bio).\n\n#direitodoconsumidor #compraonline #dicasdecompra #consumidor"
   },
   {

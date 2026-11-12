@@ -3,8 +3,8 @@
 //   node marketing/instagram/gerar.mjs          (precisa do Playwright com Chromium)
 //
 // Entrada: posts.json (id, data AAAA-MM-DD, selo, titulo, texto, fundo, legenda; "cheio" = foto em tela cheia).
-// Reel: item com "video" (o MP4 já renderizado em site/public/instagram) e "fonte" (o HTML em reels/, feito com
-// a skill html-video: capture.py reels/x.html site/public/instagram/x.mp4). O gerador só confere que o MP4 existe.
+// Reel: item com "video" (o MP4 já renderizado em site/public/instagram) e "fonte" (o código em marketing/reels,
+// feito em Remotion: npm run som && npm run render). O gerador só confere que o MP4 existe.
 // Saída:   site/public/instagram/{id}.jpg e site/public/instagram/agenda.json (id, data, imagem, legenda).
 // Regras: nada de oferta nem preço aqui; fato só o que já está num post revisado do blog; sem "#publi"
 // (não é divulgação de produto). Fundo de dica = capa do post do blog; fundo de data = imagem própria em fundos/.
