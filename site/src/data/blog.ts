@@ -415,9 +415,9 @@ export const POSTS: Post[] = [
   },
 {
     slug: "como-saber-se-loja-da-shopee-e-confiavel",
-    titulo: "Como saber se uma loja da Shopee é confiável",
-    metaTitle: "Loja da Shopee é confiável? Como conferir antes de comprar",
-    metaDescription: "Nota 4,5+, 50+ vendas e loja oficial acima de R$ 1.000: a regra que usamos na Shopee. Veja selos, Garantia Shopee e sinais de alerta da loja.",
+    titulo: "Loja oficial da Shopee é confiável? Como saber se a loja é segura",
+    metaTitle: "Loja oficial da Shopee é confiável? Veja como saber",
+    metaDescription: "Loja Oficial é da própria marca e é a mais segura da Shopee. Veja como conferir o selo, a nota e as vendas, e o que muda na loja indicada e na loja comum.",
     resumo: "Os sinais que mostram se uma loja da Shopee merece seu dinheiro, com a mesma régua que o Tem Descontos usa antes de postar uma oferta.",
     resumoRapido: [
       "Confira nota (4,5 ou mais) e número de vendas (50 ou mais): é o mínimo que o Tem Descontos exige para postar um produto da Shopee.",
@@ -427,17 +427,17 @@ export const POSTS: Post[] = [
     ],
     dataPublicacao: "2026-10-18",
     revisadoEm: "outubro de 2026",
-    dataRevisao: "2026-10-19",
-    tags: ["loja da shopee é confiável", "garantia shopee", "loja oficial shopee", "vendedor indicado shopee", "como comprar na shopee com segurança"],
+    dataRevisao: "2026-11-12",
+    tags: ["loja oficial da shopee é confiável", "loja da shopee é confiável", "loja indicada shopee é confiável", "garantia shopee", "loja oficial shopee", "vendedor indicado shopee", "como comprar na shopee com segurança"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
     categoria: "garantias-das-lojas",
     imagem: "/blog/como-saber-se-loja-da-shopee-e-confiavel.webp",
     faq: [
       { q: "Como saber se uma loja da Shopee é confiável?", a: "Olhe nota, número de vendas, avaliações com foto, selo (Oficial ou Indicado) e a taxa de resposta do chat na página da loja. No Tem Descontos, só postamos produto com nota 4,5 ou mais e 50 vendas ou mais." },
       { q: "A Garantia Shopee protege meu dinheiro?", a: "Sim, desde que você pague pelo app: segundo a central de ajuda da Shopee, o pagamento fica retido e só é repassado ao vendedor depois da confirmação do recebimento ou do fim do prazo de autoconfirmação." },
-      { q: "O que é loja oficial na Shopee?", a: "É a loja da própria marca, identificada pelo selo vermelho Oficial. A Shopee informa que os produtos dessas lojas são oficiais das marcas." },
-      { q: "Posso confirmar o recebimento antes de o produto chegar?", a: "Não faça isso. A própria Shopee orienta a nunca confirmar o recebimento de um produto que não foi entregue, mesmo que o vendedor prometa brinde ou vantagem." },
-      { q: "Produto da Shopee que vem do exterior é golpe?", a: "Não necessariamente, mas o prazo é maior e pode haver imposto de importação. A Shopee marca esses produtos com a etiqueta Envio do exterior." }
+      { q: "Loja oficial da Shopee é confiável?", a: "Sim, é a opção mais segura dentro da Shopee: Loja Oficial é a loja da própria marca, identificada pelo selo vermelho Oficial, e a Shopee informa que os produtos vendidos ali são oficiais das marcas. Confira se o selo aparece na página da loja e pague sempre pelo app." },
+      { q: "Loja indicada da Shopee é confiável?", a: "É um bom sinal, mas não uma garantia. Vendedor Indicado é uma loja comum que a Shopee selecionou pelo desempenho em avaliações, atendimento e envio. Olhe também a nota e o número de vendas do produto." },
+      { q: "Posso confirmar o recebimento antes de o produto chegar?", a: "Não faça isso. A própria Shopee orienta a nunca confirmar o recebimento de um produto que não foi entregue, mesmo que o vendedor prometa brinde ou vantagem." }
     ],
     fontes: [
       { nome: "Shopee Brasil, Central de Ajuda: Garantia Shopee, como funciona a garantia de compra segura (consulta em 2026)", url: "https://help.shopee.com.br/portal/4/article/76327" },
@@ -449,7 +449,9 @@ export const POSTS: Post[] = [
       { nome: "Shopee Brasil, Central de Ajuda: O que é a taxa de resposta do chat (consulta em 2026)", url: "https://help.shopee.com.br/portal/4/article/129713" },
       { nome: "Shopee Brasil, Central de Ajuda: O que são produtos do exterior (consulta em 2026)", url: "https://help.shopee.com.br/portal/4/article/78028" }
     ],
-    conteudo: `<h2>Como saber se uma loja da Shopee é confiável?</h2>
+    conteudo: `<p>A dúvida que mais chega antes de uma compra na Shopee é se dá para confiar na loja, principalmente quando o preço está bom demais. <strong>Loja Oficial da Shopee é confiável: é a loja da própria marca, com selo vermelho, e é a opção mais segura da plataforma. Loja indicada é um bom sinal, e loja comum pede que você confira nota, vendas e avaliações antes de pagar.</strong> Abaixo está como conferir cada uma, com a mesma régua que usamos antes de enviar uma oferta ao grupo.</p>
+
+<h2>Como saber se uma loja da Shopee é confiável?</h2>
 <p>Olhe cinco coisas antes de pagar: a nota do produto, quantas unidades já foram vendidas, se a loja tem selo (Oficial ou Indicado), o que dizem as avaliações com foto e se o produto vem do Brasil ou do exterior. Nenhum desses sinais sozinho garante nada, mas juntos eles separam bem a loja séria da loja que apareceu ontem com preço bom demais.</p>
 <p>No Tem Descontos, essa conferência não fica só no olho. Aplicamos uma régua fixa antes de mandar qualquer oferta da Shopee para o grupo, e é essa régua que vamos abrir aqui, item por item, para você usar nas suas compras também.</p>
 
@@ -466,12 +468,13 @@ export const POSTS: Post[] = [
 <p>Além disso, conferimos se o preço anunciado bate com o preço que a própria Shopee mostra e descartamos a oferta quando o link leva a um produto diferente do texto (por exemplo, o post fala em kit com 3 unidades e o link abre 1 unidade). Se você quer entender como pegamos o preço riscado inflado, o passo a passo está no guia <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a>.</p>
 <p>Por que nota e vendas juntas? Como engenheiro, eu desconfio de número sem base. Um produto com nota 5,0 e 3 vendas pode ter 3 avaliações da família do vendedor. Um produto com nota 4,7 e 2 mil vendas tem uma média que já resistiu a muita gente diferente. O número de vendas é o tamanho da amostra; a nota só vale quando a amostra é grande.</p>
 
-<h2>O que é Loja Oficial na Shopee?</h2>
-<p>Loja Oficial é a loja da própria marca dentro da Shopee, marcada com um selo vermelho escrito Oficial na busca e na página da loja. A central de ajuda da Shopee descreve essas lojas como de grandes marcas, nacionais e internacionais, e a Shopee informa que os produtos vendidos ali são produtos oficiais das marcas.</p>
+<h2>Loja Oficial da Shopee é confiável?</h2>
+<p>Sim, é a opção mais segura dentro da Shopee. Loja Oficial é a loja da própria marca dentro da Shopee, marcada com um selo vermelho escrito Oficial na busca e na página da loja. A central de ajuda da Shopee descreve essas lojas como de grandes marcas, nacionais e internacionais, e a Shopee informa que os produtos vendidos ali são produtos oficiais das marcas.</p>
 <p>Na prática, Loja Oficial é o lugar mais seguro para comprar eletrônico, eletrodoméstico e qualquer item em que falsificação é comum. Por isso a nossa regra: produto de R$ 1.000 para cima só sai no grupo se vier de Loja Oficial ou de Vendedor Indicado.</p>
+<p>Dois cuidados que continuam valendo mesmo em Loja Oficial: confira se o selo aparece na página da loja, e não só no nome do anúncio, e chegue até ela pelo app ou pelo site da Shopee. Selo verdadeiro em link falso não protege ninguém.</p>
 
-<h2>O que é Vendedor Indicado (loja indicada)?</h2>
-<p>Vendedor Indicado é um vendedor que a Shopee selecionou por entregar uma experiência de compra melhor, e ele aparece com um rótulo próprio na página do produto e na busca. Segundo a central de ajuda, para manter o selo a loja precisa sustentar boas avaliações, bom atendimento e envio rápido. A central de ajuda para compradores não informa a meta exata de cada indicador, então trate o selo como um bom sinal, não como garantia.</p>
+<h2>Loja indicada da Shopee é confiável?</h2>
+<p>É um bom sinal, mas não uma garantia. Vendedor Indicado (a loja indicada) é um vendedor que a Shopee selecionou por entregar uma experiência de compra melhor, e ele aparece com um rótulo próprio na página do produto e na busca. Segundo a central de ajuda, para manter o selo a loja precisa sustentar boas avaliações, bom atendimento e envio rápido. A central de ajuda para compradores não informa a meta exata de cada indicador, então trate o selo como um bom sinal, não como garantia.</p>
 <p>A diferença para a Loja Oficial: a oficial é a marca vendendo; a indicada é uma loja comum (pode ser revenda) que ganhou o selo pelo desempenho. As duas passam no nosso filtro para produtos caros. Loja sem selo nenhum só passa abaixo de R$ 1.000, e ainda assim com nota e vendas no mínimo exigido.</p>
 
 <h2>Como funciona a Garantia Shopee?</h2>
@@ -515,7 +518,7 @@ export const POSTS: Post[] = [
 </table>
 
 <h2>E se o link da oferta for falso?</h2>
-<p>Link falso é outro problema, anterior à loja: antes de olhar nota e selo, confira se o endereço abre o app ou o site oficial da Shopee, e veja como reconhecer golpe de link em <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a>. No Tem Descontos o link vai sempre para a loja oficial, nunca para site intermediário, e ninguém do grupo pede dado, Pix ou código no privado.</p>
+<p>Link falso é outro problema, anterior à loja: antes de olhar nota e selo, confira se o endereço abre o app ou o site oficial da Shopee, e veja como reconhecer golpe de link em <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a>. Se a oferta estiver em um site fora da Shopee, as checagens são outras: <a href="/blog/como-saber-se-um-site-e-confiavel">como saber se um site de compras é confiável</a>. No Tem Descontos o link vai sempre para a loja oficial, nunca para site intermediário, e ninguém do grupo pede dado, Pix ou código no privado.</p>
 
 <h2>Checklist rápido antes de pagar</h2>
 <ol>
@@ -679,7 +682,7 @@ export const POSTS: Post[] = [
   {
     slug: "garantia-de-a-a-z-amazon",
     titulo: "Garantia de A a Z da Amazon: quando vale e como acionar",
-    metaTitle: "Garantia de A a Z Amazon: quando vale e como acionar",
+    metaTitle: "Garantia de A a Z da Amazon: como acionar e quando vale",
     metaDescription: "Você tem 90 dias após a data máxima de entrega para pedir a Garantia de A a Z da Amazon. Veja quando ela vale, o que cobre e o passo a passo para acionar.",
     resumo: "Quando a Garantia de A a Z da Amazon protege a sua compra de vendedor parceiro, quais são os prazos oficiais e como pedir o reembolso ou recorrer.",
     resumoRapido: [

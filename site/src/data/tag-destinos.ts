@@ -15,7 +15,7 @@ const DESTINOS: Destino[] = [
   { href: "/blog/produto-com-defeito-comprado-online", tags: ["produto com defeito comprado online", "prazo para reclamar de defeito", "garantia legal", "garantia legal e contratual"] },
   { href: "/blog/taxa-de-importacao-compra-internacional", tags: ["taxa de importação", "taxa das blusinhas 2026", "remessa conforme", "icms compra internacional"] },
   { href: "/blog/pix-ou-cartao-compra-online", tags: ["pix ou cartão", "pix é seguro para compra online", "med pix", "desconto no pix vale a pena", "estorno pix"] },
-  { href: "/blog/como-saber-se-loja-da-shopee-e-confiavel", tags: ["loja da shopee é confiável", "garantia shopee", "loja oficial shopee", "vendedor indicado shopee"] },
+  { href: "/blog/como-saber-se-loja-da-shopee-e-confiavel", tags: ["loja oficial da shopee é confiável", "loja indicada shopee é confiável", "loja da shopee é confiável", "garantia shopee", "loja oficial shopee", "vendedor indicado shopee"] },
   { href: "/blog/cupom-shopee-e-mercado-livre-como-usar", tags: ["cupom shopee", "cupom mercado livre", "cupom indisponível", "moedas shopee", "cupom primeira compra"] },
   { href: "/blog/compra-garantida-mercado-livre", tags: ["compra garantida mercado livre", "como pedir reembolso no mercado livre", "mediação mercado livre"] },
   { href: "/blog/garantia-de-a-a-z-amazon", tags: ["garantia de a a z amazon", "como acionar garantia amazon", "reembolso amazon vendedor parceiro"] },
