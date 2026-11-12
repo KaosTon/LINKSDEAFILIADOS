@@ -35,6 +35,13 @@
     "legenda": "Todo desconto parte de um preço que você não viu.\n\nAntes de comprar em promoção, veja o histórico de preço do produto em um comparador e compare o valor de hoje com o menor preço do período. Se o preço subiu pouco antes de \"cair\", o desconto pode ser só a devolução do aumento.\n\nExplicamos como ler o gráfico no blog (link na bio).\n\n#blackfriday #historicodepreco #dicasdecompra #consumidor"
   },
   {
+    "id": "reel-dica-historico-de-preco",
+    "data": "2026-11-18",
+    "video": "reel-dica-historico-de-preco.mp4",
+    "fonte": "../reels/src/Preco.tsx",
+    "legenda": "Todo desconto parte de um preço que você não viu.\n\nAntes de comprar em promoção, veja o histórico de preço do produto em um comparador e compare o valor de hoje com o menor preço do período. Se o preço subiu pouco antes de \"cair\", o desconto pode ser só a devolução do aumento.\n\nExplicamos como ler o gráfico no blog (link na bio).\n\n#blackfriday #historicodepreco #dicasdecompra #consumidor"
+  },
+  {
     "id": "dica-cadeado",
     "data": "2026-11-19",
     "selo": "VOCÊ SABIA?",
