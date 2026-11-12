@@ -1,4 +1,6 @@
 // Card do status (27/10): GET /card?d=DADOS&a=ASSINATURA
+// Com &f=feed (12/11) sai no formato do feed do Instagram, 1080x1350: o mesmo card sem a chamada e sem
+// o botão (no feed quem convida é a legenda), com tudo subido para caber.
 // O mesmo card aprovado no S25 (marketing/cards/card-oferta-status.html), 1080x1920, feito aqui com
 // sharp (SVG + foto), sem navegador. DADOS = base64url de { n: nome, de, por, f: foto, l: loja, v: visto }.
 // Só abre card assinado pelo n8n (HMAC com ENCURTADOR_SEGREDO), como a /foto.
@@ -18,6 +20,8 @@ try {
 const { default: sharp } = await import('sharp');
 
 const L = 1080, A = 1920;
+// Feed: altura 4:5 e quanto o miolo (foto, nome, preço) sobe em relação ao card do status.
+const A_FEED = 1350, SOBE_FEED = 252;
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const reais = (v) => (Number.isInteger(v) ? v.toLocaleString('pt-BR') : v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 // Largura aproximada do texto na Inter (para riscar o "de" e medir as pílulas).
@@ -42,10 +46,11 @@ export function linhasDoNome(nome, max = 22) {
   return linhas.filter(Boolean);
 }
 
-export function svgDoCard({ n, de, por, l, v }) {
+export function svgDoCard({ n, de, por, l, v }, feed = false) {
   const nome = linhasDoNome(n);
   const sobe = nome.length === 1 ? 40 : 0;
-  const y0 = 1110 - sobe;
+  const dy = feed ? SOBE_FEED : 0, alt = feed ? A_FEED : A;
+  const y0 = 1110 - sobe - dy;
   const yDe = y0 + 80 * (nome.length - 1) + 78;
   const yPor = yDe + 140, yEco = yPor + 50;
   const deTxt = `R$ ${reais(de)}`, eco = `Economia de R$ ${reais(Math.round((de - por) * 100) / 100)}`;
@@ -55,7 +60,7 @@ export function svgDoCard({ n, de, por, l, v }) {
   const porTxt = reais(por);
   const lPor = largura(porTxt, 130, 0.62), lRs = largura('R$', 64, 0.62) + 10;
   const xPor = L / 2 - (lPor + lRs) / 2;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${A}" viewBox="0 0 ${L} ${A}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${alt}" viewBox="0 0 ${L} ${alt}">
   <defs>
     <linearGradient id="fundo" x1="0.4" y1="0" x2="0.6" y2="1">
       <stop offset="0" stop-color="#0d2f66"/><stop offset="0.55" stop-color="#0a1f45"/><stop offset="1" stop-color="#07142e"/>
@@ -64,16 +69,16 @@ export function svgDoCard({ n, de, por, l, v }) {
     <radialGradient id="vermelho" cx="0.1" cy="0.95" r="0.6"><stop offset="0" stop-color="#e53b2c" stop-opacity="0.4"/><stop offset="1" stop-color="#e53b2c" stop-opacity="0"/></radialGradient>
     <linearGradient id="pill" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7941d"/><stop offset="1" stop-color="#e53b2c"/></linearGradient>
   </defs>
-  <rect width="${L}" height="${A}" fill="url(#fundo)"/>
-  <rect width="${L}" height="${A}" fill="url(#laranja)"/>
-  <rect width="${L}" height="${A}" fill="url(#vermelho)"/>
+  <rect width="${L}" height="${alt}" fill="url(#fundo)"/>
+  <rect width="${L}" height="${alt}" fill="url(#laranja)"/>
+  <rect width="${L}" height="${alt}" fill="url(#vermelho)"/>
   <g font-family="Inter" text-anchor="middle" fill="#fff">
-    <rect x="${L / 2 - 200}" y="110" width="400" height="76" rx="38" fill="url(#pill)"/>
-    <text x="${L / 2}" y="160" font-size="34" font-weight="900" letter-spacing="4">OFERTA DO DIA</text>
-    <text x="${L / 2}" y="290" font-size="66" font-weight="800">Esse grupo de ofertas tá</text>
-    <text x="${L / 2}" y="363" font-size="66" font-weight="800" fill="#ffb347">valendo a pena</text>
-    <rect x="152" y="402" width="776" height="606" rx="54" fill="#ffffff" fill-opacity="0.08"/>
-    <rect x="160" y="410" width="760" height="590" rx="48" fill="#ffffff"/>
+    <rect x="${L / 2 - 200}" y="${feed ? 40 : 110}" width="400" height="76" rx="38" fill="url(#pill)"/>
+    <text x="${L / 2}" y="${feed ? 90 : 160}" font-size="34" font-weight="900" letter-spacing="4">OFERTA DO DIA</text>
+    ${feed ? '' : `<text x="${L / 2}" y="290" font-size="66" font-weight="800">Esse grupo de ofertas tá</text>
+    <text x="${L / 2}" y="363" font-size="66" font-weight="800" fill="#ffb347">valendo a pena</text>`}
+    <rect x="152" y="${402 - dy}" width="776" height="606" rx="54" fill="#ffffff" fill-opacity="0.08"/>
+    <rect x="160" y="${410 - dy}" width="760" height="590" rx="48" fill="#ffffff"/>
     ${nome.map((t, i) => `<text x="${L / 2}" y="${y0 + 80 * i}" font-size="72" font-weight="900" letter-spacing="-1">${esc(t)}</text>`).join('\n    ')}
     <text x="${L / 2}" y="${yDe}" font-size="48" font-weight="600" fill="#b9c7e6">De ${esc(deTxt)}</text>
     <line x1="${xDe + 2}" y1="${yDe - 16}" x2="${xDe + largura(deTxt, 48, 0.58) + 4}" y2="${yDe - 16}" stroke="#ff5a3c" stroke-width="5"/>
@@ -81,39 +86,40 @@ export function svgDoCard({ n, de, por, l, v }) {
     <text x="${xPor + lRs}" y="${yPor}" text-anchor="start" font-size="130" font-weight="900" letter-spacing="-4" fill="#ffb347">${porTxt}</text>
     <rect x="${L / 2 - lEco / 2}" y="${yEco}" width="${lEco}" height="64" rx="32" fill="#ffffff" fill-opacity="0.12"/>
     <text x="${L / 2}" y="${yEco + 44}" font-size="36" font-weight="700">${esc(eco)}</text>
-    <rect x="90" y="1594" width="900" height="116" rx="58" fill="#ffffff"/>
+    ${feed ? '' : `<rect x="90" y="1594" width="900" height="116" rx="58" fill="#ffffff"/>
     <text x="${L / 2}" y="1670" font-size="50" font-weight="900" fill="#0a1f45">Entra no grupo, é grátis</text>
-    <text x="${L / 2}" y="1770" font-size="38" font-weight="700" fill="#ffd08a">temdescontos.com.br/grupo</text>
-    <text x="${L / 2}" y="1820" font-size="24" font-weight="500" fill="#8fa2cc">${esc(nota)}</text>
+    <text x="${L / 2}" y="1770" font-size="38" font-weight="700" fill="#ffd08a">temdescontos.com.br/grupo</text>`}
+    <text x="${L / 2}" y="${feed ? A_FEED - 28 : 1820}" font-size="24" font-weight="500" fill="#8fa2cc">${esc(nota)}</text>
   </g>
 </svg>`;
 }
 
 /** O selo de % OFF vai por cima da foto (camada à parte). */
-export function svgDoSelo({ de, por }) {
+export function svgDoSelo({ de, por }, feed = false) {
   const off = Math.round((1 - por / de) * 100);
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${A}" viewBox="0 0 ${L} ${A}">
+  const alt = feed ? A_FEED : A, cy = 475 - (feed ? SOBE_FEED : 0);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${alt}" viewBox="0 0 ${L} ${alt}">
   <defs><radialGradient id="selo" cx="0.35" cy="0.3" r="0.75"><stop offset="0" stop-color="#ff5a3c"/><stop offset="0.7" stop-color="#d8261b"/></radialGradient></defs>
   <g font-family="Inter" text-anchor="middle" fill="#fff">
-    <g transform="rotate(10 875 475)">
-      <circle cx="875" cy="475" r="115" fill="url(#selo)" stroke="#fff" stroke-width="10"/>
-      <text x="875" y="490" font-size="${off >= 100 ? 74 : 92}" font-weight="900" letter-spacing="-3">${off}%</text>
-      <text x="875" y="535" font-size="34" font-weight="800" letter-spacing="4">OFF</text>
+    <g transform="rotate(10 875 ${cy})">
+      <circle cx="875" cy="${cy}" r="115" fill="url(#selo)" stroke="#fff" stroke-width="10"/>
+      <text x="875" y="${cy + 15}" font-size="${off >= 100 ? 74 : 92}" font-weight="900" letter-spacing="-3">${off}%</text>
+      <text x="875" y="${cy + 60}" font-size="34" font-weight="800" letter-spacing="4">OFF</text>
     </g>
   </g>
 </svg>`;
 }
 
-export async function fazerCard(o, foto) {
+export async function fazerCard(o, foto, feed = false) {
   const camadas = [];
   if (foto) {
     try {
       const f = await sharp(foto).rotate().resize(700, 550, { fit: 'contain', background: '#ffffff' }).flatten({ background: '#ffffff' }).png().toBuffer();
-      camadas.push({ input: f, left: 190, top: 430 });
+      camadas.push({ input: f, left: 190, top: 430 - (feed ? SOBE_FEED : 0) });
     } catch (e) { /* foto ruim: card sem foto */ }
   }
-  camadas.push({ input: Buffer.from(svgDoSelo(o)), left: 0, top: 0 });
-  return sharp(Buffer.from(svgDoCard(o))).composite(camadas).jpeg({ quality: 90, mozjpeg: true }).toBuffer();
+  camadas.push({ input: Buffer.from(svgDoSelo(o, feed)), left: 0, top: 0 });
+  return sharp(Buffer.from(svgDoCard(o, feed))).composite(camadas).jpeg({ quality: 90, mozjpeg: true }).toBuffer();
 }
 
 /** Lê e confere os dados: nome, "de" maior que "por". */
@@ -133,13 +139,14 @@ export function criarRotaCard({ pasta, segredo, baixarFoto }) {
     const certa = assinarCard(segredo, d);
     const o = a.length === certa.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(certa)) ? lerDados(d) : null;
     if (!o) { res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('assinatura'); }
-    const arquivo = path.join(cache, crypto.createHash('sha1').update(d).digest('hex') + '.jpg');
+    const feed = u.searchParams.get('f') === 'feed';
+    const arquivo = path.join(cache, crypto.createHash('sha1').update(d).digest('hex') + (feed ? '-feed' : '') + '.jpg');
     try {
       let jpg;
       try { jpg = fs.readFileSync(arquivo); } catch (e) {
         let foto = null;
         if (o.f) { try { foto = await baixarFoto(o.f); } catch (e2) { foto = null; } }
-        jpg = await fazerCard(o, foto);
+        jpg = await fazerCard(o, foto, feed);
         fs.writeFileSync(arquivo, jpg);
       }
       res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Content-Length': jpg.length, 'Cache-Control': 'public, max-age=86400' });

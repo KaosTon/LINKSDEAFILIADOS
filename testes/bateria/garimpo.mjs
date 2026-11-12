@@ -808,5 +808,43 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   caso('story: sem conta, token ou imagem https, nada', pedidosStoryIG('', 'T', 'https://x') === null && pedidosStoryIG('1', '', 'https://x') === null && pedidosStoryIG('1', 'T', 'http://x') === null);
 }
 
+{
+  console.log('\n# Feed do Instagram pelo Anota (12/11)');
+  const anota = pegarCodigo('03-garimpo.json', 'Anota');
+  const CARD = 'https://enc.test/card?d=abc&a=def';
+  const mc = { dia: '2026-11-12', texto: 'CHAMADA\n\nFone JBL Tune 520BT\n\n\u{1F4B5} De R$349 por R$189 (46% OFF)', chave: 'ml:1' };
+  const env = { INSTAGRAM_FEED: 'sim', META_IG_USER_ID: '1789', META_ACCESS_TOKEN: 'TOKEN_TESTE' };
+  const http = [
+    { quando: /\/1789\/media$/, metodo: 'POST', responde: { id: 'C1' } },
+    { quando: /\/C1\?fields=status_code/, metodo: 'GET', responde: { status_code: 'FINISHED' } },
+    { quando: /\/1789\/media_publish$/, metodo: 'POST', responde: { id: 'P9' } },
+  ];
+  const roda = (g, memoria, e = env, h = http, ok = true) => rodar(anota, { itens: [{ json: { ok } }], nos: { Garimpa: [{ json: g }] }, memoria, env: e, http: h });
+  const status = { tipo: 'status', dia: '2026-11-12', imagem: CARD, texto: 'x' };
+  let m = { melhorCard: mc };
+  let r = await roda(status, m);
+  const criar = r.chamadas.find(c => /\/media$/.test(c.url));
+  caso('feed: publica o card no formato do feed com a legenda', r.saida[0].json.feed === 'P9' && m.feedDia === '2026-11-12' && criar.body.image_url === CARD + '&f=feed' && /Oferta do dia: Fone JBL Tune 520BT/.test(criar.body.caption), { s: r.saida, criar: criar && criar.body });
+  caso('feed: legenda sem link, com #publi e aviso de preço', !/https?:/.test(criar.body.caption) && /#publi/.test(criar.body.caption) && /Pode mudar/.test(criar.body.caption));
+  caso('feed: status continua marcado', m.statusDia === '2026-11-12' && r.saida[0].json.status === true);
+  r = await roda(status, m);
+  caso('feed: só uma vez por dia', r.chamadas.length === 0 && r.saida[0].json.feed === undefined);
+  m = { melhorCard: mc };
+  r = await roda(status, m, { ...env, INSTAGRAM_FEED: '' });
+  caso('feed: desligado sem INSTAGRAM_FEED=sim', r.chamadas.length === 0 && !m.feedDia && m.statusDia === '2026-11-12');
+  m = { melhorCard: mc };
+  r = await roda({ ...status, imagem: 'https://loja.test/foto.jpg' }, m);
+  caso('feed: sem card (foto do produto), não posta', r.chamadas.length === 0 && !m.feedDia);
+  m = { melhorCard: mc };
+  r = await roda(status, m, env, http, false);
+  caso('feed: status não enviado, não posta', r.chamadas.length === 0 && !m.feedDia);
+  m = { melhorCard: mc };
+  r = await roda(status, m, env, [{ quando: /\/media$/, metodo: 'POST', responde: () => { throw new Error('fora do ar'); } }]);
+  caso('feed: Meta fora do ar não derruba o Anota', r.saida[0].json.ok === true && r.saida[0].json.feed === false && m.statusDia === '2026-11-12', r.saida);
+  m = { melhorCard: mc };
+  r = await roda({ tipo: 'resumo', dia: '2026-11-12' }, m);
+  caso('feed: resumo e convite não postam', r.chamadas.length === 0 && m.resumoDia === '2026-11-12');
+}
+
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;
