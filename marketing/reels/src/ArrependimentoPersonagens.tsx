@@ -21,7 +21,7 @@ const TELAS: [number, string][] = [[CORTE.ruim, C.vermelho], [CORTE.calma, C.tin
 const CORTES = [...Object.values(CORTE), s6.fim];
 
 type Dados = { w: number; h: number };
-const Clip: React.FC<{ t: number; dados: unknown; de: number; ate: number; x: number; y: number; larg: number; mola?: typeof MOLA.pop; semPop?: boolean; cartao?: boolean }> = ({ t, dados, de, ate, x, y, larg, mola = MOLA.assenta, semPop, cartao }) => {
+export const Clip: React.FC<{ t: number; dados: unknown; de: number; ate: number; x: number; y: number; larg: number; mola?: typeof MOLA.pop; semPop?: boolean; cartao?: boolean }> = ({ t, dados, de, ate, x, y, larg, mola = MOLA.assenta, semPop, cartao }) => {
   if (t < de || t > ate + 0.3) return null;
   const d = dados as Dados, alt = (larg * d.h) / d.w;
   const k = semPop ? 1 : sp(t, de, mola), fora = prog(t, ate, ate + 0.22, easeIn);
