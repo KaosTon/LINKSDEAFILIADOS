@@ -7,8 +7,9 @@ import { workflow, node, trigger } from '@n8n/workflow-sdk';
  * no feed o item marcado para hoje, uma vez. Se a Meta falhar, tenta de novo
  * nas rodadas seguintes (até 3 vezes no dia).
  *
- * Liga com a mesma variável do feed de ofertas: INSTAGRAM_FEED=sim. O texto e
- * a imagem vêm prontos e revisados do repositório; nada é escrito na hora.
+ * Liga com a mesma variável do feed de ofertas: INSTAGRAM_FEED=sim. Item com
+ * vídeo (Reel) só sai com INSTAGRAM_REEL=sim também. O texto, a imagem e o
+ * vídeo vêm prontos e revisados do repositório; nada é escrito na hora.
  */
 const SITE = 'https://www.temdescontos.com.br';
 
@@ -37,11 +38,13 @@ const publica = node({
 "if (!Array.isArray(agenda)) return [{ json: { publicou: false, motivo: 'sem_agenda' } }];",
 "const p = postDeHoje(agenda, agora, teste ? { feitos: mem.feitos } : mem);",
 "if (!p) return [{ json: { publicou: false, motivo: 'nada_hoje', itens: agenda.length } }];",
-"if (teste) return [{ json: { publicou: false, motivo: 'teste', id: p.id, imagem: '" + SITE + "' + p.imagem, legenda: p.legenda } }];",
+"if (teste) return [{ json: { publicou: false, motivo: 'teste', id: p.id, midiaUrl: '" + SITE + "' + (p.video || p.imagem), reel: !!p.video, legenda: p.legenda } }];",
+"// Reel só com INSTAGRAM_REEL=sim; desligado, o item fica esperando (não conta tentativa).",
+"if (p.video && !reelLigado($env)) return [{ json: { publicou: false, motivo: 'reel_desligado', id: p.id } }];",
 "let id = null;",
-"try { id = await publicarNoFeed(this.helpers, $env, '" + SITE + "' + p.imagem, p.legenda); } catch (e) { id = null; }",
+"try { id = p.video ? await publicarReel(this.helpers, $env, '" + SITE + "' + p.video, p.legenda) : await publicarNoFeed(this.helpers, $env, '" + SITE + "' + p.imagem, p.legenda); } catch (e) { id = null; }",
 "anotarTentativa(mem, p.id, !!id);",
-"return [{ json: { publicou: !!id, id: p.id, midia: id, tentativa: id ? undefined : mem.tentativas.n[p.id] } }];"
+"return [{ json: { publicou: !!id, id: p.id, reel: !!p.video, midia: id, tentativa: id ? undefined : mem.tentativas.n[p.id] } }];"
 ].join('\n') } },
   output: [{ publicou: true, id: 'dica-arrependimento', midia: '1790' }]
 });

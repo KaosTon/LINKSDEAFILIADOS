@@ -1,32 +1,147 @@
 [
-  { "id": "dica-arrependimento", "data": "2026-11-14", "selo": "VOCÊ SABIA?", "titulo": "Comprou online e se arrependeu? Você tem 7 dias.", "texto": "O prazo conta do dia em que o produto chega, e não precisa dar motivo.", "fundo": "../../site/public/blog/direito-de-arrependimento-compra-online.webp",
-    "legenda": "Você sabia? Em compra pela internet, dá para desistir em até 7 dias corridos depois de receber o produto, sem explicar o motivo. E você recebe de volta o que pagou, inclusive o frete.\n\nEstá no art. 49 do Código de Defesa do Consumidor.\n\nO passo a passo em cada loja está no nosso blog (link na bio).\n\n#direitodoconsumidor #compraonline #dicasdecompra #consumidor" },
-  { "id": "data-novembro-azul", "data": "2026-11-16", "selo": "NOVEMBRO AZUL", "titulo": "Mês de cuidar da saúde do homem", "texto": "Marque a consulta que você está adiando. E lembre quem você gosta de marcar a dele.", "fundo": "fundos/novembro-azul.webp", "cheio": true,
-    "legenda": "Novembro Azul é o mês de conscientização sobre a saúde do homem.\n\nSe você está adiando uma consulta, este é um bom mês para marcar. E vale mandar este lembrete para o pai, o irmão, o amigo.\n\n#novembroazul #saudedohomem #cuidese" },
-  { "id": "dica-historico-de-preco", "data": "2026-11-17", "selo": "VOCÊ SABIA?", "titulo": "50% de desconto sobre qual preço?", "texto": "Compare com o menor preço das últimas semanas, não com o preço riscado.", "fundo": "../../site/public/blog/historico-de-preco-como-consultar.webp",
-    "legenda": "Todo desconto parte de um preço que você não viu.\n\nAntes de comprar em promoção, veja o histórico de preço do produto em um comparador e compare o valor de hoje com o menor preço do período. Se o preço subiu pouco antes de \"cair\", o desconto pode ser só a devolução do aumento.\n\nExplicamos como ler o gráfico no blog (link na bio).\n\n#blackfriday #historicodepreco #dicasdecompra #consumidor" },
-  { "id": "dica-cadeado", "data": "2026-11-19", "selo": "VOCÊ SABIA?", "titulo": "O cadeado não garante que a loja é honesta", "texto": "Ele só mostra que a conexão é protegida. Confira o endereço e o CNPJ antes de pagar.", "fundo": "../../site/public/blog/como-saber-se-um-site-e-confiavel.webp",
-    "legenda": "O cadeado ao lado do endereço mostra que a conexão é criptografada. Site falso também pode ter.\n\nAntes de pagar em loja que você não conhece, confira o endereço letra por letra e consulte o CNPJ no site da Receita Federal. É de graça e leva dois minutos.\n\nAs 5 checagens completas estão no blog (link na bio).\n\n#golpe #sitefalso #compraonline #segurancadigital #consumidor" },
-  { "id": "dica-pix", "data": "2026-11-21", "selo": "VOCÊ SABIA?", "titulo": "Vai pagar no Pix? Leia o nome de quem recebe.", "texto": "Se não for o nome da loja, não confirme.", "fundo": "../../site/public/blog/pix-ou-cartao-compra-online.webp",
-    "legenda": "Antes de confirmar um Pix, o aplicativo do banco mostra o nome de quem vai receber. O Banco Central orienta conferir sempre.\n\nNome de pessoa física ou de empresa diferente da loja é motivo para parar.\n\nNo blog a gente compara Pix e cartão na compra online (link na bio).\n\n#pix #golpedopix #compraonline #dicasdecompra #consumidor" },
-  { "id": "dica-frete", "data": "2026-11-24", "selo": "VOCÊ SABIA?", "titulo": "Frete grátis nem sempre é o mais barato", "texto": "Compare o total: produto mais entrega.", "fundo": "../../site/public/blog/frete-gratis-amazon-mercado-livre-shopee.webp",
-    "legenda": "Entrega tem custo, e às vezes ele está dentro do preço do produto.\n\nAntes de fechar, some produto e frete em cada loja e compare o total. E não encha o carrinho só para bater o valor mínimo do frete grátis: gastar mais para economizar menos é prejuízo.\n\nAs regras de frete de cada loja estão no blog (link na bio).\n\n#fretegratis #dicasdecompra #compraonline #economia" },
-  { "id": "dica-vespera-black-friday", "data": "2026-11-26", "selo": "AMANHÃ É BLACK FRIDAY", "titulo": "Anote hoje o preço do que você quer comprar", "texto": "Só dá para saber se o desconto é de verdade comparando com o preço de antes.", "fundo": "../../site/public/blog/esquenta-black-friday-comprar-antes-ou-esperar.webp",
-    "legenda": "Amanhã é Black Friday.\n\nSe você tem uma compra planejada, anote hoje o preço em cada loja, com print. Amanhã, compare. Preço igual ao de hoje com etiqueta de promoção não é desconto.\n\nO guia completo da Black Friday está no blog (link na bio).\n\n#blackfriday #blackfriday2026 #dicasdecompra #consumidor" },
-  { "id": "data-black-friday", "data": "2026-11-27", "selo": "BLACK FRIDAY", "titulo": "3 cuidados antes de pagar", "texto": "Confira o endereço do site, compare com o preço de antes e guarde o print da oferta.", "fundo": "../../site/public/blog/black-friday-2026-quando-e.webp",
-    "legenda": "Hoje é Black Friday. Três cuidados antes de pagar:\n\n1. Confira se o endereço do site é exatamente o da loja.\n2. Compare o preço com o das últimas semanas.\n3. Guarde o print da oferta e do pagamento.\n\nE lembre: compra pela internet tem 7 dias para arrependimento, contados do recebimento.\n\n#blackfriday #blackfriday2026 #compraonline #consumidor" },
-  { "id": "dica-shopee-recebimento", "data": "2026-11-28", "selo": "VOCÊ SABIA?", "titulo": "Na Shopee, só confirme o recebimento depois de receber", "texto": "O pagamento fica retido até você confirmar. É a sua proteção.", "fundo": "../../site/public/blog/como-saber-se-loja-da-shopee-e-confiavel.webp",
-    "legenda": "Na Shopee, o dinheiro não vai direto para o vendedor: fica retido até você confirmar que recebeu.\n\nPor isso, nunca confirme o recebimento de um pedido que ainda não chegou, mesmo que o vendedor peça ou prometa um brinde.\n\nComo saber se uma loja da Shopee é confiável: no blog (link na bio).\n\n#shopee #compraonline #dicasdecompra #consumidor" },
-  { "id": "dica-compra-atrasou", "data": "2026-12-01", "selo": "VOCÊ SABIA?", "titulo": "A compra atrasou? A escolha é sua.", "texto": "Exigir a entrega, aceitar outro produto ou receber o dinheiro de volta.", "fundo": "../../site/public/blog/compra-online-nao-chegou-o-que-fazer.webp",
-    "legenda": "Passou o prazo e a compra não chegou? Isso é descumprimento de oferta.\n\nPelo art. 35 do Código de Defesa do Consumidor, quem escolhe é você: exigir a entrega, aceitar um produto equivalente ou cancelar e receber de volta o que pagou.\n\nReclame por escrito no canal da loja e guarde o protocolo. O caminho em cada loja está no blog (link na bio).\n\n#direitodoconsumidor #compraonline #entregaatrasada #consumidor" },
-  { "id": "dica-loja-fisica", "data": "2026-12-03", "selo": "VOCÊ SABIA?", "titulo": "Os 7 dias de arrependimento não valem em loja física", "texto": "Na loja física, trocar produto sem defeito é cortesia. Pergunte a regra antes de comprar o presente.", "fundo": "../../site/public/blog/produto-com-defeito-comprado-online.webp",
-    "legenda": "Vai comprar presente de Natal em loja física? Os 7 dias de arrependimento da lei valem só para compra feita fora da loja, como pela internet.\n\nNa loja física, a troca de produto sem defeito é cortesia. Pergunte a regra e o prazo antes de pagar, e peça para anotarem na nota.\n\n#natal #presentedenatal #direitodoconsumidor #dicasdecompra" },
-  { "id": "dica-cnpj", "data": "2026-12-05", "selo": "VOCÊ SABIA?", "titulo": "Dá para consultar o CNPJ de qualquer loja, de graça", "texto": "É no site da Receita Federal. Se o CNPJ não existir ou o nome não bater, não compre.", "fundo": "../../site/public/blog/compra-garantida-mercado-livre.webp",
-    "legenda": "Toda loja online é obrigada a mostrar o CNPJ no site.\n\nCopie o número do rodapé e consulte no site da Receita Federal: a consulta é gratuita e mostra se a empresa existe e está ativa. Compare o nome que aparece com o nome da loja.\n\nMais checagens no blog (link na bio).\n\n#golpe #sitefalso #compraonline #segurancadigital #consumidor" },
-  { "id": "dica-prazo-natal", "data": "2026-12-08", "selo": "VOCÊ SABIA?", "titulo": "Presente pela internet? Olhe o prazo de entrega.", "texto": "A loja é obrigada a informar o prazo antes da compra. Guarde o print.", "fundo": "../../site/public/blog/calendario-de-promocoes-datas-de-desconto.webp",
-    "legenda": "Faltam poucos dias para o Natal.\n\nSe o presente vem pela internet, confira o prazo de entrega para o seu CEP antes de pagar e guarde o print. A loja é obrigada a informar o prazo, e se ela não cumprir, você pode cancelar e receber o dinheiro de volta.\n\n#natal #presentedenatal #compraonline #dicasdecompra" },
-  { "id": "data-natal", "data": "2026-12-24", "selo": "FELIZ NATAL", "titulo": "Que a sua noite seja de mesa cheia e gente querida", "texto": "Obrigado por estar com a gente neste ano.", "fundo": "fundos/natal.webp", "cheio": true,
-    "legenda": "Feliz Natal!\n\nQue a sua noite seja de mesa cheia e gente querida. Obrigado por acompanhar o Tem Descontos neste ano.\n\n#feliznatal #natal" },
-  { "id": "data-ano-novo", "data": "2026-12-31", "selo": "FELIZ 2027", "titulo": "Que venha um ano de boas escolhas", "texto": "E de boas economias também. Nos vemos em janeiro.", "fundo": "fundos/ano-novo.webp", "cheio": true,
-    "legenda": "Feliz Ano Novo!\n\nQue 2027 seja um ano de boas escolhas, e de boas economias também. Nos vemos em janeiro.\n\n#felizanonovo #anonovo #2027" }
+  {
+    "id": "dica-arrependimento",
+    "data": "2026-11-14",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Comprou online e se arrependeu? Você tem 7 dias.",
+    "texto": "O prazo conta do dia em que o produto chega, e não precisa dar motivo.",
+    "fundo": "../../site/public/blog/direito-de-arrependimento-compra-online.webp",
+    "legenda": "Você sabia? Em compra pela internet, dá para desistir em até 7 dias corridos depois de receber o produto, sem explicar o motivo. E você recebe de volta o que pagou, inclusive o frete.\n\nEstá no art. 49 do Código de Defesa do Consumidor.\n\nO passo a passo em cada loja está no nosso blog (link na bio).\n\n#direitodoconsumidor #compraonline #dicasdecompra #consumidor"
+  },
+  {
+    "id": "reel-dica-arrependimento",
+    "data": "2026-11-15",
+    "video": "reel-dica-arrependimento.mp4",
+    "fonte": "../reels/src/Arrependimento.tsx",
+    "legenda": "Comprou pela internet e se arrependeu? Você tem 7 dias corridos, contados do dia em que o produto chega, para desistir sem dar motivo. E o que você pagou volta, inclusive o frete.\n\nEstá no art. 49 do Código de Defesa do Consumidor.\n\nO passo a passo em cada loja está no blog (link na bio).\n\n#direitodoconsumidor #compraonline #dicasdecompra #consumidor"
+  },
+  {
+    "id": "data-novembro-azul",
+    "data": "2026-11-16",
+    "selo": "NOVEMBRO AZUL",
+    "titulo": "Mês de cuidar da saúde do homem",
+    "texto": "Marque a consulta que você está adiando. E lembre quem você gosta de marcar a dele.",
+    "fundo": "fundos/novembro-azul.webp",
+    "cheio": true,
+    "legenda": "Novembro Azul é o mês de conscientização sobre a saúde do homem.\n\nSe você está adiando uma consulta, este é um bom mês para marcar. E vale mandar este lembrete para o pai, o irmão, o amigo.\n\n#novembroazul #saudedohomem #cuidese"
+  },
+  {
+    "id": "dica-historico-de-preco",
+    "data": "2026-11-17",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "50% de desconto sobre qual preço?",
+    "texto": "Compare com o menor preço das últimas semanas, não com o preço riscado.",
+    "fundo": "../../site/public/blog/historico-de-preco-como-consultar.webp",
+    "legenda": "Todo desconto parte de um preço que você não viu.\n\nAntes de comprar em promoção, veja o histórico de preço do produto em um comparador e compare o valor de hoje com o menor preço do período. Se o preço subiu pouco antes de \"cair\", o desconto pode ser só a devolução do aumento.\n\nExplicamos como ler o gráfico no blog (link na bio).\n\n#blackfriday #historicodepreco #dicasdecompra #consumidor"
+  },
+  {
+    "id": "dica-cadeado",
+    "data": "2026-11-19",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "O cadeado não garante que a loja é honesta",
+    "texto": "Ele só mostra que a conexão é protegida. Confira o endereço e o CNPJ antes de pagar.",
+    "fundo": "../../site/public/blog/como-saber-se-um-site-e-confiavel.webp",
+    "legenda": "O cadeado ao lado do endereço mostra que a conexão é criptografada. Site falso também pode ter.\n\nAntes de pagar em loja que você não conhece, confira o endereço letra por letra e consulte o CNPJ no site da Receita Federal. É de graça e leva dois minutos.\n\nAs 5 checagens completas estão no blog (link na bio).\n\n#golpe #sitefalso #compraonline #segurancadigital #consumidor"
+  },
+  {
+    "id": "dica-pix",
+    "data": "2026-11-21",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Vai pagar no Pix? Leia o nome de quem recebe.",
+    "texto": "Se não for o nome da loja, não confirme.",
+    "fundo": "../../site/public/blog/pix-ou-cartao-compra-online.webp",
+    "legenda": "Antes de confirmar um Pix, o aplicativo do banco mostra o nome de quem vai receber. O Banco Central orienta conferir sempre.\n\nNome de pessoa física ou de empresa diferente da loja é motivo para parar.\n\nNo blog a gente compara Pix e cartão na compra online (link na bio).\n\n#pix #golpedopix #compraonline #dicasdecompra #consumidor"
+  },
+  {
+    "id": "dica-frete",
+    "data": "2026-11-24",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Frete grátis nem sempre é o mais barato",
+    "texto": "Compare o total: produto mais entrega.",
+    "fundo": "../../site/public/blog/frete-gratis-amazon-mercado-livre-shopee.webp",
+    "legenda": "Entrega tem custo, e às vezes ele está dentro do preço do produto.\n\nAntes de fechar, some produto e frete em cada loja e compare o total. E não encha o carrinho só para bater o valor mínimo do frete grátis: gastar mais para economizar menos é prejuízo.\n\nAs regras de frete de cada loja estão no blog (link na bio).\n\n#fretegratis #dicasdecompra #compraonline #economia"
+  },
+  {
+    "id": "dica-vespera-black-friday",
+    "data": "2026-11-26",
+    "selo": "AMANHÃ É BLACK FRIDAY",
+    "titulo": "Anote hoje o preço do que você quer comprar",
+    "texto": "Só dá para saber se o desconto é de verdade comparando com o preço de antes.",
+    "fundo": "../../site/public/blog/esquenta-black-friday-comprar-antes-ou-esperar.webp",
+    "legenda": "Amanhã é Black Friday.\n\nSe você tem uma compra planejada, anote hoje o preço em cada loja, com print. Amanhã, compare. Preço igual ao de hoje com etiqueta de promoção não é desconto.\n\nO guia completo da Black Friday está no blog (link na bio).\n\n#blackfriday #blackfriday2026 #dicasdecompra #consumidor"
+  },
+  {
+    "id": "data-black-friday",
+    "data": "2026-11-27",
+    "selo": "BLACK FRIDAY",
+    "titulo": "3 cuidados antes de pagar",
+    "texto": "Confira o endereço do site, compare com o preço de antes e guarde o print da oferta.",
+    "fundo": "../../site/public/blog/black-friday-2026-quando-e.webp",
+    "legenda": "Hoje é Black Friday. Três cuidados antes de pagar:\n\n1. Confira se o endereço do site é exatamente o da loja.\n2. Compare o preço com o das últimas semanas.\n3. Guarde o print da oferta e do pagamento.\n\nE lembre: compra pela internet tem 7 dias para arrependimento, contados do recebimento.\n\n#blackfriday #blackfriday2026 #compraonline #consumidor"
+  },
+  {
+    "id": "dica-shopee-recebimento",
+    "data": "2026-11-28",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Na Shopee, só confirme o recebimento depois de receber",
+    "texto": "O pagamento fica retido até você confirmar. É a sua proteção.",
+    "fundo": "../../site/public/blog/como-saber-se-loja-da-shopee-e-confiavel.webp",
+    "legenda": "Na Shopee, o dinheiro não vai direto para o vendedor: fica retido até você confirmar que recebeu.\n\nPor isso, nunca confirme o recebimento de um pedido que ainda não chegou, mesmo que o vendedor peça ou prometa um brinde.\n\nComo saber se uma loja da Shopee é confiável: no blog (link na bio).\n\n#shopee #compraonline #dicasdecompra #consumidor"
+  },
+  {
+    "id": "dica-compra-atrasou",
+    "data": "2026-12-01",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "A compra atrasou? A escolha é sua.",
+    "texto": "Exigir a entrega, aceitar outro produto ou receber o dinheiro de volta.",
+    "fundo": "../../site/public/blog/compra-online-nao-chegou-o-que-fazer.webp",
+    "legenda": "Passou o prazo e a compra não chegou? Isso é descumprimento de oferta.\n\nPelo art. 35 do Código de Defesa do Consumidor, quem escolhe é você: exigir a entrega, aceitar um produto equivalente ou cancelar e receber de volta o que pagou.\n\nReclame por escrito no canal da loja e guarde o protocolo. O caminho em cada loja está no blog (link na bio).\n\n#direitodoconsumidor #compraonline #entregaatrasada #consumidor"
+  },
+  {
+    "id": "dica-loja-fisica",
+    "data": "2026-12-03",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Os 7 dias de arrependimento não valem em loja física",
+    "texto": "Na loja física, trocar produto sem defeito é cortesia. Pergunte a regra antes de comprar o presente.",
+    "fundo": "../../site/public/blog/produto-com-defeito-comprado-online.webp",
+    "legenda": "Vai comprar presente de Natal em loja física? Os 7 dias de arrependimento da lei valem só para compra feita fora da loja, como pela internet.\n\nNa loja física, a troca de produto sem defeito é cortesia. Pergunte a regra e o prazo antes de pagar, e peça para anotarem na nota.\n\n#natal #presentedenatal #direitodoconsumidor #dicasdecompra"
+  },
+  {
+    "id": "dica-cnpj",
+    "data": "2026-12-05",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Dá para consultar o CNPJ de qualquer loja, de graça",
+    "texto": "É no site da Receita Federal. Se o CNPJ não existir ou o nome não bater, não compre.",
+    "fundo": "../../site/public/blog/compra-garantida-mercado-livre.webp",
+    "legenda": "Toda loja online é obrigada a mostrar o CNPJ no site.\n\nCopie o número do rodapé e consulte no site da Receita Federal: a consulta é gratuita e mostra se a empresa existe e está ativa. Compare o nome que aparece com o nome da loja.\n\nMais checagens no blog (link na bio).\n\n#golpe #sitefalso #compraonline #segurancadigital #consumidor"
+  },
+  {
+    "id": "dica-prazo-natal",
+    "data": "2026-12-08",
+    "selo": "VOCÊ SABIA?",
+    "titulo": "Presente pela internet? Olhe o prazo de entrega.",
+    "texto": "A loja é obrigada a informar o prazo antes da compra. Guarde o print.",
+    "fundo": "../../site/public/blog/calendario-de-promocoes-datas-de-desconto.webp",
+    "legenda": "Faltam poucos dias para o Natal.\n\nSe o presente vem pela internet, confira o prazo de entrega para o seu CEP antes de pagar e guarde o print. A loja é obrigada a informar o prazo, e se ela não cumprir, você pode cancelar e receber o dinheiro de volta.\n\n#natal #presentedenatal #compraonline #dicasdecompra"
+  },
+  {
+    "id": "data-natal",
+    "data": "2026-12-24",
+    "selo": "FELIZ NATAL",
+    "titulo": "Que a sua noite seja de mesa cheia e gente querida",
+    "texto": "Obrigado por estar com a gente neste ano.",
+    "fundo": "fundos/natal.webp",
+    "cheio": true,
+    "legenda": "Feliz Natal!\n\nQue a sua noite seja de mesa cheia e gente querida. Obrigado por acompanhar o Tem Descontos neste ano.\n\n#feliznatal #natal"
+  },
+  {
+    "id": "data-ano-novo",
+    "data": "2026-12-31",
+    "selo": "FELIZ 2027",
+    "titulo": "Que venha um ano de boas escolhas",
+    "texto": "E de boas economias também. Nos vemos em janeiro.",
+    "fundo": "fundos/ano-novo.webp",
+    "cheio": true,
+    "legenda": "Feliz Ano Novo!\n\nQue 2027 seja um ano de boas escolhas, e de boas economias também. Nos vemos em janeiro.\n\n#felizanonovo #anonovo #2027"
+  }
 ]

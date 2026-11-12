@@ -3,6 +3,8 @@
 //   node marketing/instagram/gerar.mjs          (precisa do Playwright com Chromium)
 //
 // Entrada: posts.json (id, data AAAA-MM-DD, selo, titulo, texto, fundo, legenda; "cheio" = foto em tela cheia).
+// Reel: item com "video" (o MP4 já renderizado em site/public/instagram) e "fonte" (o código em marketing/reels,
+// feito em Remotion: npm run som && npm run render). O gerador só confere que o MP4 existe.
 // Saída:   site/public/instagram/{id}.jpg e site/public/instagram/agenda.json (id, data, imagem, legenda).
 // Regras: nada de oferta nem preço aqui; fato só o que já está num post revisado do blog; sem "#publi"
 // (não é divulgação de produto). Fundo de dica = capa do post do blog; fundo de data = imagem própria em fundos/.
@@ -39,12 +41,17 @@ const ids = new Set();
 for (const p of posts) {
   if (!/^[a-z0-9-]+$/.test(p.id) || ids.has(p.id)) throw new Error(`id ruim ou repetido: ${p.id}`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(p.data)) throw new Error(`data ruim: ${p.id}`);
-  if (/[—]/.test(JSON.stringify(p)) || /#publi/.test(p.legenda) || /R\$/.test(JSON.stringify(p))) throw new Error(`regra quebrada (travessão, #publi ou preço): ${p.id}`);
+  if (JSON.stringify(p).includes(String.fromCharCode(0x2014)) || /#publi/.test(p.legenda) || /R\$/.test(JSON.stringify(p))) throw new Error(`regra quebrada (travessão, #publi ou preço): ${p.id}`);
   ids.add(p.id);
 }
 fs.mkdirSync(saida, { recursive: true });
 const b = await chromium.launch();
 for (const p of posts) {
+  if (p.video) {
+    if (!/^[a-z0-9-]+\.mp4$/.test(p.video) || !fs.existsSync(path.join(saida, p.video))) throw new Error(`reel sem MP4 em site/public/instagram: ${p.id}`);
+    console.log('reel', p.id);
+    continue;
+  }
   const pg = await b.newPage({ viewport: { width: 1080, height: 1350 } });
   // Arquivo temporário ao lado do script: página aberta por file:// consegue ler as imagens e a fonte locais.
   const tmp = path.join(aqui, `.tmp-${p.id}.html`);
@@ -57,4 +64,4 @@ for (const p of posts) {
   console.log('post', p.id);
 }
 await b.close();
-fs.writeFileSync(path.join(saida, 'agenda.json'), JSON.stringify(posts.map(p => ({ id: p.id, data: p.data, imagem: `/instagram/${p.id}.jpg`, legenda: p.legenda })), null, 1) + '\n');
+fs.writeFileSync(path.join(saida, 'agenda.json'), JSON.stringify(posts.map(p => (p.video ? { id: p.id, data: p.data, video: `/instagram/${p.video}`, legenda: p.legenda } : { id: p.id, data: p.data, imagem: `/instagram/${p.id}.jpg`, legenda: p.legenda })), null, 1) + '\n');
