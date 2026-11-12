@@ -169,19 +169,20 @@ export const POSTS: Post[] = [
     ],
     dataPublicacao: "2026-10-18",
     revisadoEm: "outubro de 2026",
-    dataRevisao: "2026-10-19",
-    tags: ["direito de arrependimento", "devolver compra online", "prazo de 7 dias para devolução", "frete de devolução quem paga", "art. 49 cdc"],
+    dataRevisao: "2026-11-12",
+    tags: ["direito de arrependimento", "devolver compra online", "prazo de 7 dias para devolução", "frete de devolução quem paga", "art. 49 cdc", "direito de arrependimento loja física", "reembolso em vale-compra"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
     categoria: "seus-direitos",
     imagem: "/blog/direito-de-arrependimento-compra-online.webp",
     faq: [
       { q: "O prazo de 7 dias para devolver conta da compra ou da entrega?", a: "Conta do recebimento do produto. O art. 49 do CDC diz \"a contar de sua assinatura ou do ato de recebimento do produto ou serviço\", e o Procon-SP orienta que são dias corridos." },
       { q: "Quem paga o frete da devolução por arrependimento?", a: "A loja. O Procon-SP orienta que o fornecedor não pode cobrar frete de devolução, e o art. 49 manda devolver os valores pagos a qualquer título, o que inclui o frete da compra." },
-      { q: "Preciso explicar por que quero devolver?", a: "Não. O art. 49 do CDC não exige motivo: basta a compra ter sido feita fora da loja física, como pela internet, e o pedido ser feito dentro de 7 dias." },
+      { q: "O direito de arrependimento vale para compra em loja física?", a: "Não. O art. 49 do CDC vale para compra feita fora do estabelecimento comercial, como internet e telefone. Em loja física, a troca de produto sem defeito é cortesia da loja, e vale a política que ela anunciou." },
+      { q: "A loja pode devolver o dinheiro em vale-compra?", a: "Não pode impor. A Senacon orienta que, no arrependimento, a loja não pode obrigar o consumidor a aceitar o reembolso em créditos ou vale-compra, nem recusar a devolução alegando que o produto não tem defeito." },
       { q: "Posso devolver se já abri a embalagem?", a: "Pode. O Procon-SP orienta que a loja não pode exigir embalagem não violada para aceitar o arrependimento; as lojas pedem o produto completo, com acessórios e manual." },
-      { q: "Em quanto tempo o dinheiro volta?", a: "Varia com a forma de pagamento e a loja. O Decreto 7.962/2013 obriga a loja a avisar a operadora do cartão para não lançar a cobrança ou estornar o valor." },
     ],
     fontes: [
+      { nome: "Senacon: cartilha Black Friday, boas compras exigem atenção (edição 2025)", url: "https://www.gov.br/mj/pt-br/assuntos/arquivos-imprensa/senacon/cartilha-black-friday-senacon-2025" },
       { nome: "Código de Defesa do Consumidor, Lei 8.078/1990, art. 49, texto compilado (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
       { nome: "Decreto 7.962/2013, comércio eletrônico, art. 5º (Planalto)", url: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/decreto/d7962.htm" },
       { nome: "Procon-SP: Guia de Comércio Eletrônico (2024)", url: "https://www.procon.sp.gov.br/wp-content/uploads/2024/08/Guia_de_Comercio_Eletronico.pdf" },
@@ -216,6 +217,23 @@ export const POSTS: Post[] = [
 <li>A loja deve avisar imediatamente o banco ou a administradora do cartão para que a cobrança não seja lançada na fatura ou, se já foi, para que o valor seja estornado.</li>
 </ul>
 
+<h2>A loja pode devolver em vale-compra ou recusar porque não há defeito?</h2>
+<p>Não. A cartilha de Black Friday da Senacon (edição 2025) orienta dois pontos sobre o arrependimento: a loja não pode recusar a devolução alegando que o produto não tem defeito, porque esse direito não depende de motivo, e não pode impor que o reembolso seja feito em créditos ou vale-compra.</p>
+<p>Se a loja oferecer um vale e você preferir, tudo bem: a escolha é sua. O que ela não pode é transformar o vale na única saída. O dinheiro volta pela forma de pagamento usada, e o prazo para aparecer varia com o meio (o estorno no cartão depende da data da fatura).</p>
+
+<h2>O direito de arrependimento vale para compra em loja física?</h2>
+<p>Não. O art. 49 fala em contratação "fora do estabelecimento comercial". Quem comprou dentro da loja viu o produto antes de pagar, e a lei não dá os 7 dias. A Senacon registra isso de forma direta na cartilha de 2025: o direito de arrependimento não vale para compras feitas em lojas físicas.</p>
+<table>
+<thead><tr><th>Onde você comprou</th><th>Tem os 7 dias do art. 49?</th></tr></thead>
+<tbody>
+<tr><td>Site ou aplicativo da loja</td><td>Sim</td></tr>
+<tr><td>Marketplace (Amazon, Mercado Livre, Shopee, Magalu)</td><td>Sim</td></tr>
+<tr><td>Telefone ou venda em domicílio</td><td>Sim</td></tr>
+<tr><td>Dentro da loja física</td><td>Não. Troca de produto sem defeito é cortesia, e vale a política que a loja anunciou</td></tr>
+</tbody>
+</table>
+<p>Em loja física, o que a lei garante é outra coisa: a solução para produto com defeito, que tem prazos próprios. Está em <a href="/blog/produto-com-defeito-comprado-online">produto com defeito comprado online</a>.</p>
+
 <h2>Quem paga o frete de devolução?</h2>
 <p>A loja. O Guia de Comércio Eletrônico do Procon-SP (2024) diz que, no arrependimento, o fornecedor não pode cobrar qualquer quantia a título de frete de devolução, nem exigir que a embalagem não tenha sido violada como condição para aceitar o pedido.</p>
 <p>Isso não quer dizer que você pode devolver o produto de qualquer jeito. As lojas pedem o item completo, com acessórios e manual, e sem sinal de mau uso. Abrir a caixa para ver o produto é normal; usar até gastar é outra coisa.</p>
@@ -247,6 +265,12 @@ export const POSTS: Post[] = [
 <h2>E se a loja recusar?</h2>
 <p>Responda por escrito citando o art. 49 do CDC e o art. 5º do Decreto 7.962/2013, e anexe o print com a data do pedido. Se não resolver, registre reclamação no consumidor.gov.br (se a empresa participa da plataforma) ou no Procon do seu estado.</p>
 <p>Um cuidado: o direito de arrependimento só ajuda se você consegue identificar e acionar a loja. Se o "vendedor" pediu pagamento por fora, em Pix para pessoa física ou por link mandado no privado, o problema é maior que devolução. Por isso, no Tem Descontos o link vai sempre para a loja oficial e o grupo nunca pede Pix ou dado no privado; explicamos os sinais de golpe em <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a></p>
+<p>Três situações parecidas que têm regra própria, cada uma com o seu post:</p>
+<ul>
+<li>O produto nem chegou: <a href="/blog/compra-online-nao-chegou-o-que-fazer">compra online não chegou ou atrasou</a>.</li>
+<li>A loja cancelou o pedido por conta própria: <a href="/blog/loja-cancelou-compra-preco-errado">loja cancelou a compra por preço errado</a>.</li>
+<li>O preço caiu logo depois que você comprou: <a href="/blog/esquenta-black-friday-comprar-antes-ou-esperar">esquenta Black Friday: comprar antes ou esperar</a>.</li>
+</ul>
 <p>E se você vai comprar muito em novembro, anote este post junto com o guia da <a href="/blog/black-friday-2026-quando-e">Black Friday 2026</a>: os 7 dias valem igualzinho para compra feita em promoção.</p>`,
   },
   {
