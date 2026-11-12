@@ -11,7 +11,7 @@ const DESTINOS: Destino[] = [
   { href: "/guias/grupo-de-ofertas-no-whatsapp-e-seguro", tags: ["golpe no whatsapp", "link falso", "grupo de ofertas"] },
   { href: "/guias/cupom-da-amazon-como-usar", tags: ["cupom amazon", "cupom de desconto"] },
   { href: "/blog/black-friday-2026-quando-e", tags: ["black friday 2026", "quando é a black friday", "como se preparar para a black friday"] },
-  { href: "/blog/direito-de-arrependimento-compra-online", tags: ["direito de arrependimento", "devolver compra online", "prazo de 7 dias para devolução", "frete de devolução quem paga"] },
+  { href: "/blog/direito-de-arrependimento-compra-online", tags: ["direito de arrependimento", "devolver compra online", "prazo de 7 dias para devolução", "frete de devolução quem paga", "direito de arrependimento loja física", "reembolso em vale-compra"] },
   { href: "/blog/produto-com-defeito-comprado-online", tags: ["produto com defeito comprado online", "prazo para reclamar de defeito", "garantia legal", "garantia legal e contratual"] },
   { href: "/blog/taxa-de-importacao-compra-internacional", tags: ["taxa de importação", "taxa das blusinhas 2026", "remessa conforme", "icms compra internacional"] },
   { href: "/blog/pix-ou-cartao-compra-online", tags: ["pix ou cartão", "pix é seguro para compra online", "med pix", "desconto no pix vale a pena", "estorno pix"] },
