@@ -2,33 +2,25 @@ import React from "react";
 import { AbsoluteFill, Img, staticFile, useCurrentFrame } from "remotion";
 import { Audio } from "@remotion/media";
 import { Acabamento, Fim, Fundo, Legenda, Titulo } from "./Arrependimento";
+import { Clip } from "./ArrependimentoPersonagens";
+// Personagens do LottieFiles (ver CREDITOS.md)
+import compradora from "./lottie/146287.json";
+import pensativo from "./lottie/119312.json";
+import investiga from "./lottie/140933.json";
+import analista from "./lottie/1043196.json";
+import lista from "./lottie/114050.json";
 import { C, MOLA, cl, easeIn, easeInOut, easeOut, lerp, prog } from "./lib";
 import { spring } from "remotion";
 import TL from "../timeline-preco.json";
 import palavras from "./palavras-preco.json";
 
-// Reel "50% de desconto sobre qual preço?", com o mascote da Tem Descontos (a etiqueta).
+// Reel "50% de desconto sobre qual preço?", com personagens animados do LottieFiles.
 const FPS = TL.fps;
 const { s1, s2, s3, s4, s5, s6 } = TL;
 const AMARELO = "#ffc15e";
 const sp = (t: number, inicio: number, config = MOLA.assenta) => (t < inicio ? 0 : spring({ frame: (t - inicio) * FPS, fps: FPS, config }));
 const TELAS: [number, string][] = [[-1, C.vermelho], [s2.corte, C.tinta], [s3.corte, C.creme], [s4.corte, C.verde], [s5.corte, C.creme]];
 const CORTES = [s2.corte, s3.corte, s4.corte, s5.corte, s6.corte];
-
-// O mascote troca de pose a cada cena: entra amassado e estica (como quem pousa), respira e balanca de leve.
-const Mascote: React.FC<{ t: number; pose: string; de: number; ate: number; x: number; y: number; tam: number; espelha?: boolean; pula?: number }> = ({ t, pose, de, ate, x, y, tam, espelha, pula }) => {
-  if (t < de || t > ate + 0.25) return null;
-  const k = sp(t, de, { damping: 9, stiffness: 170, mass: 0.7 }), fora = prog(t, ate, ate + 0.2, easeIn);
-  const respira = Math.sin((t - de) * 3.1) * 0.012;
-  const hop = pula !== undefined && t >= pula ? Math.abs(Math.sin((t - pula) * 6.5)) * Math.exp(-(t - pula) * 2.2) * 90 : 0;
-  const sx = (1 + (1 - k) * 0.18 - respira) * (espelha ? -1 : 1), sy = lerp(0.72, 1, k) + respira;
-  return (
-    <div style={{ position: "absolute", left: x, top: y, width: tam, height: tam, opacity: cl(k * 4) * (1 - fora), transform: `translateY(${lerp(120, 0, k) - hop + fora * 60}px) rotate(${Math.sin((t - de) * 1.9) * 1.6}deg) scale(${sx},${sy})`, transformOrigin: "50% 92%" }}>
-      <div style={{ position: "absolute", left: "22%", right: "22%", bottom: "4%", height: 44, borderRadius: "50%", background: "rgba(10,31,69,.22)", filter: "blur(10px)", transform: `scale(${1 - hop / 300})` }} />
-      <Img src={staticFile(`mascote/${pose}.png`)} style={{ position: "absolute", inset: 0, width: tam, height: tam }} />
-    </div>
-  );
-};
 
 const Raios: React.FC<{ t: number }> = ({ t }) => (
   <svg width={1080} height={1920} style={{ position: "absolute", opacity: 0.16 }}>
@@ -92,10 +84,9 @@ export const Preco: React.FC = () => {
           <div style={{ fontSize: 360, lineHeight: 0.95, fontWeight: 900, letterSpacing: "-0.05em", color: "#fff", textShadow: "0 14px 0 rgba(0,0,0,.18)" }}>-50%</div>
           <div style={{ display: "inline-block", marginTop: 6, background: AMARELO, color: C.tinta, fontSize: 64, fontWeight: 900, padding: "10px 40px", borderRadius: 20 }}>DE DESCONTO</div>
         </div>
-        <Mascote t={t} pose="pulo" de={0.05} ate={s2.corte - 0.1} x={190} y={840} tam={700} pula={0.25} />
+        <Clip t={t} dados={compradora} de={-0.4} ate={s2.corte - 0.1} x={140} y={850} larg={800} />
         {/* 2. mas sobre qual preco? */}
-        <div style={{ position: "absolute", left: 540 - 520, top: 1090 - 520, width: 1040, height: 1040, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(255,255,255,.95) 0 38%, rgba(255,255,255,0) 100%)", opacity: visivel(s2.corte + 0.05, s3.corte - 0.1) }} />
-        <Mascote t={t} pose="desconfiado" de={s2.corte + 0.08} ate={s3.corte - 0.1} x={170} y={720} tam={740} />
+                <Clip t={t} dados={pensativo} de={s2.corte + 0.08} ate={s3.corte - 0.1} x={150} y={700} larg={780} mola={MOLA.pop} />
         {/* 3. o preco riscado */}
         <div style={{ position: "absolute", left: 70, top: 560, width: 560, opacity: cl(cartao * 2) * visivel(s3.cartao, s4.corte), transform: `translateY(${lerp(140, 0, cartao)}px) rotate(${lerp(-10, -4, cartao)}deg)`, background: "#fff", borderRadius: 44, padding: "34px 40px 40px", boxShadow: "0 24px 50px rgba(10,31,69,.18)" }}>
           <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: 4, color: C.mudo }}>EXEMPLO</div>
@@ -110,19 +101,19 @@ export const Preco: React.FC = () => {
           <div style={{ fontSize: 34, fontWeight: 800, color: AMARELO }}>MÊS PASSADO CUSTAVA</div>
           <div style={{ fontSize: 84, lineHeight: 1.05, fontWeight: 900, letterSpacing: "-0.03em" }}>R$ 1.050</div>
         </div>
-        <Mascote t={t} pose="lupa" de={s3.corte + 0.15} ate={s4.corte - 0.1} x={520} y={860} tam={600} espelha />
+        <Clip t={t} dados={investiga} de={s3.corte + 0.15} ate={s4.corte - 0.1} x={300} y={760} larg={900} />
         {/* 4. compare com o menor preco */}
         <div style={{ opacity: visivel(s4.corte, s5.corte) }}><Grafico t={t} /></div>
-        <Mascote t={t} pose="aponta" de={s4.corte + 0.2} ate={s5.corte - 0.1} x={580} y={990} tam={500} />
+        <Clip t={t} dados={analista} de={s4.corte + 0.2} ate={s5.corte - 0.1} x={660} y={1150} larg={360} cartao />
         {/* 5. anote hoje */}
         <div style={{ position: "absolute", left: 60, top: 620, width: 520, opacity: cl(bloco * 2) * visivel(s5.bloco, s6.corte), transform: `translateY(${lerp(140, 0, bloco)}px) rotate(${lerp(8, -3, bloco)}deg)`, background: "#fffbe6", borderRadius: 30, padding: "70px 44px 50px", boxShadow: "0 24px 50px rgba(10,31,69,.18)", backgroundImage: "repeating-linear-gradient(transparent 0 86px, rgba(10,31,69,.12) 86px 89px)" }}>
           <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 44, background: C.laranja, borderRadius: "30px 30px 0 0" }} />
           <div style={{ fontSize: 56, lineHeight: "89px", fontWeight: 800, color: C.tinta, minHeight: 178 }}>{escrito}<span style={{ opacity: Math.floor(t * 5) % 2 ? 1 : 0, color: C.vermelho }}>|</span></div>
         </div>
-        <div style={{ position: "absolute", left: 70, top: 1130, opacity: cl(bf * 2) * visivel(s5.bf, s6.corte), transform: `scale(${lerp(0.4, 1, bf)}) rotate(-4deg)`, transformOrigin: "left center", background: C.tinta, color: "#fff", fontWeight: 900, fontSize: 52, padding: "22px 38px", borderRadius: 999, boxShadow: "0 16px 34px rgba(10,31,69,.3)" }}>e confira na <span style={{ color: AMARELO }}>Black Friday</span></div>
-        <Mascote t={t} pose="anota" de={s5.corte + 0.15} ate={s6.corte - 0.1} x={540} y={560} tam={540} />
+        <div style={{ position: "absolute", left: 70, top: 950, opacity: cl(bf * 2) * visivel(s5.bf, s6.corte), transform: `scale(${lerp(0.4, 1, bf)}) rotate(-4deg)`, transformOrigin: "left center", background: C.tinta, color: "#fff", fontWeight: 900, fontSize: 52, padding: "22px 38px", borderRadius: 999, boxShadow: "0 16px 34px rgba(10,31,69,.3)" }}>e confira na <span style={{ color: AMARELO }}>Black Friday</span></div>
+        <Clip t={t} dados={lista} de={s5.corte + 0.15} ate={s6.corte - 0.1} x={470} y={1050} larg={560} />
         {/* 6. fechamento */}
-        <Mascote t={t} pose="aceno" de={s6.fim + 0.15} ate={99} x={270} y={880} tam={540} pula={s6.fim + 0.3} />
+        <Clip t={t} dados={compradora} de={s6.fim + 0.15} ate={99} x={190} y={800} larg={700} />
       </AbsoluteFill>
 
       <Titulo t={t} entra={s2.titulo - 0.05} sai={s3.corte - 0.3} linhas={[["Mas", "sobre"], [["qual"], ["preço?"]]]} cor="#fff" forte={AMARELO} tamanho={132} />

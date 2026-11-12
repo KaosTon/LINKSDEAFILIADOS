@@ -14,3 +14,7 @@ a atribuicao nao e obrigatoria, mas fica registrada aqui. Conferido em 12/11/202
 | 134848.json | money | Daniela Etienne | lottiefiles.com/animations/money-jYFxLXP2WD |
 | 1043934.json | Customer with packages | Diana | lottiefiles.com/animations/customer-with-packages-bFUBWX06vB |
 | 127842.json | justice | Lisa Mac-Star | lottiefiles.com/animations/justice-NPX2kHj01Z |
+| 119312.json | wondering man | xiaowengoh | lottiefiles.com/animations/wondering-man-ZwnaubUf1I |
+| 140933.json | man thinking | jhan diaz | lottiefiles.com/animations/man-thinking-gDs9Df80X9 |
+| 1043196.json | data analysis | ant | lottiefiles.com/animations/data-analysis-3cQbGRHECG |
+| 114050.json | checklist | meddi contenidos | lottiefiles.com/animations/checklist-1S4lyLkgX2 |
