@@ -1,9 +1,12 @@
 import React from "react";
 import { Composition } from "remotion";
 import { Arrependimento } from "./Arrependimento";
+import { ArrependimentoPersonagens } from "./ArrependimentoPersonagens";
 import TL from "../timeline.json";
 
 export const Root: React.FC = () => (
+  <>
+  <Composition id="ArrependimentoPersonagens" component={ArrependimentoPersonagens} durationInFrames={Math.round(TL.duracao * TL.fps)} fps={TL.fps} width={1080} height={1920} />
   <Composition
     id="Arrependimento"
     component={Arrependimento}
@@ -12,4 +15,5 @@ export const Root: React.FC = () => (
     width={1080}
     height={1920}
   />
+  </>
 );
