@@ -128,6 +128,9 @@ const cPx = async (x, y) => [...(await sharp(cJpg).extract({ left: x, top: y, wi
 const cFoto = await cPx(540, 705), cSelo = await cPx(875, 420);
 caso('foto no card branco e selo vermelho por cima', cFoto[2] > 150 && cFoto[0] < 90 && cSelo[0] > 180 && cSelo[1] < 110, { cFoto, cSelo });
 const ruim = dadosDoCard({ n: 'X', de: 100, por: 150 });
+const cFeed = await fetch(`${raiz}/card?d=${D}&a=${assinarCard(SENHA, D)}&f=feed`);
+const cFeedMeta = await sharp(Buffer.from(await cFeed.arrayBuffer())).metadata();
+caso('/card com f=feed: jpeg 1080x1350', cFeed.status === 200 && cFeedMeta.width === 1080 && cFeedMeta.height === 1350, cFeedMeta);
 caso('/card com "de" menor que "por": 403', (await fetch(`${raiz}/card?d=${ruim}&a=${assinarCard(SENHA, ruim)}`)).status === 403);
 const semFoto = dadosDoCard({ n: 'Sem Foto', de: 100, por: 50, f: 'https://http2.mlstatic.com/quebrada.jpg' });
 caso('/card com foto que nao abre: sai sem foto', (await fetch(`${raiz}/card?d=${semFoto}&a=${assinarCard(SENHA, semFoto)}`)).status === 200);
