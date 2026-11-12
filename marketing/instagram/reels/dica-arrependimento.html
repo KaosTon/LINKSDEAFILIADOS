@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tem Descontos: reel da dica dos 7 dias (9:16, 14 s)</title>
+<style>
+@font-face{font-family:Inter;font-weight:500;src:url(../../../encurtador/fontes/Inter-Medium.otf)}
+@font-face{font-family:Inter;font-weight:700;src:url(../../../encurtador/fontes/Inter-Bold.otf)}
+@font-face{font-family:Inter;font-weight:800;src:url(../../../encurtador/fontes/Inter-ExtraBold.otf)}
+@font-face{font-family:Inter;font-weight:900;src:url(../../../encurtador/fontes/Inter-Black.otf)}
+:root{--W:1080px;--H:1920px;--bg:#07142e;--bg2:#0d2f66;--a1:#f7941d;--a2:#e53b2c;--am:#ffb347;--mut:#c9d6f2;--pad:84px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:var(--W);height:var(--H);overflow:hidden;background:var(--bg);color:#fff;font-family:Inter,sans-serif}
+#stage{position:relative;width:var(--W);height:var(--H);overflow:hidden;
+  background:radial-gradient(1000px 800px at 95% 0%,rgba(247,148,29,.30),transparent 60%),radial-gradient(900px 800px at 0% 100%,rgba(229,59,44,.26),transparent 60%),linear-gradient(170deg,var(--bg2),#0a1f45 55%,var(--bg))}
+.scene{position:absolute;inset:0;padding:0 var(--pad);opacity:0;display:flex;flex-direction:column;justify-content:center}
+.selo{align-self:flex-start;background:linear-gradient(90deg,var(--a1),var(--a2));font-weight:900;font-size:40px;letter-spacing:4px;padding:20px 44px;border-radius:999px}
+.h1{font-size:128px;line-height:1.04;font-weight:900;letter-spacing:-.035em;margin-top:56px}
+.w{display:inline-block;opacity:0}
+.am{color:var(--am)}
+.foto{width:560px;height:560px;border-radius:64px;object-fit:cover;align-self:center;box-shadow:0 50px 100px -40px rgba(0,0,0,.7)}
+.num{font-variant-numeric:tabular-nums}
+.sete{display:flex;align-items:baseline;justify-content:center;gap:28px;margin-top:60px}
+.sete b{font-size:360px;line-height:.9;font-weight:900;letter-spacing:-.05em;color:var(--am)}
+.sete span{font-size:130px;font-weight:900;letter-spacing:-.03em}
+.sub{font-size:60px;line-height:1.2;font-weight:700;text-align:center;margin-top:36px;color:var(--mut)}
+.item{background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.14);border-radius:44px;padding:48px 52px;font-size:62px;line-height:1.16;font-weight:800;margin-top:36px;opacity:0}
+.item small{display:block;font-size:40px;font-weight:500;color:var(--mut);margin-top:14px}
+.lei{font-size:38px;font-weight:700;color:var(--am);margin-top:48px;opacity:0}
+.fim{align-items:center;text-align:center}
+.fim img{width:520px}
+.fim .h2{font-size:84px;line-height:1.08;font-weight:900;letter-spacing:-.03em;margin-top:60px}
+.fim .arroba{font-size:60px;font-weight:800;color:var(--am);margin-top:36px;opacity:0}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="scene" id="s1">
+    <span class="selo" id="selo">VOCÊ SABIA?</span>
+    <div class="h1"><span class="w">Comprou</span> <span class="w">online</span> <span class="w">e</span> <span class="w">se</span> <span class="w am">arrependeu?</span></div>
+  </div>
+  <div class="scene" id="s2">
+    <img class="foto" id="foto" src="../../../site/public/blog/direito-de-arrependimento-compra-online.webp">
+    <div class="sete"><b class="num" id="n">0</b><span>dias</span></div>
+    <div class="sub" id="sub">para desistir da compra,<br>sem dar motivo</div>
+  </div>
+  <div class="scene" id="s3">
+    <div class="item" id="i1">O prazo conta do dia em que o produto chega<small>Sábado, domingo e feriado entram na conta</small></div>
+    <div class="item" id="i2">O que você pagou volta, inclusive o frete<small>Peça pelo site ou aplicativo da loja</small></div>
+    <div class="lei" id="lei">Art. 49 do Código de Defesa do Consumidor</div>
+  </div>
+  <div class="scene fim" id="s4">
+    <img src="../../../site/assets/logo/tem-descontos-claro.png">
+    <div class="h2">Mais dicas de compra<br>no nosso perfil</div>
+    <div class="arroba" id="arroba">@temdescontos</div>
+  </div>
+</div>
+<script>
+/* ===== Timing helpers: every value is a pure function of t (seconds) ===== */
+window.DURATION = 14;
+const cl = x => Math.max(0, Math.min(1, x));
+const p  = (t, a, b) => cl((t - a) / (b - a));          // 0..1 progress of t inside [a,b]
+const lerp = (a, b, k) => a + (b - a) * k;
+
+/* --- Motion tokens. Pick by ROLE, not by feel. --- */
+const T = { micro:.08, fast:.18, normal:.35, slow:.6, crawl:1.0 };   // badge/icon .18, card .35, hero .6, counters 1.0
+const D = { xs:16, sm:32, md:56, lg:80, xl:110 };                    // travel in px on a 1080-wide frame; small things travel less
+const EXIT = .6;                                                     // exits take ~60% of the enter time, with half the travel
+
+/* --- Easing. Default to smooth ease-out; never linear for UI. --- */
+const bez = (x1, y1, x2, y2) => x => {                               // CSS cubic-bezier evaluated in JS
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  let u = x; for (let i = 0; i < 8; i++) {
+    const bx = 3*x1*u*(1-u)**2 + 3*x2*u*u*(1-u) + u**3 - x;
+    const d = 3*x1*(1-u)**2 + 6*(x2-x1)*u*(1-u) + 3*(1-x2)*u*u; if (Math.abs(d) < 1e-6) break; u -= bx / d; }
+  return 3*y1*u*(1-u)**2 + 3*y2*u*u*(1-u) + u**3;
+};
+const smooth = bez(.22, 1, .36, 1);       // default ease-out (expo-like)
+const sharp  = bez(.4, 0, .2, 1);         // decisive UI moves
+const eio = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2;   // camera moves, pans
+const eo = x => 1 - Math.pow(1 - x, 3);
+
+/* Damped spring, closed form. s = seconds since start. Presets:
+   noBounce {k:170, c:26} default · gentle {k:120, c:14} cards · snappy {k:300, c:30} UI · bouncy {k:400, c:10} playful only */
+const SPR = { noBounce:{k:170,c:26}, gentle:{k:120,c:14}, snappy:{k:300,c:30}, bouncy:{k:400,c:10} };
+function spring(s, {k, c} = SPR.noBounce) {
+  if (s <= 0) return 0;
+  const w0 = Math.sqrt(k), z = c / (2 * w0);
+  if (z < 1) { const wd = w0 * Math.sqrt(1 - z*z);
+    return 1 - Math.exp(-z*w0*s) * (Math.cos(wd*s) + (z*w0/wd) * Math.sin(wd*s)); }
+  return 1 - Math.exp(-w0*s) * (1 + w0*s);                           // critically damped fallback
+}
+
+/* Stagger: start time of item i. 0.05-0.10 s between items; under .05 reads mechanical, over .10 sluggish. */
+const stagger = (i, a, step = .07, first = .1) => a + first + i * step;
+
+/* Enter: opacity + small rise + blur 10px -> 0. Starts near full size (scale >= .95), never from 0. */
+function enter(el, t, a, {dur = T.normal, dist = D.sm, blur = 10, scale = 1, ease = smooth} = {}) {
+  const q = ease(p(t, a, a + dur));
+  el.style.opacity = q;
+  el.style.filter = blur ? `blur(${(1 - q) * blur}px)` : "";
+  el.style.transform = `translateY(${(1 - q) * dist}px) scale(${lerp(scale, 1, q)})`;
+  return q;
+}
+
+/* Scene in/out. Exit is shorter and quieter than the enter. */
+function show(el, t, a, b, dist = D.md) {
+  const i = smooth(p(t, a, a + T.slow)), o = sharp(p(t, b - T.slow * EXIT, b));
+  el.style.opacity = Math.min(i, 1 - o);
+  el.style.transform = `translateY(${(1 - i) * dist - o * dist / 2}px)`;
+}
+
+/* Counter: about 1 s, strong ease-out, rounded every frame. Put class="num" (tabular-nums) on the element. */
+const count = (t, a, to, from = 0, dur = T.crawl) => Math.round(lerp(from, to, smooth(p(t, a, a + dur))));
+/* Typewriter by slicing the string (never per-letter opacity). 25-40 chars per second. */
+const typed = (text, t, a, cps = 32) => text.slice(0, Math.max(0, Math.floor((t - a) * cps)));
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("pt-BR");
+
+
+/* Ritmo calmo de propósito (pedido do Wellington: os primeiros vídeos estavam rápidos demais). */
+const S = { s1:[0,3.8], s2:[3.6,8.4], s3:[8.2,11.8], s4:[11.6,16] };
+function render(t) {
+  for (const k in S) show($(k), t, S[k][0], S[k][1]);
+  enter($("selo"), t, .2, {dur: T.slow, dist: D.sm});
+  document.querySelectorAll("#s1 .w").forEach((w, i) => enter(w, t, stagger(i, .6, .16), {dur: T.slow, dist: D.lg}));
+  enter($("foto"), t, S.s2[0] + .3, {dur: T.slow, dist: D.md, scale: .96, blur: 0});
+  $("n").textContent = count(t, S.s2[0] + .9, 7, 0, 1.2);
+  enter($("sub"), t, S.s2[0] + 2.0, {dur: T.slow, dist: D.sm});
+  enter($("i1"), t, S.s3[0] + .4, {dur: T.slow, dist: D.md, blur: 0});
+  enter($("i2"), t, S.s3[0] + 1.3, {dur: T.slow, dist: D.md, blur: 0});
+  enter($("lei"), t, S.s3[0] + 2.2, {dur: T.normal, dist: D.xs});
+  enter($("arroba"), t, S.s4[0] + 1.0, {dur: T.normal, dist: D.xs});
+}
+window.render = render;
+render(0);
+if (!window.__capture) { const st = performance.now(); (function loop(){ render(((performance.now() - st) / 1000) % DURATION); requestAnimationFrame(loop); })(); }
+</script>
+</body>
+</html>
