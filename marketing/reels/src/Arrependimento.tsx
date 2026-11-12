@@ -65,15 +65,18 @@ export const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: L
 
 /* ---------- Legenda sincronizada: acende a palavra que a voz esta falando ---------- */
 type P = { t: string; a: number; b: number };
-const GRUPOS: P[][] = (() => {
+const agrupar = (lista: P[]) => {
   const g: P[][] = [[]];
-  for (const p of palavras as P[]) {
+  for (const p of lista) {
     g[g.length - 1].push(p);
     if (/[.,?!]$/.test(p.t) || g[g.length - 1].length >= 4) g.push([]);
   }
   return g.filter((x) => x.length);
-})();
-export const Legenda: React.FC<{ t: number }> = ({ t }) => {
+};
+const CACHE = new Map<P[], P[][]>();
+export const Legenda: React.FC<{ t: number; lista?: P[] }> = ({ t, lista = palavras as P[] }) => {
+  if (!CACHE.has(lista)) CACHE.set(lista, agrupar(lista));
+  const GRUPOS = CACHE.get(lista)!;
   const i = GRUPOS.findIndex((g, n) => t >= g[0].a - 0.08 && t < (GRUPOS[n + 1] ? GRUPOS[n + 1][0].a - 0.08 : g[g.length - 1].b + 0.5));
   if (i < 0) return null;
   const g = GRUPOS[i];
@@ -250,7 +253,7 @@ export const Arrependimento: React.FC = () => {
       <Fim t={t} />
       <Legenda t={t} />
       <Acabamento frame={frame} />
-      <Audio src={staticFile("trilha.wav")} />
+      <Audio src={staticFile("arrependimento/trilha.wav")} />
     </AbsoluteFill>
   );
 };

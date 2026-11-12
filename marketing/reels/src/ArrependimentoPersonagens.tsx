@@ -104,7 +104,7 @@ export const ArrependimentoPersonagens: React.FC = () => {
       <Fim t={t} />
       <Legenda t={t} />
       <Acabamento frame={frame} />
-      <Audio src={staticFile("trilha.wav")} />
+      <Audio src={staticFile("arrependimento/trilha.wav")} />
     </AbsoluteFill>
   );
 };
