@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AvisoCookies from "@/components/AvisoCookies";
@@ -12,18 +12,20 @@ import "./globals.css";
 
 // Par de fontes do Tem Descontos: Montserrat (titulos; e a familia do TEM DESCONTOS do logo, o TEM
 // em italico e o DESCONTOS em extra negrito) e Figtree (texto). Fora do Inter e do par da Michele.
-const figtree = Figtree({
-  subsets: ["latin"],
+// Arquivos no repo (src/fonts, versao variavel, so latin, licenca OFL ao lado) desde 12/11/2026: com
+// next/font/google o build baixava a fonte do Google e caiu quando o download falhou (PR #33).
+const figtree = localFont({
+  src: [{ path: "../fonts/figtree-latin-wght-normal.woff2", weight: "300 900", style: "normal" }],
   variable: "--font-figtree",
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
+const montserrat = localFont({
+  src: [
+    { path: "../fonts/montserrat-latin-wght-normal.woff2", weight: "100 900", style: "normal" },
+    { path: "../fonts/montserrat-latin-wght-italic.woff2", weight: "100 900", style: "italic" },
+  ],
   variable: "--font-montserrat",
-  weight: ["500", "700", "800"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
