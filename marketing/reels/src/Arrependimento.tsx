@@ -13,7 +13,7 @@ const { s1, s2, s3, s4, s5, s6 } = TL;
 const CX = 800, CY = BY; // onde a caixa pousa
 
 /* ---------- Fundo: nada fica 100% parado (manchas e pontos derivam devagar) ---------- */
-const Fundo: React.FC<{ t: number }> = ({ t }) => (
+export const Fundo: React.FC<{ t: number }> = ({ t }) => (
   <AbsoluteFill style={{ background: C.creme }}>
     <div style={{ position: "absolute", width: 1100, height: 1100, borderRadius: "50%", left: 480 + Math.sin(t * 0.35) * 40, top: -520 + Math.cos(t * 0.3) * 30, background: "radial-gradient(closest-side, rgba(247,148,29,.30), transparent)" }} />
     <div style={{ position: "absolute", width: 1200, height: 1200, borderRadius: "50%", left: -620 + Math.cos(t * 0.28) * 40, top: 1150 + Math.sin(t * 0.33) * 30, background: "radial-gradient(closest-side, rgba(229,59,44,.18), transparent)" }} />
@@ -21,7 +21,7 @@ const Fundo: React.FC<{ t: number }> = ({ t }) => (
   </AbsoluteFill>
 );
 
-const Acabamento: React.FC<{ frame: number }> = ({ frame }) => (
+export const Acabamento: React.FC<{ frame: number }> = ({ frame }) => (
   <AbsoluteFill style={{ pointerEvents: "none" }}>
     <svg width={1080} height={1920} style={{ position: "absolute", opacity: 0.07, mixBlendMode: "multiply" }}>
       <filter id="grao"><feTurbulence type="fractalNoise" baseFrequency={0.9} numOctaves={2} seed={Math.floor(frame / 2)} /><feColorMatrix type="saturate" values="0" /></filter>
@@ -33,7 +33,7 @@ const Acabamento: React.FC<{ frame: number }> = ({ frame }) => (
 
 /* ---------- Titulo: palavras sobem de dentro de uma mascara, uma apos a outra ---------- */
 type Linha = (string | [string])[]; // ["palavra"] entre colchetes = palavra de destaque
-const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: Linha[]; tamanho?: number; sub?: string; selo?: string }> = ({ t, entra, sai, linhas, tamanho = 104, sub, selo }) => {
+export const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: Linha[]; tamanho?: number; sub?: string; selo?: string; cor?: string; forte?: string }> = ({ t, entra, sai, linhas, tamanho = 104, sub, selo, cor = C.tinta, forte: corForte = C.vermelho }) => {
   if (t < entra - 0.05 || t > sai + 0.4) return null;
   const fora = prog(t, sai, sai + 0.32, easeIn);
   let n = 0;
@@ -49,7 +49,7 @@ const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: Linha[];
             n++;
             const forte = Array.isArray(p);
             return (
-              <span key={j} style={{ display: "inline-block", fontSize: tamanho, lineHeight: 1.06, fontWeight: 900, letterSpacing: "-0.035em", color: forte ? C.vermelho : C.tinta, transform: `translateY(${(1 - k) * 110}%) rotate(${(1 - k) * 5}deg)`, transformOrigin: "left bottom" }}>
+              <span key={j} style={{ display: "inline-block", fontSize: tamanho, lineHeight: 1.06, fontWeight: 900, letterSpacing: "-0.035em", color: forte ? corForte : cor, transform: `translateY(${(1 - k) * 110}%) rotate(${(1 - k) * 5}deg)`, transformOrigin: "left bottom" }}>
                 {forte ? p[0] : p}
               </span>
             );
@@ -65,22 +65,25 @@ const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: Linha[];
 
 /* ---------- Legenda sincronizada: acende a palavra que a voz esta falando ---------- */
 type P = { t: string; a: number; b: number };
-const GRUPOS: P[][] = (() => {
+const agrupar = (lista: P[]) => {
   const g: P[][] = [[]];
-  for (const p of palavras as P[]) {
+  for (const p of lista) {
     g[g.length - 1].push(p);
     if (/[.,?!]$/.test(p.t) || g[g.length - 1].length >= 4) g.push([]);
   }
   return g.filter((x) => x.length);
-})();
-const Legenda: React.FC<{ t: number }> = ({ t }) => {
+};
+const CACHE = new Map<P[], P[][]>();
+export const Legenda: React.FC<{ t: number; lista?: P[] }> = ({ t, lista = palavras as P[] }) => {
+  if (!CACHE.has(lista)) CACHE.set(lista, agrupar(lista));
+  const GRUPOS = CACHE.get(lista)!;
   const i = GRUPOS.findIndex((g, n) => t >= g[0].a - 0.08 && t < (GRUPOS[n + 1] ? GRUPOS[n + 1][0].a - 0.08 : g[g.length - 1].b + 0.5));
   if (i < 0) return null;
   const g = GRUPOS[i];
   const k = sp(t, g[0].a - 0.08, MOLA.pop);
   return (
     <div style={{ position: "absolute", left: 60, right: 60, top: 1490, display: "flex", justifyContent: "center" }}>
-      <div style={{ background: C.tinta, borderRadius: 30, padding: "20px 38px", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", transform: `scale(${lerp(0.86, 1, k)})`, opacity: cl(k * 3), boxShadow: "0 18px 40px rgba(10,31,69,.22)" }}>
+      <div style={{ background: C.tinta, borderRadius: 30, padding: "20px 38px", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", transform: `scale(${lerp(0.86, 1, k)})`, opacity: cl(k * 3), boxShadow: "0 18px 40px rgba(10,31,69,.22)", border: "3px solid rgba(255,255,255,.28)" }}>
         {g.map((p, j) => {
           const dita = t >= p.a - 0.03;
           const agora = dita && t < p.b + 0.12;
@@ -151,7 +154,7 @@ const Calendario: React.FC<{ t: number }> = ({ t }) => {
   );
 };
 
-const Chip: React.FC<{ t: number; entra: number; sai: number; x: number; y: number; texto: string; cor?: string }> = ({ t, entra, sai, x, y, texto, cor = C.tinta }) => {
+export const Chip: React.FC<{ t: number; entra: number; sai: number; x: number; y: number; texto: string; cor?: string }> = ({ t, entra, sai, x, y, texto, cor = C.tinta }) => {
   const v = vida(t, entra, sai);
   if (v.op <= 0) return null;
   return (
@@ -190,7 +193,7 @@ const Confete: React.FC<{ t: number }> = ({ t }) => {
   );
 };
 
-const Lei: React.FC<{ t: number }> = ({ t }) => {
+export const Lei: React.FC<{ t: number }> = ({ t }) => {
   if (t < s5.lei || t > s5.sai + 0.5) return null;
   const k = sp(t, s5.lei, MOLA.pesada), sai = prog(t, s5.sai, s5.sai + 0.3, easeIn);
   const a = sp(t, s5.artigo, MOLA.pop), c = prog(t, s5.codigo, s5.codigo + 0.6);
@@ -203,7 +206,7 @@ const Lei: React.FC<{ t: number }> = ({ t }) => {
   );
 };
 
-const Fim: React.FC<{ t: number }> = ({ t }) => {
+export const Fim: React.FC<{ t: number }> = ({ t }) => {
   if (t < s6.fim - 0.1) return null;
   const k = sp(t, s6.fim, MOLA.assenta), a = sp(t, s6.arroba, MOLA.pop);
   return (
@@ -250,7 +253,7 @@ export const Arrependimento: React.FC = () => {
       <Fim t={t} />
       <Legenda t={t} />
       <Acabamento frame={frame} />
-      <Audio src={staticFile("trilha.wav")} />
+      <Audio src={staticFile("arrependimento/trilha.wav")} />
     </AbsoluteFill>
   );
 };

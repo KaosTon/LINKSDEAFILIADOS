@@ -1,18 +1,9 @@
 [
   {
-    "id": "dica-arrependimento",
-    "data": "2026-11-14",
-    "selo": "VOCÊ SABIA?",
-    "titulo": "Comprou online e se arrependeu? Você tem 7 dias.",
-    "texto": "O prazo conta do dia em que o produto chega, e não precisa dar motivo.",
-    "fundo": "../../site/public/blog/direito-de-arrependimento-compra-online.webp",
-    "legenda": "Você sabia? Em compra pela internet, dá para desistir em até 7 dias corridos depois de receber o produto, sem explicar o motivo. E você recebe de volta o que pagou, inclusive o frete.\n\nEstá no art. 49 do Código de Defesa do Consumidor.\n\nO passo a passo em cada loja está no nosso blog (link na bio).\n\n#direitodoconsumidor #compraonline #dicasdecompra #consumidor"
-  },
-  {
     "id": "reel-dica-arrependimento",
     "data": "2026-11-15",
     "video": "reel-dica-arrependimento.mp4",
-    "fonte": "../reels/src/Arrependimento.tsx",
+    "fonte": "../reels/src/ArrependimentoPersonagens.tsx",
     "legenda": "Comprou pela internet e se arrependeu? Você tem 7 dias corridos, contados do dia em que o produto chega, para desistir sem dar motivo. E o que você pagou volta, inclusive o frete.\n\nEstá no art. 49 do Código de Defesa do Consumidor.\n\nO passo a passo em cada loja está no blog (link na bio).\n\n#direitodoconsumidor #compraonline #dicasdecompra #consumidor"
   },
   {
