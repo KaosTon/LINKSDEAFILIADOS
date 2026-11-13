@@ -45,7 +45,8 @@ Outras diferenças do modelo, todas fora do motor: o botão verde abre o grupo (
   creatina regulares na Anvisa (1 link para o EvolProt). Cada post tem UM link externo de ponte, no meio do texto, com
   a relação de dono dita na frase. Fontes abertas na página oficial em 13/11/2026 (Anatel, SUSEP, Anvisa, Planalto).
   Capas tipográficas (`python scripts/capas-blog.py slug`, que agora aceita o slug para não regravar as capas do
-  Gemini). Sem `revisadoEm`: ficam com `noindex` até o Wellington revisar.
+  Gemini). Sem `revisadoEm`: ficam com `noindex` até o Wellington revisar. Travas para marcar a revisão em
+  `DOCS/REVISAO-BLOG.md`, Lote 4 (painel da Anatel, post do IPTV da Casa no ar, post da Virtus corrigido).
 
 ## Caminho de volta para a fábrica (obrigatório ao fechar qualquer trabalho)
 

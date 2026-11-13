@@ -287,7 +287,7 @@ export const POSTS: Post[] = [
     ],
     dataPublicacao: "2026-10-18",
     revisadoEm: "outubro de 2026",
-    dataRevisao: "2026-11-13",
+    dataRevisao: "2026-10-19",
     tags: ["produto com defeito comprado online", "prazo para reclamar de defeito", "garantia legal", "garantia legal e contratual", "troca de produto com defeito"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
     categoria: "seus-direitos",
@@ -339,7 +339,7 @@ export const POSTS: Post[] = [
 
 <h2>Garantia legal e garantia contratual: qual a diferença?</h2>
 <p>A garantia legal é a da lei (30 ou 90 dias, art. 26) e vale sempre. A garantia contratual é a que a loja ou o fabricante oferece por conta própria, como "1 ano de garantia do fabricante". O art. 50 do CDC diz que a garantia contratual é complementar à legal e é dada por escrito. Ou seja, ela não substitui a da lei.</p>
-<p>O parágrafo único do art. 50 manda que o termo de garantia explique em que ela consiste, a forma, o prazo e o lugar para usar, e o que fica por conta do consumidor, e que seja entregue preenchido no ato da compra, com manual de instrução. Guarde o termo e a nota juntos. Garantia estendida vendida à parte é outro produto, um seguro com regras próprias: veja <a href="/blog/garantia-estendida-vale-a-pena">quando a garantia estendida vale a pena</a> antes de pagar.</p>
+<p>O parágrafo único do art. 50 manda que o termo de garantia explique em que ela consiste, a forma, o prazo e o lugar para usar, e o que fica por conta do consumidor, e que seja entregue preenchido no ato da compra, com manual de instrução. Guarde o termo e a nota juntos. Garantia estendida vendida à parte é outro produto, com regras próprias: leia o contrato antes de pagar.</p>
 
 <h2>Passo a passo: do defeito à solução</h2>
 <ol>
@@ -451,7 +451,7 @@ export const POSTS: Post[] = [
     ],
     dataPublicacao: "2026-10-18",
     revisadoEm: "outubro de 2026",
-    dataRevisao: "2026-11-13",
+    dataRevisao: "2026-11-12",
     tags: ["loja oficial da shopee é confiável", "loja da shopee é confiável", "loja indicada shopee é confiável", "garantia shopee", "loja oficial shopee", "vendedor indicado shopee", "como comprar na shopee com segurança"],
     servico: "grupo-de-ofertas-no-whatsapp-e-seguro",
     categoria: "garantias-das-lojas",
@@ -494,7 +494,7 @@ export const POSTS: Post[] = [
 
 <h2>Loja Oficial da Shopee é confiável?</h2>
 <p>Sim, é a opção mais segura dentro da Shopee. Loja Oficial é a loja da própria marca dentro da Shopee, marcada com um selo vermelho escrito Oficial na busca e na página da loja. A central de ajuda da Shopee descreve essas lojas como de grandes marcas, nacionais e internacionais, e a Shopee informa que os produtos vendidos ali são produtos oficiais das marcas.</p>
-<p>Na prática, Loja Oficial é o lugar mais seguro para comprar eletrônico, eletrodoméstico e qualquer item em que falsificação é comum. Dois casos pedem uma conferência a mais, fora da Shopee: <a href="/blog/tv-box-homologado-anatel-como-saber">TV box, pelo número de homologação da Anatel</a>, e <a href="/blog/whey-e-creatina-como-saber-se-e-original">whey e creatina, pela consulta na Anvisa</a>. Por isso a nossa regra: produto de R$ 1.000 para cima só sai no grupo se vier de Loja Oficial ou de Vendedor Indicado.</p>
+<p>Na prática, Loja Oficial é o lugar mais seguro para comprar eletrônico, eletrodoméstico e qualquer item em que falsificação é comum. Por isso a nossa regra: produto de R$ 1.000 para cima só sai no grupo se vier de Loja Oficial ou de Vendedor Indicado.</p>
 <p>Dois cuidados que continuam valendo mesmo em Loja Oficial: confira se o selo aparece na página da loja, e não só no nome do anúncio, e chegue até ela pelo app ou pelo site da Shopee. Selo verdadeiro em link falso não protege ninguém.</p>
 
 <h2>Loja indicada da Shopee é confiável?</h2>
@@ -1866,8 +1866,7 @@ export const POSTS: Post[] = [
     fontes: [
       { nome: "Anatel: Smart TV Box homologados, lista e orientações ao consumidor (página modificada em 02/11/2026)", url: "https://www.gov.br/anatel/pt-br/regulado/certificacao-de-produtos/smart-tv-box-homologados" },
       { nome: "Anatel: Certificação de produtos, dúvidas frequentes (página modificada em 07/09/2026)", url: "https://www.gov.br/anatel/pt-br/regulado/certificacao-de-produtos/duvidas-frequentes" },
-      { nome: "Anatel: consulta de produtos homologados pelo número (sistema SCH)", url: "https://sistemas.anatel.gov.br/mosaico/sch/publicView/listarProdutosHomologados.xhtml" },
-      { nome: "Anatel: painel de dados, consulta de produtos homologados", url: "https://informacoes.anatel.gov.br/paineis/certificacao-de-produtos/consulta-de-produtos" },
+      { nome: "Anatel: painel de dados, consulta de produtos homologados pelo número, pelo solicitante ou pelo fabricante", url: "https://informacoes.anatel.gov.br/paineis/certificacao-de-produtos/consulta-de-produtos" },
       { nome: "Anatel: Anatel lança página com TV boxes homologados (notícia de 15/03/2023)", url: "https://www.gov.br/anatel/pt-br/assuntos/noticias/anatel-lanca-pagina-com-tv-boxes-homologados" },
       { nome: "Anatel: alerta sobre o malware Bad Box 2.0 em TV boxes piratas (notícia de 12/08/2025)", url: "https://www.gov.br/anatel/pt-br/assuntos/noticias/anatel-emite-alerta-sobre-malware-bad-box-2-0-em-tv-boxes-piratas" },
       { nome: "Anatel: painel com informações sobre bloqueios administrativos de TV boxes ilegais (notícia de 11/05/2026)", url: "https://www.gov.br/anatel/pt-br/assuntos/noticias/anatel-lanca-painel-com-informacoes-sobre-bloqueios-administrativos-de-tv-boxes-ilegais" },
@@ -1880,20 +1879,19 @@ export const POSTS: Post[] = [
 <h2>O que é uma TV box homologada?</h2>
 <p>É um modelo que a Anatel avaliou e aprovou antes de ser vendido no Brasil. A agência descreve a TV box (ou Smart TV Box) como o aparelho que transforma uma TV comum em smart quando ligado à internet, em formato de caixa ou de pendrive ligado à entrada HDMI, que é o formato dos aparelhos do tipo stick.</p>
 <p>Na homologação, segundo a página da Anatel sobre o tema, são verificados o uso das faixas de frequência, a compatibilidade eletromagnética, a segurança elétrica e a segurança cibernética do produto. Ou seja: não é burocracia de etiqueta. É a checagem de que o aparelho não interfere em outros equipamentos, não oferece risco elétrico e não vem com porta aberta para invasão.</p>
-<p>Uma observação honesta: o selo não resolve tudo. A mesma página diz que a TV box só é regular quando o modelo é aprovado pela Anatel e, ao mesmo tempo, o conteúdo acessado respeita a Lei de Direitos Autorais (Lei 9.610/1998), seja a programação paga ou gratuita. Aparelho homologado usado para conteúdo pirata continua irregular.</p>
+<p>Um limite importante: o selo não resolve tudo. A mesma página diz que a TV box só é regular quando o modelo é aprovado pela Anatel e, ao mesmo tempo, o conteúdo acessado respeita a Lei de Direitos Autorais (Lei 9.610/1998), seja a programação paga ou gratuita. Aparelho homologado não torna regular o conteúdo pirata.</p>
 
 <h2>Como consultar se a TV box é homologada no site da Anatel?</h2>
 <p>A consulta é pública, na base de produtos homologados da própria agência. O caminho:</p>
 <ol>
 <li><strong>Ache o número de homologação.</strong> Pelas dúvidas frequentes da Anatel, o número do Certificado de Homologação deve constar no selo da agência afixado no corpo do produto ou no manual do usuário.</li>
-<li><strong>Consulte pelo número.</strong> Use a <a href="https://sistemas.anatel.gov.br/mosaico/sch/publicView/listarProdutosHomologados.xhtml" rel="noopener">consulta de produtos homologados da Anatel</a> e preencha o campo do número de homologação.</li>
+<li><strong>Consulte pelo número.</strong> No <a href="https://informacoes.anatel.gov.br/paineis/certificacao-de-produtos/consulta-de-produtos" rel="noopener">painel de consulta de produtos da Anatel</a>, preencha o campo "Nº Homologação". O mesmo painel deixa pesquisar pelo nome do solicitante ou do fabricante.</li>
 <li><strong>Compare o resultado com a caixa.</strong> Modelo e fabricante do resultado têm de ser os do aparelho que você tem na mão ou que está no anúncio.</li>
-<li><strong>Sem o número em mãos?</strong> No <a href="https://informacoes.anatel.gov.br/paineis/certificacao-de-produtos/consulta-de-produtos" rel="noopener">painel de dados da Anatel</a> dá para pesquisar pelo nome do fabricante ou filtrar pelo tipo de produto Smart TV Box.</li>
 </ol>
-<p>A Anatel também mantém uma <a href="https://www.gov.br/anatel/pt-br/regulado/certificacao-de-produtos/smart-tv-box-homologados" rel="noopener">página só de Smart TV Box homologados</a>, com número de homologação, solicitante, fabricante, modelo e nome comercial de cada um. Atenção ao limite dela: a lista reúne os modelos aprovados até julho de 2025; os homologados depois disso aparecem só no painel de dados.</p>
+<p>A Anatel também mantém uma <a href="https://www.gov.br/anatel/pt-br/regulado/certificacao-de-produtos/smart-tv-box-homologados" rel="noopener">página só de Smart TV Box homologados</a>, com número de homologação, solicitante, fabricante, modelo e nome comercial de cada um. Atenção ao limite dela: a lista reúne os modelos aprovados até julho de 2025; os homologados depois disso, segundo a própria página, ficam no painel de dados.</p>
 
 <h2>Fire TV Stick, Mi TV Stick e Roku são homologados?</h2>
-<p>A lista da Anatel traz modelos de marcas conhecidas: há aparelhos da Amazon, da Apple, da Intelbras (Izy Play), o Mi TV Stick e o Roku Express 4K, entre outros. Mas repare no que a agência homologa: é o modelo, não a marca. Cada modelo tem o seu número.</p>
+<p>Há modelos dessas marcas na lista da Anatel, mas a homologação é por modelo, então a resposta só vale para o aparelho que você consultar. A lista traz modelos de marcas conhecidas: há aparelhos da Amazon, da Apple, da Intelbras (Izy Play), o Mi TV Stick e o Roku Express 4K, entre outros. Mas repare no que a agência homologa: é o modelo, não a marca. O número é do certificado, e um certificado pode cobrir mais de um modelo: o que importa é o seu modelo aparecer no resultado.</p>
 <p>Por isso eu não vou cravar aqui que todo aparelho de uma marca é regular. O teste é o mesmo para o aparelho famoso e para o desconhecido: número do selo consultado, modelo conferido. Marca conhecida em anúncio de loja desconhecida também pede cuidado, porque o produto pode não ser o que a foto mostra.</p>
 
 <h2>Quais sinais no anúncio indicam TV box pirata?</h2>
@@ -1907,22 +1905,22 @@ export const POSTS: Post[] = [
 <tr><td>Produto caro em loja nova, sem selo de loja oficial e com poucas vendas</td><td>Fora da nossa régua: é o tipo de oferta que não entra no grupo</td><td>Regras de conferência do Tem Descontos</td></tr>
 </tbody>
 </table>
-<p>Sobre o número no anúncio: em 1º de agosto de 2025, a Anatel aprovou um novo regulamento de homologação que, segundo a agência, prevê a responsabilidade solidária dos marketplaces e a obrigação de divulgar o código de homologação nos anúncios. Essa obrigação é discutida na Justiça por plataformas: em maio de 2026 a Advocacia-Geral da União noticiou que o TRF3 suspendeu uma decisão que desobrigava uma delas, até o julgamento de um recurso no STJ. Na prática, você ainda vai encontrar anúncio sem o código. Não espere a regra: peça o número.</p>
-<p>A linha da tabela que é nossa: no Tem Descontos, produto da Shopee só sai no grupo com nota 4,5 ou mais e pelo menos 50 vendas, e produto de R$ 1.000 ou mais só de Loja Oficial ou de Vendedor Indicado. Explicamos essa régua em <a href="/blog/como-saber-se-loja-da-shopee-e-confiavel">como saber se uma loja da Shopee é confiável</a>. Ela não substitui a consulta na Anatel: nota alta diz que a loja entrega, não que o modelo é homologado.</p>
+<p>Sobre o número no anúncio: em 1º de agosto de 2025, a Anatel aprovou a revisão do regulamento de homologação, que, segundo a agência, prevê a responsabilidade solidária dos marketplaces e a obrigação de divulgar o código de homologação nos anúncios. A exigência do código já vinha sendo cobrada antes e é discutida na Justiça por plataformas: em maio de 2026 a Advocacia-Geral da União noticiou que o TRF3 suspendeu os efeitos de uma decisão que desobrigava uma delas, até o julgamento de um recurso no STJ. Na prática, você ainda vai encontrar anúncio sem o código. Não espere a regra: peça o número.</p>
+<p>A linha da tabela que é nossa: no Tem Descontos, produto da Shopee só sai no grupo com nota 4,5 ou mais e pelo menos 50 vendas, e produto de R$ 1.000 ou mais só de Loja Oficial ou de Vendedor Indicado. Explicamos essa régua em <a href="/blog/como-saber-se-loja-da-shopee-e-confiavel">como saber se uma loja da Shopee é confiável</a>. Ela não substitui a consulta na Anatel: nota alta diz que a loja entrega, não que o modelo é homologado. A mesma lógica vale para outros produtos que têm órgão regulador: <a href="/blog/whey-e-creatina-como-saber-se-e-original">whey e creatina se conferem na Anvisa</a>.</p>
 
 <h2>O que acontece com aparelho não homologado?</h2>
-<p>Três coisas, e a mais séria não é a que as pessoas imaginam.</p>
-<p><strong>Risco de segurança.</strong> A Anatel escreveu, em maio de 2026: "O risco mais grave, e muitas vezes invisível, no uso de TV Box não homologada está na segurança cibernética". Em estudos de engenharia reversa, a agência encontrou programas maliciosos capazes de capturar dados e arquivos de usuários da mesma rede. Em agosto de 2025, alertou para o Bad Box 2.0, que usa o aparelho como ponto de retransmissão de tráfego para fraudes e acessos a sites de bancos, e registrou que os aparelhos geram tráfego suspeito mesmo em modo de espera. Como engenheiro, é o ponto que mais me preocupa: a TV box fica ligada na mesma rede Wi-Fi do celular em que você usa o banco.</p>
+<p>Risco para a rede da sua casa, bloqueio dos endereços de que ele depende e sanção administrativa. O mais sério é o primeiro.</p>
+<p><strong>Risco de segurança.</strong> A Anatel escreveu, em maio de 2026: "O risco mais grave, e muitas vezes invisível, no uso de TV Box não homologada está na segurança cibernética". Já em 2023, em estudos de engenharia reversa, a agência encontrou programas maliciosos capazes de capturar dados e arquivos de usuários da mesma rede. Em agosto de 2025, alertou para o Bad Box 2.0, que usa o aparelho como ponto de retransmissão de tráfego para fraudes e acessos a sites de bancos, e registrou que os aparelhos geram tráfego suspeito mesmo em modo de espera. É o ponto que mais me preocupa: a TV box fica ligada na mesma rede Wi-Fi do celular em que você usa o banco.</p>
 <p><strong>Bloqueio.</strong> Desde 2023 a Anatel faz bloqueios administrativos, e é bom entender o que é bloqueado: não é o seu aparelho, são os endereços de internet (URLs e IPs) usados para autenticação desses equipamentos. A agência afirma que as medidas se limitam a esses endereços técnicos e não envolvem monitoramento do que o usuário assiste. A consequência prática é minha leitura, não frase da Anatel: aparelho que depende de endereço bloqueado pode deixar de funcionar de um dia para o outro, sem a quem reclamar.</p>
-<p><strong>Sanção.</strong> A Anatel informa que a comercialização e o uso de produtos irregulares podem resultar em sanções administrativas, de advertência a multa, além da apreensão do equipamento. E lembra que acessar conteúdo protegido por direito autoral sem autorização é crime.</p>
+<p><strong>Sanção.</strong> A Anatel informa que a comercialização e o uso de produtos irregulares podem resultar em sanções administrativas, de advertência a multa, além da apreensão do equipamento. E afirma, na notícia de 2023, que o acesso a conteúdo protegido por direito autoral por esses aparelhos é crime.</p>
 
 <h2>Aparelho homologado em casa: o que dá para usar nele?</h2>
-<p>O que estiver na loja de aplicativos do próprio aparelho: os serviços de streaming que você assina, canais gratuitos, navegador. A regra de bolso é a mesma da Anatel, em duas partes: aparelho regular e conteúdo regular. Uma não compensa a falta da outra.</p>
-<p>Um caso que gera dúvida é o de quem já tem uma lista de IPTV contratada de forma regular e só precisa de um aplicativo para reproduzi-la. O IPTV da Casa, que é do mesmo dono deste site, explica <a href="https://iptvdacasa.com.br/blog/iptv-no-fire-tv-stick/" rel="noopener">como instalar o player no Fire TV Stick</a> pela loja de aplicativos da Amazon; ele é só um player, não vende nem fornece listas nem canais. Aqui não indicamos fornecedor de lista, canal ou conteúdo.</p>
+<p>O que estiver na loja de aplicativos do próprio aparelho: os serviços de streaming que você assina, canais gratuitos, navegador.</p>
+<p>Um caso que gera dúvida é o aplicativo reprodutor de IPTV. O player em si é só um programa: o que precisa ser regular é o conteúdo, ou seja, o serviço que você assina tem de ter direito de transmitir o que oferece. O IPTV da Casa, que é do mesmo dono deste site, tem um guia de <a href="https://iptvdacasa.com.br/blog/qual-aparelho-comprar-para-iptv/" rel="noopener">qual aparelho comprar para usar um player de IPTV na TV</a>; ele é só um player, não vende nem fornece listas nem canais. Aqui não indicamos fornecedor de lista, canal ou conteúdo, e vale a regra da Anatel: aparelho regular e conteúdo regular.</p>
 
 <h2>Chegou sem selo ou diferente do anúncio: o que fazer?</h2>
 <p>Não ligue o aparelho na sua rede e guarde a embalagem. Depois, você tem dois caminhos na lei, e os dois valem para compra online.</p>
-<p><strong>Desistir em 7 dias.</strong> O art. 49 do Código de Defesa do Consumidor diz: "O consumidor pode desistir do contrato, no prazo de 7 dias a contar de sua assinatura ou do ato de recebimento do produto ou serviço, sempre que a contratação de fornecimento de produtos e serviços ocorrer fora do estabelecimento comercial, especialmente por telefone ou a domicílio." Leia de novo: a lei não pede motivo. Você não precisa provar que o aparelho é pirata, basta pedir dentro do prazo. O passo a passo em cada loja está em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</p>
+<p><strong>Desistir em 7 dias.</strong> O art. 49 do Código de Defesa do Consumidor diz: "O consumidor pode desistir do contrato, no prazo de 7 dias a contar de sua assinatura ou do ato de recebimento do produto ou serviço, sempre que a contratação de fornecimento de produtos e serviços ocorrer fora do estabelecimento comercial, especialmente por telefone ou a domicílio." Repare: a lei não pede motivo. Você não precisa provar que o aparelho é pirata, basta pedir dentro do prazo. O passo a passo em cada loja está em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</p>
 <p><strong>Reclamar de produto diferente do anunciado.</strong> Se o anúncio dizia "homologado pela Anatel" e o aparelho não é, o art. 18 do CDC trata como vício a "disparidade" com as indicações da embalagem, da rotulagem ou da "mensagem publicitária". Os prazos e o caminho estão em <a href="/blog/produto-com-defeito-comprado-online">produto com defeito comprado online</a>.</p>
 <p>Em qualquer dos dois, abra o pedido pelo canal da própria plataforma, por escrito, com foto da etiqueta e print do anúncio. Se o problema começou num link recebido por mensagem, veja antes como reconhecer golpe em <a href="/guias/grupo-de-ofertas-no-whatsapp-e-seguro">grupo de ofertas no WhatsApp é seguro?</a>.</p>
 
@@ -1934,6 +1932,7 @@ export const POSTS: Post[] = [
 <li>A loja tem histórico (nota, vendas, selo de loja oficial em produto caro)?</li>
 <li>O pagamento é dentro da plataforma, e não por Pix combinado no chat?</li>
 <li>Você sabe a data de entrega, para contar os 7 dias de arrependimento?</li>
+<li>Apareceu garantia estendida no carrinho? Ela é opcional: veja <a href="/blog/garantia-estendida-vale-a-pena">quando a garantia estendida vale a pena</a>.</li>
 </ol>
 <p>Se o preço parece bom demais para a marca, confira também se o desconto é real em <a href="/guias/como-saber-se-a-promocao-e-verdadeira">como saber se a promoção é verdadeira</a>. TV box barata demais raramente é só uma boa promoção.</p>`,
   },
@@ -1983,7 +1982,7 @@ export const POSTS: Post[] = [
 
 <h2>Garantia estendida é seguro?</h2>
 <p>É. A SUSEP, que fiscaliza o mercado de seguros, define a garantia estendida como um seguro de contratação facultativa, pago por um valor (o prêmio), que estende no tempo a garantia do fornecedor de um bem. A página da SUSEP sobre o tema informa que ele só pode ser contratado por apólice individual ou por bilhete, e que não pode incluir coberturas de outros ramos de seguro.</p>
-<p>Isso muda a conversa na prática. Quem responde pelo conserto depois do prazo de fábrica é uma seguradora, não a loja. E quem define as regras do contrato é uma norma pública, que você pode ler: a <a href="https://www2.susep.gov.br/safe/scripts/bnweb/bnmapi.exe?router=upload%2F25873" rel="noopener">Circular SUSEP nº 659, de 4 de abril de 2022</a>, que entrou em vigor em 1º de maio de 2022.</p>
+<p>Isso muda a conversa na prática. Pelo seguro, quem responde pelo conserto depois do prazo de fábrica é uma seguradora, não a loja. Isso não apaga a regra do defeito oculto: pelo art. 26, § 3º, do CDC, o prazo para reclamar de defeito de fabricação que só aparece com o uso começa quando ele fica evidente, mesmo depois da garantia de fábrica. E quem define as regras do contrato é uma norma pública, que você pode ler: a <a href="https://www2.susep.gov.br/safe/scripts/bnweb/bnmapi.exe?router=upload%2F25873" rel="noopener">Circular SUSEP nº 659, de 4 de abril de 2022</a>, que entrou em vigor em 1º de maio de 2022.</p>
 
 <h2>A loja pode empurrar a garantia estendida junto com o produto?</h2>
 <p>Não. O art. 6º da Circular SUSEP 659/2022 diz: "Fica vedado condicionar a compra do bem à contratação do seguro de garantia estendida, assim como condicionar a concessão de desconto no seu preço à aquisição do seguro." Leia de novo a segunda parte. Não é só o "só vendo com a garantia" que é proibido: o "com a garantia eu faço mais barato" também é.</p>
@@ -2004,20 +2003,20 @@ export const POSTS: Post[] = [
 <tr><td>Seguro de Garantia Estendida Original</td><td>As mesmas coberturas e as mesmas exclusões da garantia do fornecedor</td><td>Logo depois do fim da garantia do fornecedor</td></tr>
 <tr><td>Seguro de Garantia Estendida Original Ampliada</td><td>As coberturas da garantia do fornecedor e outras, desde que não sejam de outros ramos de seguro</td><td>Logo depois do fim da garantia do fornecedor</td></tr>
 <tr><td>Seguro de Garantia Estendida Reduzida</td><td>Pode cobrir menos que a garantia do fornecedor; só para veículos e para bens que têm apenas a garantia legal</td><td>Logo depois do fim da garantia do fornecedor</td></tr>
-<tr><td>Complementação de garantia (facultativa)</td><td>O que a garantia do fornecedor não prevê ou exclui, desde que não seja de outro ramo</td><td>Junto com a garantia do fornecedor</td></tr>
+<tr><td>Complementação de garantia (facultativa)</td><td>O que a garantia do fornecedor não prevê ou exclui, desde que não seja de outro ramo</td><td>Junto com o contrato do seguro</td></tr>
 </tbody>
 </table>
-<p>Quando o defeito aparece, a circular dá à seguradora até 30 dias para resolver (art. 21), por conserto, reposição ou pagamento em dinheiro (art. 20), e põe na conta dela o custo de transporte do produto para reparo (art. 22). Os documentos que ela pode pedir são limitados: a nota fiscal do produto, o bilhete ou a apólice e um documento seu. Guarde os três juntos.</p>
+<p>Quando o defeito aparece, a circular dá à seguradora até 30 dias para resolver (art. 21), por conserto, reposição ou pagamento em dinheiro (art. 20), e põe na conta dela o custo de transporte do produto para reparo (art. 22), seguindo a forma de entrega prevista na garantia do fornecedor. Os documentos que ela pode pedir são limitados: a nota fiscal do produto, o bilhete ou a apólice e um documento seu. No pagamento em dinheiro, ela também pode pedir os documentos de atualização cadastral (art. 21, § 5º). Guarde os três primeiros juntos.</p>
 
 <h2>O que a garantia estendida não cobre?</h2>
 <p>Ela não cobre o que a garantia do fornecedor não cobre, a não ser que a apólice diga o contrário por escrito. Como a garantia de fábrica trata de defeito do produto, a modalidade original deixa de fora queda, contato com líquido, roubo e furto. A SUSEP registra ainda que o mau uso do bem é risco excluído.</p>
 <p>Três pontos da circular para ler antes de assinar:</p>
 <ul>
 <li><strong>Exclusões informadas.</strong> A seguradora ou o representante tem de informar os riscos excluídos na venda (art. 13). Peça a lista por escrito.</li>
-<li><strong>Perda da garantia de fábrica.</strong> Se você perder a garantia do fornecedor por violar as regras do fabricante, a seguradora pode se recusar a indenizar, desde que explique as razões por escrito (art. 15). Leia no termo de garantia do fabricante o que faz perder a cobertura, e guarde esse termo: a própria circular manda a apólice recomendar isso (art. 16).</li>
+<li><strong>Perda da garantia de fábrica.</strong> Se você perder a garantia do fornecedor por violar as regras do fabricante, a seguradora pode se recusar a indenizar, mas tem de comprovar a perda por laudo técnico ou outro meio idôneo e explicar as razões por escrito (art. 15). Leia no termo de garantia do fabricante o que faz perder a cobertura, e guarde esse termo: a própria circular manda a apólice recomendar isso (art. 16).</li>
 <li><strong>Sem renovação automática.</strong> A renovação depende da sua concordância expressa (art. 9º).</li>
 </ul>
-<p>Uma observação honesta: cobertura de queda ou de líquido pode existir em contrato com cobertura ampliada, mas eu não posso prometer isso por você. Vale o que estiver escrito na sua apólice, com franquia ou participação se houver (art. 17).</p>
+<p>Um limite do que dá para afirmar daqui: cobertura de queda ou de líquido pode existir em contrato com cobertura ampliada, mas eu não posso prometer isso por você. Vale o que estiver escrito na sua apólice, com franquia ou participação se houver. Na cobertura que repete a garantia do fornecedor, a circular não admite franquia (art. 17).</p>
 
 <h2>Garantia estendida ou seguro: o que faz mais sentido?</h2>
 <p>Depende do risco que tira o seu sono. Garantia estendida responde a uma pergunta: e se o produto apresentar defeito depois que a garantia de fábrica acabar? Faz mais sentido em produto que fica parado em casa, como geladeira, máquina de lavar e TV, e quando a garantia do fabricante é curta.</p>
@@ -2025,7 +2024,7 @@ export const POSTS: Post[] = [
 <p>Para decidir, eu faço três perguntas, nesta ordem:</p>
 <ol>
 <li><strong>Quanto tempo de garantia o fabricante já dá?</strong> A cobertura do seguro só começa quando essa garantia termina (art. 8º). Se o fabricante dá dois anos e o seguro é de um, você paga hoje por uma proteção que só vai existir no terceiro ano.</li>
-<li><strong>Quanto o seguro custa perto do produto?</strong> Divida o preço do seguro pelo preço do produto. Como engenheiro, eu desconfio de proteção sem conta: quanto maior essa fração, mais vezes o produto precisaria quebrar para o seguro se pagar.</li>
+<li><strong>Quanto o seguro custa perto do produto?</strong> Divida o preço do seguro pelo preço do produto: essa fração é, grosso modo, a chance de defeito no período coberto a partir da qual o seguro empata. Se o seguro custa 20% do produto, ele só compensa se você acha que a chance de defeito grave nesse período passa de 1 em 5.</li>
 <li><strong>O que está excluído?</strong> Se o defeito que você teme está na lista de exclusões, o resto da conta não importa.</li>
 </ol>
 
@@ -2035,7 +2034,7 @@ export const POSTS: Post[] = [
 <li><strong>Por onde pedir:</strong> a seguradora tem de oferecer, no mínimo, telefone gratuito 0800 ou número único nacional e um canal escrito (chat, formulário ou e-mail), sempre com protocolo. A loja também pode receber o pedido, se oferecer essa opção.</li>
 <li><strong>Devolução:</strong> em até 15 dias corridos da solicitação, quando o pedido é feito à seguradora, ou na hora, quando é feito ao representante que oferece essa opção. O valor volta na conta que você indicar ou por estorno no cartão.</li>
 </ul>
-<p>Depois dos 7 dias, a circular fala em rescisão por acordo entre você e a seguradora (art. 18) e fixa quanto volta: o valor integral, se a rescisão acontecer antes de a cobertura começar, ou seja, ainda dentro da garantia do fornecedor; e, depois disso, no mínimo a parte proporcional ao tempo de cobertura que ainda faltava. Peça por escrito e guarde o protocolo.</p>
+<p>Depois dos 7 dias, a circular fala em rescisão por acordo entre você e a seguradora (art. 18) e fixa quanto volta: o valor integral do prêmio comercial (a SUSEP informa que impostos e encargos podem ser retidos quando o pedido é seu), se a rescisão acontecer antes de a cobertura começar, ou seja, ainda dentro da garantia do fornecedor; e, depois disso, no mínimo a parte proporcional ao tempo de cobertura que ainda faltava. Peça por escrito e guarde o protocolo.</p>
 <p>Não confunda com os 7 dias do produto: quem comprou online também pode desistir da compra inteira pelo art. 49 do CDC, e esse prazo conta do recebimento. Está tudo em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</p>
 
 <h2>Resumo para decidir no caixa</h2>
@@ -2044,6 +2043,7 @@ export const POSTS: Post[] = [
 <li>Pergunte o prazo da garantia do fabricante antes de olhar o preço do seguro.</li>
 <li>Peça o nome da modalidade e a lista de exclusões por escrito.</li>
 <li>Roubo e queda não são defeito: para isso, compare um seguro do aparelho.</li>
+<li>Defeito de fabricação que só aparece com o uso tem prazo próprio na lei, contado de quando ele fica evidente (CDC, art. 26, § 3º), com ou sem seguro.</li>
 <li>Aceitou e se arrependeu? São 7 dias corridos para desistir e até 15 para receber de volta.</li>
 </ul>`,
   },
@@ -2055,8 +2055,8 @@ export const POSTS: Post[] = [
     resumo: "Como consultar um suplemento na Anvisa, o que conferir no anúncio e no pote, o que fazer se chegou violado e a conta que mostra se a promoção é de verdade.",
     resumoRapido: [
       "Whey e creatina não têm registro: desde 1º de setembro de 2024 a regra para suplemento alimentar é a notificação na Anvisa, que pode ser consultada no portal da agência.",
-      "Pote fabricado antes de 1º de setembro de 2026 pode estar regular mesmo sem aparecer na consulta: a Anvisa diz que a falta de notificação não torna o produto automaticamente irregular.",
-      "Preço muito abaixo da média, rótulo mal impresso e lacre de má qualidade são sinais apontados pela Senacon e pela Anvisa.",
+      "Suplemento que já era vendido antes de setembro de 2024 e foi fabricado até 1º de setembro de 2026 pode estar regular sem aparecer na consulta; produto lançado depois disso tem de estar notificado.",
+      "Preço muito abaixo da média e rótulo mal redigido são alertas da Senacon; impressão ruim e selo de segurança de má qualidade foram os sinais de um caso de falsificação divulgado pela Anvisa.",
       "Compare promoções pelo custo por grama de proteína, não pelo preço do pote."
     ],
     dataPublicacao: "2026-11-13",
@@ -2066,7 +2066,7 @@ export const POSTS: Post[] = [
     imagem: "/blog/whey-e-creatina-como-saber-se-e-original.webp",
     faq: [
       { q: "Whey protein precisa de registro na Anvisa?", a: "Não é registro, é notificação. Desde 1º de setembro de 2024, a RDC 843/2024 e a IN 281/2024 da Anvisa exigem que os suplementos alimentares sejam notificados à agência. A consulta dos produtos é feita no portal de consultas da Anvisa." },
-      { q: "Como consultar se um suplemento é regular na Anvisa?", a: "Acesse o portal de consultas da Anvisa, na área de alimentos, e procure o produto com os dados do rótulo. Se o pote foi fabricado antes de 1º de setembro de 2026, ele pode estar regular sem aparecer ali: nesse caso, pergunte ao fabricante ou à vigilância sanitária local." },
+      { q: "Como consultar se um suplemento é regular na Anvisa?", a: "Acesse o portal de consultas da Anvisa, na área de alimentos, e procure o produto com os dados do rótulo. Se o produto já era vendido antes de setembro de 2024 e o pote foi fabricado até 1º de setembro de 2026, ele pode estar regular sem aparecer ali: nesse caso, pergunte ao fabricante ou à vigilância sanitária local. Produto lançado depois disso tem de estar notificado." },
       { q: "Como saber se o whey é falsificado?", a: "Compare o pote com o do site do fabricante. Num caso de falsificação de suplemento em pó divulgado pela Anvisa em fevereiro de 2026, os sinais eram código de barras fora da área branca, tabela nutricional desalinhada, selo de segurança de alumínio de baixa qualidade e impressão ruim. Preço muito abaixo da média também é alerta." },
       { q: "O suplemento chegou com o lacre violado. O que fazer?", a: "Não consuma, fotografe a embalagem e abra a reclamação pelo canal da plataforma. Pelo art. 26 do Código de Defesa do Consumidor, o prazo para reclamar de defeito aparente em produto não durável é de 30 dias da entrega. Em compra online, você também pode desistir em 7 dias pelo art. 49." },
       { q: "Como comparar o preço de dois potes de whey?", a: "Calcule o custo por grama de proteína: divida o peso do pote pelo tamanho da porção, multiplique pela proteína por porção e divida o preço por esse total. O pote mais barato na etiqueta pode ser o mais caro por grama de proteína." }
@@ -2084,14 +2084,14 @@ export const POSTS: Post[] = [
     conteudo: `<p>Whey e creatina aparecem em promoção o ano inteiro, e são alvo conhecido de fraude: a Senacon e a Anvisa já agiram contra creatina adulterada e suplemento proteico falsificado vendidos em plataformas de comércio eletrônico. A boa notícia é que dá para conferir bastante coisa antes de pagar, sem laboratório. <strong>Para saber se o suplemento é regular, consulte o produto no portal da Anvisa, compre de loja oficial da marca ou de vendedor com histórico, confira lote, validade e lacre quando o pote chegar e desconfie de preço muito abaixo da média. Whey e creatina não têm "registro": a regra é a notificação na Anvisa.</strong> Abaixo está cada passo, o que a lei garante se o pote chegar violado e a conta que mostra se a promoção é boa de verdade.</p>
 
 <h2>Whey e creatina precisam de registro na Anvisa?</h2>
-<p>Não. A palavra certa é notificação. A Anvisa trata whey, creatina e produtos parecidos como suplemento alimentar, categoria criada em 27 de julho de 2018 pela RDC 243/2018. Suplemento não é medicamento: segundo a agência, é destinado a pessoas saudáveis, para complementar a alimentação, e não serve para tratar, prevenir ou curar doença.</p>
+<p>Não. A palavra certa é notificação (a exceção histórica são produtos com enzimas ou probióticos, que tinham registro pelas regras de 2018). A Anvisa trata whey, creatina e produtos parecidos como suplemento alimentar, categoria criada em 27 de julho de 2018 pela RDC 243/2018. Suplemento não é medicamento: segundo a agência, é destinado a pessoas saudáveis, para complementar a alimentação, e não serve para tratar, prevenir ou curar doença.</p>
 <p>A forma de regularizar mudou, e isso explica muita confusão em anúncio:</p>
 <table>
 <thead><tr><th>Período</th><th>Regra para suplemento alimentar</th><th>O que você consegue consultar</th></tr></thead>
 <tbody>
 <tr><td>De 2018 até 31 de agosto de 2024</td><td>Só suplementos com enzimas ou probióticos precisavam de registro; os demais eram dispensados e apenas comunicados à vigilância sanitária local</td><td>A Anvisa informa que não há banco de dados público dos produtos apenas comunicados</td></tr>
 <tr><td>A partir de 1º de setembro de 2024</td><td>A RDC 843/2024 e a IN 281/2024 passaram a exigir a notificação de todos os suplementos na Anvisa</td><td>Produtos notificados aparecem no portal de consultas da Anvisa</td></tr>
-<tr><td>Até 1º de setembro de 2026</td><td>Prazo final para notificar os suplementos que já estavam no mercado pelas regras antigas</td><td>Produto comunicado à vigilância local até 31 de agosto de 2024 e fabricado até essa data pode ser vendido até o fim da validade, mesmo sem notificação</td></tr>
+<tr><td>Até 1º de setembro de 2026</td><td>Prazo final para notificar os suplementos que já estavam no mercado pelas regras antigas</td><td>Produto comunicado à vigilância local até 31 de agosto de 2024 e fabricado até 1º de setembro de 2026 pode ser vendido até o fim da validade, mesmo sem notificação</td></tr>
 </tbody>
 </table>
 <p>Então, quando um anúncio diz "registrado na Anvisa" para um whey comum, ele está, no mínimo, usando a palavra errada. E quando usa o nome da Anvisa como selo de resultado, desconfie: a agência diz que suplemento não pode prometer prevenir, tratar ou curar doença.</p>
@@ -2101,8 +2101,8 @@ export const POSTS: Post[] = [
 <p>Agora a observação honesta, porque ela evita conclusão errada: não aparecer na consulta não prova, sozinho, que o produto é irregular. Em 1º de setembro de 2026 a Anvisa escreveu que "a ausência da notificação não torna o produto automaticamente irregular no mercado": suplementos comunicados à vigilância local até 31 de agosto de 2024 e fabricados até 1º de setembro de 2026 "poderão continuar sendo comercializados até o término de seu prazo de validade". Na prática:</p>
 <ul>
 <li><strong>Apareceu na consulta, com a mesma empresa do rótulo:</strong> bom sinal de regularidade do produto. Ainda falta conferir se o pote que vai chegar é o verdadeiro.</li>
-<li><strong>Não apareceu e o pote foi fabricado antes de setembro de 2026:</strong> pode estar regular pela regra de transição. Pergunte ao fabricante, pelo canal oficial dele, ou à vigilância sanitária do seu município.</li>
-<li><strong>Não apareceu e o pote foi fabricado depois:</strong> sinal de alerta. A notificação é obrigatória para manter a regularização, e a autoridade sanitária avalia cada caso.</li>
+<li><strong>Não apareceu, o produto já existia antes de setembro de 2024 e o pote foi fabricado até 1º de setembro de 2026:</strong> pode estar regular pela regra de transição. Pergunte ao fabricante, pelo canal oficial dele, ou à vigilância sanitária do seu município.</li>
+<li><strong>Não apareceu e o produto é novo, ou o pote foi fabricado depois:</strong> sinal de alerta. A notificação é obrigatória para manter a regularização, e a autoridade sanitária avalia cada caso.</li>
 </ul>
 <p>Segundo a Anvisa, o rótulo do alimento notificado traz a declaração "Alimento notificado na Anvisa", com o número do processo. Rótulos impressos antes da notificação puderam ser usados por até 180 dias, só para esgotar embalagens, então um pote regular ainda pode chegar sem essa frase.</p>
 
@@ -2119,7 +2119,7 @@ export const POSTS: Post[] = [
 <p>O que o rótulo não pode ter: promessa de prevenir, tratar ou curar doença. A Anvisa reserva esse tipo de alegação a medicamento e alerta que promessa milagrosa pode indicar produto enganoso ou com substância não permitida.</p>
 
 <h2>Quais sinais no anúncio indicam suplemento falsificado?</h2>
-<p>Os sinais abaixo saem de dois casos oficiais. Em dezembro de 2024, a Senacon informou que plataformas de comércio eletrônico foram notificadas a suspender a venda de creatina adulterada e orientou o consumidor a ficar atento a "preços muito abaixo da média" e a "rótulos mal redigidos". Em fevereiro de 2026, a Anvisa mandou apreender um suplemento proteico em pó vendido em plataformas eletrônicas com a marca de um fabricante que disse não reconhecer o produto.</p>
+<p>Preço muito abaixo da média, vendedor sem vínculo com a marca, peso ou quantidade diferentes do anúncio e fotos sem o rótulo traseiro. Esses sinais saem de dois casos oficiais. Em dezembro de 2024, a Senacon informou que plataformas de comércio eletrônico foram notificadas a suspender a venda de creatina adulterada e orientou o consumidor a ficar atento a "preços muito abaixo da média" e a "rótulos mal redigidos". Em fevereiro de 2026, a Anvisa mandou apreender um suplemento proteico em pó vendido em plataformas eletrônicas com a marca de um fabricante que disse não reconhecer o produto.</p>
 <ul>
 <li><strong>Preço muito abaixo da média</strong> das outras lojas para o mesmo pote e o mesmo peso.</li>
 <li><strong>Quem vende.</strong> Loja oficial da marca dentro da plataforma, ou vendedor que o fabricante lista no próprio site, reduz muito o risco. Na Shopee, veja <a href="/blog/como-saber-se-loja-da-shopee-e-confiavel">como saber se a loja é confiável</a>.</li>
@@ -2127,7 +2127,7 @@ export const POSTS: Post[] = [
 <li><strong>Fotos só de catálogo,</strong> sem imagem do rótulo traseiro, da tabela nutricional ou do lote.</li>
 </ul>
 <p>No pote, quando chegar, os sinais do caso da Anvisa foram: código de barras fora da área branca padrão, tabela nutricional desalinhada, selo de segurança de alumínio de baixa qualidade e impressão ruim em papel opaco. Compare com as fotos do site do fabricante antes de abrir.</p>
-<p>Nossa régua, para você usar também: no Tem Descontos, produto da Shopee só sai no grupo com nota 4,5 ou mais e pelo menos 50 vendas, e a oferta é descartada quando o link abre produto ou quantidade diferente do anúncio. É um filtro de loja e de preço. Ele não testa o conteúdo do pote: essa parte da conferência é sua, com o rótulo na mão.</p>
+<p>Nossa régua, para você usar também: no Tem Descontos, produto da Shopee só sai no grupo com nota 4,5 ou mais e pelo menos 50 vendas, e a oferta é descartada quando o link abre produto ou quantidade diferente do anúncio. É um filtro de loja e de preço. Ele não testa o conteúdo do pote: essa parte da conferência é sua, com o rótulo na mão. Em eletrônico a lógica é a mesma, com outro órgão: <a href="/blog/tv-box-homologado-anatel-como-saber">TV box se confere pelo número de homologação da Anatel</a>.</p>
 
 <h2>Como saber se a promoção é boa? A conta do custo por grama de proteína</h2>
 <p>Preço de pote não compara nada, porque os potes têm pesos e concentrações diferentes. Como engenheiro, eu só comparo na mesma unidade. No whey, a unidade é o grama de proteína:</p>
@@ -2139,9 +2139,9 @@ export const POSTS: Post[] = [
 </ol>
 <p>Um exemplo com números inventados, só para mostrar a conta (não são produtos nem preços reais):</p>
 <table>
-<thead><tr><th>Item</th><th>Pote A</th><th>Pote B</th></tr></thead>
+<thead><tr><th>Item</th><th>Pote A (exemplo fictício)</th><th>Pote B (exemplo fictício)</th></tr></thead>
 <tbody>
-<tr><td>Preço na promoção</td><td>R$ 100</td><td>R$ 120</td></tr>
+<tr><td>Preço (inventado, só para a conta)</td><td>R$ 100</td><td>R$ 120</td></tr>
 <tr><td>Peso líquido</td><td>900 g</td><td>900 g</td></tr>
 <tr><td>Porção</td><td>30 g</td><td>30 g</td></tr>
 <tr><td>Proteína por porção</td><td>15 g</td><td>24 g</td></tr>
@@ -2156,7 +2156,7 @@ export const POSTS: Post[] = [
 <h2>Chegou violado, vencido ou falsificado: o que fazer?</h2>
 <p>Não consuma. Fotografe o pote, o lacre, o lote e a validade antes de qualquer outra coisa, e siga por três caminhos, que se somam:</p>
 <ul>
-<li><strong>Reclame do defeito.</strong> Suplemento é produto não durável: pelo art. 26 do Código de Defesa do Consumidor, o prazo para reclamar de defeito aparente é de "trinta dias", contados da entrega. O art. 18 dá ao fornecedor até 30 dias para resolver e, depois disso, a você a escolha entre troca, dinheiro de volta ou abatimento. O passo a passo está em <a href="/blog/produto-com-defeito-comprado-online">produto com defeito comprado online</a>.</li>
+<li><strong>Reclame do defeito.</strong> Suplemento é produto não durável: pelo art. 26 do Código de Defesa do Consumidor, o prazo para reclamar de defeito aparente é de "trinta dias", contados da entrega. O art. 18 dá, em regra, até 30 dias para o fornecedor resolver, mas o § 3º permite pedir de imediato a troca, o dinheiro de volta ou o abatimento quando o defeito não tem conserto que preserve o produto, que é o caso de alimento violado, vencido ou falsificado. O passo a passo está em <a href="/blog/produto-com-defeito-comprado-online">produto com defeito comprado online</a>.</li>
 <li><strong>Ou desista da compra.</strong> Em compra online, o art. 49 do CDC dá 7 dias, contados do recebimento, para desistir sem dar motivo. Veja como pedir em <a href="/blog/direito-de-arrependimento-compra-online">direito de arrependimento na compra online</a>.</li>
 <li><strong>Use a proteção da plataforma.</strong> Abra o pedido pelo canal da loja, por escrito e dentro do prazo dela: explicamos a <a href="/blog/garantia-de-a-a-z-amazon">Garantia de A a Z da Amazon</a> e a <a href="/blog/compra-garantida-mercado-livre">Compra Garantida do Mercado Livre</a>.</li>
 </ul>
