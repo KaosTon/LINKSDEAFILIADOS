@@ -40,6 +40,12 @@ Outras diferenças do modelo, todas fora do motor: o botão verde abre o grupo (
   do ambiente (como na Virtus, que gera a imagem pelo Gemini; ver `DOCS/PROTOCOLO_BLOG.md` §4.5 no
   projeto-virtus-site), conferir as fontes inteiras, trocar as capas tipográficas por imagem gerada e
   dar a abertura com gancho aos outros 8 posts.
+- 13/11/2026: 3 posts de ponte entre os sites do Wellington (branch `blog/pontes-entre-sites`, sem push): TV box
+  homologada na Anatel (1 link para iptvdacasa.com.br), garantia estendida (1 link para a Virtus Corretora) e whey e
+  creatina regulares na Anvisa (1 link para o EvolProt). Cada post tem UM link externo de ponte, no meio do texto, com
+  a relação de dono dita na frase. Fontes abertas na página oficial em 13/11/2026 (Anatel, SUSEP, Anvisa, Planalto).
+  Capas tipográficas (`python scripts/capas-blog.py slug`, que agora aceita o slug para não regravar as capas do
+  Gemini). Sem `revisadoEm`: ficam com `noindex` até o Wellington revisar.
 
 ## Caminho de volta para a fábrica (obrigatório ao fechar qualquer trabalho)
 

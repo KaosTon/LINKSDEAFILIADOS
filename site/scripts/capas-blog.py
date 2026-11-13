@@ -4,7 +4,10 @@
 # angulo e textura diferentes (DOCS/BLOG.md §2: nunca repetir fundo).
 #
 #   python3 scripts/capas-blog.py        (precisa de Pillow; roda da pasta site/)
+#   python3 scripts/capas-blog.py slug   (so as capas pedidas: sem o slug, regrava TODAS as do dicionario,
+#                                         inclusive as que ja foram trocadas pelas do capas-gemini.py)
 import math
+import sys
 from PIL import Image, ImageDraw, ImageFont
 
 L, A = 1200, 675
@@ -31,6 +34,9 @@ CAPAS = {
     "frete-gratis-amazon-mercado-livre-shopee": ("FRETE", "Frete grátis na Amazon, Mercado Livre e Shopee", "R$ 0", MARINHO, LARANJA_CLARO, 320, "linhas"),
     "cashback-como-funciona": ("CASHBACK", "Cashback: como funciona e quando vale a pena", "5%", VERMELHO, LARANJA_CLARO, 100, "faixas"),
     "calendario-de-promocoes-datas-de-desconto": ("CALENDÁRIO", "Calendário de promoções: 11.11, 12.12 e datas de 2027", "11.11", LARANJA_CLARO, MARINHO, 15, "circulos"),
+    "tv-box-homologado-anatel-como-saber": ("ANATEL", "TV box: como saber se é homologada pela Anatel", "selo", LARANJA_CLARO, AZUL, 200, "grade"),
+    "garantia-estendida-vale-a-pena": ("GARANTIA", "Garantia estendida vale a pena? O que ela cobre", "+1 ano", LARANJA_CLARO, VERMELHO, 215, "linhas"),
+    "whey-e-creatina-como-saber-se-e-original": ("SUPLEMENTO", "Whey e creatina: como saber se o suplemento é regular", "R$/g", MARINHO, AZUL, 140, "faixas"),
 }
 
 
@@ -129,5 +135,10 @@ def capa(slug, chamada, titulo, objeto, c1, c2, ang, tex):
 
 
 if __name__ == "__main__":
+    pedidos = sys.argv[1:]
+    for s in pedidos:
+        if s not in CAPAS:
+            sys.exit(f"slug sem capa no dicionario: {s}")
     for s, args in CAPAS.items():
-        capa(s, *args)
+        if not pedidos or s in pedidos:
+            capa(s, *args)
