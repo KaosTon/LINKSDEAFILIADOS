@@ -135,3 +135,43 @@ Os 3 entraram com `revisadoEm: "novembro de 2026"`.
    mudado o nome. O post usa "Evite esses sites".
 3. **Opinião na sua voz:** a seção "Vale a pena correr atrás de erro de preço?" responde "não", em
    primeira pessoa. Confirmar se é a sua posição.
+
+## Lote 4: posts 20 a 22, pontes entre os sites (13/11/2026)
+
+Três posts que se sustentam sozinhos e têm UM link no meio do texto para outro site do Wellington, com
+a relação de dono dita na frase. Entraram SEM `revisadoEm` (ficam com `noindex` e fora do sitemap).
+Nesta sessão as páginas oficiais abriram: cada número, prazo e artigo foi lido na fonte em 13/11/2026
+(Planalto texto compilado, Anatel, SUSEP, Anvisa, Senacon, AGU). Sem revisor independente na escrita; a revisão independente veio depois, no mesmo dia, e os ajustes dela
+estão aplicados (consulta pelo painel, regra de transição da Anvisa com as duas condições, defeito oculto do
+art. 26, § 3º, conta da garantia estendida). Os links de entrada em posts já revisados foram desfeitos: a
+entrada dos 3 posts é pelos guias (campo `servico`) e por links entre eles.
+
+### Travas para marcar `revisadoEm` (não marcar antes)
+- **TV box:** abrir o painel no navegador antes de marcar `revisadoEm`
+  (`informacoes.anatel.gov.br/paineis/certificacao-de-produtos/consulta-de-produtos`). Em 13/11/2026 o painel
+  estava em manutenção e o link antigo do SCH cai em tela de login. Conferir o campo "Nº Homologação", a busca
+  por solicitante e fabricante, e se existe o filtro por tipo "Smart TV Box" (o post não afirma o filtro).
+- **TV box:** conferir que `iptvdacasa.com.br/blog/qual-aparelho-comprar-para-iptv/` está no ar com o post
+  (em 13/11/2026 o endereço respondia com a página inicial do IPTV da Casa).
+- **Garantia estendida:** só marcar `revisadoEm` depois que o post da Virtus
+  `seguro-celular-vs-garantia-estendida` estiver corrigido (em 13/11/2026 ele dizia que garantia estendida não
+  é seguro, o contrário deste post e da SUSEP).
+
+### O que conferir antes de aprovar
+1. **Garantia estendida** (`garantia-estendida-vale-a-pena`): a Circular SUSEP 659/2022 foi lida inteira
+   no PDF oficial (arts. 6º a 22) e a página da SUSEP (modificada em 20/12/2024) repete as regras. NÃO
+   CONFIRMEI no cadastro de normas da SUSEP se houve alteração depois; a busca não achou revogação. A
+   Resolução CNSP 436/2022 ficou FORA do texto: não abri o texto oficial dela.
+2. **TV box** (`tv-box-homologado-anatel-como-saber`): o texto da Resolução Anatel 780/2025 não abriu
+   (site de legislação da Anatel em manutenção). O post só diz o que a notícia da Anatel de 01/08/2025 e
+   a da AGU de 08/05/2026 dizem, sem citar número de resolução nem artigo. A frase "aparelho que depende
+   de endereço bloqueado pode deixar de funcionar" está marcada no texto como leitura nossa, não da Anatel.
+3. **Whey e creatina** (`whey-e-creatina-como-saber-se-e-original`): o portal de consultas da Anvisa não
+   abre sem navegador; os campos de busca não foram conferidos na tela. Abrir
+   `consultas.anvisa.gov.br/#/alimentos/` e ver se a busca por nome do produto e por empresa existe.
+   A tabela do custo por grama usa números inventados (está dito no texto): confirmar se pode ficar.
+4. **Frases dos links de ponte:** conferir se a descrição de cada site está como você quer (IPTV da Casa:
+   "ele é só um player, não vende nem fornece listas nem canais", com link para o guia de qual aparelho comprar; Virtus: "corretora de seguros que é do mesmo
+   dono deste site"; EvolProt: "sistema para nutricionistas e personal trainers que é do mesmo dono").
+5. **Opinião na sua voz:** as três perguntas para decidir a garantia estendida e a frase "eu não vou
+   cravar aqui que todo aparelho de uma marca é regular".

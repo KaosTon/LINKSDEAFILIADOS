@@ -29,6 +29,9 @@ const DESTINOS: Destino[] = [
   { href: "/blog/como-saber-se-um-site-e-confiavel", tags: ["site confiável", "como saber se um site é confiável", "site falso", "consultar cnpj de loja", "evite esses sites procon", "loja online é segura"] },
   { href: "/blog/compra-online-nao-chegou-o-que-fazer", tags: ["compra não chegou", "pedido atrasado o que fazer", "atraso na entrega", "produto não entregue", "cancelar compra por atraso"] },
   { href: "/blog/loja-cancelou-compra-preco-errado", tags: ["loja cancelou minha compra", "preço errado loja é obrigada a vender", "erro de preço", "oferta não cumprida", "pedido cancelado pela loja"] },
+  { href: "/blog/tv-box-homologado-anatel-como-saber", tags: ["tv box homologado anatel", "como saber se tv box é homologada", "tv box pirata", "fire tv stick homologado anatel", "selo anatel tv box", "consultar homologação anatel"] },
+  { href: "/blog/garantia-estendida-vale-a-pena", tags: ["garantia estendida vale a pena", "garantia estendida o que cobre", "cancelar garantia estendida", "garantia estendida é obrigatória", "garantia estendida venda casada", "seguro de garantia estendida susep"] },
+  { href: "/blog/whey-e-creatina-como-saber-se-e-original", tags: ["como saber se whey é original", "suplemento falsificado como identificar", "whey registrado na anvisa", "creatina falsificada", "consultar suplemento na anvisa", "custo por grama de proteína"] },
 ];
 
 const MAPA = new Map<string, string>();

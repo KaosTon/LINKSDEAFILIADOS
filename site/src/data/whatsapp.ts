@@ -53,6 +53,9 @@ export const MENSAGENS_POST: Record<string, string> = {
   "como-saber-se-um-site-e-confiavel": "post:site-confiavel",
   "compra-online-nao-chegou-o-que-fazer": "post:compra-nao-chegou",
   "loja-cancelou-compra-preco-errado": "post:preco-errado",
+  "tv-box-homologado-anatel-como-saber": "post:tv-box-anatel",
+  "garantia-estendida-vale-a-pena": "post:garantia-estendida",
+  "whey-e-creatina-como-saber-se-e-original": "post:whey-creatina",
 };
 
 /** botoes com assunto proprio dentro de uma pagina */
