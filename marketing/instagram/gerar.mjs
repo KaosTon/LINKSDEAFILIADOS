@@ -36,7 +36,19 @@ p { font-size: 38px; font-weight: 500; line-height: 1.3; color: #c9d6f2; margin-
 <div class="caixa"><span class="selo">${esc(p.selo)}</span><h1>${esc(p.titulo)}</h1><p>${esc(p.texto)}</p>
 <div class="pe"><img src="${url('../../site/assets/logo/tem-descontos-claro.png')}"><span>@temdescontos</span></div></div>`;
 
-const posts = JSON.parse(fs.readFileSync(path.join(aqui, 'posts.json'), 'utf8'));
+// Limpeza (13/11, pedido do Wellington): o Instagram baixa a mídia na hora de publicar, então o que já
+// passou não precisa ficar no site (Cloudflare). Post com data de mais de GUARDAR_DIAS atrás sai do
+// posts.json e da agenda, e o arquivo dele some de site/public/instagram. Os fontes (fundos, Reels em
+// marketing/reels) ficam no repositório, para dar para refazer.
+const GUARDAR_DIAS = 3;
+const hojeSP = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
+const limite = new Date(Date.parse(`${hojeSP}T12:00:00Z`) - GUARDAR_DIAS * 864e5).toISOString().slice(0, 10);
+const todos = JSON.parse(fs.readFileSync(path.join(aqui, 'posts.json'), 'utf8'));
+const posts = todos.filter(p => p.data >= limite);
+if (posts.length < todos.length) {
+  fs.writeFileSync(path.join(aqui, 'posts.json'), JSON.stringify(posts, null, 2) + '\n');
+  console.log('saiu da agenda (já passou):', todos.filter(p => p.data < limite).map(p => p.id).join(', '));
+}
 const ids = new Set();
 for (const p of posts) {
   if (!/^[a-z0-9-]+$/.test(p.id) || ids.has(p.id)) throw new Error(`id ruim ou repetido: ${p.id}`);
@@ -65,3 +77,9 @@ for (const p of posts) {
 }
 await b.close();
 fs.writeFileSync(path.join(saida, 'agenda.json'), JSON.stringify(posts.map(p => (p.video ? { id: p.id, data: p.data, video: `/instagram/${p.video}`, legenda: p.legenda } : { id: p.id, data: p.data, imagem: `/instagram/${p.id}.jpg`, legenda: p.legenda })), null, 1) + '\n');
+
+// Arquivo em site/public/instagram que não está mais na agenda: apaga (já foi publicado ou saiu da agenda).
+const usados = new Set(['agenda.json', ...posts.map(p => p.video || `${p.id}.jpg`)]);
+for (const f of fs.readdirSync(saida)) {
+  if (!usados.has(f) && /\.(jpg|mp4)$/.test(f)) { fs.unlinkSync(path.join(saida, f)); console.log('apagado do site:', f); }
+}

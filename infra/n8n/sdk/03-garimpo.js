@@ -140,7 +140,10 @@ const anota = node({
 "      feed = mem.feedId || false;",
 "    }",
 "  }",
-"  return [{ json: { ok: true, [g.tipo]: true, ...(feed !== undefined ? { feed } : {}) } }];",
+"  // Aviso no rascunho (13/11) se o feed ou o story da oferta do dia falhou.",
+"  const story = String($env.INSTAGRAM_STORY || '').trim().toLowerCase() === 'sim' && mem.storyDia === g.dia;",
+"  const aviso = g.tipo === 'status' ? avisoDaOfertaDoDia({ feedFalhou: feed === false, storyFalhou: story && !mem.storyId }) : null;",
+"  return [{ json: { ok: true, [g.tipo]: true, ...(feed !== undefined ? { feed } : {}), avisar: !!(aviso && $env.GRUPO_RASCUNHO), grupo: $env.GRUPO_RASCUNHO, texto: aviso } }];",
 "}",
 "if (r.ok) {",
 "  mem.postados = (mem.postados || 0) + 1;",
@@ -172,10 +175,31 @@ const anota = node({
 "    }",
 "  }",
 "}",
-"return [{ json: { ok: !!r.ok, erro: r.erro || null, chave: g.chave || null, fonte: g.fonte || null, postados_hoje: mem.postados || 0 } }];"
+"return [{ json: { ok: !!r.ok, erro: r.erro || null, chave: g.chave || null, fonte: g.fonte || null, postados_hoje: mem.postados || 0, avisar: false } }];"
 ].join('\n') } },
   output: [{ ok: true }]
 });
 
+
+// Aviso no rascunho (13/11): só quando a publicação no Instagram falhou. Sai pelo gateway (fluxo 02).
+const avisa = ifElse({
+  version: 2.2,
+  config: { name: 'Avisa do Instagram?', position: [1200, 0], parameters: {
+    conditions: { combinator: 'and', options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 },
+      conditions: [{ leftValue: expr('{{ $json.avisar }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }] },
+    looseTypeValidation: true, options: {} } }
+});
+
+const avisoRascunho = node({
+  type: 'n8n-nodes-base.executeWorkflow', version: 1.2,
+  config: { name: 'Avisa no rascunho', position: [1440, -100], parameters: {
+    source: 'database',
+    workflowId: { __rl: true, mode: 'id', value: GATEWAY },
+    workflowInputs: { mappingMode: 'defineBelow', matchingColumns: [], schema: ENTRADAS, attemptToConvertTypes: false,
+      value: { phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: '', origem: '03-garimpo-instagram', link: '', titulo: '' } },
+    options: { waitForSubWorkflow: true } } },
+  output: [{ ok: true, id: 'Z1', origem: '03-garimpo-instagram', erro: null }]
+});
+
 export default workflow('ofertas-03-garimpo', '[Ofertas] 03 Garimpo automático')
-  .add(relogio.to(garimpa).to(posta.onTrue(envia.to(anota))));
+  .add(relogio.to(garimpa).to(posta.onTrue(envia.to(anota).to(avisa.onTrue(avisoRascunho)))));

@@ -1,7 +1,8 @@
 // Bateria dos posts de conteúdo do Instagram (fluxo 06) e da agenda gerada.
 import fs from 'node:fs';
 import { pegarCodigo, rodar } from './executar.mjs';
-import { horaDoConteudo, postDeHoje, anotarTentativa } from '../../lib/instagram-agenda.mjs';
+import { horaDoConteudo, postDeHoje, anotarTentativa, avisoDeFalha } from '../../lib/instagram-agenda.mjs';
+import { avisoDaOfertaDoDia } from '../../lib/instagram.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -76,6 +77,20 @@ caso('reel não repete', r.saida[0].json.motivo === 'nada_hoje');
 memoria = {};
 r = await rodar(codigo, { env: { ...env, INSTAGRAM_REEL: 'sim' }, http: [httpR[0], httpR[1], { quando: /\/V1\?fields=status_code/, metodo: 'GET', responde: { status_code: 'ERROR' } }], memoria, agora: h18 });
 caso('reel que a Meta recusa: não publica e conta a tentativa', r.saida[0].json.publicou === false && r.saida[0].json.tentativa === 1 && !r.chamadas.some(c => /media_publish$/.test(c.url)), r.saida);
+
+console.log('\n# Aviso de falha no rascunho (13/11)');
+caso('1ª e 2ª falha: sem aviso', avisoDeFalha(AG[0], 1) === null && avisoDeFalha(AG[0], 2) === null);
+caso('3ª falha: avisa com o id do post', /dica-a/.test(avisoDeFalha(AG[0], 3) || '') && /3 tentativas/.test(avisoDeFalha(AG[0], 3)));
+caso('reel diz que é Reel', /O Reel/.test(avisoDeFalha({ id: 'reel-x', video: '/instagram/x.mp4' }, 3) || ''));
+caso('oferta do dia ok: sem aviso', avisoDaOfertaDoDia({ feedFalhou: false, storyFalhou: false }) === null);
+caso('feed falhou: avisa só o feed', /o post no feed da/.test(avisoDaOfertaDoDia({ feedFalhou: true, storyFalhou: false }) || ''));
+caso('os dois falharam: avisa os dois', /o post no feed nem o story/.test(avisoDaOfertaDoDia({ feedFalhou: true, storyFalhou: true }) || ''));
+const m3 = {};
+for (let i = 0; i < 3; i++) {
+  memoria = m3;
+  r = await rodar(codigo, { env: { ...env, GRUPO_RASCUNHO: 'rascunho-group' }, http: [{ quando: /agenda\.json/, metodo: 'GET', responde: AG }, { quando: /\/media$/, metodo: 'POST', responde: {} }], memoria, agora: h18 });
+}
+caso('fluxo: 3ª falha sai com avisar e o texto para o rascunho', r.saida[0].json.avisar === true && r.saida[0].json.grupo === 'rascunho-group' && /dica-a/.test(r.saida[0].json.texto), r.saida);
 
 console.log('\n# Agenda gerada (site/public/instagram)');
 const agenda = JSON.parse(fs.readFileSync(new URL('../../site/public/instagram/agenda.json', import.meta.url), 'utf8'));
