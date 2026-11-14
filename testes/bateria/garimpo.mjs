@@ -511,6 +511,13 @@ console.log('\n=== Horario e limite ===');
   caso('noite: post ha 60 min, intervalo de 150: ainda nao', podeAgora({ ...mem, ultimo: NOITE.getTime() - 60 * 6e4 }, NOITE, CFG).motivo === 'cedo');
   caso('noite: post ha 151 min: pode', podeAgora({ ...mem, ultimo: NOITE.getTime() - 151 * 6e4 }, NOITE, CFG).ok);
   const C110 = { ...CFG, porDia: 110 };
+  // 14/11: janela até a meia-noite e sem post de madrugada (GARIMPO_FIM=24, GARIMPO_INTERVALO_NOITE=0).
+  const C24 = { ...CFG, fim: 24, intervaloNoite: 0, porDia: 80 };
+  caso('fim 24: 23h ainda é dia e pode postar', podeAgora(mem, NOITE, C24).ok && podeAgora(mem, NOITE, C24).noite === false);
+  const MADRUGADA = new Date('2026-10-07T06:00:00Z');   // 3h em SP
+  caso('intervalo da noite 0: madrugada não posta', podeAgora(mem, MADRUGADA, C24).motivo === 'fora_da_janela');
+  caso('fim 24: 80/dia ao meio-dia espalha até a meia-noite (1 a cada ~9 min)', podeAgora({ ...mem, ultimo: AGORA.getTime() - 7 * 6e4 }, AGORA, C24).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 10 * 6e4 }, AGORA, C24).ok);
+  caso('fim 24: resumo às 23h50, não às 23h30', !horaDoResumo(mem, new Date('2026-10-07T02:30:00Z'), C24) && horaDoResumo(mem, new Date('2026-10-07T02:51:00Z'), C24));
   caso('dia: post ha 5 min, intervalo de 8: ainda nao; ha 9: pode', podeAgora({ ...mem, ultimo: AGORA.getTime() - 5 * 6e4 }, AGORA, C110).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 9 * 6e4 }, AGORA, C110).ok);
   // 12h, 25 por dia, nada postado: 600 min para 24 posts = 1 a cada 25 min.
   caso('espalha o limite ate as 22h (25/dia ao meio-dia: 1 a cada 25 min)', podeAgora({ ...mem, ultimo: AGORA.getTime() - 20 * 6e4 }, AGORA, CFG).motivo === 'cedo' && podeAgora({ ...mem, ultimo: AGORA.getTime() - 26 * 6e4 }, AGORA, CFG).ok);
