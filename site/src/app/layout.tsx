@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AvisoCookies from "@/components/AvisoCookies";
 import Medicao from "@/components/Medicao";
+import PixelMeta from "@/components/PixelMeta";
 import WhatsCliques from "@/components/WhatsCliques";
 import WhatsFlutuante from "@/components/WhatsFlutuante";
 import { SchemaOrganizacao } from "@/components/Schemas";
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WhatsCliques />
         <AvisoCookies />
         <Medicao />
+        <PixelMeta />
       </body>
     </html>
   );
