@@ -1,6 +1,6 @@
 // Bateria do aviso de entrada (fluxo 05). Telefones inventados.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada } from '../../lib/aviso-entrada.mjs';
+import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro } from '../../lib/aviso-entrada.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -46,6 +46,22 @@ r = await rodar(codigo, { env: { ...env, AVISO_ENTRADA_GRUPO: '0' }, http: [], m
 caso('AVISO_ENTRADA_GRUPO=0 desliga', r.saida[0].json.motivo === 'sem_grupo' && r.chamadas.length === 0);
 r = await rodar(codigo, { env, http: lista(9), memoria: { entradaIds: memoria.entradaIds.slice() }, agora: dia, modo: 'manual' });
 caso('rodado na mão: mostra e não avisa', r.saida[0].json.avisar === false && r.saida[0].json.motivo === 'teste' && r.saida[0].json.entrou === 2, r.saida);
+
+console.log('\n# Boas-vindas no convite das 19h (14/11)');
+const antes = ['5511900000001', '5511900000002'].map(idDoMembro);
+caso('ninguém novo: 0', chegaramDesde(antes, ['5511900000001', '5511900000002']) === 0);
+caso('um novo: 1', chegaramDesde(antes, ['5511900000001', '5511900000002', '5511900000003']) === 1);
+caso('sem lista guardada: 0 (não chuta)', chegaramDesde(null, ['5511900000003']) === 0 && chegaramDesde([], ['5511900000003']) === 0);
+caso('Z-API sem resposta: 0', chegaramDesde(antes, null) === 0);
+caso('sem novos: texto igual', boasVindas('CONVITE', 0) === 'CONVITE');
+caso('com novos: boas-vindas no topo e o convite inteiro embaixo', /^\u{1F44B} \*Boas-vindas/u.test(boasVindas('CONVITE', 2)) && boasVindas('CONVITE', 2).endsWith('\nCONVITE'));
+const cb = pegarCodigo('03-garimpo.json', 'Boas-vindas');
+const envB = { ZAPI_BASE_URL: 'https://z', ZAPI_INSTANCE_ID: 'i', ZAPI_INSTANCE_TOKEN: 't', GRUPO_OFERTAS: 'g1-group,com-group' };
+const part = (n) => [{ quando: /light-group-metadata\/com-group/, metodo: 'GET', responde: { participants: Array.from({ length: n }, (_, k) => ({ phone: '551190000000' + (k + 1) })) } }];
+let rb = await rodar(cb, { env: envB, http: part(3), memoria: { membrosIds: { dia: '2026-11-13', ids: antes } }, itens: [{ json: { tipo: 'convite', texto: 'CONVITE' } }] });
+caso('nó: convite com 1 novo ganha boas-vindas', rb.saida[0].json.novos === 1 && /Boas-vindas/.test(rb.saida[0].json.texto), rb.saida);
+rb = await rodar(cb, { env: envB, http: [], memoria: {}, itens: [{ json: { tipo: 'produto', texto: 'OFERTA' } }] });
+caso('nó: post de oferta passa sem mudança e sem chamar a Z-API', rb.saida[0].json.texto === 'OFERTA' && rb.chamadas.length === 0, rb.saida);
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;
