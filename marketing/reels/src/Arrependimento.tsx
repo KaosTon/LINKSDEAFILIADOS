@@ -33,12 +33,12 @@ export const Acabamento: React.FC<{ frame: number }> = ({ frame }) => (
 
 /* ---------- Titulo: palavras sobem de dentro de uma mascara, uma apos a outra ---------- */
 type Linha = (string | [string])[]; // ["palavra"] entre colchetes = palavra de destaque
-export const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: Linha[]; tamanho?: number; sub?: string; selo?: string; cor?: string; forte?: string }> = ({ t, entra, sai, linhas, tamanho = 104, sub, selo, cor = C.tinta, forte: corForte = C.vermelho }) => {
+export const Titulo: React.FC<{ t: number; entra: number; sai: number; linhas: Linha[]; tamanho?: number; sub?: string; selo?: string; cor?: string; forte?: string; topo?: number }> = ({ t, entra, sai, linhas, tamanho = 104, sub, selo, cor = C.tinta, forte: corForte = C.vermelho, topo = 236 }) => {
   if (t < entra - 0.05 || t > sai + 0.4) return null;
   const fora = prog(t, sai, sai + 0.32, easeIn);
   let n = 0;
   return (
-    <div style={{ position: "absolute", left: 84, right: 84, top: 236, opacity: 1 - fora, transform: `translateY(${-fora * 40}px)` }}>
+    <div style={{ position: "absolute", left: 84, right: 84, top: topo, opacity: 1 - fora, transform: `translateY(${-fora * 40}px)` }}>
       {selo ? (
         <div style={{ display: "inline-block", background: `linear-gradient(90deg, ${C.laranja}, ${C.vermelho})`, color: "#fff", fontWeight: 900, fontSize: 32, letterSpacing: 3, padding: "14px 32px", borderRadius: 999, marginBottom: 26, transform: `scale(${lerp(0.6, 1, sp(t, entra, MOLA.pop))})`, transformOrigin: "left center", opacity: cl(sp(t, entra, MOLA.pop) * 2) }}>{selo}</div>
       ) : null}
@@ -74,7 +74,7 @@ const agrupar = (lista: P[]) => {
   return g.filter((x) => x.length);
 };
 const CACHE = new Map<P[], P[][]>();
-export const Legenda: React.FC<{ t: number; lista?: P[] }> = ({ t, lista = palavras as P[] }) => {
+export const Legenda: React.FC<{ t: number; lista?: P[]; topo?: number }> = ({ t, lista = palavras as P[], topo = 1490 }) => {
   if (!CACHE.has(lista)) CACHE.set(lista, agrupar(lista));
   const GRUPOS = CACHE.get(lista)!;
   const i = GRUPOS.findIndex((g, n) => t >= g[0].a - 0.08 && t < (GRUPOS[n + 1] ? GRUPOS[n + 1][0].a - 0.08 : g[g.length - 1].b + 0.5));
@@ -82,7 +82,7 @@ export const Legenda: React.FC<{ t: number; lista?: P[] }> = ({ t, lista = palav
   const g = GRUPOS[i];
   const k = sp(t, g[0].a - 0.08, MOLA.pop);
   return (
-    <div style={{ position: "absolute", left: 60, right: 60, top: 1490, display: "flex", justifyContent: "center" }}>
+    <div style={{ position: "absolute", left: 60, right: 60, top: topo, display: "flex", justifyContent: "center" }}>
       <div style={{ background: C.tinta, borderRadius: 30, padding: "20px 38px", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", transform: `scale(${lerp(0.86, 1, k)})`, opacity: cl(k * 3), boxShadow: "0 18px 40px rgba(10,31,69,.22)", border: "3px solid rgba(255,255,255,.28)" }}>
         {g.map((p, j) => {
           const dita = t >= p.a - 0.03;
