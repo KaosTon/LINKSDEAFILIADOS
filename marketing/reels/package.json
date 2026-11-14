@@ -7,7 +7,9 @@
     "som:arrependimento": "node sfx/arrependimento.mjs && ffmpeg -hide_banner -loglevel error -y -i public/arrependimento/voz.mp3 -i public/arrependimento/sfx.wav -filter_complex \"[0:a]aresample=48000,apad[v];[1:a]volume=0.55[s];[v][s]amix=inputs=2:duration=shortest:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[o]\" -map \"[o]\" -ar 48000 -ac 2 public/arrependimento/trilha.wav",
     "som:preco": "node sfx/preco.mjs && ffmpeg -hide_banner -loglevel error -y -i public/preco/voz.mp3 -i public/preco/sfx.wav -filter_complex \"[0:a]aresample=48000,apad[v];[1:a]volume=0.55[s];[v][s]amix=inputs=2:duration=shortest:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[o]\" -map \"[o]\" -ar 48000 -ac 2 public/preco/trilha.wav",
     "render:arrependimento": "remotion render src/index.ts ArrependimentoPersonagens ../../site/public/instagram/reel-dica-arrependimento.mp4 --codec=h264 --crf=23 --pixel-format=yuv420p",
-    "render:preco": "remotion render src/index.ts Preco ../../site/public/instagram/reel-dica-historico-de-preco.mp4 --codec=h264 --crf=23 --pixel-format=yuv420p"
+    "render:preco": "remotion render src/index.ts Preco ../../site/public/instagram/reel-dica-historico-de-preco.mp4 --codec=h264 --crf=23 --pixel-format=yuv420p",
+    "som:anuncio-v1": "node sfx/anuncio-v1.mjs && ffmpeg -hide_banner -loglevel error -y -i public/anuncio-v1/voz.mp3 -i public/anuncio-v1/sfx.wav -filter_complex \"[0:a]aresample=48000,apad[v];[1:a]volume=0.55[s];[v][s]amix=inputs=2:duration=shortest:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[o]\" -map \"[o]\" -ar 48000 -ac 2 public/anuncio-v1/trilha.wav",
+    "render:anuncio-v1": "remotion render src/index.ts AnuncioV1 ../../site/public/anuncios/anuncio-v1.mp4 --codec=h264 --crf=23 --pixel-format=yuv420p"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.543",

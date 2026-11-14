@@ -1,0 +1,8 @@
+{
+  "fps": 30,
+  "duracao": 13.5,
+  "s1": { "inicio": 0.0 },
+  "s2": { "corte": 1.78, "notif": 2.3, "passo": 0.55 },
+  "s3": { "corte": 5.55, "gratis": 5.75, "sai": 6.75 },
+  "s4": { "corte": 8.0, "botao": 8.45, "toque": 9.15, "marca": 10.1 }
+}

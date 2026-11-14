@@ -18,3 +18,7 @@ a atribuicao nao e obrigatoria, mas fica registrada aqui. Conferido em 12/11/202
 | 140933.json | man thinking | jhan diaz | lottiefiles.com/animations/man-thinking-gDs9Df80X9 |
 | 1043196.json | data analysis | ant | lottiefiles.com/animations/data-analysis-3cQbGRHECG |
 | 114050.json | checklist | meddi contenidos | lottiefiles.com/animations/checklist-1S4lyLkgX2 |
+| 104971.json | Tired Woman | Rahul Shaw | lottiefiles.com/animations/tired-woman-WFUthNNlei |
+| 1511434.json | communication | Tim | lottiefiles.com/animations/hero-tMJcx5BWve |
+| 91137.json | notification | Yasmin | lottiefiles.com/animations/notification-P6rjwdtpmj |
+| 58002.json | using mobile phone | BatMan | lottiefiles.com/animations/using-mobile-phone-zpKAugmnkE |
