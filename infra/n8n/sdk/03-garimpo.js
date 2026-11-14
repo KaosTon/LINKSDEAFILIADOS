@@ -5,7 +5,8 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * O relógio bate a cada 5 minutos; quem decide se é hora é o ritmo: de dia
  * (GARIMPO_INICIO às GARIMPO_FIM, 8h às 22h) um post a cada
  * GARIMPO_INTERVALO_DIA minutos (8), de madrugada um a cada
- * GARIMPO_INTERVALO_NOITE (150), até GARIMPO_POR_DIA (110). A cada 3 posts, 1
+ * GARIMPO_INTERVALO_NOITE (150; 0 = não posta de madrugada), até GARIMPO_POR_DIA (110). GARIMPO_FIM=24
+ * vai até a meia-noite (o resumo sai às 23h50). A cada 3 posts, 1
  * vem da lista oficial da Shopee (desconto de GARIMPO_DESCONTO_SHOPEE, 30%,
  * para cima; entre esses, a maior comissão). Lê as páginas públicas dos canais do Telegram
  * (GARIMPO_CANAIS) e as ofertas da Amazon, troca o link pelo seu e posta UMA
@@ -45,7 +46,7 @@ const garimpa = node({
 "const cfg = { amazonTag: $env.AMAZON_TAG, magaluLoja: $env.MAGALU_LOJA, mlEtiqueta: $env.ML_ETIQUETA, mlTool: $env.ML_MATT_TOOL,",
 "  shopee: !!($env.SHOPEE_APP_ID && $env.SHOPEE_SECRET),",
 "  inicio: N('GARIMPO_INICIO', 8), fim: N('GARIMPO_FIM', 22), porDia: N('GARIMPO_POR_DIA', 30),",
-"  intervaloDia: N('GARIMPO_INTERVALO_DIA', 25), intervaloNoite: N('GARIMPO_INTERVALO_NOITE', 150), descontoShopee: N('GARIMPO_DESCONTO_SHOPEE', 30),",
+"  intervaloDia: N('GARIMPO_INTERVALO_DIA', 25), intervaloNoite: N0('GARIMPO_INTERVALO_NOITE', 150), descontoShopee: N('GARIMPO_DESCONTO_SHOPEE', 30),",
 "  cuponsPorDia: N('GARIMPO_CUPONS_POR_DIA', 6), descontoMin: N('GARIMPO_DESCONTO_MIN', 15), idadeSemConferirMin: N('GARIMPO_IDADE_SEM_CONFERIR', 30),",
 "  idadeMaxMin: 120, maxTentativas: 8, eletronicoACada: N0('GARIMPO_ELETRONICO_A_CADA', 2),",
 "  conviteHora: N0('GARIMPO_CONVITE_HORA', 19), statusHora: N0('GARIMPO_STATUS_HORA', 12),",
