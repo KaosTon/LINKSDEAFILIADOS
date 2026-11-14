@@ -11,7 +11,8 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * (GARIMPO_CANAIS) e as ofertas da Amazon, troca o link pelo seu e posta UMA
  * oferta por vez pelo gateway (fluxo 02). Eletrônico ganha a vez a cada
  * GARIMPO_ELETRONICO_A_CADA posts (2; 0 desliga): nessa vez ele é tentado
- * primeiro. Às GARIMPO_CONVITE_HORA (19h) pede no grupo para compartilhar; às
+ * primeiro. Às GARIMPO_CONVITE_HORA (19h) pede no grupo para compartilhar (com boas-vindas no topo se
+ * entrou gente desde ontem); às
  * GARIMPO_STATUS_HORA (12h) manda a melhor oferta do dia no rascunho, para o
  * status (0 desliga cada um). Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
  * calcula (dá para ver na execução o que sairia).
@@ -105,6 +106,28 @@ const posta = ifElse({
       conditions: [{ leftValue: expr('{{ $json.postar }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } },
         { leftValue: expr('{{ $json.teste === true }}'), rightValue: false, operator: { type: 'boolean', operation: 'false', singleValue: true } }] },
     looseTypeValidation: true, options: {} } }
+});
+
+
+// Boas-vindas (14/11): no convite das 19h, se entrou gente na comunidade desde ontem, uma linha de
+// boas-vindas vai no topo. Qualquer outro post passa direto, sem mudança.
+const boas = node({
+  type: 'n8n-nodes-base.code', version: 2,
+  config: { name: 'Boas-vindas', position: [600, -100],
+    parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
+"/*LIB:aviso-entrada*/",
+"const j = $input.first().json || {};",
+"if (j.tipo !== 'convite') return [{ json: j }];",
+"const mem = $getWorkflowStaticData('global');",
+"let novos = 0;",
+"try {",
+"  const g = grupoDoAvisoDeEntrada($env);",
+"  const p = g ? await participantesDoGrupo(this.helpers, $env, g) : null;",
+"  novos = chegaramDesde(mem.membrosIds && mem.membrosIds.ids, p);",
+"} catch (e) { novos = 0; }",
+"return [{ json: { ...j, texto: boasVindas(j.texto, novos), novos } }];"
+].join('\n') } },
+  output: [{ postar: true, tipo: 'convite', texto: 'x', novos: 1 }]
 });
 
 const envia = node({
@@ -202,4 +225,4 @@ const avisoRascunho = node({
 });
 
 export default workflow('ofertas-03-garimpo', '[Ofertas] 03 Garimpo automático')
-  .add(relogio.to(garimpa).to(posta.onTrue(envia.to(anota).to(avisa.onTrue(avisoRascunho)))));
+  .add(relogio.to(garimpa).to(posta.onTrue(boas.to(envia).to(anota).to(avisa.onTrue(avisoRascunho)))));

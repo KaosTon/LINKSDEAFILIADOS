@@ -81,6 +81,21 @@
     },
     {
       "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\n\nfunction idDoMembro(telefone) {\n  const t = String(telefone || '');\n  return crypto ? crypto.createHash('sha256').update('membro:' + t).digest('hex').slice(0, 12) : t.slice(-6);\n}\n\nfunction novosNoGrupo(mem, participantes) {\n  if (!Array.isArray(participantes) || !participantes.length) return 0;\n  const ids = [...new Set(participantes.map(idDoMembro))];\n  const antes = Array.isArray(mem.entradaIds) ? mem.entradaIds : null;\n  mem.entradaIds = ids;\n  if (!antes) return 0;\n  const a = new Set(antes);\n  return Math.max(0, Math.min(ids.filter(x => !a.has(x)).length, ids.length - antes.length));\n}\n\nfunction grupoDoAvisoDeEntrada(env) {\n  const v = String((env && env.AVISO_ENTRADA_GRUPO) || '').trim();\n  if (v === '0') return '';\n  if (v) return v;\n  const g = [...new Set(String((env && env.GRUPO_OFERTAS) || '').split(/[\\s,;]+/).map(x => x.trim()).filter(Boolean))];\n  return g.length > 1 ? g[g.length - 1] : '';\n}\n\nconst horaSP = (agora) => Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false }).format(agora));\n\nconst horaDoAvisoDeEntrada = (agora) => horaSP(agora) >= 7 && horaSP(agora) < 23;\n\nfunction textoEntrada(n, total) {\n  return [`\\u{1F44B} *${n === 1 ? 'Entrou 1 pessoa' : `Entraram ${n} pessoas`} na comunidade* (agora ${total})`, '',\n    'Quem entra vê o grupo vazio. Abra o grupo de Avisos e envie o histórico de mensagens para quem chegou.'].join('\\n');\n}\n\nasync function participantesDoGrupo(http, env, grupo) {\n  if (!env.ZAPI_BASE_URL || !env.ZAPI_INSTANCE_ID || !env.ZAPI_INSTANCE_TOKEN) return null;\n  const raiz = `${String(env.ZAPI_BASE_URL).replace(/\\/+$/, '')}/instances/${env.ZAPI_INSTANCE_ID}/token/${env.ZAPI_INSTANCE_TOKEN}`;\n  const r = await http.httpRequest({ method: 'GET', url: `${raiz}/light-group-metadata/${encodeURIComponent(grupo)}`, json: true, timeout: 15000,\n    headers: env.ZAPI_CLIENT_TOKEN ? { 'client-token': env.ZAPI_CLIENT_TOKEN } : {} });\n  return r && Array.isArray(r.participants) ? r.participants.map(x => (x && (x.phone || x.lid)) || JSON.stringify(x)) : null;\n}\n\nfunction chegaramDesde(idsAntes, participantesAgora) {\n  if (!Array.isArray(idsAntes) || !idsAntes.length || !Array.isArray(participantesAgora)) return 0;\n  const antes = new Set(idsAntes);\n  return [...new Set(participantesAgora.map(idDoMembro))].filter(x => !antes.has(x)).length;\n}\n\nfunction boasVindas(texto, novos) {\n  if (!novos) return texto;\n  return ['\\u{1F44B} *Boas-vindas a quem chegou hoje!*',\n    'As ofertas saem das 8h às 22h. Se preferir, silencie o grupo e confira quando quiser.', '', texto].join('\\n');\n}\n\nconst j = $input.first().json || {};\nif (j.tipo !== 'convite') return [{ json: j }];\nconst mem = $getWorkflowStaticData('global');\nlet novos = 0;\ntry {\n  const g = grupoDoAvisoDeEntrada($env);\n  const p = g ? await participantesDoGrupo(this.helpers, $env, g) : null;\n  novos = chegaramDesde(mem.membrosIds && mem.membrosIds.ids, p);\n} catch (e) { novos = 0; }\nreturn [{ json: { ...j, texto: boasVindas(j.texto, novos), novos } }];"
+      },
+      "id": "7674c867-5038-52e3-8d33-31ea476c910d",
+      "name": "Boas-vindas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        -100
+      ]
+    },
+    {
+      "parameters": {
         "source": "database",
         "workflowId": {
           "__rl": true,
@@ -321,6 +336,17 @@
         ]
       ]
     },
+    "Boas-vindas": {
+      "main": [
+        [
+          {
+            "node": "Posta no grupo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Posta no grupo": {
       "main": [
         [
@@ -358,7 +384,7 @@
       "main": [
         [
           {
-            "node": "Posta no grupo",
+            "node": "Boas-vindas",
             "type": "main",
             "index": 0
           }
