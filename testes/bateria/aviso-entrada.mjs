@@ -1,6 +1,6 @@
 // Bateria do aviso de entrada (fluxo 05). Telefones inventados.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro } from '../../lib/aviso-entrada.mjs';
+import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem } from '../../lib/aviso-entrada.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -62,6 +62,23 @@ let rb = await rodar(cb, { env: envB, http: part(3), memoria: { membrosIds: { di
 caso('nó: convite com 1 novo ganha boas-vindas', rb.saida[0].json.novos === 1 && /Boas-vindas/.test(rb.saida[0].json.texto), rb.saida);
 rb = await rodar(cb, { env: envB, http: [], memoria: {}, itens: [{ json: { tipo: 'produto', texto: 'OFERTA' } }] });
 caso('nó: post de oferta passa sem mudança e sem chamar a Z-API', rb.saida[0].json.texto === 'OFERTA' && rb.chamadas.length === 0, rb.saida);
+
+console.log('\n# Origem provável de quem entrou (14/11)');
+const T = new Date('2026-11-14T16:15:02Z');
+const rec = [
+  { quando: '2026-11-14T11:26:29.821Z', de: 'home:fim' },
+  { quando: '2026-11-14T16:05:00.000Z', de: 'home' },
+  { quando: '2026-11-14T16:10:00.100Z', de: 'home' }, { quando: '2026-11-14T16:10:00.200Z', de: 'home:topo' }, { quando: '2026-11-14T16:10:00.300Z', de: 'home:fim' },
+  { quando: '2026-11-14T16:13:21.163Z', de: 'anuncio:a2' },
+  { quando: '2026-11-14T16:15:08.687Z', de: 'links' },
+];
+const o = provavelOrigem(rec, T);
+caso('último clique antes do aviso, dentro de 20 min', o && o.de === 'anuncio:a2' && o.minutos === 2, o);
+caso('clique depois do aviso não conta', provavelOrigem([rec[6]], T) === null);
+caso('3 cliques no mesmo segundo é robô', provavelOrigem(rec.slice(2, 5), T) === null);
+caso('clique de horas antes não conta', provavelOrigem([rec[0]], T) === null);
+caso('nomes legíveis', nomeDaOrigem('anuncio:a1') === 'anúncio a1 (Meta)' && nomeDaOrigem('home:topo') === 'site, página inicial' && /bio do Instagram/.test(nomeDaOrigem('links')) && /indicação/.test(nomeDaOrigem('indicacao')));
+caso('linha com e sem origem', /anúncio a2 \(Meta\)\* \(clicou no convite 2 min antes\)/.test(linhaDaOrigem(o)) && /não deu para saber/.test(linhaDaOrigem(null)));
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;

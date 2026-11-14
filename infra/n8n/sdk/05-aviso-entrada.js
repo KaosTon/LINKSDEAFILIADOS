@@ -40,7 +40,15 @@ const confere = node({
 "const entrou = novosNoGrupo(mem, part);",
 "const total = mem.entradaIds.length;",
 "if (!entrou || teste) return [{ json: { avisar: false, motivo: teste ? 'teste' : 'ninguem_novo', total, entrou } }];",
-"return [{ json: { avisar: true, entrou, total, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) } }];"
+"// Origem provável (14/11): o último clique no convite registrado pelo encurtador nos 20 min antes.",
+"let origem = null;",
+"if ($env.ENCURTADOR_URL && $env.ENCURTADOR_SEGREDO) {",
+"  try {",
+"    const c = await this.helpers.httpRequest({ method: 'GET', url: String($env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/cliques', json: true, timeout: 10000, headers: { Authorization: 'Bearer ' + $env.ENCURTADOR_SEGREDO } });",
+"    origem = provavelOrigem(c && c.grupoRecentes, agora);",
+"  } catch (e) { origem = null; }",
+"}",
+"return [{ json: { avisar: true, entrou, total, origem: origem && origem.de, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) + '\\n\\n' + linhaDaOrigem(origem) } }];"
 ].join('\n') } },
   output: [{ avisar: true, entrou: 1, total: 6, grupo: '120363000000000001-group', texto: 'Entrou 1 pessoa' }]
 });
