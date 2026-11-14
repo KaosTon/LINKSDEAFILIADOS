@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { CHAVE_COOKIES } from "@/lib/medicao";
+import { CHAVE_COOKIES, EVENTO_COOKIES } from "@/lib/medicao";
 
 // Aviso de cookies (LGPD). Consentimento e acao explicita: nada de "ao continuar navegando,
 // voce concorda". O "se voce permitir" e verdade no codigo: components/Medicao.tsx nao envia
@@ -52,6 +52,7 @@ export default function AvisoCookies() {
     } catch {
       // sem localStorage: a escolha vale so ate fechar a aba
     }
+    window.dispatchEvent(new Event(EVENTO_COOKIES));
     setVisivel(false);
   };
 
@@ -61,7 +62,7 @@ export default function AvisoCookies() {
     <div ref={caixa} role="region" aria-label="Aviso de cookies" className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-linha shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
       <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-6">
         <p className="basis-full sm:basis-auto flex-1 text-xs sm:text-sm text-tinta-2">
-          Usamos cookies essenciais e, se você permitir, de medição. Detalhes na{" "}
+          Usamos cookies essenciais e, se você permitir, de medição e de anúncios (Meta). Detalhes na{" "}
           <Link href="/politica-de-privacidade" className="underline underline-offset-2 hover:text-tinta">
             Política de Privacidade
           </Link>

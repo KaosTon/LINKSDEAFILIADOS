@@ -10,6 +10,22 @@ export const MEDICAO_CLOUDFLARE = process.env.NEXT_PUBLIC_CF_BEACON || "";
 /** Vercel so quando pedida (NEXT_PUBLIC_MEDICAO=vercel) e sem token do Cloudflare. */
 export const MEDICAO_VERCEL = !MEDICAO_CLOUDFLARE && process.env.NEXT_PUBLIC_MEDICAO === "vercel";
 
+// Pixel da Meta (14/11/2026): "Tem Descontos - site", criado na conta de anuncios da Tem Descontos.
+// NAO e o pixel da Virtus, que a mesma conta tambem enxerga. O id e publico (vai no HTML de qualquer site).
+// Ele usa cookie, entao so carrega com "Aceitar" explicito no aviso (components/PixelMeta.tsx).
+export const PIXEL_META = "1724280369336369";
+
+// Avisa os componentes de medicao quando a pessoa escolhe no aviso, para valer na hora.
+export const EVENTO_COOKIES = "td-cookies";
+
+export function aceitouMedicao(): boolean {
+  try {
+    return localStorage.getItem(CHAVE_COOKIES) === "accepted";
+  } catch {
+    return false;
+  }
+}
+
 export function recusouMedicao(): boolean {
   try {
     return localStorage.getItem(CHAVE_COOKIES) === "declined";
