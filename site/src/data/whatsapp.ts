@@ -63,6 +63,8 @@ export const MENSAGENS_CTA = {
   heroHome: "home:topo",
   fimHome: "home:fim",
   naoEncontrada: "nao-encontrada",
+  /** balao que aparece ao lado do botao flutuante depois de um tempo lendo (15/11) */
+  balao: "balao",
 };
 
 /** origem certa pra qualquer rota do site; cai na padrao se a rota nao tiver uma propria */

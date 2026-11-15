@@ -233,3 +233,8 @@ h3 {
 .halo-marca {
   background: radial-gradient(ellipse 62% 58% at 50% 42%, color-mix(in srgb, var(--marca) 55%, transparent) 0%, color-mix(in srgb, var(--marca) 30%, transparent) 35%, color-mix(in srgb, var(--marca-clara) 60%, transparent) 55%, transparent 80%);
 }
+
+/* balao do botao flutuante (15/11): entra subindo, sem animacao para quem pediu menos movimento */
+@keyframes balao-entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.balao-entra { animation: balao-entra .35s ease-out; }
+@media (prefers-reduced-motion: reduce) { .balao-entra { animation: none; } }
