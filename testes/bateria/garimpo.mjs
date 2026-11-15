@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -920,6 +920,49 @@ console.log('\n  foto em cena (15/11)');
   mm = { cena: { dia: '2026-11-15', feitas: 0, tentativas: 3, ultimo: 0 } };
   r = await comFotoEmCena(tv, mm, A, cfg, rede(false));
   caso('troca: teto de tentativas (2 por foto do dia)', mm.cena.tentativas === 4 && !r.cena, mm);
+}
+
+console.log('\n  reel das ofertas do dia (15/11)');
+{
+  const D = '2026-11-15', T = new Date('2026-11-15T22:10:00Z');   // 19h10 em SP
+  const of = (nome, de, por, chave = 'ml:' + nome) => ({ texto: `X\n\n${nome}\n\n💵 De R$${de} por R$${por}`, imagem: `https://td.example/img/${nome}.jpg`, chave, quando: T.getTime() });
+  const mem0 = () => ({ cenasDoDia: { dia: D, lista: [of('TV', 3805, 3261), of('Lavadora', 1599, 1499), of('Perfume', 189, 76), of('Fone', 100, 50), of('TV', 3805, 3261)] } });
+  const lista = ofertasDoReel(mem0(), D);
+  caso('reel: as 3 de maior desconto, sem repetir', lista.length === 3 && lista[0].n === 'Perfume' && lista[1].n === 'Fone' && lista[2].n === 'TV' && lista.every(o => /^https:/.test(o.f)), lista);
+  caso('reel: de ontem não entra', ofertasDoReel(mem0(), '2026-11-16').length === 0);
+  const url = linkDoReel('https://td.example', 'segredo', lista, '15/11');
+  caso('reel: link assinado', /^https:\/\/td\.example\/reel\?d=[\w-]+&a=[a-f0-9]{24}$/.test(url) && linkDoReel('https://td.example', 'segredo', lista.slice(0, 1), '15/11') === null);
+  const leg = legendaDoReel(lista);
+  caso('reel: legenda com #publi, preço e aviso, sem travessão', /#publi/.test(leg) && /de R\$ 189 por R\$ 76/.test(leg) && /Podem mudar/.test(leg) && !/[\u2013\u2014]/.test(leg), leg);
+  const env = { META_IG_USER_ID: '1', META_ACCESS_TOKEN: 't', ENCURTADOR_URL: 'https://td.example', ENCURTADOR_SEGREDO: 'segredo' };
+  const cfg = { reelOfertas: true, reelHora: 19 };
+  const chamadas = [];
+  const http = (status = 'FINISHED') => ({ httpRequest: async (o) => { chamadas.push(o.method + ' ' + o.url.split('?')[0]);
+    if (/\/reel\?/.test(o.url)) return { statusCode: 200 };
+    if (/\/media$/.test(o.url)) return { id: 'C1' };
+    if (/fields=status_code/.test(o.url)) return { status_code: status };
+    if (/media_publish/.test(o.url)) return { id: 'R1' };
+    return {}; } });
+  const m = mem0();
+  caso('reel: antes das 19h não faz nada', await passoDoReel(m, new Date('2026-11-15T20:00:00Z'), cfg, http(), env) === null && !m.reelOfertas);
+  caso('reel: desligado não faz nada', await passoDoReel(m, T, { reelOfertas: false }, http(), env) === null);
+  let r = await passoDoReel(m, T, cfg, http(), env);
+  caso('reel passo 1: pede o vídeo e cria o contêiner', r.passo === 'criou' && m.reelOfertas.container === 'C1' && chamadas.some(c => /\/reel$/.test(c)), { r, chamadas });
+  r = await passoDoReel(m, T, cfg, http('IN_PROGRESS'), env);
+  caso('reel passo 2: Meta processando, espera', r.passo === 'processando' && !m.reelOfertas.feito);
+  r = await passoDoReel(m, T, cfg, http(), env);
+  caso('reel passo 3: publica uma vez', r.passo === 'publicou' && m.reelOfertas.feito === 'R1' && await passoDoReel(m, T, cfg, http(), env) === null);
+  const m2 = mem0();
+  await passoDoReel(m2, T, cfg, http(), env);
+  r = await passoDoReel(m2, T, cfg, http('ERROR'), env);
+  caso('reel: Meta recusou, tenta de novo (até 3 no dia)', r.passo === 'meta_recusou' && !m2.reelOfertas.container && m2.reelOfertas.tent === 1);
+  m2.reelOfertas.tent = 3;
+  caso('reel: 3 tentativas, para no dia', await passoDoReel(m2, T, cfg, http(), env) === null);
+  const m3 = { cenasDoDia: { dia: D, lista: [of('TV', 3805, 3261)] } };
+  caso('reel: menos de 2 ofertas com foto em cena, não sai', (await passoDoReel(m3, T, cfg, http(), env)).passo === 'poucas_ofertas' && m3.reelOfertas.tent === 0);
+  const m4 = mem0();
+  r = await passoDoReel(m4, T, cfg, { httpRequest: async () => { throw new Error('fora'); } }, env);
+  caso('reel: erro de rede não derruba o garimpo', r.passo === 'erro' && m4.reelOfertas.tent === 1);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
