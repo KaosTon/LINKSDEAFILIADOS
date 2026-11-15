@@ -15,6 +15,7 @@
 //                           em cena do garimpo (jpg até 1080 px) para o card do Instagram e o envio; apaga com 10 dias
 //   GET  /img/{id}.jpg      a foto guardada
 //   GET  /reel?d=&a=        Reel das ofertas do dia, MP4 1080x1920 (reel.mjs), mesma assinatura
+//   GET  /achados?d=&a=&i=  tela i do carrossel de achados do Instagram, JPG 1080x1350 (achados.mjs)
 //   GET  /saude             para o Railway saber que está de pé
 //   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
 //                           CONVITE_GRUPO pode ter vários convites separados por vírgula (17/10):
@@ -33,6 +34,7 @@ import crypto from 'node:crypto';
 import { criarRotaFoto, baixar } from './foto.mjs';
 import { criarRotaCard } from './card.mjs';
 import { criarRotaReel } from './reel.mjs';
+import { criarRotaAchados } from './achados.mjs';
 
 const LOJAS = /(^|\.)(amazon\.com\.br|amzn\.to|mercadolivre\.com\.br|meli\.la|shopee\.com\.br|magazinevoce\.com\.br|magazineluiza\.com\.br)$/i;
 const ALFABETO = 'abcdefghijkmnpqrstuvwxyz23456789';   // sem l, o, 0, 1 (confundem)
@@ -94,6 +96,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
   const foto = criarRotaFoto({ pasta, segredo, ...(baixarFoto ? { baixarFoto } : {}) });
   const card = criarRotaCard({ pasta, segredo, baixarFoto: baixarFoto || baixar });
   const reel = criarRotaReel({ pasta, segredo, baixarFoto: baixarFoto || baixar });
+  const achados = criarRotaAchados({ pasta, segredo, baixarFoto: baixarFoto || baixar });
   const relogio = setInterval(salvar, 30000);
   relogio.unref();
 
@@ -115,6 +118,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
     if (p === '/foto') return void foto(u, res);
     if (p === '/card') return void card(u, res);
     if (p === '/reel') return void reel(u, req, res);
+    if (p === '/achados') return void achados(u, res);
 
     if (p === '/api/encurtar' && req.method === 'POST') {
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
