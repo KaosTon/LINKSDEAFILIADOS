@@ -12,22 +12,43 @@
   "legenda": "Novembro Azul é o mês de conscientização sobre a saúde do homem.\n\nSe você está adiando uma consulta, este é um bom mês para marcar. E vale mandar este lembrete para o pai, o irmão, o amigo.\n\n#novembroazul #saudedohomem #cuidese"
  },
  {
-  "id": "dica-historico-de-preco",
+  "id": "dica-preco-subiu",
   "data": "2026-11-17",
-  "imagem": "/instagram/dica-historico-de-preco.jpg",
-  "legenda": "Todo desconto parte de um preço que você não viu.\n\nAntes de comprar em promoção, veja o histórico de preço do produto em um comparador e compare o valor de hoje com o menor preço do período. Se o preço subiu pouco antes de \"cair\", o desconto pode ser só a devolução do aumento.\n\nExplicamos como ler o gráfico no blog (link na bio).\n\n#blackfriday #historicodepreco #dicasdecompra #consumidor"
+  "imagens": [
+   "/instagram/dica-preco-subiu-1.jpg",
+   "/instagram/dica-preco-subiu-2.jpg",
+   "/instagram/dica-preco-subiu-3.jpg",
+   "/instagram/dica-preco-subiu-4.jpg",
+   "/instagram/dica-preco-subiu-5.jpg",
+   "/instagram/dica-preco-subiu-6.jpg"
+  ],
+  "legenda": "Antes de comprar em promoção, veja se o preço não subiu nas semanas anteriores.\n\nComparadores como Zoom e Buscapé mostram o histórico de preço na página do produto, de graça. Compare o preço de hoje com o menor preço do período, não com o preço riscado. Produto sem gráfico: anote o preço com a data ou guarde um print, como orientam os Procons.\n\nSalve para consultar na Black Friday e mande para quem vai comprar. O passo a passo completo está no blog (link na bio).\n\n#blackfriday #dicasdecompra #economia #consumidor #promocao"
  },
  {
-  "id": "dica-cadeado",
+  "id": "dica-site-falso",
   "data": "2026-11-19",
-  "imagem": "/instagram/dica-cadeado.jpg",
-  "legenda": "O cadeado ao lado do endereço mostra que a conexão é criptografada. Site falso também pode ter.\n\nAntes de pagar em loja que você não conhece, confira o endereço letra por letra e consulte o CNPJ no site da Receita Federal. É de graça e leva dois minutos.\n\nAs 5 checagens completas estão no blog (link na bio).\n\n#golpe #sitefalso #compraonline #segurancadigital #consumidor"
+  "imagens": [
+   "/instagram/dica-site-falso-1.jpg",
+   "/instagram/dica-site-falso-2.jpg",
+   "/instagram/dica-site-falso-3.jpg",
+   "/instagram/dica-site-falso-4.jpg",
+   "/instagram/dica-site-falso-5.jpg",
+   "/instagram/dica-site-falso-6.jpg"
+  ],
+  "legenda": "Antes de pagar em uma loja que você não conhece, faça 4 checagens:\n\n1. Confira o endereço letra por letra. Site falso costuma copiar o nome da loja com uma letra trocada.\n2. Consulte o CNPJ na Receita Federal (grátis) e quem registrou o domínio no Registro.br.\n3. Veja a reputação no consumidor.gov.br e a lista \"Evite esses sites\" do Procon-SP.\n4. O cadeado não prova que a loja é honesta. Site que só aceita Pix ou boleto pede cuidado dobrado.\n\nSalve e mande para quem compra pela internet. O passo a passo está no blog (link na bio).\n\n#golpe #comprasonline #dicasdecompra #consumidor #blackfriday"
  },
  {
-  "id": "dica-pix",
+  "id": "dica-pix-cartao",
   "data": "2026-11-21",
-  "imagem": "/instagram/dica-pix.jpg",
-  "legenda": "Antes de confirmar um Pix, o aplicativo do banco mostra o nome de quem vai receber. O Banco Central orienta conferir sempre.\n\nNome de pessoa física ou de empresa diferente da loja é motivo para parar.\n\nNo blog a gente compara Pix e cartão na compra online (link na bio).\n\n#pix #golpedopix #compraonline #dicasdecompra #consumidor"
+  "imagens": [
+   "/instagram/dica-pix-cartao-1.jpg",
+   "/instagram/dica-pix-cartao-2.jpg",
+   "/instagram/dica-pix-cartao-3.jpg",
+   "/instagram/dica-pix-cartao-4.jpg",
+   "/instagram/dica-pix-cartao-5.jpg",
+   "/instagram/dica-pix-cartao-6.jpg"
+  ],
+  "legenda": "Pix ou cartão na compra online? Depende do que você quer proteger.\n\nPix não tem estorno como o cartão: depois de enviado, só volta se o recebedor devolver ou, em golpe, pelo MED do Banco Central (Pix de até 80 dias). O MED é para golpe, não para arrependimento ou atraso.\n\nNo cartão, a compra não reconhecida é contestada com o banco; os prazos variam por banco e bandeira.\n\nDesconto no Pix compensa quando é maior que o rendimento que o dinheiro teria durante o parcelamento.\n\nSalve e mande para quem vive em dúvida. Mais detalhes no blog (link na bio).\n\n#pix #cartaodecredito #comprasonline #dicasdecompra #educacaofinanceira"
  },
  {
   "id": "dica-frete",

@@ -17,31 +17,19 @@
     "legenda": "Novembro Azul é o mês de conscientização sobre a saúde do homem.\n\nSe você está adiando uma consulta, este é um bom mês para marcar. E vale mandar este lembrete para o pai, o irmão, o amigo.\n\n#novembroazul #saudedohomem #cuidese"
   },
   {
-    "id": "dica-historico-de-preco",
+    "id": "dica-preco-subiu",
     "data": "2026-11-17",
-    "selo": "VOCÊ SABIA?",
-    "titulo": "50% de desconto sobre qual preço?",
-    "texto": "Compare com o menor preço das últimas semanas, não com o preço riscado.",
-    "fundo": "../../site/public/blog/historico-de-preco-como-consultar.webp",
-    "legenda": "Todo desconto parte de um preço que você não viu.\n\nAntes de comprar em promoção, veja o histórico de preço do produto em um comparador e compare o valor de hoje com o menor preço do período. Se o preço subiu pouco antes de \"cair\", o desconto pode ser só a devolução do aumento.\n\nExplicamos como ler o gráfico no blog (link na bio).\n\n#blackfriday #historicodepreco #dicasdecompra #consumidor"
+    "carrossel": "preco-subiu"
   },
   {
-    "id": "dica-cadeado",
+    "id": "dica-site-falso",
     "data": "2026-11-19",
-    "selo": "VOCÊ SABIA?",
-    "titulo": "O cadeado não garante que a loja é honesta",
-    "texto": "Ele só mostra que a conexão é protegida. Confira o endereço e o CNPJ antes de pagar.",
-    "fundo": "../../site/public/blog/como-saber-se-um-site-e-confiavel.webp",
-    "legenda": "O cadeado ao lado do endereço mostra que a conexão é criptografada. Site falso também pode ter.\n\nAntes de pagar em loja que você não conhece, confira o endereço letra por letra e consulte o CNPJ no site da Receita Federal. É de graça e leva dois minutos.\n\nAs 5 checagens completas estão no blog (link na bio).\n\n#golpe #sitefalso #compraonline #segurancadigital #consumidor"
+    "carrossel": "site-falso"
   },
   {
-    "id": "dica-pix",
+    "id": "dica-pix-cartao",
     "data": "2026-11-21",
-    "selo": "VOCÊ SABIA?",
-    "titulo": "Vai pagar no Pix? Leia o nome de quem recebe.",
-    "texto": "Se não for o nome da loja, não confirme.",
-    "fundo": "../../site/public/blog/pix-ou-cartao-compra-online.webp",
-    "legenda": "Antes de confirmar um Pix, o aplicativo do banco mostra o nome de quem vai receber. O Banco Central orienta conferir sempre.\n\nNome de pessoa física ou de empresa diferente da loja é motivo para parar.\n\nNo blog a gente compara Pix e cartão na compra online (link na bio).\n\n#pix #golpedopix #compraonline #dicasdecompra #consumidor"
+    "carrossel": "pix-cartao"
   },
   {
     "id": "dica-frete",
