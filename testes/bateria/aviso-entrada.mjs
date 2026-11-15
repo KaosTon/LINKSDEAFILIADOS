@@ -1,6 +1,6 @@
 // Bateria do aviso de entrada (fluxo 05). Telefones inventados.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem } from '../../lib/aviso-entrada.mjs';
+import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem, avisoDoMarco } from '../../lib/aviso-entrada.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -79,6 +79,16 @@ caso('3 cliques no mesmo segundo é robô', provavelOrigem(rec.slice(2, 5), T) =
 caso('clique de horas antes não conta', provavelOrigem([rec[0]], T) === null);
 caso('nomes legíveis', nomeDaOrigem('anuncio:a1') === 'anúncio a1 (Meta)' && nomeDaOrigem('home:topo') === 'site, página inicial' && /bio do Instagram/.test(nomeDaOrigem('links')) && /indicação/.test(nomeDaOrigem('indicacao')));
 caso('linha com e sem origem', /anúncio a2 \(Meta\)\* \(clicou no convite 2 min antes\)/.test(linhaDaOrigem(o)) && /não deu para saber/.test(linhaDaOrigem(null)));
+
+console.log('\n  marco dos 100 membros');
+{
+  const m = {};
+  caso('abaixo de 100 não avisa', avisoDoMarco(m, 99) === null && !m.marcos);
+  const a = avisoDoMarco(m, 100);
+  caso('aos 100 avisa, com as variáveis da foto em cena', /100 membros/.test(a) && /GARIMPO_CENA_POR_DIA=80/.test(a) && !/[\u2013\u2014]/.test(a), a);
+  caso('avisa uma vez só', avisoDoMarco(m, 101) === null && m.marcos.length === 1);
+  caso('total inválido não avisa', avisoDoMarco({}, undefined) === null);
+}
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
 if (mau) process.exitCode = 1;

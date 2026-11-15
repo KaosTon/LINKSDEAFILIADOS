@@ -48,7 +48,9 @@ const confere = node({
 "    origem = provavelOrigem(c && c.grupoRecentes, agora);",
 "  } catch (e) { origem = null; }",
 "}",
-"return [{ json: { avisar: true, entrou, total, origem: origem && origem.de, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) + '\\n\\n' + linhaDaOrigem(origem) } }];"
+"// Marco dos 100 membros (15/11): uma vez só, lembra de ligar a foto em cena em todos os posts.",
+"const marco = avisoDoMarco(mem, total);",
+"return [{ json: { avisar: true, entrou, total, origem: origem && origem.de, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) + '\\n\\n' + linhaDaOrigem(origem) + (marco ? '\\n\\n' + marco : '') } }];"
 ].join('\n') } },
   output: [{ avisar: true, entrou: 1, total: 6, grupo: '120363000000000001-group', texto: 'Entrou 1 pessoa' }]
 });
