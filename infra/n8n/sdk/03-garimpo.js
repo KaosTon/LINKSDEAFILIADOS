@@ -57,6 +57,8 @@ const garimpa = node({
 "  canais: lista('GARIMPO_CANAIS', 'promotop,pechinchou,fadadoscupons,cupomonline'),",
 "  // Foto em cena nos destaques (15/11): quantas por dia (0 desliga) e minutos entre uma e outra.",
 "  cenaPorDia: N0('GARIMPO_CENA_POR_DIA', 5), cenaIntervalo: N0('GARIMPO_CENA_INTERVALO', 120),",
+"  // GARIMPO_CENA_TODOS_ATE=AAAA-MM-DD: foto em cena em todo post até esse dia; depois volta sozinho.",
+"  cenaTodosAte: String($env.GARIMPO_CENA_TODOS_ATE || '').trim(),",
 "  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",
 "const teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);",
