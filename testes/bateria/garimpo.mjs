@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -851,6 +851,53 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   m = { melhorCard: mc };
   r = await roda({ tipo: 'resumo', dia: '2026-11-12' }, m);
   caso('feed: resumo e convite não postam', r.chamadas.length === 0 && m.resumoDia === '2026-11-12');
+}
+
+console.log('\n  foto em cena (15/11)');
+{
+  caso('alto valor: TV, celular, notebook, geladeira', ['Smart TV Samsung 55" MiniLED', 'Celular Motorola Moto G85', 'Notebook Asus Vivobook', 'Geladeira Brastemp Frost Free', 'Air Fryer Mondial 4L'].every(ehAltoValor));
+  caso('alto valor: não pega fone, capinha, cabo', !['Fone Bluetooth JBL', 'Capinha para celular', 'Cabo USB-C', 'Perfume Quasar'].some(n => ehAltoValor(n) && !/celular/.test(n)) && !ehAltoValor('Fone Bluetooth JBL'));
+  caso('preço e % da legenda', JSON.stringify(precoEOffDaLegenda('💵 De R$189 por R$76 no Pix (60% OFF)')) === '{"preco":76,"off":60}' && precoEOffDaLegenda('💵 Por R$2.849').preco === 2849);
+  const base = { acao: 'postar', tipo: 'produto', chave: 'ml:1', imagem: 'https://http2.mlstatic.com/f.jpg', titulo: 'Toalha de banho', texto: '💵 Por R$40' };
+  caso('destaque: TV', ehDestaque({ ...base, titulo: 'Smart TV LG 50"' }));
+  caso('destaque: 40% OFF ou R$300', ehDestaque({ ...base, texto: '💵 De R$100 por R$60 (40% OFF)' }) && ehDestaque({ ...base, texto: '💵 Por R$349' }));
+  caso('não destaque: barato sem desconto', !ehDestaque(base));
+  caso('não destaque: Amazon, cupom, sem foto https', !ehDestaque({ ...base, titulo: 'Smart TV LG', chave: 'amazon:B0AAAAAAAA' }) && !ehDestaque({ ...base, tipo: 'cupom', titulo: 'Smart TV' }) && !ehDestaque({ ...base, titulo: 'Smart TV', imagem: 'http://x/f.jpg' }));
+  const A = new Date('2026-11-15T15:00:00Z');
+  const cfg = { cenaPorDia: 2, cenaIntervalo: 120 };
+  const m = {};
+  caso('cena: desligada com 0', podeCena({}, A, { cenaPorDia: 0 }) === false);
+  caso('cena: primeira do dia pode', podeCena(m, A, cfg) === true && m.cena.dia === '2026-11-15');
+  m.cena.feitas = 1; m.cena.ultimo = A.getTime();
+  caso('cena: respeita o intervalo', podeCena(m, new Date(A.getTime() + 60 * 6e4), cfg) === false && podeCena(m, new Date(A.getTime() + 121 * 6e4), cfg) === true);
+  m.cena.feitas = 2;
+  caso('cena: respeita o limite do dia', podeCena(m, new Date(A.getTime() + 300 * 6e4), cfg) === false);
+  caso('cena: zera no dia seguinte', podeCena(m, new Date('2026-11-16T12:00:00Z'), cfg) === true && m.cena.feitas === 0);
+  const ped = pedidoCena('https://x/f.jpg', 'TV');
+  caso('pedido: modelo barato, foto da loja junto, sem texto na foto', ped.model === MODELO_CENA && /flash-lite-image/.test(MODELO_CENA) && ped.messages[0].content[1].image_url.url === 'https://x/f.jpg' && /do not add any text/.test(ped.messages[0].content[0].text));
+  caso('resposta: só aceita data:image', imagemDaResposta({ choices: [{ message: { images: [{ image_url: { url: 'data:image/png;base64,AAA' } }] } }] }) === 'data:image/png;base64,AAA'
+    && imagemDaResposta({ choices: [{ message: { images: [{ image_url: { url: 'https://evil/x.png' } }] } }] }) === null && imagemDaResposta({}) === null);
+  caso('conferência: só true explícito', conferenciaDaResposta('```json\n{"igual": true, "motivo": "ok"}\n```').igual === true
+    && conferenciaDaResposta('{"igual": "true"}').igual === false && conferenciaDaResposta('não sei').igual === false);
+  const tv = { ...base, titulo: 'Smart TV LG 50"' };
+  const rede = (igual, img = 'data:image/png;base64,QQ') => ({ fotoEmCena: async () => img, confereCena: async () => ({ igual, motivo: igual ? 'ok' : 'marca trocada' }) });
+  let mm = {};
+  let r = await comFotoEmCena(tv, mm, A, cfg, rede(true));
+  caso('troca: conferida, vai a cena e a foto da loja fica', r.cena === 'data:image/png;base64,QQ' && r.imagem === tv.imagem && mm.cena.feitas === 1 && mm.cena.tentativas === 1, r);
+  mm = {};
+  r = await comFotoEmCena(tv, mm, A, cfg, rede(false));
+  caso('troca: recusada duas vezes, sai a foto da loja', !r.cena && r.cena_log.length === 2 && mm.cena.feitas === 0 && mm.cena.tentativas === 2, r);
+  mm = {};
+  r = await comFotoEmCena(tv, mm, A, cfg, { fotoEmCena: async () => { throw new Error('fora'); }, confereCena: async () => ({ igual: true }) });
+  caso('troca: IA fora do ar não derruba o post', r.titulo === tv.titulo && !r.cena);
+  mm = {};
+  r = await comFotoEmCena(base, mm, A, cfg, rede(true));
+  caso('troca: post comum não gasta nada', r === base && !mm.cena);
+  r = await comFotoEmCena(tv, {}, A, { cenaPorDia: 0 }, rede(true));
+  caso('troca: GARIMPO_CENA_POR_DIA=0 desliga', r === tv);
+  mm = { cena: { dia: '2026-11-15', feitas: 0, tentativas: 3, ultimo: 0 } };
+  r = await comFotoEmCena(tv, mm, A, cfg, rede(false));
+  caso('troca: teto de tentativas (2 por foto do dia)', mm.cena.tentativas === 4 && !r.cena, mm);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

@@ -15,7 +15,9 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * primeiro. Às GARIMPO_CONVITE_HORA (19h) pede no grupo para compartilhar (com boas-vindas no topo se
  * entrou gente desde ontem); às
  * GARIMPO_STATUS_HORA (12h) manda a melhor oferta do dia no rascunho, para o
- * status (0 desliga cada um). Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
+ * status (0 desliga cada um). Nos destaques (TV, celular, eletro grande, 40% OFF ou mais, R$300
+ * ou mais; nunca Amazon), até GARIMPO_CENA_POR_DIA (5) fotos em cena por dia feitas por IA e conferidas
+ * contra a foto da loja (GARIMPO_CENA_INTERVALO, 120 min entre elas). Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
  * calcula (dá para ver na execução o que sairia).
  *
  * Link que não vira seu (ML de canal, Shopee sem API) descarta a oferta. A
@@ -53,6 +55,8 @@ const garimpa = node({
 "  // Loja confiável na Shopee (18/10): nota e vendas mínimas do produto; caro só em loja oficial ou indicada.",
 "  notaMinShopee: N('GARIMPO_SHOPEE_NOTA_MIN', 4.5), vendasMinShopee: N0('GARIMPO_SHOPEE_VENDAS_MIN', 50), caroShopee: N('GARIMPO_SHOPEE_CARO', 1000),",
 "  canais: lista('GARIMPO_CANAIS', 'promotop,pechinchou,fadadoscupons,cupomonline'),",
+"  // Foto em cena nos destaques (15/11): quantas por dia (0 desliga) e minutos entre uma e outra.",
+"  cenaPorDia: N0('GARIMPO_CENA_POR_DIA', 5), cenaIntervalo: N0('GARIMPO_CENA_INTERVALO', 120),",
 "  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",
 "const teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);",
@@ -91,8 +95,10 @@ const garimpa = node({
 "if (cfg.amazonTag) { try { amazonHtml = await rede.pagina('https://www.amazon.com.br/deals'); } catch (e) { amazonHtml = ''; } }",
 "let shopee = [];",
 "if (cfg.shopee) { try { shopee = await rede.shopeeOfertas(); } catch (e) { shopee = []; } }",
-"const r = await garimpar({ canais, amazonHtml, shopee, agora, cfg, mem, rede });",
+"let r = await garimpar({ canais, amazonHtml, shopee, agora, cfg, mem, rede });",
 "if (r.acao !== 'postar') return [{ json: { postar: false, motivo: r.motivo, tentou: r.tentou, postados_hoje: mem.postados } }];",
+"// Só na rodada automática e ligada: cada foto em cena custa.",
+"if (ligado && !teste) r = await comFotoEmCena(r, mem, agora, cfg, rede);",
 "return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || ''), eletronico: ehEletronico(r.titulo || '') } }];"
 ].join('\n') } },
   output: [{ postar: true, tipo: 'produto', chave: 'amazon:B0X', texto: 'Oferta', imagem: '', grupo: '120363000000000002-group' }]
@@ -137,8 +143,9 @@ const envia = node({
     source: 'database',
     workflowId: { __rl: true, mode: 'id', value: GATEWAY },
     workflowInputs: { mappingMode: 'defineBelow', matchingColumns: [], schema: ENTRADAS, attemptToConvertTypes: false,
-      value: { phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.imagem }}'), origem: '03-garimpo',
-        link: expr('{{ $json.link }}'), titulo: expr('{{ $json.titulo }}') } },
+      // Com foto em cena (15/11) sai como foto com legenda (send-image), sem a prévia do link.
+      value: { phone: expr('{{ $json.grupo }}'), message: expr('{{ $json.texto }}'), image: expr('{{ $json.cena || $json.imagem }}'), origem: '03-garimpo',
+        link: expr("{{ $json.cena ? '' : $json.link }}"), titulo: expr('{{ $json.titulo }}') } },
     options: { waitForSubWorkflow: true } } },
   output: [{ ok: true, id: 'Z1', origem: '03-garimpo', erro: null }]
 });
