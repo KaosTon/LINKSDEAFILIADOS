@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -753,7 +753,7 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
     { quando: /light-group-metadata\/120363000000000002-group/, responde: { participants: [{ phone: 'a' }, { phone: 'b' }, { phone: 'c' }] } },
     { quando: /encurta\.teste\/api\/cliques/, responde: { total: 1, top: [], grupo: { status: 4 } } },
     { quando: /open-api\.affiliate\.shopee\.com\.br\/graphql/, metodo: 'POST', responde: (op) => JSON.stringify(/conversionReport/.test(op.body)
-      ? { data: { conversionReport: { nodes: [{ estimatedTotalCommission: '2.5', orders: [{ items: [{ actualAmount: '30' }] }] }], pageInfo: { hasNextPage: false, scrollId: '' } } } } : {}) },
+      ? { data: { conversionReport: { nodes: [{ purchaseTime: Math.floor(Date.parse('2026-10-06T20:00:00-03:00') / 1000), estimatedTotalCommission: '2.5', orders: [{ items: [{ actualAmount: '30' }] }] }], pageInfo: { hasNextPage: false, scrollId: '' } } } } : {}) },
   ];
   const envR = { ...ENV, GARIMPO_LIGADO: 'sim', GRUPO_RASCUNHO: '120363000000000001-group', ZAPI_BASE_URL: 'https://zapi.teste', ZAPI_INSTANCE_ID: 'I', ZAPI_INSTANCE_TOKEN: 'T',
     ENCURTADOR_URL: 'https://encurta.teste', ENCURTADOR_SEGREDO: 'S', SHOPEE_APP_ID: '1', SHOPEE_SECRET: 'x' };
@@ -982,6 +982,15 @@ console.log('\n  vendas da Shopee por período (15/11)');
   caso('painel: no dia 1º pede desde ontem (para mostrar ontem)', pedido.ini === ts('2026-11-30T00:00:00-03:00'));
   const t = textoResumo({ resumo: { lojas: { ml: 2 }, descartes: {} } }, A, guardarPainel({}, A, pc));
   caso('resumo: mostra ontem, 7 dias e mês', /Vendas na Shopee/.test(t) && /Ontem: 1 pedido, R\$ 50,00 em compras, comissão R\$ 4,00/.test(t) && /No mês: 3 pedidos/.test(t) && !/[\u2013\u2014]/.test(t), t);
+}
+
+console.log('\n  marca nova na foto em cena (15/11, caso AirPods)');
+{
+  caso('marca nova: true recusa, com o nome', marcaNovaDaResposta('```json\n{"marcaNova": true, "qual": "AirPods Pro"}\n```').nova === true && marcaNovaDaResposta('{"marcaNova": true, "qual": "AirPods Pro"}').qual === 'AirPods Pro');
+  caso('marca nova: só passa com false explícito', marcaNovaDaResposta('{"marcaNova": false, "qual": "nenhuma"}').nova === false && marcaNovaDaResposta('{"marcaNova": "false"}').nova === true && marcaNovaDaResposta('não sei').nova === true);
+  const pm = pedidoMarcaNova('https://x/a.jpg', 'data:image/png;base64,QQ');
+  caso('pedido: as duas fotos e a pergunta de marca, inclusive em telas', pm.messages[0].content.length === 3 && /telas/.test(pm.messages[0].content[0].text) && /AirPods/.test(pm.messages[0].content[0].text));
+  caso('cena: pede para não mostrar tela nem marca que não está no produto', /Never show a phone, computer or TV screen/.test(pedidoCena('https://x/a.jpg', 'Fone').messages[0].content[0].text));
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
