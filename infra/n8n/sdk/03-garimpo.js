@@ -17,7 +17,8 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * GARIMPO_STATUS_HORA (12h) manda a melhor oferta do dia no rascunho, para o
  * status (0 desliga cada um). Nos destaques (TV, celular, eletro grande, 40% OFF ou mais, R$300
  * ou mais; nunca Amazon), até GARIMPO_CENA_POR_DIA (5) fotos em cena por dia feitas por IA e conferidas
- * contra a foto da loja (GARIMPO_CENA_INTERVALO, 120 min entre elas). Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
+ * contra a foto da loja (GARIMPO_CENA_INTERVALO, 120 min entre elas). Com INSTAGRAM_REEL_OFERTAS=sim, às
+ * INSTAGRAM_REEL_OFERTAS_HORA (19h) sai no Instagram um Reel com as 3 melhores ofertas com foto em cena do dia. Só posta com GARIMPO_LIGADO=sim: publicado sem isso, ele só
  * calcula (dá para ver na execução o que sairia).
  *
  * Link que não vira seu (ML de canal, Shopee sem API) descarta a oferta. A
@@ -59,6 +60,8 @@ const garimpa = node({
 "  cenaPorDia: N0('GARIMPO_CENA_POR_DIA', 5), cenaIntervalo: N0('GARIMPO_CENA_INTERVALO', 120),",
 "  // GARIMPO_CENA_TODOS_ATE=AAAA-MM-DD: foto em cena em todo post até esse dia; depois volta sozinho.",
 "  cenaTodosAte: String($env.GARIMPO_CENA_TODOS_ATE || '').trim(),",
+"  // Reel das ofertas do dia no Instagram (15/11): INSTAGRAM_REEL_OFERTAS=sim, a partir da hora marcada (19h).",
+"  reelOfertas: String($env.INSTAGRAM_REEL_OFERTAS || '').trim().toLowerCase() === 'sim', reelHora: N('INSTAGRAM_REEL_OFERTAS_HORA', 19),",
 "  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",
 "const teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);",
@@ -89,8 +92,11 @@ const garimpa = node({
 "  }",
 "  return [{ json: { postar: ligado, tipo: 'status', dia: diaSP(agora), grupo: $env.GRUPO_RASCUNHO, texto: card ? textoStatusCard(linkGrupo) : textoStatus(mem.melhorDoDia, linkGrupo), imagem: card || mem.melhorDoDia.imagem, link: '', titulo: '', teste: false } }];",
 "}",
+"// Reel das ofertas (15/11): um passo por rodada; não segura o post do grupo se falhar.",
+"let reel = null;",
+"if (ligado && !teste) { try { reel = await passoDoReel(mem, agora, cfg, this.helpers, $env); } catch (e) { reel = { passo: 'erro' }; } }",
 "const pode = podeAgora(mem, agora, cfg);",
-"if (!pode.ok && !teste) return [{ json: { postar: false, motivo: pode.motivo, postados_hoje: mem.postados } }];",
+"if (!pode.ok && !teste) return [{ json: { postar: false, motivo: pode.motivo, postados_hoje: mem.postados, ...(reel ? { reel } : {}) } }];",
 "const canais = {};",
 "for (const c of cfg.canais) { try { canais[c] = await rede.pagina('https://t.me/s/' + encodeURIComponent(c)); } catch (e) { canais[c] = ''; } }",
 "let amazonHtml = '';",
@@ -207,6 +213,12 @@ const anota = node({
 "      const nota = off - (por >= 60 ? 0 : 100) + (cena ? 30 : 0);",
 "      const c = mem.melhorCard && mem.melhorCard.dia === mem.dia ? mem.melhorCard : null;",
 "      if (!c || nota > c.nota) mem.melhorCard = { dia: mem.dia, nota, texto: g.texto, imagem: cena ? g.cena : g.imagem, cena, chave: g.chave, quando: Date.now() };",
+"      // Para o Reel das ofertas (15/11): as que saíram com foto em cena hoje.",
+"      if (cena) {",
+"        const cd = mem.cenasDoDia && mem.cenasDoDia.dia === mem.dia ? mem.cenasDoDia : { dia: mem.dia, lista: [] };",
+"        cd.lista = [...cd.lista, { texto: g.texto, imagem: g.cena, chave: g.chave, quando: Date.now() }].slice(-15);",
+"        mem.cenasDoDia = cd;",
+"      }",
 "    }",
 "  }",
 "}",

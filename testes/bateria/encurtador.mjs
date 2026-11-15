@@ -5,6 +5,7 @@ import path from 'node:path';
 import { criarServidor, lojaPermitida, novoCodigo, ehRobo } from '../../encurtador/servidor.mjs';
 import { assinarFoto } from '../../encurtador/foto.mjs';
 import { assinarCard, dadosDoCard, linhasDoNome } from '../../encurtador/card.mjs';
+import { assinarReel, lerReel, ffmpegDisponivel } from '../../encurtador/reel.mjs';
 import { createRequire } from 'node:module';
 const sharp = createRequire(new URL('../../encurtador/package.json', import.meta.url))('sharp');   // fica em encurtador/node_modules
 
@@ -153,6 +154,14 @@ fs.writeFileSync(path.join(os.tmpdir(), 'card-cena-feed.jpg'), cCenaBuf);
 const cCenaStory = await fetch(`${raiz}/card?d=${DC}&a=${assinarCard(SENHA, DC)}`);
 fs.writeFileSync(path.join(os.tmpdir(), 'card-cena-story.jpg'), Buffer.from(await cCenaStory.arrayBuffer()));
 caso('/card story com foto em cena: 200', cCenaStory.status === 200);
+// Reel das ofertas (15/11)
+const o3 = (x = {}) => ({ n: 'Smart TV LG 65', de: 3805.68, por: 3261, f: 'https://td.example/img/a.jpg', l: 'Mercado Livre', ...x });
+const DR = (o) => Buffer.from(JSON.stringify({ o, v: '15/11' })).toString('base64url');
+caso('reel: aceita 2 ou 3 ofertas', !!lerReel(DR([o3(), o3()])) && !!lerReel(DR([o3(), o3(), o3()])) && !lerReel(DR([o3()])) && !lerReel(DR([o3(), o3(), o3(), o3()])));
+caso('reel: tira oferta sem foto https ou com de menor que por', !lerReel(DR([o3(), o3({ f: 'http://x/a.jpg' })])) && !lerReel(DR([o3(), o3({ de: 10, por: 20 })])) && !lerReel('lixo'));
+caso('reel: sem assinatura certa, 403', (await fetch(`${raiz}/reel?d=${DR([o3(), o3()])}&a=${'0'.repeat(24)}`)).status === 403);
+caso('reel: assinatura propria (nao vale a do card)', assinarReel(SENHA, 'x') !== assinarCard(SENHA, 'x'));
+caso('reel: ffmpeg encontrado', fs.existsSync(ffmpegDisponivel()) || ffmpegDisponivel() === 'ffmpeg');
 caso('nome em ate 2 linhas, por palavra', JSON.stringify(linhasDoNome('Chave De Impacto Kinetx 68vf Brushless 880nm 2 Baterias')) === JSON.stringify(['Chave De Impacto', 'Kinetx 68vf Brushless']));
 await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });

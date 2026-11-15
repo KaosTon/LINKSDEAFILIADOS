@@ -1,5 +1,6 @@
 // Encurtador próprio: temdescontos.com.br/a7k2p -> link de afiliado.
-// Roda no Railway como serviço separado do n8n, com um volume em /data. Única dependência: sharp (foto.mjs, card.mjs).
+// Roda no Railway como serviço separado do n8n, com um volume em /data. Dependências: sharp (foto.mjs, card.mjs)
+// e ffmpeg-static (reel.mjs).
 //
 //   GET  /{codigo}          redireciona (302) e conta o clique
 //   GET  /foto?u=&a=        foto do post em 1200x630 com o logo no canto; só com assinatura do n8n (foto.mjs)
@@ -13,6 +14,7 @@
 //   POST /api/imagem        { dados: "data:image/...;base64,..." } com a senha -> { url } (15/11): guarda a foto
 //                           em cena do garimpo (jpg até 1080 px) para o card do Instagram e o envio; apaga com 10 dias
 //   GET  /img/{id}.jpg      a foto guardada
+//   GET  /reel?d=&a=        Reel das ofertas do dia, MP4 1080x1920 (reel.mjs), mesma assinatura
 //   GET  /saude             para o Railway saber que está de pé
 //   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
 //                           CONVITE_GRUPO pode ter vários convites separados por vírgula (17/10):
@@ -30,6 +32,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { criarRotaFoto, baixar } from './foto.mjs';
 import { criarRotaCard } from './card.mjs';
+import { criarRotaReel } from './reel.mjs';
 
 const LOJAS = /(^|\.)(amazon\.com\.br|amzn\.to|mercadolivre\.com\.br|meli\.la|shopee\.com\.br|magazinevoce\.com\.br|magazineluiza\.com\.br)$/i;
 const ALFABETO = 'abcdefghijkmnpqrstuvwxyz23456789';   // sem l, o, 0, 1 (confundem)
@@ -90,6 +93,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
   fs.mkdirSync(pastaImg, { recursive: true });
   const foto = criarRotaFoto({ pasta, segredo, ...(baixarFoto ? { baixarFoto } : {}) });
   const card = criarRotaCard({ pasta, segredo, baixarFoto: baixarFoto || baixar });
+  const reel = criarRotaReel({ pasta, segredo, baixarFoto: baixarFoto || baixar });
   const relogio = setInterval(salvar, 30000);
   relogio.unref();
 
@@ -110,6 +114,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
     if (p === '/saude') return responde(res, 200, 'ok');
     if (p === '/foto') return void foto(u, res);
     if (p === '/card') return void card(u, res);
+    if (p === '/reel') return void reel(u, req, res);
 
     if (p === '/api/encurtar' && req.method === 'POST') {
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
