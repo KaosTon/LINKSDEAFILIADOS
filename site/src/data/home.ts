@@ -25,7 +25,7 @@ export const HOME = {
   numeros: [
     { valor: "lojas", rotulo: "lojas grandes" },
     { valor: "conferencias", rotulo: "conferências por oferta" },
-    { valor: "8h-22h", rotulo: "todos os dias" },
+    { valor: "8h-0h", rotulo: "todos os dias" },
     { valor: "R$ 0", rotulo: "para entrar e ficar" },
   ] as { valor: "lojas" | "conferencias" | string; rotulo: string }[],
   passos: {
@@ -43,9 +43,10 @@ export const HOME = {
     titulo: "Para comprar sem cair em promoção de mentira",
     lead: "O que aprendemos conferindo oferta todo dia, explicado para você repetir em qualquer loja.",
   },
+  ofertas: { titulo: "Ofertas que já passaram no grupo" },
   faq: { eyebrow: "Dúvidas frequentes", titulo: "Antes de entrar" },
   cta: {
     titulo: "Entre no grupo e deixe a gente garimpar",
-    texto: "As ofertas saem das 8h às 22h. Silencie se quiser e abra quando for comprar alguma coisa.",
+    texto: "As ofertas saem das 8h à meia-noite. Silencie se quiser e abra quando for comprar alguma coisa.",
   },
 };

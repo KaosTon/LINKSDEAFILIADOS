@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import OfertasDoGrupo from "@/components/OfertasDoGrupo";
 import Link from "next/link";
 import { HOME } from "@/data/home";
 import { POSTS_ORDENADOS } from "@/data/blog";
@@ -105,15 +106,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Lojas */}
+      {/* Ofertas reais que já passaram no grupo (15/11), com as lojas em selos embaixo */}
       <section className="border-b border-linha bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row md:items-center gap-4 md:gap-10">
-          <p className="text-xs uppercase tracking-[0.18em] text-tinta-3 shrink-0">Ofertas de</p>
-          <ul className="flex flex-wrap gap-x-8 gap-y-2">
+        <div className="max-w-6xl mx-auto py-12 md:py-16">
+          <OfertasDoGrupo titulo={HOME.ofertas.titulo} />
+          <div className="mt-8 px-4 flex flex-wrap items-center justify-center gap-2">
+            <span className="text-xs uppercase tracking-[0.18em] text-tinta-3 mr-2">Ofertas de</span>
             {LOJAS.map((l) => (
-              <li key={l} className="font-display text-xl md:text-2xl font-bold text-marinho">{l}</li>
+              <span key={l} className="rounded-full border border-linha bg-fundo px-4 py-1.5 font-display text-sm font-bold text-marinho">{l}</span>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
