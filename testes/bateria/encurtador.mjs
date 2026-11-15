@@ -134,6 +134,25 @@ caso('/card com f=feed: jpeg 1080x1350', cFeed.status === 200 && cFeedMeta.width
 caso('/card com "de" menor que "por": 403', (await fetch(`${raiz}/card?d=${ruim}&a=${assinarCard(SENHA, ruim)}`)).status === 403);
 const semFoto = dadosDoCard({ n: 'Sem Foto', de: 100, por: 50, f: 'https://http2.mlstatic.com/quebrada.jpg' });
 caso('/card com foto que nao abre: sai sem foto', (await fetch(`${raiz}/card?d=${semFoto}&a=${assinarCard(SENHA, semFoto)}`)).status === 200);
+// Foto em cena (15/11): guarda a imagem e o card do feed com a foto no topo.
+const png = await sharp({ create: { width: 1024, height: 1024, channels: 3, background: '#3a6' } }).png().toBuffer();
+const sobeImg = (corpo, senha = SENHA) => fetch(`${raiz}/api/imagem`, { method: 'POST', headers: { Authorization: `Bearer ${senha}`, 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) });
+caso('/api/imagem sem senha: 401', (await sobeImg({ dados: 'data:image/png;base64,' + png.toString('base64') }, 'y'.repeat(40))).status === 401);
+caso('/api/imagem que nao e imagem: 400', (await sobeImg({ dados: 'data:text/html;base64,PGI+' })).status === 400 && (await sobeImg({ dados: 'data:image/png;base64,QUFB' })).status === 400);
+const gi = await (await sobeImg({ dados: 'data:image/png;base64,' + png.toString('base64') })).json();
+caso('/api/imagem guarda e devolve o endereco', /^https:\/\/promox\.example\/img\/[a-f0-9]{24}\.jpg$/.test(gi.url || ''), gi);
+const gImg = await fetch(`${raiz}/img/${String(gi.url).split('/img/')[1]}`);
+caso('/img devolve o jpg', gImg.status === 200 && gImg.headers.get('content-type') === 'image/jpeg');
+caso('/img que nao existe ou nome estranho: 404/301', (await fetch(`${raiz}/img/${'a'.repeat(24)}.jpg`)).status === 404 && (await fetch(`${raiz}/img/../links.json`, { redirect: 'manual' })).status !== 200);
+const DC = dadosDoCard({ n: 'Smart TV LG NANO 4K 65 polegadas', de: 3805.68, por: 3261, f: 'https://http2.mlstatic.com/tv.jpg', l: 'Mercado Livre', v: '15/11 às 12h', c: 1 });
+const cCena = await fetch(`${raiz}/card?d=${DC}&a=${assinarCard(SENHA, DC)}&f=feed`);
+const cCenaBuf = Buffer.from(await cCena.arrayBuffer());
+const cCenaMeta = await sharp(cCenaBuf).metadata();
+caso('/card feed com foto em cena: jpeg 1080x1350', cCena.status === 200 && cCenaMeta.width === 1080 && cCenaMeta.height === 1350, cCenaMeta);
+fs.writeFileSync(path.join(os.tmpdir(), 'card-cena-feed.jpg'), cCenaBuf);
+const cCenaStory = await fetch(`${raiz}/card?d=${DC}&a=${assinarCard(SENHA, DC)}`);
+fs.writeFileSync(path.join(os.tmpdir(), 'card-cena-story.jpg'), Buffer.from(await cCenaStory.arrayBuffer()));
+caso('/card story com foto em cena: 200', cCenaStory.status === 200);
 caso('nome em ate 2 linhas, por palavra', JSON.stringify(linhasDoNome('Chave De Impacto Kinetx 68vf Brushless 880nm 2 Baterias')) === JSON.stringify(['Chave De Impacto', 'Kinetx 68vf Brushless']));
 await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });
