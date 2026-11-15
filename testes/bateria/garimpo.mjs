@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -879,6 +879,14 @@ console.log('\n  foto em cena (15/11)');
     && imagemDaResposta({ choices: [{ message: { images: [{ image_url: { url: 'https://evil/x.png' } }] } }] }) === null && imagemDaResposta({}) === null);
   caso('conferência: só true explícito', conferenciaDaResposta('```json\n{"igual": true, "motivo": "ok"}\n```').igual === true
     && conferenciaDaResposta('{"igual": "true"}').igual === false && conferenciaDaResposta('não sei').igual === false);
+  const loja = textosDaResposta('```json\n{"textos": ["INDOBEST", "INDOBEST", "48V", "Imagens reais"]}\n```');
+  caso('textos: lê, sem acento, mantém 48V', JSON.stringify(loja) === '["INDOBEST","INDOBEST","48V","IMAGENS","REAIS"]' && textosDaResposta('{"textos": ["2026", "ab"]}').length === 0, loja);
+  caso('marca com letra trocada é pega (INOOREST, teste real 15/11)', /INDOBEST virou INOOREST/.test(problemaNoTexto(loja, textosDaResposta('{"textos": ["INOOREST", "48V"]}'))));
+  caso('outras trocas reais: INDOREST, INDOORST', !!problemaNoTexto(loja, ['INDOREST']) && !!problemaNoTexto(loja, ['INDOORST', 'INDOBEST']));
+  caso('marca sumida é pega', /sumiu INDOBEST/.test(problemaNoTexto(loja, ['48V'])));
+  caso('propaganda da foto da loja pode sumir; cenário a mais não atrapalha', problemaNoTexto(loja, ['INDOBEST', '48V', 'VONDER']) === null);
+  caso('leitura que falhou não passa', problemaNoTexto(null, ['INDOBEST']) === 'leitura falhou' && textosDaResposta('não li') === null);
+  caso('pedido de leitura só da foto do produto', /PRODUTO desta foto/.test(pedidoTextos('https://x/f.jpg').messages[0].content[0].text));
   const tv = { ...base, titulo: 'Smart TV LG 50"' };
   const rede = (igual, img = 'data:image/png;base64,QQ') => ({ fotoEmCena: async () => img, confereCena: async () => ({ igual, motivo: igual ? 'ok' : 'marca trocada' }) });
   let mm = {};
