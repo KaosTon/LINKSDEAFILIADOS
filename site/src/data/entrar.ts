@@ -23,7 +23,7 @@ export const ENTRAR = {
     itens: [
       { titulo: "Uma oferta por vez", desc: "Foto do produto, preço conferido na loja, frete e cupom quando houver." },
       { titulo: "Link da loja oficial", desc: "O link abre a página do produto na própria loja. A compra é com ela." },
-      { titulo: "Das 8h às 22h", desc: "Se preferir, silencie o grupo e abra só quando for comprar alguma coisa." },
+      { titulo: "Das 8h à meia-noite", desc: "Se preferir, silencie o grupo e abra só quando for comprar alguma coisa." },
     ],
   },
   /**

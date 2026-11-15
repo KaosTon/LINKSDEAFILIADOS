@@ -28,7 +28,7 @@ export const SITE = {
   /** e-mail de contato (Cloudflare Email Routing, encaminha para o Gmail do Wellington; 16/10/2026) */
   email: "contato@temdescontos.com.br",
   /** horario padrao do robo (GARIMPO_INICIO e GARIMPO_FIM em 16/10/2026) */
-  horario: "Ofertas todos os dias, das 8h às 22h",
+  horario: "Ofertas todos os dias, das 8h à meia-noite",
   horarioSchema: [] as string[],
   /** perfil do Instagram da marca (criado pelo Wellington em 16/10/2026) */
   instagram: "https://www.instagram.com/temdescontos",
@@ -53,7 +53,7 @@ export const SITE = {
   tituloSeo: "Tem Descontos | Ofertas conferidas no seu WhatsApp",
   /** description da home, 140 a 160 caracteres, com o dado na frente */
   descricao:
-    "Ofertas da Amazon, Mercado Livre, Shopee e Magalu com o preço conferido na loja antes de postar. Grupo de WhatsApp grátis, das 8h às 22h, só com link oficial.",
+    "Ofertas da Amazon, Mercado Livre, Shopee e Magalu com o preço conferido na loja antes de postar. Grupo de WhatsApp grátis, das 8h à meia-noite, só com link oficial.",
   /** uma frase pro rodape e pro /links */
   descricaoCurta: "Ofertas das grandes lojas com o preço conferido antes de chegar no seu WhatsApp.",
   /** frase de marca, curta, pro /links e pra imagem de compartilhamento */
@@ -188,7 +188,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Quantas mensagens o grupo manda por dia?",
-    a: "As ofertas saem uma por vez, com intervalo entre elas, das 8h às 22h, e à noite o ritmo cai. Se preferir, silencie o grupo e abra quando quiser ver as ofertas.",
+    a: "As ofertas saem uma por vez, com intervalo entre elas, das 8h à meia-noite, e de madrugada não sai nada. Se preferir, silencie o grupo e abra quando quiser ver as ofertas.",
   },
   {
     q: "Vocês mandam mensagem no privado?",

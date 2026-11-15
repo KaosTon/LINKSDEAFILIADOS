@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BotaoEntrar from "@/components/BotaoEntrar";
+import OfertasDoGrupo from "@/components/OfertasDoGrupo";
 import { IconeCheck } from "@/components/Icones";
 import { ENTRAR } from "@/data/entrar";
 import { FAQ, LOJAS, SITE } from "@/data/site";
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 const CLASSE_BOTAO = "w-full sm:w-auto inline-flex items-center justify-center gap-2 botao-marca font-semibold text-lg px-8 py-4";
 
 export default function Entrar() {
-  const { comoE, provas } = ENTRAR;
+  const { comoE } = ENTRAR;
   return (
     <>
       <section className="relative overflow-hidden grao">
@@ -46,16 +47,7 @@ export default function Entrar() {
 
       <section className="bg-white border-t border-linha">
         <div className="max-w-5xl mx-auto py-10 md:py-14">
-          <h2 className="px-4 font-display text-2xl md:text-3xl font-extrabold leading-tight text-center">{provas.titulo}</h2>
-          <ul className="mt-6 flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 pb-3 md:grid md:grid-cols-5 md:overflow-visible">
-            {provas.itens.map((p) => (
-              <li key={p.img} className="snap-center shrink-0 w-[72%] sm:w-[40%] md:w-auto">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.img} alt={p.alt} width={720} height={900} loading="lazy" className="w-full h-auto rounded-2xl border border-linha shadow-sm" />
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 px-4 text-sm text-tinta-3 text-center">{provas.nota}</p>
+          <OfertasDoGrupo />
           <div className="mt-6 px-4 text-center">
             <BotaoEntrar texto={ENTRAR.botao} className={CLASSE_BOTAO} />
           </div>
