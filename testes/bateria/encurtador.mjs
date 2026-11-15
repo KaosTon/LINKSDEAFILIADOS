@@ -6,6 +6,7 @@ import { criarServidor, lojaPermitida, novoCodigo, ehRobo } from '../../encurtad
 import { assinarFoto } from '../../encurtador/foto.mjs';
 import { assinarCard, dadosDoCard, linhasDoNome } from '../../encurtador/card.mjs';
 import { assinarReel, lerReel, ffmpegDisponivel } from '../../encurtador/reel.mjs';
+import { assinarAchados, lerAchados } from '../../encurtador/achados.mjs';
 import { createRequire } from 'node:module';
 const sharp = createRequire(new URL('../../encurtador/package.json', import.meta.url))('sharp');   // fica em encurtador/node_modules
 
@@ -162,6 +163,18 @@ caso('reel: tira oferta sem foto https ou com de menor que por', !lerReel(DR([o3
 caso('reel: sem assinatura certa, 403', (await fetch(`${raiz}/reel?d=${DR([o3(), o3()])}&a=${'0'.repeat(24)}`)).status === 403);
 caso('reel: assinatura propria (nao vale a do card)', assinarReel(SENHA, 'x') !== assinarCard(SENHA, 'x'));
 caso('reel: ffmpeg encontrado', fs.existsSync(ffmpegDisponivel()) || ffmpegDisponivel() === 'ffmpeg');
+// Carrossel de achados (15/11)
+const oa = (x = {}) => ({ n: 'Oculos de sol', de: 27, por: 18.6, f: 'https://http2.mlstatic.com/a.jpg', l: 'Shopee', v: '15/11', ...x });
+const DA = (o) => Buffer.from(JSON.stringify({ t: 'abaixo de R$ 50', o })).toString('base64url');
+caso('achados: aceita 3 a 5 ofertas', !!lerAchados(DA([oa(), oa(), oa()])) && !!lerAchados(DA([oa(), oa(), oa(), oa(), oa()])) && !lerAchados(DA([oa(), oa()])) && !lerAchados(DA([oa(), oa(), oa(), oa(), oa(), oa()])));
+caso('achados: tira oferta sem foto https ou com de menor que por', !lerAchados(DA([oa(), oa(), oa({ f: 'http://x' })])) && !lerAchados(DA([oa(), oa(), oa({ de: 5 })])));
+const d3 = DA([oa(), oa({ n: 'Fone' }), oa({ n: 'Chinelo' })]);
+caso('achados: assinatura errada ou tela fora da faixa, 403', (await fetch(`${raiz}/achados?d=${d3}&a=${'0'.repeat(24)}&i=0`)).status === 403 && (await fetch(`${raiz}/achados?d=${d3}&a=${assinarAchados(SENHA, d3)}&i=9`)).status === 403);
+for (const i of [0, 1, 4]) {
+  const t = await fetch(`${raiz}/achados?d=${d3}&a=${assinarAchados(SENHA, d3)}&i=${i}`);
+  const meta = await sharp(Buffer.from(await t.arrayBuffer())).metadata();
+  caso(`achados: tela ${i} em jpg 1080x1350`, t.status === 200 && meta.width === 1080 && meta.height === 1350, meta);
+}
 caso('nome em ate 2 linhas, por palavra', JSON.stringify(linhasDoNome('Chave De Impacto Kinetx 68vf Brushless 880nm 2 Baterias')) === JSON.stringify(['Chave De Impacto', 'Kinetx 68vf Brushless']));
 await new Promise((ok) => s.close(ok));
 fs.rmSync(pasta, { recursive: true, force: true });

@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -991,6 +991,56 @@ console.log('\n  marca nova na foto em cena (15/11, caso AirPods)');
   const pm = pedidoMarcaNova('https://x/a.jpg', 'data:image/png;base64,QQ');
   caso('pedido: as duas fotos e a pergunta de marca, inclusive em telas', pm.messages[0].content.length === 3 && /telas/.test(pm.messages[0].content[0].text) && /AirPods/.test(pm.messages[0].content[0].text));
   caso('cena: pede para não mostrar tela nem marca que não está no produto', /Never show a phone, computer or TV screen/.test(pedidoCena('https://x/a.jpg', 'Fone').messages[0].content[0].text));
+}
+
+console.log('\n  carrossel de achados (15/11)');
+{
+  caso('nome curto: corta no separador e em 44 letras, sem inventar', nomeCurto('Óculos De Sol Esportivos Polarizados Masculinos Para Ciclismo , Pesca') === 'Óculos De Sol Esportivos Polarizados'
+    && nomeCurto('Mochila God Talent Notebook 40l Masculina Escolar Passeio') === 'Mochila God Talent Notebook 40l Masculina' && nomeCurto('Fone Bluetooth') === 'Fone Bluetooth');
+  const SEG = new Date('2026-11-16T21:30:00Z');   // segunda 16/11, 18h30 em SP
+  const br = (v) => String(v).replace('.', ',');   // a legenda do grupo usa vírgula: R$18,60
+  const of = (nome, de, por, h = 24) => ({ texto: `X\n\n${nome}\n\n💵 De R$${br(de)} por R$${br(por)}`, imagem: `https://td.example/img/${nome}.jpg`, chave: 'ml:' + nome, quando: SEG.getTime() - h * 36e5 });
+  const barato = [of('Oculos', 27, 18.6), of('Airdots', 52, 20.47), of('Carregador', 32.9, 26.99), of('Chinelo', 70, 34.9), of('Mochila', 59.9, 37.99), of('Garrafa', 40, 30)];
+  let a = ofertasDosAchados({ cenasSemana: [...barato, of('TV', 3805, 3261)] }, SEG);
+  caso('achados: 4+ até R$ 50 vira "abaixo de R$ 50", os 5 de maior desconto, do mais barato ao mais caro', a.t === 'abaixo de R$ 50' && a.o.length === 5 && a.o[0].n === 'Oculos' && !a.o.some(o => o.n === 'Carregador' || o.n === 'TV') && a.o.every((o, i, l) => !i || l[i - 1].por <= o.por), a);
+  a = ofertasDosAchados({ cenasSemana: [of('A', 100, 60), of('B', 120, 80), of('C', 150, 90), of('D', 130, 95), of('E', 40, 30)] }, SEG);
+  caso('achados: senão "abaixo de R$ 100"', a.t === 'abaixo de R$ 100' && a.o.length === 5);
+  a = ofertasDosAchados({ cenasSemana: [of('TV', 3805, 3261), of('Geladeira', 4000, 3000), of('Notebook', 3000, 2500)] }, SEG);
+  caso('achados: senão os maiores descontos da semana (3 ou mais)', a.t === '' && a.o.length === 3);
+  caso('achados: menos de 3, não sai; mais de 7 dias e já usadas não entram', ofertasDosAchados({ cenasSemana: [of('A', 10, 5), of('B', 10, 5)] }, SEG).o.length === 0
+    && ofertasDosAchados({ cenasSemana: barato.map(o => ({ ...o, quando: SEG.getTime() - 8 * 864e5 })) }, SEG).o.length === 0
+    && ofertasDosAchados({ cenasSemana: barato, achadosUsados: barato.map(o => o.chave) }, SEG).o.length === 0);
+  const ach = ofertasDosAchados({ cenasSemana: barato }, SEG);
+  const urls = linksDosAchados('https://td.example', 'segredo', ach);
+  caso('achados: uma tela por oferta mais capa e fecho, assinadas', urls.length === 7 && /^https:\/\/td\.example\/achados\?d=[\w-]+&a=[a-f0-9]{24}&i=0$/.test(urls[0]) && urls[6].endsWith('&i=6'));
+  const leg = legendaDosAchados(ach);
+  caso('achados: legenda com #publi, dia de cada oferta, aviso e pergunta', /#publi/.test(leg) && /em \d\d\/\d\d/.test(leg) && /Podem ter mudado/.test(leg) && /Comenta o número/.test(leg) && !/[\u2013\u2014]/.test(leg), leg);
+  const env = { META_IG_USER_ID: '1', META_ACCESS_TOKEN: 't', ENCURTADOR_URL: 'https://td.example', ENCURTADOR_SEGREDO: 'segredo' };
+  const cfg = { achados: true, achadosHora: 18 };
+  let n = 0;
+  const http = (st = 'FINISHED') => ({ httpRequest: async (o) => {
+    if (/\/achados\?/.test(o.url)) return { statusCode: 200 };
+    if (/\/media$/.test(o.url)) return { id: o.body.media_type === 'CAROUSEL' ? 'CAR' : 'F' + (++n) };
+    if (/fields=status_code/.test(o.url)) return { status_code: st };
+    if (/media_publish/.test(o.url)) return { id: 'P1' };
+    return {}; } });
+  const m = { cenasSemana: barato };
+  caso('achados: terça não sai; antes das 18h não sai; desligado não sai', await passoDosAchados(m, new Date('2026-11-17T21:30:00Z'), cfg, http(), env) === null
+    && await passoDosAchados(m, new Date('2026-11-16T19:00:00Z'), cfg, http(), env) === null && await passoDosAchados(m, SEG, { achados: false }, http(), env) === null);
+  let r = await passoDosAchados(m, SEG, cfg, http(), env);
+  caso('achados passo 1: pede as telas e cria os 7 itens', r.passo === 'itens' && m.achadosIG.filhos.length === 7, r);
+  r = await passoDosAchados(m, SEG, cfg, http('IN_PROGRESS'), env);
+  caso('achados passo 2: itens processando, espera', r.passo === 'processando_itens');
+  r = await passoDosAchados(m, SEG, cfg, http(), env);
+  caso('achados passo 2: cria o carrossel', r.passo === 'carrossel' && m.achadosIG.container === 'CAR');
+  r = await passoDosAchados(m, SEG, cfg, http(), env);
+  caso('achados passo 3: publica e marca as ofertas usadas', r.passo === 'publicou' && m.achadosIG.feito === 'P1' && m.achadosUsados.length === 5 && await passoDosAchados(m, SEG, cfg, http(), env) === null);
+  const m2 = { cenasSemana: barato };
+  await passoDosAchados(m2, SEG, cfg, http(), env);
+  r = await passoDosAchados(m2, SEG, cfg, http('ERROR'), env);
+  caso('achados: Meta recusou um item, recomeça (até 3 no dia)', r.passo === 'meta_recusou_item' && !m2.achadosIG.filhos && m2.achadosIG.tent === 1);
+  r = await passoDosAchados({ cenasSemana: barato }, SEG, cfg, { httpRequest: async () => { throw new Error('fora'); } }, env);
+  caso('achados: erro de rede não derruba o garimpo', r.passo === 'erro');
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
