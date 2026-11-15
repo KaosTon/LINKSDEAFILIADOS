@@ -10,6 +10,9 @@
 //
 // Robô não conta (21/10): Google, Bing, a prévia de link do WhatsApp e do Facebook abrem o link
 // e não são gente. Eles ainda são redirecionados normalmente; só ficam fora da contagem (robos).
+//   POST /api/imagem        { dados: "data:image/...;base64,..." } com a senha -> { url } (15/11): guarda a foto
+//                           em cena do garimpo (jpg até 1080 px) para o card do Instagram e o envio; apaga com 10 dias
+//   GET  /img/{id}.jpg      a foto guardada
 //   GET  /saude             para o Railway saber que está de pé
 //   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
 //                           CONVITE_GRUPO pode ter vários convites separados por vírgula (17/10):
@@ -42,6 +45,19 @@ export function ehRobo(ua) { return !ua || ROBO.test(String(ua)); }
 
 const RECENTES = 300, RECENTES_DIAS = 14;
 
+/** Guarda a foto como jpg (até 1080 px) com o nome tirado do conteúdo; apaga as de mais de 10 dias. */
+export async function guardarImagem(pastaImg, bin, dias = 10) {
+  const { default: sharp } = await import('sharp');
+  const jpg = await sharp(bin).rotate().resize(1080, 1080, { fit: 'inside', withoutEnlargement: true }).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  const nome = crypto.createHash('sha256').update(jpg).digest('hex').slice(0, 24) + '.jpg';
+  fs.writeFileSync(path.join(pastaImg, nome), jpg);
+  const limite = Date.now() - dias * 864e5;
+  for (const f of fs.readdirSync(pastaImg)) {
+    try { if (fs.statSync(path.join(pastaImg, f)).mtimeMs < limite) fs.unlinkSync(path.join(pastaImg, f)); } catch { /* segue */ }
+  }
+  return nome;
+}
+
 export function novoCodigo(existe, tamanho = 5) {
   for (;;) {
     const b = crypto.randomBytes(tamanho);
@@ -70,6 +86,8 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
     fs.renameSync(tmp, arquivo);
     sujo = false;
   };
+  const pastaImg = path.join(pasta, 'img');
+  fs.mkdirSync(pastaImg, { recursive: true });
   const foto = criarRotaFoto({ pasta, segredo, ...(baixarFoto ? { baixarFoto } : {}) });
   const card = criarRotaCard({ pasta, segredo, baixarFoto: baixarFoto || baixar });
   const relogio = setInterval(salvar, 30000);
@@ -111,6 +129,32 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
         responde(res, 200, { codigo, curto: `${base.replace(/\/+$/, '')}/${codigo}` });
       });
       return;
+    }
+
+    if (p === '/api/imagem' && req.method === 'POST') {
+      if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
+      const partes = []; let tam = 0;
+      req.on('data', (c) => { tam += c.length; if (tam > 12e6) req.destroy(); else partes.push(c); });
+      req.on('end', async () => {
+        let bin;
+        try {
+          const m = String(JSON.parse(Buffer.concat(partes).toString('utf8')).dados || '').match(/^data:image\/(png|jpe?g|webp);base64,([A-Za-z0-9+/=]+)$/);
+          if (!m) return responde(res, 400, { erro: 'imagem' });
+          bin = Buffer.from(m[2], 'base64');
+        } catch { return responde(res, 400, { erro: 'json' }); }
+        try {
+          const jpg = await guardarImagem(pastaImg, bin);
+          responde(res, 200, { url: `${base.replace(/\/+$/, '')}/img/${jpg}` });
+        } catch (e) { responde(res, 400, { erro: 'imagem' }); }
+      });
+      return;
+    }
+
+    if (/^\/img\/[a-f0-9]{24}\.jpg$/.test(p)) {
+      let jpg;
+      try { jpg = fs.readFileSync(path.join(pastaImg, p.slice(5))); } catch { return responde(res, 404, 'não existe'); }
+      res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Content-Length': jpg.length, 'Cache-Control': 'public, max-age=604800' });
+      return void res.end(jpg);
     }
 
     if (p === '/api/cliques') {

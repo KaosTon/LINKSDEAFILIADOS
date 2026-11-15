@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -895,6 +895,12 @@ console.log('\n  foto em cena (15/11)');
   caso('dia de tudo: sem limite de 5 nem intervalo', podeCena(mt, H, { cenaPorDia: 5, cenaIntervalo: 120, cenaTodosAte: '2026-11-15' }) && !podeCena(mt, H, { cenaPorDia: 5, cenaIntervalo: 120 }));
   const rt = await comFotoEmCena(base, {}, H, { cenaPorDia: 5, cenaIntervalo: 120, cenaTodosAte: '2026-11-15' }, { fotoEmCena: async () => 'data:image/png;base64,QQ', confereCena: async () => ({ igual: true }) });
   caso('dia de tudo: toalha de R$40 ganha foto em cena', rt.cena === 'data:image/png;base64,QQ');
+  const rc = { ...base, cena: 'data:image/png;base64,QQ' };
+  caso('hospeda: troca a data:image pelo endereço guardado', (await hospedarCena(rc, { guardarImagem: async () => 'https://td.example/img/abc.jpg' })).cena === 'https://td.example/img/abc.jpg');
+  caso('hospeda: encurtador fora do ar, segue com a data:image', (await hospedarCena(rc, { guardarImagem: async () => { throw new Error('x'); } })).cena === rc.cena
+    && (await hospedarCena(rc, { guardarImagem: async () => null })).cena === rc.cena && (await hospedarCena(base, {})) === base);
+  const ofCena = { chave: 'ml:1', texto: 'X\n\nSmart TV LG 65\n\n💵 De R$3.805,68 por R$3.261', imagem: 'https://td.example/img/abc.jpg', cena: true };
+  caso('card do status com foto em cena leva c=1; sem cena, não', dadosDoStatus(ofCena).c === 1 && dadosDoStatus({ ...ofCena, cena: false }).c === undefined, dadosDoStatus(ofCena));
   const tv = { ...base, titulo: 'Smart TV LG 50"' };
   const rede = (igual, img = 'data:image/png;base64,QQ') => ({ fotoEmCena: async () => img, confereCena: async () => ({ igual, motivo: igual ? 'ok' : 'marca trocada' }) });
   let mm = {};

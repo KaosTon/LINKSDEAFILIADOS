@@ -100,7 +100,7 @@ const garimpa = node({
 "let r = await garimpar({ canais, amazonHtml, shopee, agora, cfg, mem, rede });",
 "if (r.acao !== 'postar') return [{ json: { postar: false, motivo: r.motivo, tentou: r.tentou, postados_hoje: mem.postados } }];",
 "// Só na rodada automática e ligada: cada foto em cena custa.",
-"if (ligado && !teste) r = await comFotoEmCena(r, mem, agora, cfg, rede);",
+"if (ligado && !teste) r = await hospedarCena(await comFotoEmCena(r, mem, agora, cfg, rede), rede);",
 "return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || ''), eletronico: ehEletronico(r.titulo || '') } }];"
 ].join('\n') } },
   output: [{ postar: true, tipo: 'produto', chave: 'amazon:B0X', texto: 'Oferta', imagem: '', grupo: '120363000000000002-group' }]
@@ -202,9 +202,11 @@ const anota = node({
 "    // Para o card (27/10): fora da Amazon, com \"De R$\" na legenda. Produto de menos de R$60 só entra se não tiver outro.",
 "    const por = Number(((String(g.texto).match(/ por R\\$([\\d.]+)/) || [])[1] || '').replace(/\\./g, '')) || 0;",
 "    if (!/^amazon:/.test(g.chave || '') && / De R\\$/.test(g.texto) && off > 0) {",
-"      const nota = off - (por >= 60 ? 0 : 100);",
+"      // Com foto em cena guardada (15/11) ganha a frente: o card do feed fica com a foto bonita.",
+"      const cena = /^https:\\/\\//.test(g.cena || '');",
+"      const nota = off - (por >= 60 ? 0 : 100) + (cena ? 30 : 0);",
 "      const c = mem.melhorCard && mem.melhorCard.dia === mem.dia ? mem.melhorCard : null;",
-"      if (!c || nota > c.nota) mem.melhorCard = { dia: mem.dia, nota, texto: g.texto, imagem: g.imagem, chave: g.chave, quando: Date.now() };",
+"      if (!c || nota > c.nota) mem.melhorCard = { dia: mem.dia, nota, texto: g.texto, imagem: cena ? g.cena : g.imagem, cena, chave: g.chave, quando: Date.now() };",
 "    }",
 "  }",
 "}",
