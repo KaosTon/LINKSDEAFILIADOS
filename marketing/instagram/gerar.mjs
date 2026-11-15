@@ -3,6 +3,8 @@
 //   node marketing/instagram/gerar.mjs          (precisa do Playwright com Chromium)
 //
 // Entrada: posts.json (id, data AAAA-MM-DD, selo, titulo, texto, fundo, legenda; "cheio" = foto em tela cheia).
+// Carrossel (15/11): item com "carrossel" (o nome em carrosseis.mjs); as telas saem em {id}-1.jpg, {id}-2.jpg...
+// e a legenda vem do próprio carrossel.
 // Reel: item com "video" (o MP4 já renderizado em site/public/instagram) e "fonte" (o código em marketing/reels,
 // feito em Remotion: npm run som && npm run render). O gerador só confere que o MP4 existe.
 // Saída:   site/public/instagram/{id}.jpg e site/public/instagram/agenda.json (id, data, imagem, legenda).
@@ -12,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { CARROSSEIS, telasDoCarrossel } from './carrosseis.mjs';
 
 const aqui = path.dirname(fileURLToPath(import.meta.url));
 const saida = path.resolve(aqui, '../../site/public/instagram');
@@ -50,10 +53,12 @@ if (posts.length < todos.length) {
   console.log('saiu da agenda (já passou):', todos.filter(p => p.data < limite).map(p => p.id).join(', '));
 }
 const ids = new Set();
+// Carrossel: a legenda vem do carrosseis.mjs (um lugar só para o texto e as telas).
+for (const p of posts) if (p.carrossel) { if (!CARROSSEIS[p.carrossel]) throw new Error(`carrossel que não existe: ${p.id}`); p.legenda = CARROSSEIS[p.carrossel].legenda; }
 for (const p of posts) {
   if (!/^[a-z0-9-]+$/.test(p.id) || ids.has(p.id)) throw new Error(`id ruim ou repetido: ${p.id}`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(p.data)) throw new Error(`data ruim: ${p.id}`);
-  if (JSON.stringify(p).includes(String.fromCharCode(0x2014)) || /#publi/.test(p.legenda) || /R\$/.test(JSON.stringify(p))) throw new Error(`regra quebrada (travessão, #publi ou preço): ${p.id}`);
+  if (JSON.stringify(p).includes(String.fromCharCode(0x2014)) || JSON.stringify(p).includes(String.fromCharCode(0x2013)) || /#publi/.test(p.legenda) || /R\$/.test(JSON.stringify(p))) throw new Error(`regra quebrada (travessão, #publi ou preço): ${p.id}`);
   ids.add(p.id);
 }
 fs.mkdirSync(saida, { recursive: true });
@@ -62,6 +67,22 @@ for (const p of posts) {
   if (p.video) {
     if (!/^[a-z0-9-]+\.mp4$/.test(p.video) || !fs.existsSync(path.join(saida, p.video))) throw new Error(`reel sem MP4 em site/public/instagram: ${p.id}`);
     console.log('reel', p.id);
+    continue;
+  }
+  if (p.carrossel) {
+    const telas = telasDoCarrossel(p.carrossel);
+    p.telas = telas.length;
+    for (const [i, h] of telas.entries()) {
+      const pg = await b.newPage({ viewport: { width: 1080, height: 1350 } });
+      const tmp = path.join(aqui, `.tmp-${p.id}-${i + 1}.html`);
+      fs.writeFileSync(tmp, h);
+      await pg.goto(pathToFileURL(tmp).href, { waitUntil: 'networkidle' });
+      await pg.evaluate(() => document.fonts.ready);
+      await pg.screenshot({ path: path.join(saida, `${p.id}-${i + 1}.jpg`), type: 'jpeg', quality: 86 });
+      await pg.close();
+      fs.unlinkSync(tmp);
+    }
+    console.log('carrossel', p.id, p.telas, 'telas');
     continue;
   }
   const pg = await b.newPage({ viewport: { width: 1080, height: 1350 } });
@@ -76,10 +97,13 @@ for (const p of posts) {
   console.log('post', p.id);
 }
 await b.close();
-fs.writeFileSync(path.join(saida, 'agenda.json'), JSON.stringify(posts.map(p => (p.video ? { id: p.id, data: p.data, video: `/instagram/${p.video}`, legenda: p.legenda } : { id: p.id, data: p.data, imagem: `/instagram/${p.id}.jpg`, legenda: p.legenda })), null, 1) + '\n');
+const arquivos = (p) => (p.video ? [p.video] : p.carrossel ? Array.from({ length: p.telas }, (_, i) => `${p.id}-${i + 1}.jpg`) : [`${p.id}.jpg`]);
+fs.writeFileSync(path.join(saida, 'agenda.json'), JSON.stringify(posts.map(p => (p.video ? { id: p.id, data: p.data, video: `/instagram/${p.video}`, legenda: p.legenda }
+  : p.carrossel ? { id: p.id, data: p.data, imagens: arquivos(p).map(f => `/instagram/${f}`), legenda: p.legenda }
+  : { id: p.id, data: p.data, imagem: `/instagram/${p.id}.jpg`, legenda: p.legenda })), null, 1) + '\n');
 
 // Arquivo em site/public/instagram que não está mais na agenda: apaga (já foi publicado ou saiu da agenda).
-const usados = new Set(['agenda.json', ...posts.map(p => p.video || `${p.id}.jpg`)]);
+const usados = new Set(['agenda.json', ...posts.flatMap(arquivos)]);
 for (const f of fs.readdirSync(saida)) {
   if (!usados.has(f) && /\.(jpg|mp4)$/.test(f)) { fs.unlinkSync(path.join(saida, f)); console.log('apagado do site:', f); }
 }

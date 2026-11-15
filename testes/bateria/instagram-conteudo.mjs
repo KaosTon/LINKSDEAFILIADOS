@@ -1,7 +1,7 @@
 // Bateria dos posts de conteúdo do Instagram (fluxo 06) e da agenda gerada.
 import fs from 'node:fs';
 import { pegarCodigo, rodar } from './executar.mjs';
-import { horaDoConteudo, postDeHoje, anotarTentativa, avisoDeFalha } from '../../lib/instagram-agenda.mjs';
+import { horaDoConteudo, postDeHoje, anotarTentativa, avisoDeFalha, ehCarrossel, publicarCarrossel } from '../../lib/instagram-agenda.mjs';
 import { avisoDaOfertaDoDia } from '../../lib/instagram.mjs';
 
 let ok = 0, mau = 0;
@@ -78,6 +78,31 @@ memoria = {};
 r = await rodar(codigo, { env: { ...env, INSTAGRAM_REEL: 'sim' }, http: [httpR[0], httpR[1], { quando: /\/V1\?fields=status_code/, metodo: 'GET', responde: { status_code: 'ERROR' } }], memoria, agora: h18 });
 caso('reel que a Meta recusa: não publica e conta a tentativa', r.saida[0].json.publicou === false && r.saida[0].json.tentativa === 1 && !r.chamadas.some(c => /media_publish$/.test(c.url)), r.saida);
 
+console.log('\n# Carrossel de dica (15/11)');
+const AGC = [{ id: 'dica-c', data: '2026-11-14', imagens: ['/instagram/dica-c-1.jpg', '/instagram/dica-c-2.jpg', '/instagram/dica-c-3.jpg'], legenda: 'C' }];
+caso('carrossel: 2 a 10 telas do site', ehCarrossel(AGC[0]) && !ehCarrossel({ imagens: ['/instagram/a.jpg'] }) && !ehCarrossel({ imagens: ['/instagram/a.jpg', 'https://fora.site/b.jpg'] }) && postDeHoje(AGC, h18, {}).id === 'dica-c');
+let nF = 0;
+const httpC = [
+  { quando: /agenda\.json$/, metodo: 'GET', responde: AGC },
+  { quando: /\/1789\/media$/, metodo: 'POST', responde: (op) => ({ id: op.body.media_type === 'CAROUSEL' ? 'CAR' : 'F' + (++nF) }) },
+  { quando: /fields=status_code/, metodo: 'GET', responde: { status_code: 'FINISHED' } },
+  { quando: /\/1789\/media_publish$/, metodo: 'POST', responde: { id: 'PC' } },
+];
+memoria = {};
+r = await rodar(codigo, { env, http: httpC, memoria, agora: h18 });
+const itensC = r.chamadas.filter(c => /\/media$/.test(c.url) && c.body.is_carousel_item);
+const carC = r.chamadas.find(c => /\/media$/.test(c.url) && c.body.media_type === 'CAROUSEL');
+const pubC = r.chamadas.find(c => /media_publish$/.test(c.url));
+caso('fluxo: publica o carrossel (3 itens, o CAROUSEL com a legenda, publica)', r.saida[0].json.publicou === true && itensC.length === 3
+  && itensC[0].body.image_url === 'https://www.temdescontos.com.br/instagram/dica-c-1.jpg' && carC && carC.body.children === 'F1,F2,F3' && carC.body.caption === 'C' && pubC && pubC.body.creation_id === 'CAR', { s: r.saida, c: carC && carC.body });
+caso('carrossel não repete', (await rodar(codigo, { env, http: httpC, memoria, agora: h18 })).saida[0].json.motivo === 'nada_hoje');
+memoria = {};
+r = await rodar(codigo, { env, http: [httpC[0], httpC[1], { quando: /fields=status_code/, metodo: 'GET', responde: { status_code: 'ERROR' } }], memoria, agora: h18 });
+caso('carrossel com tela recusada pela Meta: não publica e conta a tentativa', r.saida[0].json.publicou === false && r.saida[0].json.tentativa === 1 && !r.chamadas.some(c => /media_publish$/.test(c.url)), r.saida);
+caso('publicarCarrossel sem token ou com 1 tela: não chama nada', await publicarCarrossel({ httpRequest: async () => { throw new Error('não devia'); } }, {}, ['a', 'b'], 'x') === null
+  && await publicarCarrossel({ httpRequest: async () => { throw new Error('não devia'); } }, env, ['a'], 'x') === null);
+caso('aviso de falha diz que é carrossel', /O carrossel/.test(avisoDeFalha(AGC[0], 3) || ''));
+
 console.log('\n# Aviso de falha no rascunho (13/11)');
 caso('1ª e 2ª falha: sem aviso', avisoDeFalha(AG[0], 1) === null && avisoDeFalha(AG[0], 2) === null);
 caso('3ª falha: avisa com o id do post', /dica-a/.test(avisoDeFalha(AG[0], 3) || '') && /3 tentativas/.test(avisoDeFalha(AG[0], 3)));
@@ -96,7 +121,8 @@ console.log('\n# Agenda gerada (site/public/instagram)');
 const agenda = JSON.parse(fs.readFileSync(new URL('../../site/public/instagram/agenda.json', import.meta.url), 'utf8'));
 const ids = agenda.map(p => p.id);
 caso('ids únicos e uma data por dia', new Set(ids).size === ids.length && new Set(agenda.map(p => p.data)).size === agenda.length, ids);
-caso('toda imagem ou vídeo existe', agenda.every(p => fs.existsSync(new URL('../../site/public' + (p.video || p.imagem), import.meta.url))));
+caso('toda imagem, vídeo ou tela de carrossel existe', agenda.every(p => [p.video || p.imagem, ...(p.imagens || [])].filter(Boolean).every(f => fs.existsSync(new URL('../../site/public' + f, import.meta.url)))));
+caso('carrosséis da agenda com 2 a 10 telas', agenda.filter(p => p.imagens).every(ehCarrossel) && agenda.some(p => p.imagens));
 caso('sem #publi, sem preço e sem link na legenda', agenda.every(p => !/#publi|R\$|https?:/.test(p.legenda)));
 caso('legenda cabe no Instagram (até 2.200 letras)', agenda.every(p => p.legenda.length <= 2200));
 
