@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -399,7 +399,7 @@ console.log('\n=== Painel do resumo: membros, cliques e Shopee (17/10) ===');
   const falha = await coletarPainel({ membrosDoGrupo: async () => { throw new Error('x'); }, cliques: async () => ({ grupo: {}, top: [] }), shopeeVendas: async () => null }, ['g1'], D2);
   caso('coletar: o que falha fica de fora', falha.membros === null && falha.cliques && falha.shopee === null, falha);
   const dois = await coletarPainel({ membrosDoGrupo: async (g) => (g === 'g1' ? 10 : 5), cliques: async () => null, shopeeVendas: async (ini, fim) => ({ ini, fim }) }, ['g1', 'g2'], D2);
-  caso('coletar: soma os grupos e pede a Shopee do inicio do dia em SP', dois.membros === 15 && dois.shopee.ini === Date.parse('2026-10-06T03:00:00Z') / 1000, dois);
+  caso('coletar: soma os grupos e pede a Shopee desde o dia 1º do mês em SP (15/11)', dois.membros === 15 && dois.shopee.ini === Date.parse('2026-10-01T03:00:00Z') / 1000, dois);
   // Entradas e saídas (27/10): compara a lista de hoje com a da véspera, sem guardar telefone.
   const tel = (n) => Array.from({ length: n }, (_, k) => '5500000000' + String(k).padStart(3, '0'));
   const lista = await coletarPainel({ membrosDoGrupo: async () => tel(5), cliques: async () => null, shopeeVendas: async () => null }, ['g1'], D2);
@@ -963,6 +963,25 @@ console.log('\n  reel das ofertas do dia (15/11)');
   const m4 = mem0();
   r = await passoDoReel(m4, T, cfg, { httpRequest: async () => { throw new Error('fora'); } }, env);
   caso('reel: erro de rede não derruba o garimpo', r.passo === 'erro' && m4.reelOfertas.tent === 1);
+}
+
+console.log('\n  vendas da Shopee por período (15/11)');
+{
+  const A = new Date('2026-11-15T23:00:00Z');   // 20h de 15/11 em SP
+  const ts = (iso) => Math.floor(Date.parse(iso) / 1000);
+  const n = (iso, v, c) => ({ purchaseTime: ts(iso), totalCommission: String(c), orders: [{ items: [{ actualAmount: String(v) }] }] });
+  const nodes = [n('2026-11-14T20:00:00-03:00', 50, 4), n('2026-11-10T10:00:00-03:00', 100, 6), n('2026-11-02T10:00:00-03:00', 30, 1.5), n('2026-10-22T10:00:00-03:00', 60, 3)];
+  const p = vendasPorPeriodo(nodes, A);
+  caso('vendas: ontem, 7 dias e mês separados', p.periodos && p.ontem.pedidos === 1 && p.ontem.comissao === 4 && p.semana.pedidos === 2 && p.semana.valor === 150 && p.mes.pedidos === 3 && p.mes.comissao === 11.5, p);
+  caso('vendas: mês passado não entra no mês', vendasPorPeriodo([nodes[3]], A).mes.pedidos === 0);
+  caso('vendas: 23h de ontem em SP conta como ontem', vendasPorPeriodo([n('2026-11-14T23:30:00-03:00', 10, 1)], A).ontem.pedidos === 1);
+  let pedido;
+  const pc = await coletarPainel({ membrosDoGrupo: async () => 5, cliques: async () => null, shopeeVendas: async (ini, fim) => { pedido = { ini, fim }; return nodes; } }, ['g1'], A);
+  caso('painel: pede desde o dia 1º do mês', pedido.ini === ts('2026-11-01T00:00:00-03:00') && pc.shopee.mes.pedidos === 3, pedido);
+  await coletarPainel({ membrosDoGrupo: async () => 5, cliques: async () => null, shopeeVendas: async (ini) => { pedido = { ini }; return []; } }, ['g1'], new Date('2026-12-01T15:00:00Z'));
+  caso('painel: no dia 1º pede desde ontem (para mostrar ontem)', pedido.ini === ts('2026-11-30T00:00:00-03:00'));
+  const t = textoResumo({ resumo: { lojas: { ml: 2 }, descartes: {} } }, A, guardarPainel({}, A, pc));
+  caso('resumo: mostra ontem, 7 dias e mês', /Vendas na Shopee/.test(t) && /Ontem: 1 pedido, R\$ 50,00 em compras, comissão R\$ 4,00/.test(t) && /No mês: 3 pedidos/.test(t) && !/[\u2013\u2014]/.test(t), t);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
