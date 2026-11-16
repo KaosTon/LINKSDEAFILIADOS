@@ -13,6 +13,9 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * O mesmo caminho "Posta no grupo" manda a prévia (grupo = rascunho). O robô
  * ignora o que ele mesmo manda, então a prévia não volta como oferta nova.
  *
+ * Foto em cena (16/11): oferta de Shopee, ML e Magalu no padrão do grupo ganha a foto em cena já na
+ * prévia, com a mesma conferência do garimpo (Amazon nunca). RASCUNHO_CENA_POR_DIA=0 desliga.
+ *
  * Se WEBHOOK_SEGREDO estiver configurado, a URL do webhook na Z-API tem que
  * terminar com ?k=O_SEGREDO; sem isso, qualquer um que achasse a URL poderia
  * mandar o robô postar no grupo.
@@ -52,8 +55,11 @@ const prepara = node({
 "  // Prévia (19/10): a oferta volta no rascunho e só vai ao grupo com \"sim\". RASCUNHO_PREVIA=nao desliga.",
 "  previa: String($env.RASCUNHO_PREVIA || 'sim').trim().toLowerCase() !== 'nao' };",
 "const rede = redeN8n(this.helpers, $env);",
-"const r = await prepararOferta(w.body, cfg, rede, memoria.vistos, memoria);",
+"let r = await prepararOferta(w.body, cfg, rede, memoria.vistos, memoria);",
 "if (r.acao === 'ignorar') return [];",
+"// Foto em cena na prévia (16/11), fora Amazon. RASCUNHO_CENA_POR_DIA (20 por dia; 0 desliga).",
+"const nCena = String($env.RASCUNHO_CENA_POR_DIA ?? '').trim();",
+"r = await cenaNoRascunho(r, memoria, new Date(), { cenaPorDia: nCena === '' || isNaN(Number(nCena)) ? 20 : Number(nCena) }, rede);",
 "return [{ json: r }];"
 ].join('\n') } },
   output: [{ acao: 'postar', postar: true, grupo: '120363000000000002-group', texto: 'Oferta', imagem: '' }]
