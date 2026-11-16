@@ -5,7 +5,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados, faixaDoCusto } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -824,6 +824,23 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   const t = textoResumo(mem, new Date('2026-11-10T01:00:00Z'), { membros: 30, anuncios: a });
   caso('resumo: linha dos anuncios com custo por clique', /Anúncios hoje\*\n\u2022 R\$ 12,50 gastos, 50 cliques no link, R\$ 0,25 por clique/.test(t), t);
   caso('resumo: sem anuncios, sem a linha', !/Anúncios/.test(textoResumo(mem, new Date('2026-11-10T01:00:00Z'), { membros: 30 })));
+  // Custo por membro novo (16/11): gasto ÷ quem entrou, no dia e na semana, com a faixa combinada.
+  const mc = {}; const ids = (n, b = 0) => Array.from({ length: n }, (_, i) => idDoMembro('55119999990' + String(b + i).padStart(2, '0')));
+  let lista = ids(30), xc = null;
+  ['2026-11-10', '2026-11-11', '2026-11-12', '2026-11-13'].forEach((d, k) => {
+    lista = [...lista, ...ids(k === 0 ? 0 : 3, 40 + k * 3)];
+    xc = guardarPainel(mc, new Date(d + 'T02:50:00Z'), { membros: lista.length, ids: lista, cliques: null, shopee: null, anuncios: { gasto: 9, cliques: 50, impressoes: 900 } });
+  });
+  const tc = textoResumo(mem, new Date('2026-11-13T02:50:00Z'), xc);
+  caso('custo por membro: hoje (gasto ÷ quem entrou)', xc.custo.hoje === 3 && /Custo por membro novo hoje: R\$ 3,00 \(R\$ 9,00 ÷ 3 que entraram\)/.test(tc), tc);
+  caso('custo por membro: semana com a faixa (R$ 3 = segurar)', /Últimos 3 dias: R\$ 3,00 por membro \(R\$ 27,00 ÷ 9\): segure o orçamento/.test(tc) && /até quem veio sem anúncio/.test(tc), tc);
+  caso('faixas: até R$1 ótimo, até R$2 bom, até R$3 segurar, acima caro', /ótimo/.test(faixaDoCusto(0.8)) && /bom/.test(faixaDoCusto(2)) && /segure/.test(faixaDoCusto(2.5)) && /caro/.test(faixaDoCusto(3.5)));
+  const mz = {}; let lz = ids(10);
+  guardarPainel(mz, new Date('2026-11-10T02:50:00Z'), { membros: 10, ids: lz, cliques: null, shopee: null, anuncios: { gasto: 5, cliques: 9, impressoes: 100 } });
+  const xz = guardarPainel(mz, new Date('2026-11-11T02:50:00Z'), { membros: 10, ids: lz, cliques: null, shopee: null, anuncios: { gasto: 6, cliques: 9, impressoes: 100 } });
+  const tz = textoResumo(mem, new Date('2026-11-11T02:50:00Z'), xz);
+  caso('custo por membro: gastou e ninguém entrou', /Custo por membro novo hoje: ninguém entrou hoje/.test(tz), tz);
+  caso('custo por membro: sem anúncio, sem a linha', guardarPainel({}, new Date('2026-11-11T02:50:00Z'), { membros: 10, cliques: null, shopee: null }).custo === null);
   const st = pedidosStoryIG('1789', 'TOKEN_TESTE', 'https://enc.test/card?d=x&a=y');
   caso('story: contêiner STORIES com a imagem do card', st && /\/1789\/media$/.test(st.criar.url) && st.criar.body.media_type === 'STORIES' && st.criar.body.image_url === 'https://enc.test/card?d=x&a=y');
   caso('story: publica o contêiner criado', st.publicar('55').body.creation_id === '55' && /media_publish$/.test(st.publicar('55').url));
