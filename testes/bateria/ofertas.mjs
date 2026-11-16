@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { lerPost, legendaAchado, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
-         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou, cenaNoRascunho } from '../../lib/ofertas.mjs';
+         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou, cenaNoRascunho, nomesParecidos, fotoDeOutraLoja } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -215,7 +215,33 @@ console.log('\n=== Esteira (fluxo 01) ===');
   const est2 = {}; let gerou = 0;
   let pa = await prepararOferta(corpo('Papel Teste 24 rolos\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est2);
   pa = await cenaNoRascunho(pa, est2, new Date(CP.agora), { cenaPorDia: 20 }, { ...rede, ...cenaOk, fotoEmCena: async () => { gerou++; return 'data:image/png;base64,AAAA'; } });
-  caso('rascunho Amazon: sem foto em cena (a foto da Amazon nunca muda) e sem gastar', gerou === 0 && pa.imagem === 'https://z/f.jpg' && !/Foto em cena/.test(pa.aviso || ''), pa);
+  caso('rascunho Amazon sem o produto na Shopee: foto original, sem gastar, e avisa', gerou === 0 && pa.imagem === 'https://z/f.jpg' && /não achei o mesmo produto/.test(pa.aviso || ''), pa);
+  // 16/11: Amazon com o mesmo produto na Shopee: a cena sai da foto da Shopee; a da Amazon so serve para comparar.
+  const NA = 'Papel Higiênico Folha Dupla 24 unidades Personal Vip';
+  caso('nomes parecidos: mesmo produto com "Leve 24 Pague 22"', nomesParecidos(NA, 'Papel Higiênico Personal Vip Folha Dupla Leve 24 Pague 22 Rolos'));
+  caso('nomes parecidos: outra quantidade ou outra marca nao', !nomesParecidos(NA, 'Papel Higiênico Personal Vip Folha Dupla 12 Rolos') && !nomesParecidos(NA, 'Papel Higiênico Neve Folha Tripla 24 rolos'));
+  const LISTA = [{ nome: 'Papel Higiênico Neve Folha Tripla 24 rolos', foto: 'https://cf.shopee/neve.jpg' },
+    { nome: 'Papel Higiênico Personal Vip Folha Dupla Leve 24 Pague 22 Rolos', foto: 'https://cf.shopee/personal.jpg' }];
+  const viu = [], usou = [];
+  const redeA = { ...rede, ...cenaOk, shopeeBusca: async () => LISTA,
+    mesmoProdutoFoto: async (a, b) => { viu.push([a, b]); return { igual: true }; },
+    fotoEmCena: async (f) => { usou.push(f); return 'data:image/png;base64,AAAA'; } };
+  caso('foto de outra loja: so a da Shopee com nome e quantidade certos, conferida com a da Amazon',
+    await fotoDeOutraLoja(NA, 'https://amazon/f.jpg', redeA) === 'https://cf.shopee/personal.jpg' && viu.length === 1 && viu[0][0] === 'https://amazon/f.jpg', viu);
+  const est7 = {};
+  let pz = await prepararOferta(corpo(NA + '\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est7);
+  pz = await cenaNoRascunho(pz, est7, new Date(CP.agora), { cenaPorDia: 20 }, redeA);
+  caso('rascunho Amazon com o produto na Shopee: cena feita da foto da Shopee, link da Amazon na legenda',
+    usou[0] === 'https://cf.shopee/personal.jpg' && pz.imagem === 'https://td.example/img/abc.jpg' && pz.link === '' && /tag=minha-20/.test(pz.texto) && /na Shopee/.test(pz.aviso)
+    && est7.pendente.oferta.imagem === 'https://td.example/img/abc.jpg', pz);
+  const est8 = {};
+  let px = await prepararOferta(corpo(NA + '\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est8);
+  px = await cenaNoRascunho(px, est8, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeA, confereCena: async () => ({ igual: false, motivo: 'x' }) });
+  caso('Amazon com cena recusada: volta a foto da Amazon, nunca a da Shopee', px.imagem === 'https://z/f.jpg' && est8.pendente.oferta.imagem === 'https://z/f.jpg' && /não passou/.test(px.aviso), px);
+  const est9 = {};
+  let pn = await prepararOferta(corpo(NA + '\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est9);
+  pn = await cenaNoRascunho(pn, est9, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeA, mesmoProdutoFoto: async () => ({ igual: false }) });
+  caso('Amazon: a IA diz que a foto da Shopee e outro produto: foto original e avisa', pn.imagem === 'https://z/f.jpg' && /não achei o mesmo produto/.test(pn.aviso), pn);
   const est3 = {};
   let pr = await prepararOferta(corpo(TXS), CP, redeS, [], est3);
   pr = await cenaNoRascunho(pr, est3, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeS, ...cenaOk, confereCena: async () => ({ igual: false, motivo: 'marca nova' }) });
