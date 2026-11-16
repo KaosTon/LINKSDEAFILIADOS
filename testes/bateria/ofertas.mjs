@@ -191,6 +191,16 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('checagem da foto falhou: fica a sua foto (nao some a foto por erro da IA)', fm3.imagem === 'https://tmp/limpa.jpeg' && !fm3.aviso, fm3);
   const fm4 = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: { imageUrl: 'https://tmp/limpa.jpeg', caption: 'Fone https://amzn.to/abc' } }), C, { ...rede, fotoLimpa: async () => true });
   caso('foto limpa: fica a sua foto, sem aviso', fm4.imagem === 'https://tmp/limpa.jpeg' && !fm4.aviso, fm4);
+  // 15/11: a previa saiu "Por R$1,13" num papel de R$27. O preco da loja confere o do texto e avisa na previa.
+  const PAG_P = (p) => `<span id="productTitle">Papel Teste</span> "hiRes":"https://m.media-amazon.com/images/I/p.jpg" "desktop_buybox_group_1":[{"displayPrice":"x","priceAmount":${p}}]`;
+  const pp1 = await prepararOferta(corpo('Papel Teste 24 rolos\n\n💵 Por R$ 1,13\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), C, { ...rede, pagina: async () => PAG_P(27) });
+  caso('preco do texto muito abaixo do da loja: avisa na previa com os dois precos', /Confira o preço/.test(pp1.aviso || '') && /R\$1,13/.test(pp1.aviso) && /R\$27/.test(pp1.aviso), pp1.aviso);
+  const pp2 = await prepararOferta(corpo('Papel Teste 24 rolos\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), C, { ...rede, pagina: async () => PAG_P(28.42) });
+  caso('preco perto do da loja (programe e poupe): sem aviso', !pp2.aviso, pp2.aviso);
+  const pp3 = await prepararOferta(corpo('Papel Teste 24 rolos\n\n💵 Por R$ 27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), C, { ...rede, pagina: async () => { throw new Error('captcha'); } });
+  caso('loja nao abriu: posta sem aviso de preco', pp3.acao === 'postar' && !/Confira/.test(pp3.aviso || ''), pp3);
+  const pp4 = await prepararOferta(corpo('Fone https://shopee.com.br/produto-i.1.2\n\n💵 Por R$ 90'), C, { ...rede, shopeeProduto: async () => ({ preco: 40, foto: 'https://cf.shopee/f.jpg' }) });
+  caso('Shopee acima do preco da API (outra opcao do produto): sem aviso', !/Confira/.test(pp4.aviso || ''), pp4.aviso);
   const longo = await prepararOferta(corpo('Fone https://www.amazon.com.br/gp/aw/d/B0FR49NFLT?pd_rd_w=kk&qid=1&ref_=sbx&th=1'), C, rede);
   caso('Amazon no rascunho sai no formato limpo /dp/ASIN?tag=', longo.texto === 'Fone https://www.amazon.com.br/dp/B0FR49NFLT?tag=minha-20', longo.texto);
   const semFoto = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: undefined, text: { message: 'Fone https://amzn.to/abc' } }), C, rede);
