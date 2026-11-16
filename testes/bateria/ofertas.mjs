@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { lerPost, legendaAchado, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
-         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou, cenaNoRascunho, nomesParecidos, fotoDeOutraLoja } from '../../lib/ofertas.mjs';
+         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou, cenaNoRascunho, nomesParecidos, fotoDeOutraLoja, problemaEntreLojas } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -223,7 +223,15 @@ console.log('\n=== Esteira (fluxo 01) ===');
   const LISTA = [{ nome: 'Papel Higiênico Neve Folha Tripla 24 rolos', foto: 'https://cf.shopee/neve.jpg' },
     { nome: 'Papel Higiênico Personal Vip Folha Dupla Leve 24 Pague 22 Rolos', foto: 'https://cf.shopee/personal.jpg' }];
   const viu = [], usou = [];
+  // Marca escrita nas duas fotos (16/11): "nao pode postar um produto e falar que e outro".
+  const TXA = ['LEVE', 'PAGUE', 'PERSONAL', 'VIP', 'FOLHA', 'DUPLA', 'ALGODAO', 'NATURAL', 'METROS'];
+  caso('marca escrita: mesma embalagem passa', problemaEntreLojas(NA, TXA, ['PERSONAL', 'VIP', 'FOLHA', 'DUPLA', 'LEVE', 'PAGUE']) === null);
+  caso('marca escrita: outra marca na Shopee recusa', !!problemaEntreLojas(NA, TXA, ['NEVE', 'FOLHA', 'DUPLA', 'COMPACTO']));
+  caso('marca escrita: modelo parecido (A15 x A25) recusa', !!problemaEntreLojas('Celular Samsung Galaxy A15 128GB', ['SAMSUNG', 'GALAXY', 'A15'], ['SAMSUNG', 'GALAXY', 'A25']));
+  caso('marca escrita: produto sem marca na foto nao da certeza, recusa', problemaEntreLojas('Fone Bluetooth Sem Fio', [], ['TWS']) === 'sem marca escrita para conferir');
+  caso('marca escrita: leitura falhou recusa', !!problemaEntreLojas(NA, null, TXA));
   const redeA = { ...rede, ...cenaOk, shopeeBusca: async () => LISTA,
+    textosDaFoto: async (u) => /amazon|z\/f\.jpg/.test(u) ? TXA : ['PERSONAL', 'VIP', 'FOLHA', 'DUPLA'],
     mesmoProdutoFoto: async (a, b) => { viu.push([a, b]); return { igual: true }; },
     fotoEmCena: async (f) => { usou.push(f); return 'data:image/png;base64,AAAA'; } };
   caso('foto de outra loja: so a da Shopee com nome e quantidade certos, conferida com a da Amazon',
@@ -242,6 +250,10 @@ console.log('\n=== Esteira (fluxo 01) ===');
   let pn = await prepararOferta(corpo(NA + '\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est9);
   pn = await cenaNoRascunho(pn, est9, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeA, mesmoProdutoFoto: async () => ({ igual: false }) });
   caso('Amazon: a IA diz que a foto da Shopee e outro produto: foto original e avisa', pn.imagem === 'https://z/f.jpg' && /não achei o mesmo produto/.test(pn.aviso), pn);
+  const est10 = {};
+  let pm = await prepararOferta(corpo(NA + '\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est10);
+  pm = await cenaNoRascunho(pm, est10, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeA, textosDaFoto: async (u) => /z\/f\.jpg/.test(u) ? TXA : ['NEVE', 'FOLHA', 'DUPLA'] });
+  caso('Amazon: a IA disse igual mas a marca escrita na Shopee e outra: foto original', pm.imagem === 'https://z/f.jpg' && /não achei o mesmo produto/.test(pm.aviso), pm);
   const est3 = {};
   let pr = await prepararOferta(corpo(TXS), CP, redeS, [], est3);
   pr = await cenaNoRascunho(pr, est3, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeS, ...cenaOk, confereCena: async () => ({ igual: false, motivo: 'marca nova' }) });
