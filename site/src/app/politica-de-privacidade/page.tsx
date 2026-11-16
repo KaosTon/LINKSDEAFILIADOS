@@ -7,11 +7,12 @@ import { MENSAGENS_ROTA } from "@/data/whatsapp";
 // Politica de privacidade (LGPD). Descreve o que o site FAZ: nao ha formulario; a medicao e o
 // Web Analytics do Cloudflare, sem cookies, e respeita o aviso; o pixel da Meta (14/11/2026) so
 // carrega com "Aceitar" (components/PixelMeta.tsx); o botao do grupo passa pelo
-// encurtador (temdescontos.com.br/grupo), que so conta o clique e a pagina de origem; os links
+// encurtador (temdescontos.com.br/grupo), que so conta o clique e a pagina de origem e, para quem veio
+// de anuncio e nao escolheu "Apenas essenciais", avisa a Meta do clique (16/11, lib/conversao.ts); os links
 // de oferta levam as lojas. Se entrar formulario, newsletter ou outra medicao, esta pagina muda.
 // PENDENTE (BRIEFING §2): revisao do Wellington e e-mail de contato.
 
-const ATUALIZADA_EM = "14 de novembro de 2026";
+const ATUALIZADA_EM = "16 de novembro de 2026";
 
 export const metadata: Metadata = {
   title: `Política de Privacidade | ${SITE.nome}`,
@@ -34,6 +35,7 @@ const SECOES: { titulo: string; itens: string[] }[] = [
       "O site não tem formulário e não pede nome, telefone, e-mail nem qualquer outro dado seu.",
       "Estatísticas de visita, sem identificar quem visita: página vista, página de origem, país aproximado, tipo de aparelho, navegador e velocidade de carregamento. Detalhes na seção 5.",
       "Quando você toca em \"Entrar no grupo\", contamos o clique e de qual página ele veio (por exemplo, a página inicial ou um guia). Nada que identifique você.",
+      "Se você chegou ao site por um anúncio nosso no Facebook ou no Instagram, esse clique em \"Entrar no grupo\" também é informado à Meta, como explica a seção 5.",
     ],
   },
   {
@@ -58,15 +60,16 @@ const SECOES: { titulo: string; itens: string[] }[] = [
       "Sem a sua permissão, o site não grava cookies no seu navegador. Ele guarda só a sua escolha no aviso de cookies, no armazenamento do próprio navegador.",
       "A medição de visitas usa o Web Analytics do Cloudflare, que funciona sem cookies e não monta histórico da sua navegação. Se você escolher \"Apenas essenciais\" no aviso, essa medição deixa de ser enviada.",
       "Se você clicar em \"Aceitar\" no aviso, o site também carrega o pixel da Meta (dona do Facebook e do Instagram). Ele grava um cookie e informa à Meta as páginas que você abriu aqui e se você clicou no botão para entrar no grupo. Usamos isso só para saber se os nossos anúncios no Facebook e no Instagram trazem gente para o grupo e para mostrá-los a pessoas com interesse parecido. Com \"Apenas essenciais\", o pixel não carrega.",
+      "Se você chegou ao site por um anúncio nosso no Facebook ou no Instagram e tocar em \"Entrar no grupo\", o nosso servidor informa à Meta que esse clique aconteceu, junto com o código que a própria Meta coloca no link do anúncio, o endereço de internet (IP) e o tipo de navegador do aparelho. Isso não grava cookie e serve só para a Meta saber quais anúncios trazem gente para o grupo e mostrá-los a pessoas com interesse parecido (legítimo interesse, art. 7º, IX, da LGPD). Nós não guardamos esses dados. Se você escolher \"Apenas essenciais\" no aviso, esse envio não acontece.",
       "O site não exibe anúncios de terceiros.",
     ],
   },
   {
     titulo: "6. Com quem os dados são compartilhados",
     itens: [
-      "Os dados não são vendidos. O único envio ligado a publicidade é o do pixel da Meta, e só com o seu \"Aceitar\" no aviso (seção 5).",
+      "Os dados não são vendidos. O único envio ligado a publicidade é para a Meta: o pixel, só com o seu \"Aceitar\" no aviso, e o aviso do clique em \"Entrar no grupo\" de quem chegou por um anúncio, que não acontece com \"Apenas essenciais\" (seção 5).",
       "O site é hospedado no Cloudflare, que processa as estatísticas da seção 5. O link curto roda no Railway.",
-      "A Meta, só para quem clicou em \"Aceitar\" no aviso de cookies, nos termos da seção 5 e da política de privacidade dela.",
+      "A Meta, nos termos da seção 5 e da política de privacidade dela.",
       "Autoridades públicas, somente quando a lei exigir.",
     ],
   },

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { EVENTO_COOKIES, PIXEL_META, aceitouMedicao } from "@/lib/medicao";
+import { guardarCliqueDoAnuncio, linkComConversao, novoIdDoClique } from "@/lib/conversao";
 
 // Pixel da Meta (14/11/2026), para os anuncios otimizarem por quem clica no convite do grupo.
 // So carrega depois do "Aceitar" no aviso de cookies: o pixel grava cookie (_fbp), e a LGPD pede
@@ -10,6 +11,9 @@ import { EVENTO_COOKIES, PIXEL_META, aceitouMedicao } from "@/lib/medicao";
 //
 // Eventos: PageView em cada pagina; Lead no clique em qualquer botao do grupo (/grupo?de=...),
 // com a origem do botao em content_name. Um listener so, por delegacao, como em WhatsCliques.
+//
+// 16/11: o mesmo clique tambem vai pelo servidor (lib/conversao.ts), para quem veio de anuncio, com
+// o mesmo id (eventID) do pixel: a Meta junta os dois e conta uma vez so.
 type Fbq = ((...args: unknown[]) => void) & { callMethod?: (...a: unknown[]) => void; queue?: unknown[][]; loaded?: boolean; version?: string; push?: unknown };
 declare global {
   interface Window { fbq?: Fbq; _fbq?: Fbq }
@@ -47,14 +51,18 @@ export default function PixelMeta() {
   }, [pathname]);
 
   useEffect(() => {
+    guardarCliqueDoAnuncio();
     function aoClicar(e: MouseEvent) {
-      if (!window.fbq || !aceitouMedicao()) return;
       const link = (e.target as HTMLElement | null)?.closest?.("a") as HTMLAnchorElement | null;
       const href = link?.getAttribute("href") || "";
-      if (!/\/grupo(\?|$)/.test(href)) return;
+      if (!link || !/\/grupo(\?|$)/.test(href)) return;
       let de = "";
       try { de = new URL(href, location.href).searchParams.get("de") || ""; } catch { de = ""; }
-      try { window.fbq("track", "Lead", { content_name: de || "site" }); } catch { /* a medicao nunca atrapalha o clique */ }
+      const ev = novoIdDoClique();
+      // Antes da navegacao: o link sai com o id do clique (so para quem veio de anuncio).
+      try { const novo = linkComConversao(href, ev); if (novo !== href) link.setAttribute("href", novo); } catch { /* nunca atrapalha o clique */ }
+      if (!window.fbq || !aceitouMedicao()) return;
+      try { window.fbq("track", "Lead", { content_name: de || "site" }, { eventID: ev }); } catch { /* a medicao nunca atrapalha o clique */ }
     }
     document.addEventListener("click", aoClicar, { capture: true });
     return () => document.removeEventListener("click", aoClicar, { capture: true });

@@ -18,6 +18,8 @@
 //   GET  /achados?d=&a=&i=  tela i do carrossel de achados do Instagram, JPG 1080x1350 (achados.mjs)
 //   GET  /saude             para o Railway saber que está de pé
 //   GET  /grupo?de=home     convite do grupo (CONVITE_GRUPO); conta de qual página do site veio
+//                           Com ?ev= (id do clique, 16/11), quem veio de anúncio vira um Lead na Meta: o clique
+//                           vai assinado para o fluxo 07 do n8n (conversao.mjs). Nada disso fica guardado aqui.
 //                           CONVITE_GRUPO pode ter vários convites separados por vírgula (17/10):
 //                           vale o ÚLTIMO, o grupo mais novo, que ainda tem vaga. /grupo?n=2 abre o 2º.
 //
@@ -35,6 +37,7 @@ import { criarRotaFoto, baixar } from './foto.mjs';
 import { criarRotaCard } from './card.mjs';
 import { criarRotaReel } from './reel.mjs';
 import { criarRotaAchados } from './achados.mjs';
+import { camposDoClique, enviarConversao, URL_CONVERSAO } from './conversao.mjs';
 
 const LOJAS = /(^|\.)(amazon\.com\.br|amzn\.to|mercadolivre\.com\.br|meli\.la|shopee\.com\.br|magazinevoce\.com\.br|magazineluiza\.com\.br)$/i;
 const ALFABETO = 'abcdefghijkmnpqrstuvwxyz23456789';   // sem l, o, 0, 1 (confundem)
@@ -71,7 +74,7 @@ export function novoCodigo(existe, tamanho = 5) {
   }
 }
 
-export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto }) {
+export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto, conversao }) {
   const raizSite = String(site || '').replace(/\/+$/, '');
   const convites = String(convite || '').split(/[\s,;]+/).filter(c => /^https:\/\//.test(c));
   fs.mkdirSync(pasta, { recursive: true });
@@ -183,6 +186,9 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto 
         // só a hora e a origem; nada de quem clicou (sem IP, sem aparelho)
         const limite = Date.now() - RECENTES_DIAS * 864e5;
         dados.grupoRecentes = [...dados.grupoRecentes.filter(x => Date.parse(x.quando) > limite), { quando: new Date().toISOString(), de }].slice(-RECENTES);
+        // Clique de quem veio de anúncio: avisa a Meta sem segurar o redirecionamento (16/11).
+        const c = conversao ? camposDoClique(u, req.headers) : null;
+        if (c) Promise.resolve().then(() => conversao(c)).catch(() => {});
       }
       sujo = true;
       const n = Number(u.searchParams.get('n'));
@@ -214,7 +220,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(im
   if (!segredo || segredo.length < 32) { console.error('falta ENCURTADOR_SEGREDO (32 caracteres ou mais)'); process.exit(1); }
   const s = criarServidor({ pasta: process.env.PASTA_DADOS || '/data', segredo,
     base: process.env.BASE_URL || 'http://localhost', convite: process.env.CONVITE_GRUPO || '',
-    site: process.env.SITE_URL || '' });
+    site: process.env.SITE_URL || '',
+    conversao: process.env.CONVERSAO_DESLIGADA ? null : (c) => enviarConversao(c, segredo, process.env.CONVERSAO_URL || URL_CONVERSAO) });
   s.listen(Number(process.env.PORT) || 8080, () => console.log('encurtador de pé'));
   for (const sinal of ['SIGTERM', 'SIGINT']) process.on(sinal, () => s.close(() => process.exit(0)));
 }

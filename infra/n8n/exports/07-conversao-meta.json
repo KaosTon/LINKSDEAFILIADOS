@@ -1,0 +1,58 @@
+{
+  "name": "[Ofertas] 07 Conversão Meta (clique no grupo vira Lead)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "conversao-meta",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "2596adb1-68ab-58ca-a15f-ab28a0aba18d",
+      "name": "Encurtador avisou",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "32c788dd-158f-5bf6-8332-727ff3e85fc0"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "let crypto = null; try { crypto = require('crypto'); } catch (e) { crypto = null; }\n\nconst URL_EVENTOS = 'https://graph.facebook.com/v21.0/1724280369336369/events';\nconst PIXEL_TD = URL_EVENTOS.split('/')[4];\nconst SITE_TD = 'https://www.temdescontos.com.br';\nconst RE = {\n  ev: /^[a-z0-9]{8,40}$/,\n  de: /^[a-z0-9:-]{1,60}$/,\n  fbc: /^fb\\.1\\.\\d{10,13}\\.[A-Za-z0-9_-]{10,500}$/,\n  fbp: /^fb\\.1\\.\\d{10,13}\\.\\d{5,25}$/,\n  ip: /^[0-9a-fA-F:.]{3,45}$/,\n};\n\nfunction textoAssinado(c) {\n  return ['conversao', c.ev, c.t, c.de, c.fbc || '', c.fbp || '', c.ip || '', c.ua || ''].join('|');\n}\n\nfunction assinarConversao(c, segredo) {\n  return crypto.createHmac('sha256', String(segredo)).update(textoAssinado(c)).digest('hex');\n}\n\nfunction conferirConversao(c, assinatura, segredo, agoraMs = Date.now()) {\n  if (!crypto || !segredo) return { ok: false, motivo: 'sem_segredo' };\n  if (!c || typeof c !== 'object') return { ok: false, motivo: 'sem_corpo' };\n  if (!RE.ev.test(String(c.ev || '')) || !RE.de.test(String(c.de || ''))) return { ok: false, motivo: 'campos' };\n  if (!Number.isFinite(c.t) || Math.abs(agoraMs - c.t) > 10 * 60 * 1000) return { ok: false, motivo: 'fora_do_prazo' };\n  if (c.fbc && !RE.fbc.test(c.fbc)) return { ok: false, motivo: 'fbc' };\n  if (c.fbp && !RE.fbp.test(c.fbp)) return { ok: false, motivo: 'fbp' };\n  if (c.ip && !RE.ip.test(c.ip)) return { ok: false, motivo: 'ip' };\n  const certa = assinarConversao(c, segredo), veio = String(assinatura || '');\n  if (veio.length !== certa.length || !crypto.timingSafeEqual(Buffer.from(veio), Buffer.from(certa))) return { ok: false, motivo: 'assinatura' };\n  return { ok: true };\n}\n\nfunction jaEnviado(mem, ev, agoraMs = Date.now()) {\n  const lista = (mem.conversoes || []).filter(x => agoraMs - x.t < 2 * 864e5);\n  const repetido = lista.some(x => x.ev === ev);\n  if (!repetido) lista.push({ ev, t: agoraMs });\n  mem.conversoes = lista.slice(-500);\n  return repetido;\n}\n\nfunction eventoLead(c) {\n  const codigo = String(c.de).startsWith('anuncio:') ? String(c.de).slice(8) : '';\n  const user_data = { client_ip_address: c.ip || undefined, client_user_agent: c.ua || undefined, fbc: c.fbc || undefined, fbp: c.fbp || undefined };\n  for (const k of Object.keys(user_data)) if (!user_data[k]) delete user_data[k];\n  return {\n    event_name: 'Lead', event_time: Math.floor(c.t / 1000), event_id: c.ev, action_source: 'website',\n    event_source_url: `${SITE_TD}/entrar${codigo ? '?c=' + codigo : ''}`,\n    user_data, custom_data: { content_name: c.de },\n  };\n}\n\nfunction pedidoEventos(eventos, token, testeCodigo = '') {\n  const body = { data: JSON.stringify(eventos), access_token: token };\n  if (testeCodigo) body.test_event_code = testeCodigo;\n  return { method: 'POST', url: URL_EVENTOS, body, json: true, timeout: 20000, ignoreHttpStatusErrors: true };\n}\n\nconst w = $('Encurtador avisou').first().json || {};\nconst c = w.body || {};\nconst v = conferirConversao(c, (w.headers || {})['x-assinatura'], $env.ENCURTADOR_SEGREDO);\nif (!v.ok) return [{ json: { enviado: false, motivo: v.motivo } }];\nconst mem = $getWorkflowStaticData('global');\nif (jaEnviado(mem, c.ev)) return [{ json: { enviado: false, motivo: 'repetido' } }];\nconst tok = $env.META_ACCESS_TOKEN;\nif (!tok) return [{ json: { enviado: false, motivo: 'sem_token' } }];\nconst r = await this.helpers.httpRequest(pedidoEventos([eventoLead(c)], tok, $env.META_TESTE_EVENTOS || ''));\n// Nunca devolve o token na execução.\nreturn [{ json: JSON.parse(JSON.stringify({ enviado: !!(r && r.events_received), de: c.de, comFbc: !!c.fbc, resposta: r }).split(tok).join('***')) }];"
+      },
+      "id": "1581db0e-a5b6-5a4d-8c88-0dba75fdb2f6",
+      "name": "Manda para a Meta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Encurtador avisou": {
+      "main": [
+        [
+          {
+            "node": "Manda para a Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
