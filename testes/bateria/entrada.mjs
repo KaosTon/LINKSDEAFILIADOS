@@ -49,7 +49,19 @@ const roda = (body, { env = ENV, http = [], query = {}, memoria = {}, bloquear =
     { quando: /open-api\.affiliate\.shopee\.com\.br\/graphql/, metodo: 'POST', responde: api }] });
   caso('texto sem foto: busca a foto oficial na Shopee', r.out.postar === true && r.out.imagem === 'https://cf.shopee.com.br/file/foto-oficial' && r.out.link === 'https://s.shopee.com.br/MEU', r.out);
   caso('rascunho sai no padrao do grupo (nome, preco, link, cupom)', r.out.texto.includes('Fone Bluetooth Teste Pro Cancelamento') && r.out.texto.includes('R$99,90 no Pix')
-    && r.out.texto.includes('\u{1F6D2} https://s.shopee.com.br/MEU') && r.out.texto.includes('Resgate o cupom: https://s.shopee.com.br/MEUCUPOM') && !r.out.texto.includes('Compre aqui'), r.out.texto);
+    && r.out.texto.includes('\u{1F6D2} https://s.shopee.com.br/MEU') && r.out.texto.includes('Resgate o cupom: https://s.shopee.com.br/MEUCUPOM') && !r.out.texto.includes('Compre aqui'), r.out.texto);  // 16/11: foto em cena na previa. Sem resposta da IA, fica a foto da loja e avisa; RASCUNHO_CENA_POR_DIA=0 nem chama a IA.
+  const http = (extra = []) => [
+    { quando: /s\.shopee\.com\.br\/AAA/, responde: { statusCode: 301, headers: { location: 'https://shopee.com.br/Fone-Teste-i.111.222?extra=1' } } },
+    { quando: /s\.shopee\.com\.br\/BBB/, responde: { statusCode: 301, headers: { location: 'https://shopee.com.br/m/cupons-333' } } },
+    { quando: /open-api\.affiliate\.shopee\.com\.br\/graphql/, metodo: 'POST', responde: api }, ...extra];
+  const ia = { quando: /openrouter\.ai/, metodo: 'POST', responde: {} };
+  const c1 = await roda({ ...corpo(''), image: undefined, text: { message: texto } }, { env: { ...ENV, OPENROUTER_API_KEY: 'k' }, http: http([ia]) });
+  const fezCena = (r) => r.chamadas.some(c => /openrouter/.test(JSON.stringify(c)) && /flash-lite-image/.test(JSON.stringify(c)));
+  caso('previa: tenta a foto em cena (Shopee); sem imagem da IA fica a foto da loja e avisa', fezCena(c1)
+    && c1.out.imagem === 'https://cf.shopee.com.br/file/foto-oficial' && /Não consegui fazer a foto em cena/.test(c1.out.aviso || ''), c1.out);
+  const c0 = await roda({ ...corpo(''), image: undefined, text: { message: texto } }, { env: { ...ENV, OPENROUTER_API_KEY: 'k', RASCUNHO_CENA_POR_DIA: '0' }, http: http([ia]) });
+  caso('RASCUNHO_CENA_POR_DIA=0: nao chama a IA da foto', !fezCena(c0) && !/foto em cena/i.test(c0.out.aviso || ''), c0.out.aviso);
+
 }
 {
   const r = await roda(corpo('Fone https://shopee.com.br/x-i.1.2'), { http: [
