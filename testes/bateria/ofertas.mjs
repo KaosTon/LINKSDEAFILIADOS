@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { lerPost, legendaAchado, enquadrar, extrairLinks, plataformaDe, eEncurtado, amazonComTag, shopeeCorpo,
          shopeeAutorizacao, reais, legenda, lerMensagemZapi, aceitarDoRascunho, trocarLinks,
          comAviso, converterSemRede, MOTIVOS, pedidoZapi, idDoEnvio,
-         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou } from '../../lib/ofertas.mjs';
+         magaluNaMinhaLoja, lojaMagalu, limparShopee, prepararOferta, abrirLink, eCupom, linkDaPechinchou, cenaNoRascunho } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -201,6 +201,37 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('loja nao abriu: posta sem aviso de preco', pp3.acao === 'postar' && !/Confira/.test(pp3.aviso || ''), pp3);
   const pp4 = await prepararOferta(corpo('Fone https://shopee.com.br/produto-i.1.2\n\n💵 Por R$ 90'), C, { ...rede, shopeeProduto: async () => ({ preco: 40, foto: 'https://cf.shopee/f.jpg' }) });
   caso('Shopee acima do preco da API (outra opcao do produto): sem aviso', !/Confira/.test(pp4.aviso || ''), pp4.aviso);
+  // 16/11: foto em cena no rascunho (fora Amazon), ja na previa; o "sim" posta com a mesma foto.
+  const CP = { ...C, previa: true, agora: Date.parse('2026-11-16T15:00:00Z') };
+  const redeS = { ...rede, shopeeProduto: async () => ({ preco: 129, foto: 'https://cf.shopee/oficial.jpg' }) };
+  const TXS = 'Fone Bluetooth Teste Pro\n\n💵 De R$199 por R$99\n🛒 https://shopee.com.br/produto-i.1.2';
+  const cenaOk = { fotoEmCena: async () => 'data:image/png;base64,AAAA', confereCena: async () => ({ igual: true }), guardarImagem: async () => 'https://td.example/img/abc.jpg' };
+  const est1 = {};
+  let pv = await prepararOferta(corpo(TXS), CP, redeS, [], est1);
+  pv = await cenaNoRascunho(pv, est1, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeS, ...cenaOk });
+  caso('rascunho Shopee: a previa ja sai com a foto em cena, como foto com legenda', pv.imagem === 'https://td.example/img/abc.jpg' && pv.link === '' && /Foto em cena/.test(pv.aviso) && pv.grupo === C.rascunho, pv);
+  const sim = await prepararOferta(corpo('sim', { image: undefined, text: { message: 'sim' } }), CP, redeS, [], est1);
+  caso('rascunho: o "sim" posta no grupo com a mesma foto em cena', sim.postar === true && sim.grupo === C.grupo && sim.imagem === 'https://td.example/img/abc.jpg' && sim.link === '' && !sim.aviso, sim);
+  const est2 = {}; let gerou = 0;
+  let pa = await prepararOferta(corpo('Papel Teste 24 rolos\n\n💵 De R$46 por R$27\n🛒 https://www.amazon.com.br/dp/B0AAAAAAAA'), CP, rede, [], est2);
+  pa = await cenaNoRascunho(pa, est2, new Date(CP.agora), { cenaPorDia: 20 }, { ...rede, ...cenaOk, fotoEmCena: async () => { gerou++; return 'data:image/png;base64,AAAA'; } });
+  caso('rascunho Amazon: sem foto em cena (a foto da Amazon nunca muda) e sem gastar', gerou === 0 && pa.imagem === 'https://z/f.jpg' && !/Foto em cena/.test(pa.aviso || ''), pa);
+  const est3 = {};
+  let pr = await prepararOferta(corpo(TXS), CP, redeS, [], est3);
+  pr = await cenaNoRascunho(pr, est3, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeS, ...cenaOk, confereCena: async () => ({ igual: false, motivo: 'marca nova' }) });
+  caso('rascunho: cena recusada na conferencia fica a sua foto e avisa', pr.imagem === 'https://z/f.jpg' && /não passou/.test(pr.aviso) && est3.pendente.oferta.imagem === 'https://z/f.jpg', pr);
+  const est4 = {}; let g4 = 0;
+  let pd = await prepararOferta(corpo(TXS), CP, redeS, [], est4);
+  pd = await cenaNoRascunho(pd, est4, new Date(CP.agora), { cenaPorDia: 0 }, { ...redeS, ...cenaOk, fotoEmCena: async () => { g4++; return 'x'; } });
+  caso('RASCUNHO_CENA_POR_DIA=0: desliga', g4 === 0 && pd.imagem === 'https://z/f.jpg' && !pd.aviso, pd);
+  const est5 = {};
+  let ps = await prepararOferta(corpo(TXS), CP, redeS, [], est5);
+  ps = await cenaNoRascunho(ps, est5, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeS, ...cenaOk, fotoEmCena: async () => null });
+  caso('IA sem imagem: fica a sua foto e avisa que nao conseguiu', ps.imagem === 'https://z/f.jpg' && /Não consegui fazer/.test(ps.aviso), ps.aviso);
+  const est6 = {};
+  let pt = await prepararOferta(corpo('Olha que legal https://shopee.com.br/produto-i.1.2'), CP, redeS, [], est6);
+  pt = await cenaNoRascunho(pt, est6, new Date(CP.agora), { cenaPorDia: 20 }, { ...redeS, ...cenaOk });
+  caso('texto fora do padrao (sem preco): sem foto em cena', pt.imagem === 'https://z/f.jpg' && !pt.cena, pt);
   const longo = await prepararOferta(corpo('Fone https://www.amazon.com.br/gp/aw/d/B0FR49NFLT?pd_rd_w=kk&qid=1&ref_=sbx&th=1'), C, rede);
   caso('Amazon no rascunho sai no formato limpo /dp/ASIN?tag=', longo.texto === 'Fone https://www.amazon.com.br/dp/B0FR49NFLT?tag=minha-20', longo.texto);
   const semFoto = await prepararOferta(corpo('Fone https://amzn.to/abc', { image: undefined, text: { message: 'Fone https://amzn.to/abc' } }), C, rede);
