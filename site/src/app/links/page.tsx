@@ -60,10 +60,10 @@ export default function Links() {
             <LogoCompleto claro prioridade className="w-56 h-auto mx-auto" />
             <h1 className="sr-only">{SITE.nome}: links</h1>
             <p className="mt-5 font-display text-2xl font-bold leading-snug">{SITE.frase}</p>
+            {/* Mesma aba (17/11): esta pagina abre dentro do Instagram (link da bio), e la a aba nova
+                nem sempre abre o WhatsApp. Igual ao botao da /entrar. */}
             <a
               href={linkWhats(MENSAGENS_ROTA["/links"])}
-              target="_blank"
-              rel="noopener noreferrer"
               className="mt-6 w-full inline-flex items-center justify-center gap-2 botao-marca font-semibold px-6 py-4"
             >
               <IconeWhats />
