@@ -78,8 +78,17 @@ Conversa com o Wellington em 17/11/2026, com o blog em 22 posts e o site com um 
 - **Peso:** quantidade de posts não deixa o site lento. Cada post é uma página própria e o texto
   dos posts não entra no JavaScript das outras páginas (nenhum componente de cliente importa
   `src/data/blog.ts`; se um dia importar, o texto de todos os posts vai junto: não fazer).
-- **Lista do blog:** a página `/blog` mostra todos os posts de uma vez. Passando de 60 posts ela
-  tem que ser dividida em páginas. A trava `scripts/check-indice-blog.mjs` barra o build do post
-  61 enquanto isso não for feito e diz como liberar.
+- **Lista do blog:** a página `/blog` mostra todos os posts em card, de uma vez. Vale a regra do
+  `METODO.md` da fábrica (§3, "Blog que vai passar de 50 posts", caso EvolProt de 08/10/2026):
+  perto dos 50 posts a `/blog` passa a mostrar os 12 mais recentes em card e, embaixo, o índice
+  completo em texto agrupado por tema; página de tema só a partir de 3 posts. Não é paginação:
+  todo post continua a um clique da `/blog`. Medido em 17/11/2026: aqui, 22 posts em card dão
+  100 KB de HTML (12 KB compactado); na Virtus, 93 posts em card dão 708 KB (46 KB compactado); no
+  EvolProt, com a regra aplicada, 79 KB (12,5 KB compactado).
+- **Trava:** a conferência automática disso é código de motor (`scripts/check-indice-blog.mjs`) e
+  por isso nasce na fábrica, não aqui. Em 17/11/2026 ela ainda não existe lá: a regra está só no
+  `METODO.md`. Proposta de 17/11/2026, a subir por PR na fábrica: barrar o build quando o blog
+  passar de 50 posts e a `/blog` ainda mostrar todos em card. Chega neste site pelo
+  `atualizar-motor`. Até lá, quem escrever o post 50 confere esta seção.
 - **Arquivo dos posts:** `src/data/blog.ts` é um arquivo só (290 KB com 22 posts). Não pesa no
   site, só fica ruim de editar: junto com a divisão da lista, vale separar um arquivo por post.
