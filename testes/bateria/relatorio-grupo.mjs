@@ -4,7 +4,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { idDoMembro } from '../../lib/aviso-entrada.mjs';
 import { diferencaDeIds, janelaDaOrigem, origensProvaveis, registrarMovimento, categoriaDaOrigem, conjuntosDoDia, saldoDaConta,
-  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio } from '../../lib/relatorio-grupo.mjs';
+  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos } from '../../lib/relatorio-grupo.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -44,6 +44,9 @@ caso('n = 0: nada', origensProvaveis(rec, SP('14:00'), 20, 0).length === 0);
   caso('Z-API trocou o identificador de todo mundo: não vira entrada nem saída', troca.ignorado === true && JSON.stringify(mem.fichas) === antes);
   caso('memória sem telefone', !/5511/.test(JSON.stringify(mem)));
 }
+caso('grupos das ofertas: lista sem repetir', JSON.stringify(gruposDasOfertas({ GRUPO_OFERTAS: 'a-group, b-group,a-group' })) === JSON.stringify(['a-group', 'b-group']) && gruposDasOfertas({}).length === 0);
+caso('pessoas nos grupos: quem está nos dois conta uma vez; grupo sem resposta, null',
+  pessoasNosGrupos([['5511900000001', '5511900000002'], ['5511900000002', '5511900000003']]) === 3 && pessoasNosGrupos([['5511900000001'], null]) === null && pessoasNosGrupos([]) === null);
 caso('categorias', categoriaDaOrigem('anuncio:v1') === 'Anúncio' && categoriaDaOrigem('home:topo') === 'Site' && categoriaDaOrigem('post:x') === 'Site'
   && categoriaDaOrigem('links') === 'Instagram' && categoriaDaOrigem(null) === 'Sem origem' && categoriaDaOrigem('indicacao') === 'Indicação');
 
@@ -101,7 +104,7 @@ console.log('\n# Texto do relatório');
   caso('quem entrou hoje e de onde', tem(/• Entraram hoje: 2\n/) && tem(/◦ anúncio v2 \(Meta\): 1/) && tem(/◦ site, página inicial: 1/), t);
   caso('quem saiu: de onde tinha vindo e quanto tempo ficou; de antes, só a conta',
     tem(/• Saíram hoje: 3\n/) && tem(/◦ site, página inicial: ficou 3 horas/) && tem(/◦ anúncio v1 \(Meta\): ficou 13 horas/) && tem(/◦ 1 de antes de 16\/11/), t);
-  caso('cliques em Entrar hoje (o de ontem não conta)', tem(/Cliques em "Entrar no grupo": 6 \(anúncio v2 3, site 2, anúncio v1 1\)/), t);
+  caso('cliques em Entrar hoje (o de ontem não conta)', tem(/Cliques em "Entrar no grupo": 6 \(anúncio v2: 3, site: 2, anúncio v1: 1\)/), t);
   caso('cada anúncio: gasto, cliques, quem clicou em Entrar e quem entrou',
     tem(/• v2: R\$ 6,00, 14 cliques no anúncio, 3 em Entrar, 1 entrou/) && tem(/• v1: R\$ 5,98, 6 cliques no anúncio, 1 em Entrar, ninguém entrou/)
     && tem(/• car1: R\$ 6,01, nenhum clique no anúncio\n/) && tem(/• Brasil 18-55 \| amplo: R\$ 3,82, 28 cliques no anúncio\n/), t);
@@ -116,6 +119,11 @@ console.log('\n# Texto do relatório');
   const t2 = relatorioDoDia(mem, SP('23:55'), { membros: 47, recentes, meta });
   caso('rodar de novo no mesmo dia não duplica a foto', mem.relatorios.length === 2 && t2 === t);
 
+  const mt = { relatorios: [{ dia: '2026-11-16', membros: 15, total: 43 }] };
+  const tt = relatorioDoDia(mt, SP('23:50'), { membros: 16, total: 45, recentes: [{ quando: SP('10:00').toISOString(), de: 'anuncio' }], meta: { conjuntos: [] } });
+  caso('dois grupos: total de pessoas e a comunidade separada, diferença pelo total',
+    /• Membros agora: 45 pessoas \(\+2 desde ontem\)\n   ◦ 16 na comunidade, onde entra quem vem do site e do anúncio/.test(tt) && /No grupo agora: 0 de fora/.test(tt) === false && mt.relatorios[1].total === 45, tt);
+  caso('clique de anúncio sem código', /\(anúncio sem código: 1\)/.test(tt), tt);
   const vazio = relatorioDoDia({}, SP('23:50'), { membros: null, recentes: null, meta: null });
   caso('sem Z-API, sem encurtador e sem Meta: sai do mesmo jeito, avisando',
     /Membros: a Z-API não respondeu agora/.test(vazio) && /Entraram hoje: 0/.test(vazio) && /nenhum hoje/.test(vazio) && /Não consegui ler a Meta agora/.test(vazio) && /Ninguém ainda/.test(vazio), vazio);
@@ -156,7 +164,8 @@ console.log('\n# No "Confere quem entrou" (como vai para o n8n)');
   r = await rodar(codigo, { env, http: [fones(['5511977776666', ...base.slice(1)])], memoria, agora: SP('23:30') });
   caso('entre 23h e 23h50 não lê nada', r.saida[0].json.motivo === 'fora_do_horario' && r.chamadas.length === 0);
   recentes.push({ quando: SP('20:00').toISOString(), de: 'anuncio:v1' });
-  r = await rodar(codigo, { env, http: [fones(['5511977776666', ...base.slice(1)]), enc, ...META], memoria, agora: SP('23:50') });
+  const outro = { quando: /light-group-metadata\/a-group$/, metodo: 'GET', responde: { participants: ['5511977776666', '5511911110000', '5511911110001'].map(phone => ({ phone })) } };
+  r = await rodar(codigo, { env, http: [fones(['5511977776666', ...base.slice(1)]), outro, enc, ...META], memoria, agora: SP('23:50') });
   const j = r.saida[0].json;
   caso('primeiro dia: avisa a partir de que hora contou', /_Primeiro dia: entradas e saídas contadas a partir das 14h05\. Os cliques e os anúncios são do dia inteiro\._/.test(r.saida[0].json.texto), r.saida[0].json.texto);
   caso('23h50: manda o relatório no rascunho', j.avisar === true && j.tipo === 'relatorio' && j.grupo === 'r-group' && /Relatório do dia \(17\/11\)/.test(j.texto), j);
@@ -164,7 +173,8 @@ console.log('\n# No "Confere quem entrou" (como vai para o n8n)');
     && /site, página inicial: ficou 3 horas/.test(j.texto) && /1 de antes de 17\/11/.test(j.texto), j.texto);
   caso('relatório com os anúncios e o saldo', /• v2: R\$ 6,00, 14 cliques no anúncio, 1 em Entrar, 1 entrou/.test(j.texto) && /• v1: R\$ 5,98, 6 cliques no anúncio, 1 em Entrar, ninguém entrou/.test(j.texto)
     && /Saldo: R\$ 154,25, dá uns 8 dias/.test(j.texto), j.texto);
-  caso('relatório com quem veio de fora e continua', /• Anúncio: 1 entrou, 1 continua/.test(j.texto) && /• Site: 1 entrou, 0 continuam/.test(j.texto) && /No grupo agora: 1 de fora e 3 de antes/.test(j.texto), j.texto);
+  caso('membros somando os dois grupos (quem está nos dois conta uma vez)', /• Membros agora: 6 pessoas\n   ◦ 4 na comunidade/.test(j.texto), j.texto);
+  caso('relatório com quem veio de fora e continua', /• Anúncio: 1 entrou, 1 continua/.test(j.texto) && /• Site: 1 entrou, 0 continuam/.test(j.texto) && /No grupo agora: 1 de fora e 5 de antes/.test(j.texto), j.texto);
   caso('o token da Meta não aparece na saída nem na memória', !JSON.stringify(r.saida).includes('TOKEN-SECRETO') && !JSON.stringify(memoria).includes('TOKEN-SECRETO'));
   caso('nem telefone', !/5511/.test(JSON.stringify(r.saida)) && !/5511/.test(JSON.stringify(memoria)));
   caso('Meta lida só com GET', r.chamadas.filter(c => /graph\.facebook/.test(c.url)).every(c => c.metodo === 'GET') && r.chamadas.filter(c => /graph\.facebook/.test(c.url)).length === 3);
