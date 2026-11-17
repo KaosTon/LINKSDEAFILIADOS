@@ -60,3 +60,35 @@ disputa com elas.
 22. `whey-e-creatina-como-saber-se-e-original`: dono de "como saber se whey é original", "suplemento falsificado como identificar", "whey registrado na anvisa", "creatina falsificada", "custo por grama de proteína". Não confundir com /guias/como-saber-se-a-promocao-e-verdadeira (dono de preço riscado; aqui a conta é por grama de proteína e o preço riscado só tem 1 frase com link) nem com /blog/como-saber-se-loja-da-shopee-e-confiavel (reputação da loja; aqui 1 item com link). Tem 1 link de ponte para evolprot.com (sistema para nutricionistas e personal trainers, do mesmo dono, dito na frase): não indicar marca nem dose.
 
 Donos de busca que os posts não disputam: `/guias/como-saber-se-a-promocao-e-verdadeira` (promoção falsa, preço riscado, "De" inflado), `/guias/grupo-de-ofertas-no-whatsapp-e-seguro` (golpe, link falso, segurança do grupo) e `/guias/cupom-da-amazon-como-usar` (tipos de cupom da Amazon).
+
+## 4. Ritmo e tamanho do blog (17/11/2026)
+
+Conversa com o Wellington em 17/11/2026, com o blog em 22 posts e o site com um mês de vida.
+
+- **Ritmo sugerido:** dois posts por semana, em dias fixos, em vez de vários de uma vez (os 22
+  primeiros saíram em dois blocos: 10 em 18/10 e 12 entre 10 e 13/11). Nenhum post novo antes da
+  Black Friday de 27/11/2026: não daria tempo de aparecer na busca.
+- **Tema:** prioridade para quem está para comprar (cupom de loja, "vale a pena", datas do
+  calendário de promoções). Tema de quem está com problema (defeito, atraso) ajuda na confiança do
+  site, mas traz pouca gente para o grupo.
+- **Um post por busca** (§3). Post datado é atualizado no mesmo endereço no ano seguinte, em vez de
+  nascer outro.
+- **Post parado:** se em uns 6 meses não aparecer em busca nenhuma (Search Console), reescrever ou
+  juntar com outro.
+- **Peso:** quantidade de posts não deixa o site lento. Cada post é uma página própria e o texto
+  dos posts não entra no JavaScript das outras páginas (nenhum componente de cliente importa
+  `src/data/blog.ts`; se um dia importar, o texto de todos os posts vai junto: não fazer).
+- **Lista do blog:** a página `/blog` mostra todos os posts em card, de uma vez. Vale a regra do
+  `METODO.md` da fábrica (§3, "Blog que vai passar de 50 posts", caso EvolProt de 08/10/2026):
+  perto dos 50 posts a `/blog` passa a mostrar os 12 mais recentes em card e, embaixo, o índice
+  completo em texto agrupado por tema; página de tema só a partir de 3 posts. Não é paginação:
+  todo post continua a um clique da `/blog`. Medido em 17/11/2026: aqui, 22 posts em card dão
+  100 KB de HTML (12 KB compactado); na Virtus, 93 posts em card dão 708 KB (46 KB compactado); no
+  EvolProt, com a regra aplicada, 79 KB (12,5 KB compactado).
+- **Trava:** a conferência automática disso é código de motor (`scripts/check-indice-blog.mjs`) e
+  por isso nasce na fábrica, não aqui. Em 17/11/2026 ela ainda não existe lá: a regra está só no
+  `METODO.md`. Proposta de 17/11/2026, a subir por PR na fábrica: barrar o build quando o blog
+  passar de 50 posts e a `/blog` ainda mostrar todos em card. Chega neste site pelo
+  `atualizar-motor`. Até lá, quem escrever o post 50 confere esta seção.
+- **Arquivo dos posts:** `src/data/blog.ts` é um arquivo só (290 KB com 22 posts). Não pesa no
+  site, só fica ruim de editar: junto com a divisão da lista, vale separar um arquivo por post.
