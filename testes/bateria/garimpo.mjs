@@ -4,8 +4,8 @@
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
-import { lerAnuncios, pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
-         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados, faixaDoCusto } from '../../lib/ofertas.mjs';
+import { pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
+         registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -386,49 +386,37 @@ console.log('\n=== Travas de qualidade (16/10) ===');
   caso('resumo: so depois das 22h e uma vez por dia', !horaDoResumo(mem, AGORA, CFG) && horaDoResumo(mem, NOITE, CFG) && !horaDoResumo({ ...mem, resumoDia: '2026-10-06' }, NOITE, CFG));
 }
 
-console.log('\n=== Painel do resumo: membros, cliques e Shopee (17/10) ===');
+console.log('\n=== Painel do resumo: ofertas mais clicadas e Shopee (17/10; grupo e anúncios no relatório do fluxo 05 desde 17/11) ===');
 {
   const D1 = new Date('2026-10-06T01:10:00Z'), D2 = new Date('2026-10-07T01:10:00Z');   // 05/10 e 06/10, 22h10 em SP
   const mem = { resumo: { lojas: { amazon: 2 }, descartes: {} }, titulos: { 'https://www.mercadolivre.com.br/p/MLB1': 'Sorveteira Teste' } };
   guardarPainel(mem, D1, { membros: 100, cliques: { grupo: { status: 2 }, top: [{ url: 'https://www.mercadolivre.com.br/p/MLB1', cliques: 5 }] }, shopee: null });
   const x = guardarPainel(mem, D2, { membros: 109, cliques: { grupo: { status: 7, indicacao: 3 }, top: [{ url: 'https://www.mercadolivre.com.br/p/MLB1', cliques: 25 }, { url: 'https://www.mercadolivre.com.br/p/MLB2', cliques: 4 }] },
     shopee: { pedidos: 2, valor: 80.5, comissao: 6.1 } });
-  caso('membros e diferenca do dia', x.membros === 109 && x.membrosDia === 9 && x.membrosSemana === null, x);
-  caso('cliques no convite do dia por origem (diferenca da vespera)', x.convites.status === 5 && x.convites.indicacao === 3, x.convites);
   caso('ofertas mais clicadas no dia, pelo nome', x.topOfertas[0].titulo === 'Sorveteira Teste' && x.topOfertas[0].cliques === 20 && x.topOfertas[1].cliques === 4, x.topOfertas);
   const t = textoResumo(mem, D2, x);
-  caso('resumo com o painel', /Membros: 109 \(hoje \+9\)/.test(t) && /Cliques no convite hoje: 8 \(status 5, indicacao 3\)/.test(t) && /Sorveteira Teste: 20/.test(t) && /2 pedidos, R\$ 80,50 em compras, comissão estimada R\$ 6,10/.test(t), t);
-  caso('sem painel: resumo como antes', !/Membros/.test(textoResumo(mem, D2)));
+  caso('resumo com o painel: mais clicadas e Shopee', /Sorveteira Teste: 20/.test(t) && /2 pedidos, R\$ 80,50 em compras, comissão estimada R\$ 6,10/.test(t), t);
+  caso('grupo e anúncios não saem mais no resumo (vão no relatório do dia, fluxo 05)', !/Membros|Cliques no convite|Anúncios|Custo por membro/.test(t), t);
+  caso('sem painel: resumo como antes', !/Mais clicadas|Shopee hoje/.test(textoResumo(mem, D2)));
   caso('uma foto por dia (rodar de novo no mesmo dia troca a foto)', (guardarPainel(mem, D2, { membros: 110, cliques: null, shopee: null }), mem.historico.filter(h => h.dia === '2026-10-06').length === 1 && mem.historico.length === 2));
-  const m7 = { historico: [{ dia: '2026-09-29', membros: 80 }] };
-  const s7 = guardarPainel(m7, D2, { membros: 109, cliques: null, shopee: null });
-  caso('membros em 7 dias', s7.membrosSemana === 29 && s7.convites === undefined, s7);
   const primeiro = guardarPainel({}, D2, { membros: 14, cliques: { grupo: { status: 1 }, top: [] }, shopee: { pedidos: 0, valor: 0, comissao: 0 } });
   const tp = textoResumo({ resumo: { lojas: {}, descartes: {} } }, D2, primeiro);
-  caso('primeiro dia: membros sem diferenca, convite comeca amanha, Shopee sem venda', /Membros: 14\n/.test(tp + '\n') && /começa a contar amanhã/.test(tp) && /Nenhuma venda/.test(tp), tp);
-  const DOM = new Date('2026-10-12T01:10:00Z');   // domingo 11/10, 22h10 em SP
-  const md = { historico: ['2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-10'].map((dia, i) => ({ dia, membros: 100 + i })) };
-  const dom = guardarPainel(md, DOM, { membros: 110, cliques: null, shopee: null });
-  caso('domingo: membros dia a dia na semana', dom.semana.length === 7 && dom.semana[0][0] === '05/10' && dom.semana[6][1] === 110 && /Semana: 05\/10 100/.test(textoResumo({ resumo: { lojas: {}, descartes: {} } }, DOM, dom)), dom.semana);
+  caso('primeiro dia: Shopee sem venda', /Nenhuma venda/.test(tp) && !/Mais clicadas/.test(tp), tp);
   caso('somar vendas da Shopee', JSON.stringify(somarVendasShopee([{ estimatedTotalCommission: '3.5', orders: [{ items: [{ actualAmount: '20' }, { actualAmount: '10.5' }] }] }, { totalCommission: '1', orders: [{ items: [{ actualAmount: '9.99' }] }] }])) === JSON.stringify({ pedidos: 2, valor: 40.49, comissao: 4.5 }));
   const falha = await coletarPainel({ membrosDoGrupo: async () => { throw new Error('x'); }, cliques: async () => ({ grupo: {}, top: [] }), shopeeVendas: async () => null }, ['g1'], D2);
   caso('coletar: o que falha fica de fora', falha.membros === null && falha.cliques && falha.shopee === null, falha);
   const dois = await coletarPainel({ membrosDoGrupo: async (g) => (g === 'g1' ? 10 : 5), cliques: async () => null, shopeeVendas: async (ini, fim) => ({ ini, fim }) }, ['g1', 'g2'], D2);
   caso('coletar: soma os grupos e pede a Shopee desde o dia 1º do mês em SP (15/11)', dois.membros === 15 && dois.shopee.ini === Date.parse('2026-10-01T03:00:00Z') / 1000, dois);
-  // Entradas e saídas (27/10): compara a lista de hoje com a da véspera, sem guardar telefone.
+  caso('coletar: não lê mais os anúncios (o relatório do fluxo 05 lê)', !('anuncios' in dois));
+  // A lista de membros (27/10) fica guardada só para as boas-vindas das 19h, sem telefone.
   const tel = (n) => Array.from({ length: n }, (_, k) => '5500000000' + String(k).padStart(3, '0'));
   const lista = await coletarPainel({ membrosDoGrupo: async () => tel(5), cliques: async () => null, shopeeVendas: async () => null }, ['g1'], D2);
   caso('coletar: lista vira contagem e resumos', lista.membros === 5 && lista.ids.length === 5 && lista.ids.every(x => /^[0-9a-f]{12}$/.test(x)), lista);
   caso('coletar: telefone nao fica guardado', !JSON.stringify(lista).includes('5500000000'));
-  const me = {};
-  const e1 = guardarPainel(me, D1, { membros: 5, ids: tel(5).map(idDoMembro), cliques: null, shopee: null });
-  caso('entradas: primeiro dia sem comparacao', e1.entraram === null && !/Entraram/.test(textoResumo({ resumo: { lojas: {}, descartes: {} } }, D1, e1)), e1);
-  const hoje = [...tel(5).slice(2), '5599999999001', '5599999999002', '5599999999003', '5599999999004'].map(idDoMembro);
-  const e2 = guardarPainel(me, D2, { membros: 7, ids: hoje, cliques: null, shopee: null });
-  caso('entradas e saidas do dia', e2.entraram === 4 && e2.sairam === 2 && /Entraram 4, saíram 2/.test(textoResumo({ resumo: { lojas: {}, descartes: {} } }, D2, e2)), e2);
-  const e3 = guardarPainel(me, D2, { membros: 8, ids: [...hoje, idDoMembro('5599999999005')], cliques: null, shopee: null });
-  caso('rodar de novo no mesmo dia compara com a vespera', e3.entraram === 5 && e3.sairam === 2, e3);
-  caso('memoria so guarda resumos', !JSON.stringify(me).includes('55999'));
+  const me = { membrosAntes: { dia: '2026-10-01', ids: ['velho'] } };
+  guardarPainel(me, D2, { membros: 5, ids: tel(5).map(idDoMembro), cliques: null, shopee: null });
+  caso('guarda a lista de hoje para as boas-vindas das 19h', me.membrosIds.dia === '2026-10-06' && me.membrosIds.ids.length === 5 && !me.membrosAntes, me);
+  caso('memoria so guarda resumos', !JSON.stringify(me).includes('55000'));
 }
 
 console.log('\n=== Conferir preco com a loja (16/10) ===');
@@ -775,7 +763,7 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
   const memR = { dia: '2026-10-06', postados: 3, resumo: { lojas: { amazon: 3 }, descartes: {} } };
   const rs = await rodar(codigo, { env: envR, http: httpR, memoria: memR, agora: NOITE22 });
   const jr = rs.saida[0].json;
-  caso('no as 22h: resumo com membros, convite e Shopee', jr.tipo === 'resumo' && /Membros: 3/.test(jr.texto) && /começa a contar amanhã/.test(jr.texto) && /1 pedido, R\$ 30,00/.test(jr.texto) && memR.historico.length === 1, jr.texto);
+  caso('no as 22h: resumo com Shopee, sem a parte do grupo (vai no relatório do fluxo 05)', jr.tipo === 'resumo' && !/Membros/.test(jr.texto) && /1 pedido, R\$ 30,00/.test(jr.texto) && memR.historico.length === 1 && memR.membrosIds.ids.length === 3, jr.texto);
   caso('no as 22h: Z-API e encurtador chamados com as chaves', rs.chamadas.some(c => /zapi\.teste\/instances\/I\/token\/T\/light-group-metadata/.test(c.url)) && rs.chamadas.some(c => /api\/cliques/.test(c.url) && c.headers.Authorization === 'Bearer S'));
   const semNada = await rodar(codigo, { env: { ...ENV, GARIMPO_LIGADO: 'sim', GRUPO_RASCUNHO: '120363000000000001-group' }, http, memoria: { dia: '2026-10-06', resumo: { lojas: {}, descartes: {} } }, agora: NOITE22 });
   caso('no as 22h sem as chaves: resumo sai como antes', semNada.saida[0].json.tipo === 'resumo' && !/Membros/.test(semNada.saida[0].json.texto), semNada.saida[0].json.texto);
@@ -816,31 +804,7 @@ console.log('\n=== No "Garimpa" (como vai para o n8n) ===');
 }
 
 {
-  console.log('\n# Anúncios no resumo e story no Instagram (09/11)');
-  const a = lerAnuncios({ data: [{ spend: '12.5', impressions: '3000', actions: [{ action_type: 'link_click', value: '50' }] }] });
-  caso('anuncios: gasto e cliques no link', a && a.gasto === 12.5 && a.cliques === 50 && a.impressoes === 3000, a);
-  caso('anuncios: sem gasto ou sem dados, fica de fora', lerAnuncios({ data: [{ spend: '0' }] }) === null && lerAnuncios({ data: [] }) === null && lerAnuncios(null) === null);
-  const mem = { resumo: { lojas: { ml: 2 }, descartes: {}, comCupom: 1 } };
-  const t = textoResumo(mem, new Date('2026-11-10T01:00:00Z'), { membros: 30, anuncios: a });
-  caso('resumo: linha dos anuncios com custo por clique', /Anúncios hoje\*\n\u2022 R\$ 12,50 gastos, 50 cliques no link, R\$ 0,25 por clique/.test(t), t);
-  caso('resumo: sem anuncios, sem a linha', !/Anúncios/.test(textoResumo(mem, new Date('2026-11-10T01:00:00Z'), { membros: 30 })));
-  // Custo por membro novo (16/11): gasto ÷ quem entrou, no dia e na semana, com a faixa combinada.
-  const mc = {}; const ids = (n, b = 0) => Array.from({ length: n }, (_, i) => idDoMembro('55119999990' + String(b + i).padStart(2, '0')));
-  let lista = ids(30), xc = null;
-  ['2026-11-10', '2026-11-11', '2026-11-12', '2026-11-13'].forEach((d, k) => {
-    lista = [...lista, ...ids(k === 0 ? 0 : 3, 40 + k * 3)];
-    xc = guardarPainel(mc, new Date(d + 'T02:50:00Z'), { membros: lista.length, ids: lista, cliques: null, shopee: null, anuncios: { gasto: 9, cliques: 50, impressoes: 900 } });
-  });
-  const tc = textoResumo(mem, new Date('2026-11-13T02:50:00Z'), xc);
-  caso('custo por membro: hoje (gasto ÷ quem entrou)', xc.custo.hoje === 3 && /Custo por membro novo hoje: R\$ 3,00 \(R\$ 9,00 ÷ 3 que entraram\)/.test(tc), tc);
-  caso('custo por membro: semana com a faixa (R$ 3 = segurar)', /Últimos 3 dias: R\$ 3,00 por membro \(R\$ 27,00 ÷ 9\): segure o orçamento/.test(tc) && /até quem veio sem anúncio/.test(tc), tc);
-  caso('faixas: até R$1 ótimo, até R$2 bom, até R$3 segurar, acima caro', /ótimo/.test(faixaDoCusto(0.8)) && /bom/.test(faixaDoCusto(2)) && /segure/.test(faixaDoCusto(2.5)) && /caro/.test(faixaDoCusto(3.5)));
-  const mz = {}; let lz = ids(10);
-  guardarPainel(mz, new Date('2026-11-10T02:50:00Z'), { membros: 10, ids: lz, cliques: null, shopee: null, anuncios: { gasto: 5, cliques: 9, impressoes: 100 } });
-  const xz = guardarPainel(mz, new Date('2026-11-11T02:50:00Z'), { membros: 10, ids: lz, cliques: null, shopee: null, anuncios: { gasto: 6, cliques: 9, impressoes: 100 } });
-  const tz = textoResumo(mem, new Date('2026-11-11T02:50:00Z'), xz);
-  caso('custo por membro: gastou e ninguém entrou', /Custo por membro novo hoje: ninguém entrou hoje/.test(tz), tz);
-  caso('custo por membro: sem anúncio, sem a linha', guardarPainel({}, new Date('2026-11-11T02:50:00Z'), { membros: 10, cliques: null, shopee: null }).custo === null);
+  console.log('\n# Story no Instagram (09/11)');
   const st = pedidosStoryIG('1789', 'TOKEN_TESTE', 'https://enc.test/card?d=x&a=y');
   caso('story: contêiner STORIES com a imagem do card', st && /\/1789\/media$/.test(st.criar.url) && st.criar.body.media_type === 'STORIES' && st.criar.body.image_url === 'https://enc.test/card?d=x&a=y');
   caso('story: publica o contêiner criado', st.publicar('55').body.creation_id === '55' && /media_publish$/.test(st.publicar('55').url));

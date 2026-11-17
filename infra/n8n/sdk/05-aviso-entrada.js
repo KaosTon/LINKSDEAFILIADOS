@@ -10,6 +10,13 @@ import { workflow, node, trigger, ifElse, expr } from '@n8n/workflow-sdk';
  * Qual grupo: AVISO_ENTRADA_GRUPO, ou o último de GRUPO_OFERTAS quando há mais
  * de um. AVISO_ENTRADA_GRUPO=0 desliga. Só o resumo (hash) do telefone fica na
  * memória do fluxo, nunca o número.
+ *
+ * RELATÓRIO DO DIA (17/11): cada pessoa nova ganha uma ficha (entrou quando, veio
+ * de onde pelo clique no convite, saiu quando). Às 23h50 o fluxo lê a lista mais
+ * uma vez e manda no rascunho: quem entrou e saiu e de onde veio, cliques em
+ * "Entrar no grupo", gasto e resultado de cada anúncio (Meta, só leitura), saldo,
+ * e quantos dos que vieram de fora continuam no grupo. Rodado na mão, devolve a
+ * prévia do relatório sem mandar.
  */
 const GATEWAY = '0lJeNYqZyDG9Rq2J';
 const ENTRADAS = ['phone', 'message', 'image', 'origem', 'link', 'titulo'].map(id => ({
@@ -27,27 +34,52 @@ const confere = node({
   config: { name: 'Confere quem entrou', position: [240, 0],
     parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
 "/*LIB:aviso-entrada*/",
+"/*LIB:relatorio-grupo*/",
 "const mem = $getWorkflowStaticData('global');",
 "const agora = new Date();",
-"// Rodado na mão no editor: mostra o que leu e não avisa (a memória só grava em produção).",
+"// Rodado na mão no editor: mostra o que leu e a prévia do relatório, sem avisar (a memória só grava em produção).",
 "const teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);",
 "const grupo = grupoDoAvisoDeEntrada($env);",
 "if (!$env.GRUPO_RASCUNHO || !grupo) return [{ json: { avisar: false, motivo: 'sem_grupo' } }];",
-"if (!horaDoAvisoDeEntrada(agora) && !teste) return [{ json: { avisar: false, motivo: 'fora_do_horario' } }];",
+"// Relatório do dia (17/11): às 23h50 lê a lista mais uma vez e manda o relatório no rascunho.",
+"const relatorio = horaDoRelatorio(mem, agora);",
+"if (!horaDoAvisoDeEntrada(agora) && !relatorio && !teste) return [{ json: { avisar: false, motivo: 'fora_do_horario' } }];",
 "let part = null;",
 "try { part = await participantesDoGrupo(this.helpers, $env, grupo); } catch (e) { part = null; }",
-"if (!part) return [{ json: { avisar: false, motivo: 'sem_lista' } }];",
-"const entrou = novosNoGrupo(mem, part);",
-"const total = mem.entradaIds.length;",
-"if (!entrou || teste) return [{ json: { avisar: false, motivo: teste ? 'teste' : 'ninguem_novo', total, entrou } }];",
-"// Origem provável (14/11): o último clique no convite registrado pelo encurtador nos 20 min antes.",
-"let origem = null;",
-"if ($env.ENCURTADOR_URL && $env.ENCURTADOR_SEGREDO) {",
-"  try {",
-"    const c = await this.helpers.httpRequest({ method: 'GET', url: String($env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/cliques', json: true, timeout: 10000, headers: { Authorization: 'Bearer ' + $env.ENCURTADOR_SEGREDO } });",
-"    origem = provavelOrigem(c && c.grupoRecentes, agora);",
-"  } catch (e) { origem = null; }",
+"// Cliques no convite (encurtador): de onde veio quem entrou e o que o relatório conta.",
+"let cliques;",
+"const lerCliques = async () => {",
+"  if (cliques !== undefined) return cliques;",
+"  cliques = null;",
+"  if ($env.ENCURTADOR_URL && $env.ENCURTADOR_SEGREDO) {",
+"    try { cliques = await this.helpers.httpRequest({ method: 'GET', url: String($env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/cliques', json: true, timeout: 10000, headers: { Authorization: 'Bearer ' + $env.ENCURTADOR_SEGREDO } }); } catch (e) { cliques = null; }",
+"  }",
+"  return cliques;",
+"};",
+"let entrou = 0, origem = null;",
+"if (part && part.length) {",
+"  const antes = Array.isArray(mem.entradaIds) ? mem.entradaIds.slice() : null;",
+"  const semLer = mem.ultimaLeitura ? (agora.getTime() - Date.parse(mem.ultimaLeitura)) / 60e3 : 0;",
+"  entrou = novosNoGrupo(mem, part);",
+"  const dif = diferencaDeIds(antes, mem.entradaIds);",
+"  // Origem provável: o clique no convite mais recente antes de a pessoa aparecer na lista.",
+"  const c = dif.novos.length ? await lerCliques() : null;",
+"  const origens = origensProvaveis(c && c.grupoRecentes, agora, janelaDaOrigem(semLer), dif.novos.length);",
+"  if (antes) registrarMovimento(mem, dif, agora, origens);",
+"  mem.ultimaLeitura = agora.toISOString();",
+"  origem = origens[0] || null;",
 "}",
+"if (relatorio || teste) {",
+"  const c = await lerCliques();",
+"  const meta = await anunciosDoDia(this.helpers, $env);",
+"  const texto = relatorioDoDia(mem, agora, { membros: part && part.length ? mem.entradaIds.length : null, recentes: c && c.grupoRecentes, meta });",
+"  if (teste) return [{ json: { avisar: false, motivo: 'teste', entrou, total: (mem.entradaIds || []).length, previa: texto } }];",
+"  marcarRelatorio(mem, agora);",
+"  return [{ json: { avisar: true, tipo: 'relatorio', grupo: $env.GRUPO_RASCUNHO, texto } }];",
+"}",
+"if (!part) return [{ json: { avisar: false, motivo: 'sem_lista' } }];",
+"const total = mem.entradaIds.length;",
+"if (!entrou) return [{ json: { avisar: false, motivo: 'ninguem_novo', total, entrou } }];",
 "// Marco dos 100 membros (15/11): uma vez só, lembra de ligar a foto em cena em todos os posts.",
 "const marco = avisoDoMarco(mem, total);",
 "return [{ json: { avisar: true, entrou, total, origem: origem && origem.de, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) + '\\n\\n' + linhaDaOrigem(origem) + (marco ? '\\n\\n' + marco : '') } }];"
