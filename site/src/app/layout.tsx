@@ -7,6 +7,7 @@ import Medicao from "@/components/Medicao";
 import PixelMeta from "@/components/PixelMeta";
 import WhatsCliques from "@/components/WhatsCliques";
 import WhatsFlutuante from "@/components/WhatsFlutuante";
+import ForaDaEntrada from "@/components/ForaDaEntrada";
 import { SchemaOrganizacao } from "@/components/Schemas";
 import { SITE } from "@/data/site";
 import "./globals.css";
@@ -56,7 +57,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        <WhatsFlutuante />
+        <ForaDaEntrada>
+          <WhatsFlutuante />
+        </ForaDaEntrada>
         <WhatsCliques />
         <AvisoCookies />
         <Medicao />

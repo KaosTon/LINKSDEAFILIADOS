@@ -3,6 +3,7 @@ import { MENU, SITE } from "@/data/site";
 import { Logo } from "./Marca";
 import MenuCelular from "./MenuCelular";
 import WhatsTopo from "./WhatsTopo";
+import ForaDaEntrada from "./ForaDaEntrada";
 
 // Menu: MENU em src/data/site.ts (a trava de links confere cada rota).
 const LINKS = MENU;
@@ -14,17 +15,20 @@ export default function Header() {
         <Link href="/" className="min-w-0" aria-label={`${SITE.nome}, início`}>
           <Logo />
         </Link>
-        <nav className="hidden md:flex items-center gap-5 lg:gap-7 text-sm text-tinta-2" aria-label="Principal">
-          {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-marca-escura transition-colors">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="flex items-center gap-2">
-          <WhatsTopo />
-          <MenuCelular links={LINKS} />
-        </div>
+        {/* Na /entrar (anuncio) o topo fica so com a marca: ForaDaEntrada */}
+        <ForaDaEntrada>
+          <nav className="hidden md:flex items-center gap-5 lg:gap-7 text-sm text-tinta-2" aria-label="Principal">
+            {LINKS.map((l) => (
+              <Link key={l.href} href={l.href} className="hover:text-marca-escura transition-colors">
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center gap-2">
+            <WhatsTopo />
+            <MenuCelular links={LINKS} />
+          </div>
+        </ForaDaEntrada>
       </div>
     </header>
   );
