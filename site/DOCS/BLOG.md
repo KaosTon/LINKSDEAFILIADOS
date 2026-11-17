@@ -60,3 +60,26 @@ disputa com elas.
 22. `whey-e-creatina-como-saber-se-e-original`: dono de "como saber se whey é original", "suplemento falsificado como identificar", "whey registrado na anvisa", "creatina falsificada", "custo por grama de proteína". Não confundir com /guias/como-saber-se-a-promocao-e-verdadeira (dono de preço riscado; aqui a conta é por grama de proteína e o preço riscado só tem 1 frase com link) nem com /blog/como-saber-se-loja-da-shopee-e-confiavel (reputação da loja; aqui 1 item com link). Tem 1 link de ponte para evolprot.com (sistema para nutricionistas e personal trainers, do mesmo dono, dito na frase): não indicar marca nem dose.
 
 Donos de busca que os posts não disputam: `/guias/como-saber-se-a-promocao-e-verdadeira` (promoção falsa, preço riscado, "De" inflado), `/guias/grupo-de-ofertas-no-whatsapp-e-seguro` (golpe, link falso, segurança do grupo) e `/guias/cupom-da-amazon-como-usar` (tipos de cupom da Amazon).
+
+## 4. Ritmo e tamanho do blog (17/11/2026)
+
+Conversa com o Wellington em 17/11/2026, com o blog em 22 posts e o site com um mês de vida.
+
+- **Ritmo sugerido:** dois posts por semana, em dias fixos, em vez de vários de uma vez (os 22
+  primeiros saíram em dois blocos: 10 em 18/10 e 12 entre 10 e 13/11). Nenhum post novo antes da
+  Black Friday de 27/11/2026: não daria tempo de aparecer na busca.
+- **Tema:** prioridade para quem está para comprar (cupom de loja, "vale a pena", datas do
+  calendário de promoções). Tema de quem está com problema (defeito, atraso) ajuda na confiança do
+  site, mas traz pouca gente para o grupo.
+- **Um post por busca** (§3). Post datado é atualizado no mesmo endereço no ano seguinte, em vez de
+  nascer outro.
+- **Post parado:** se em uns 6 meses não aparecer em busca nenhuma (Search Console), reescrever ou
+  juntar com outro.
+- **Peso:** quantidade de posts não deixa o site lento. Cada post é uma página própria e o texto
+  dos posts não entra no JavaScript das outras páginas (nenhum componente de cliente importa
+  `src/data/blog.ts`; se um dia importar, o texto de todos os posts vai junto: não fazer).
+- **Lista do blog:** a página `/blog` mostra todos os posts de uma vez. Passando de 60 posts ela
+  tem que ser dividida em páginas. A trava `scripts/check-indice-blog.mjs` barra o build do post
+  61 enquanto isso não for feito e diz como liberar.
+- **Arquivo dos posts:** `src/data/blog.ts` é um arquivo só (290 KB com 22 posts). Não pesa no
+  site, só fica ruim de editar: junto com a divisão da lista, vale separar um arquivo por post.

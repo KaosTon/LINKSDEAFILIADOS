@@ -18,7 +18,7 @@
 // Uso extra, para consultar antes de escrever um tema novo:
 //   node scripts/check-indice-blog.mjs --tema "seguro de moto"
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const BLOG = "src/data/blog.ts";
 const PROTOCOLO = "DOCS/BLOG.md";
@@ -84,6 +84,25 @@ if (faltando.length || fantasma.length) {
   process.exit(1);
 }
 
+// --- lista do blog: dividir em paginas antes de pesar (17/11/2026) ---------------
+// A pagina /blog mostra todos os posts de uma vez (uns 4,5 KB de HTML por post: 98 KB com 22).
+// Combinado com o Wellington em 17/11/2026: quando o blog passar de LIMITE_LISTA posts, a lista
+// tem que ser dividida em paginas. Nota em doc depende de alguem lembrar; esta trava nao.
+// Para liberar: crie as paginas (ex.: src/app/blog/pagina/[n]/page.tsx) e deixe a /blog mostrando
+// so os POSTS_POR_PAGINA mais novos. Os posts continuam cada um na sua pagina, isso nao muda.
+const LIMITE_LISTA = 60;
+const LISTA = "src/app/blog/page.tsx";
+const listaDividida = existsSync("src/app/blog/pagina") || /POSTS_POR_PAGINA/.test(readFileSync(LISTA, "utf-8"));
+if (slugsCodigo.length > LIMITE_LISTA && !listaDividida) {
+  console.error(`\n✖ O blog tem ${slugsCodigo.length} posts e a página /blog ainda lista todos de uma vez.\n`);
+  console.error(`  Passou de ${LIMITE_LISTA}: divida a lista em páginas antes de publicar mais posts.`);
+  console.error("  Como: crie src/app/blog/pagina/[n]/page.tsx e deixe a /blog só com os");
+  console.error("  POSTS_POR_PAGINA mais novos (a constante em src/app/blog/page.tsx libera esta trava).");
+  console.error("  Regra: DOCS/BLOG.md §4 (combinado em 17/11/2026).\n");
+  process.exit(1);
+}
+
 console.log(
-  `✓ Índice do blog ok: ${slugsCodigo.length} posts, todos registrados no anti-canibalização.`
+  `✓ Índice do blog ok: ${slugsCodigo.length} posts, todos registrados no anti-canibalização` +
+    (listaDividida ? "." : ` (lista em uma página só até ${LIMITE_LISTA}).`)
 );
