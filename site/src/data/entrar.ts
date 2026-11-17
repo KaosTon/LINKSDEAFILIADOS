@@ -6,10 +6,14 @@
 // Fora do Google e do sitemap. Sem promessa, sem urgencia (QUALIDADE §1). Preco so nos cards de prova,
 // sempre com o dia do post (15/11).
 
+// 17/11: de cada 100 pessoas que tocavam no anuncio, umas 5 tocavam em "Entrar". A primeira tela era
+// so texto, com o botao no meio da tela e o menu do site em cima. Agora: a frase do anuncio no titulo,
+// o botao logo abaixo, as ofertas reais em seguida, sem menu nem botao flutuante, e uma barra com o
+// botao quando a pessoa rola a pagina.
 export const ENTRAR = {
   eyebrow: "Grupo de ofertas no WhatsApp",
-  h1: "Ofertas e cupons",
-  h1Destaque: "todo dia no seu WhatsApp",
+  h1: "Preço de antes, preço de agora",
+  h1Destaque: "e cupom, no seu WhatsApp",
   lead: "Promoções da Amazon, do Mercado Livre, da Shopee e da Magalu com o preço conferido na loja antes de postar. Você toca no link e compra direto na loja.",
   pontos: [
     "Grátis, sem cadastro",
@@ -17,6 +21,8 @@ export const ENTRAR = {
     "Saia quando quiser, com um toque",
   ],
   botao: "Entrar no grupo grátis",
+  /** embaixo do botao: o que acontece depois do toque (o WhatsApp abre e pede mais um toque para entrar) */
+  depoisDoBotao: "Abre o WhatsApp. Lá, toque em entrar e pronto.",
   rodapeBotao: "Abre o WhatsApp. Não mandamos mensagem no privado.",
   comoE: {
     titulo: "O que chega para você",
