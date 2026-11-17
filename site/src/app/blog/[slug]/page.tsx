@@ -122,6 +122,24 @@ export default async function PaginaPost(props: Props) {
                 ))}
               </ul>
             </div>
+
+            {/* Convite logo depois do resumo (17/11): o outro convite do post fica no fim, umas 10 telas
+                abaixo no celular, e pouca gente chega la. Mesma origem do post na contagem. */}
+            <div className="mt-5 rounded-2xl bg-white border border-linha p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1">
+                <p className="font-semibold text-tinta leading-snug">Quer receber ofertas e cupons no seu WhatsApp?</p>
+                <p className="mt-1 text-sm text-tinta-2 leading-relaxed">O grupo é grátis, só os administradores postam e você sai quando quiser.</p>
+              </div>
+              <a
+                href={linkWhats(MENSAGENS_POST[p.slug])}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center justify-center gap-2 botao-marca font-semibold px-5 py-3"
+              >
+                <IconeWhats className="w-4 h-4" />
+                {TEXTOS.agendar} grátis
+              </a>
+            </div>
           </div>
         </header>
 
