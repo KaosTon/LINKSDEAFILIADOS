@@ -46,6 +46,7 @@ export default function Entrar() {
           </ul>
         </div>
         <div className="relative max-w-5xl mx-auto pb-10 md:pb-14">
+          <p className="px-4 mb-3 text-sm font-semibold text-tinta-2 text-center">{ENTRAR.rotuloProvas}</p>
           <OfertasDoGrupo titulo="" primeiraSemEspera />
         </div>
       </section>

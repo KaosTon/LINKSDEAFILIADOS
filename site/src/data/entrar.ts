@@ -21,8 +21,14 @@ export const ENTRAR = {
     "Saia quando quiser, com um toque",
   ],
   botao: "Entrar no grupo grátis",
-  /** embaixo do botao: o que acontece depois do toque (o WhatsApp abre e pede mais um toque para entrar) */
-  depoisDoBotao: "Abre o WhatsApp. Lá, toque em entrar e pronto.",
+  /**
+   * Embaixo do botao: o que acontece depois do toque. No navegador do Instagram o WhatsApp quase nunca
+   * abre sozinho: aparece a pagina do convite com o botao verde "Participar do grupo" (conferido em 17/11).
+   * Se o WhatsApp trocar o texto desse botao, troque aqui tambem.
+   */
+  depoisDoBotao: "Na tela do WhatsApp, toque em “Participar do grupo”.",
+  /** acima dos cards na /entrar: deixa claro que sao ofertas que ja sairam, nao o preco de hoje */
+  rotuloProvas: "Algumas ofertas que já saíram no grupo:",
   rodapeBotao: "Abre o WhatsApp. Não mandamos mensagem no privado.",
   comoE: {
     titulo: "O que chega para você",
