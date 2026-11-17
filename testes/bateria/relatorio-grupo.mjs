@@ -4,7 +4,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { idDoMembro } from '../../lib/aviso-entrada.mjs';
 import { diferencaDeIds, janelaDaOrigem, origensProvaveis, registrarMovimento, categoriaDaOrigem, conjuntosDoDia, saldoDaConta,
-  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos } from '../../lib/relatorio-grupo.mjs';
+  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos, separarRobos } from '../../lib/relatorio-grupo.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -28,6 +28,28 @@ const rec = [
 const os = origensProvaveis(rec, SP('14:00'), 20, 2);
 caso('duas pessoas: os dois cliques mais novos de gente (robô fora)', os.length === 2 && os[0].de === 'anuncio:v2' && os[1].de === 'home', os);
 caso('n = 0: nada', origensProvaveis(rec, SP('14:00'), 20, 0).length === 0);
+
+// Robô que abre todos os links do site (17/11): em 14 dias, 38 dos 49 cliques de posts eram varredura.
+{
+  const seg = (s) => new Date(SP('08:02').getTime() + s * 1000).toISOString();
+  const paginas = ['home:topo', 'home:fim', 'home', 'nao-encontrada', 'blog', 'sobre', 'post:a', 'post:b', 'guia:x', 'privacidade', 'anuncio'];
+  const varredura = paginas.map((de, i) => ({ quando: seg(i * 40), de }));
+  const gente = [{ quando: seg(200), de: 'anuncio:v2' }, { quando: seg(3 * 3600), de: 'home' },
+    { quando: seg(5 * 3600), de: 'post:a' }, { quando: seg(5 * 3600 + 30), de: 'post:a' }];
+  const r = separarRobos([...varredura, ...gente]);
+  caso('varredura (6 páginas ou mais em sequência): fica de fora, até o clique de anúncio sem código', r.robos.length === 11 && r.robos.some(x => x.de === 'anuncio'), r.robos.map(x => x.de));
+  caso('clique de anúncio com código no meio da varredura conta; gente fora dela também (até dois toques seguidos no mesmo post)',
+    JSON.stringify(r.gente.map(x => x.de)) === JSON.stringify(['anuncio:v2', 'home', 'post:a', 'post:a']), r.gente.map(x => x.de));
+  const trio = separarRobos(['home:topo', 'home:fim', 'home'].map((de, i) => ({ quando: seg(9 * 3600 + i), de })));
+  caso('rajada: 3 origens diferentes em 5 segundos é robô', trio.gente.length === 0 && trio.robos.length === 3);
+  const dia = separarRobos([{ quando: seg(0), de: 'home' }, { quando: seg(300), de: 'post:a' }, { quando: seg(500), de: 'anuncio:v1' }, { quando: seg(900), de: 'links' }, { quando: seg(1200), de: 'guia:x' }]);
+  caso('dia movimentado de gente (5 origens, poucas páginas): ninguém é tirado', dia.robos.length === 0 && dia.gente.length === 5, dia.robos);
+  caso('lista vazia ou quebrada', separarRobos(null).gente.length === 0 && separarRobos([{ quando: 'x', de: 'home' }]).gente.length === 0);
+  caso('origem de quem entrou não cai num clique da varredura', origensProvaveis(varredura, new Date(SP('08:02').getTime() + 8 * 60e3), 20, 1).length === 0);
+  const t = relatorioDoDia({}, SP('23:50'), { membros: 40, recentes: [...varredura, ...gente], meta: { conjuntos: [] } });
+  caso('relatório: conta só gente e avisa quantos eram de robô',
+    /Cliques em "Entrar no grupo": 4 \(site: 3, anúncio v2: 1\)\n   ◦ sem contar 11 de robô que abriu os links do site/.test(t), t);
+}
 
 {
   const ids = (n) => Array.from({ length: n }, (_, i) => idDoMembro('55119000000' + String(i).padStart(2, '0')));
