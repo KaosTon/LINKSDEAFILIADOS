@@ -11,7 +11,7 @@ const caso = (nome, cond, extra) => {
   if (cond) { ok++; console.log(`  PASS  ${nome}`); }
   else { mau++; console.log(`  FAIL  ${nome}`, extra === undefined ? '' : JSON.stringify(extra)); }
 };
-const TRAVESSAO = /[–—]/;
+const TRAVESSAO = /[\u2013\u2014]/;
 // 17/11 em São Paulo (UTC-3): 14h = 17h UTC; 23h50 = 02h50 UTC do dia 18.
 const SP = (hhmm, dia = '17') => new Date(`2026-11-${dia}T${hhmm}${hhmm.length === 5 ? ':00' : ''}-03:00`);
 
