@@ -4,7 +4,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { idDoMembro } from '../../lib/aviso-entrada.mjs';
 import { diferencaDeIds, janelaDaOrigem, origensProvaveis, registrarMovimento, categoriaDaOrigem, conjuntosDoDia, saldoDaConta,
-  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos, separarRobos } from '../../lib/relatorio-grupo.mjs';
+  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos, separarRobos, diaFechado } from '../../lib/relatorio-grupo.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -154,6 +154,21 @@ console.log('\n# Texto do relatório');
   mp.fichas.b = f('anuncio:v2', SP('10:00', '18'));
   const tp2 = relatorioDoDia(mp, SP('23:50', '18'), { membros: 42, meta: { conjuntos: [{ codigo: 'v2', nome: 'v2', gasto: 18, cliques: 9 }] } });
   caso('no dia seguinte a semana aparece só com os dias inteiros', /Últimos 2 dias: R\$ 18,00 por membro do anúncio \(R\$ 36,00 ÷ 2\)/.test(tp2), tp2);
+  // Dia fechado (17/11): a conta de anúncio fecha o dia às 5h de Brasília; o gasto das 23h50 é corrigido na noite seguinte.
+  caso('dia fechado: lê a data e o gasto; resposta vazia ou quebrada, null', JSON.stringify(diaFechado({ data: [{ spend: '18.16', date_start: '2026-11-16' }] })) === JSON.stringify({ dia: '2026-11-16', gasto: 18.16 })
+    && diaFechado({ data: [] }) === null && diaFechado(null) === null && diaFechado({ data: [{ spend: 'x', date_start: '2026-11-16' }] }) === null);
+  const mf = { fichas: { a: f('anuncio:v1', SP('09:57')), b: f('anuncio:v2', SP('20:00', '16')) },
+    relatorios: [{ dia: '2026-11-15', membros: 39, gasto: 10, anuncio: 1 }, { dia: '2026-11-16', membros: 40, gasto: 16.22, anuncio: 1 }] };
+  const metaF = { conjuntos: [{ codigo: 'v1', nome: 'v1', gasto: 18, cliques: 9 }], ontem: { dia: '2026-11-16', gasto: 18.16 } };
+  const tf = relatorioDoDia(mf, SP('23:50'), { membros: 41, meta: metaF });
+  caso('ontem fechado: troca o gasto guardado e avisa a diferença', mf.relatorios[1].gasto === 18.16 && mf.relatorios[1].fechado === true
+    && /• Ontem fechou em R\$ 18,16 \(às 23h50 eram R\$ 16,22; a Meta fecha o dia às 5h\)/.test(tf), tf);
+  caso('a conta da semana usa o gasto fechado', /Últimos 3 dias: R\$ 15,39 por membro do anúncio \(R\$ 46,16 ÷ 3\)/.test(tf), tf);
+  const tf2 = relatorioDoDia(mf, SP('23:55'), { membros: 41, meta: metaF });
+  caso('rodar de novo não troca nem avisa duas vezes', !/Ontem fechou/.test(tf2) && mf.relatorios[1].gasto === 18.16);
+  const mg = { relatorios: [{ dia: '2026-11-16', membros: 40, gasto: 16.22, anuncio: 1 }] };
+  relatorioDoDia(mg, SP('23:50'), { membros: 41, meta: { conjuntos: [], ontem: { dia: '2026-11-17', gasto: 99 } } });
+  caso('data que não é de um dia anterior guardado: não mexe', mg.relatorios[0].gasto === 16.22 && !mg.relatorios[0].fechado);
   const vazio = relatorioDoDia({}, SP('23:50'), { membros: null, recentes: null, meta: null });
   caso('sem Z-API, sem encurtador e sem Meta: sai do mesmo jeito, avisando',
     /Membros: a Z-API não respondeu agora/.test(vazio) && /Entraram hoje: 0/.test(vazio) && /nenhum hoje/.test(vazio) && /Não consegui ler a Meta agora/.test(vazio) && /Ninguém ainda/.test(vazio), vazio);
@@ -176,6 +191,7 @@ console.log('\n# No "Confere quem entrou" (como vai para o n8n)');
   const META = [
     { quando: /graph\.facebook\.com\/v21\.0\/act_123\/insights\?level=adset&date_preset=today/, metodo: 'GET', responde: INSIGHTS },
     { quando: /graph\.facebook\.com\/v21\.0\/act_123\?fields=is_prepay_account/, metodo: 'GET', responde: { is_prepay_account: true, funding_source_details: { display_string: 'Saldo disponível (R$154,25 BRL)' } } },
+    { quando: /graph\.facebook\.com\/v21\.0\/act_123\/insights\?date_preset=yesterday/, metodo: 'GET', responde: { data: [{ spend: '18.16', date_start: '2026-11-16' }] } },
     { quando: /graph\.facebook\.com\/v21\.0\/act_123\/adsets\?/, metodo: 'GET', responde: { data: [{ effective_status: 'ACTIVE', daily_budget: '600' }, { effective_status: 'ACTIVE', daily_budget: '600' }, { effective_status: 'ACTIVE', daily_budget: '600' }] } },
   ];
   const memoria = {};
@@ -207,7 +223,7 @@ console.log('\n# No "Confere quem entrou" (como vai para o n8n)');
   caso('relatório com quem veio de fora e continua', /• Anúncio: 1 entrou, 1 continua/.test(j.texto) && /• Site: 1 entrou, 0 continuam/.test(j.texto) && /No grupo agora: 1 de fora e 5 de antes/.test(j.texto), j.texto);
   caso('o token da Meta não aparece na saída nem na memória', !JSON.stringify(r.saida).includes('TOKEN-SECRETO') && !JSON.stringify(memoria).includes('TOKEN-SECRETO'));
   caso('nem telefone', !/5511/.test(JSON.stringify(r.saida)) && !/5511/.test(JSON.stringify(memoria)));
-  caso('Meta lida só com GET', r.chamadas.filter(c => /graph\.facebook/.test(c.url)).every(c => c.metodo === 'GET') && r.chamadas.filter(c => /graph\.facebook/.test(c.url)).length === 3);
+  caso('Meta lida só com GET', r.chamadas.filter(c => /graph\.facebook/.test(c.url)).every(c => c.metodo === 'GET') && r.chamadas.filter(c => /graph\.facebook/.test(c.url)).length === 4);
   r = await rodar(codigo, { env, http: [fones(['5511977776666', ...base.slice(1)]), enc, ...META], memoria, agora: SP('23:55') });
   caso('23h55: não manda de novo', r.saida[0].json.avisar === false && r.saida[0].json.motivo === 'fora_do_horario', r.saida);
   // Entrou de madrugada (2h), clicou no convite à 1h58; o fluxo só lê às 7h.
