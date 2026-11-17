@@ -3,6 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
+import { comEtiquetaShopee } from '../../lib/ofertas.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';
@@ -588,10 +589,29 @@ console.log('\n=== Loja confiavel na Shopee (18/10) ===');
   const redeC = { ...redeS, abrir: async (u) => (u === 'https://s.shopee.com.br/canal' ? 'https://shopee.com.br/m/espaco-tecnologia' : rede.abrir(u)), shopeeProduto: async () => L[0] };
   const rs = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: redeC });
   caso('Shopee de campanha sem busca: nao posta', rs.acao === 'nada' && rs.tentou.some(([, m]) => m === 'shopee_sem_produto'), rs);
-  const rb = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeC, shopeeBusca: async () => [{ ...L[0], nome: 'Capinha iPhone Teste' }, L[0]] } });
-  caso('Shopee de campanha: acha o produto pelo nome e posta o link dele', rb.acao === 'postar' && rb.link === 'https://s.shopee.com.br/I' && rb.chave === 'shopee:9.99', rb);
+  const etq = async (u) => (/^https:\/\/s\.shopee\.com\.br\/[A-Z]$/.test(u) ? u + 'grupo' : 'https://s.shopee.com.br/MEU');
+  const rb = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeC, shopee: etq, shopeeBusca: async () => [{ ...L[0], nome: 'Capinha iPhone Teste' }, L[0]] } });
+  caso('Shopee de campanha: acha o produto pelo nome e posta o link dele, com a etiqueta do grupo', rb.acao === 'postar' && rb.link === 'https://s.shopee.com.br/Igrupo' && rb.chave === 'shopee:9.99', rb);
+  const rbf = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeC, shopee: async (u) => { if (/^https:\/\/s\.shopee\.com\.br\/[A-Z]$/.test(u)) throw new Error('fora do ar'); return 'https://s.shopee.com.br/MEU'; }, shopeeBusca: async () => [L[0]] } });
+  caso('Shopee de campanha com a etiqueta fora do ar: posta o link do produto assim mesmo', rbf.acao === 'postar' && rbf.link === 'https://s.shopee.com.br/I', rbf);
   const rn = await garimpar({ canais: { canalum: pagina(pc) }, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: memNova(), rede: { ...redeC, shopeeBusca: async () => [{ ...L[0], nome: 'Capinha Silicone Teste' }] } });
   caso('Shopee de campanha: busca sem o mesmo produto, nao posta', rn.acao === 'nada', rn);
+  // 17/11: o link da lista de ofertas saia sem a etiqueta "grupo" e o painel da Shopee nao separava os cliques do grupo
+  const naVez = () => ({ canais: {}, shopee: lista, agora: AGORA, cfg: { ...CFG, shopee: true }, mem: { ...memNova(), postados: 2 } });
+  const pedidos = [];
+  const re1 = await garimpar({ ...naVez(), rede: { ...rede, shopee: async (u) => { pedidos.push(u); return etq(u); } } });
+  caso('lista da Shopee: o post sai com o link de etiqueta, no campo e na legenda', re1.acao === 'postar' && re1.link === 'https://s.shopee.com.br/Bgrupo' && re1.texto.includes('https://s.shopee.com.br/Bgrupo') && !/s\.shopee\.com\.br\/B(?!grupo)/.test(re1.texto), re1);
+  caso('a etiqueta e pedida em cima do proprio link da oferta, uma vez so', pedidos.length === 1 && pedidos[0] === 'https://s.shopee.com.br/B', pedidos);
+  caso('a etiqueta nao muda a chave do produto nem a foto', re1.chave === 'shopee:2.2' && re1.imagem === 'f', re1);
+  const re2 = await garimpar({ ...naVez(), rede: { ...rede, shopee: async () => { throw new Error('fora do ar'); } } });
+  caso('Shopee fora do ar na hora da etiqueta: o post sai com o link da oferta', re2.acao === 'postar' && re2.link === 'https://s.shopee.com.br/B' && re2.texto.includes('https://s.shopee.com.br/B'), re2);
+  for (const ruim of ['https://outro.exemplo/x', 'http://s.shopee.com.br/x', 'https://s.shopee.com.br/', 'https://s.shopee.com.br/a b', '', null, undefined, 42, {}]) {
+    const r9 = await garimpar({ ...naVez(), rede: { ...rede, shopee: async () => ruim } });
+    caso(`resposta estranha na etiqueta (${JSON.stringify(ruim)}): fica o link da oferta`, r9.acao === 'postar' && r9.link === 'https://s.shopee.com.br/B', r9);
+  }
+  caso('etiqueta: sem link devolve o que recebeu e nem chama a Shopee', (await comEtiquetaShopee(null, { shopee: async () => { throw new Error('nao era para chamar'); } })) === null && (await comEtiquetaShopee('', { shopee: async () => 'https://s.shopee.com.br/x' })) === '');
+  caso('etiqueta: sem acesso a Shopee devolve o link que recebeu', (await comEtiquetaShopee('https://s.shopee.com.br/B', {})) === 'https://s.shopee.com.br/B' && (await comEtiquetaShopee('https://s.shopee.com.br/B', null)) === 'https://s.shopee.com.br/B');
+  caso('etiqueta: link curto de verdade passa (letras, numeros, - e _)', (await comEtiquetaShopee('https://s.shopee.com.br/B', { shopee: async () => 'https://s.shopee.com.br/gRfZ-YF_pN9' })) === 'https://s.shopee.com.br/gRfZ-YF_pN9');
 }
 
 console.log('\n=== Vez do eletronico (17/10) ===');
