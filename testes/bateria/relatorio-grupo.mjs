@@ -146,6 +146,14 @@ console.log('\n# Texto do relatório');
   caso('dois grupos: total de pessoas e a comunidade separada, diferença pelo total',
     /• Membros agora: 45 pessoas \(\+2 desde ontem\)\n   ◦ 16 na comunidade, onde entra quem vem do site e do anúncio/.test(tt) && /No grupo agora: 0 de fora/.test(tt) === false && mt.relatorios[1].total === 45, tt);
   caso('clique de anúncio sem código', /\(anúncio sem código: 1\)/.test(tt), tt);
+  // 16/11 foi parcial (fichas ligadas às 21h55): o gasto daquele dia não entra na conta da semana.
+  const mp = { fichasDesde: '2026-11-16', fichasInicio: SP('21:55', '16').toISOString(), fichas: { a: f('anuncio:v1', SP('09:57')) },
+    relatorios: [{ dia: '2026-11-16', membros: 40, gasto: 16.22, anuncio: 0 }] };
+  const tp1 = relatorioDoDia(mp, SP('23:50'), { membros: 41, meta: { conjuntos: [{ codigo: 'v1', nome: 'v1', gasto: 18, cliques: 9 }] } });
+  caso('dia em que a medição começou não entra na conta da semana', !/Últimos/.test(tp1) && /1 entrou pelo anúncio: R\$ 18,00 por membro/.test(tp1), tp1);
+  mp.fichas.b = f('anuncio:v2', SP('10:00', '18'));
+  const tp2 = relatorioDoDia(mp, SP('23:50', '18'), { membros: 42, meta: { conjuntos: [{ codigo: 'v2', nome: 'v2', gasto: 18, cliques: 9 }] } });
+  caso('no dia seguinte a semana aparece só com os dias inteiros', /Últimos 2 dias: R\$ 18,00 por membro do anúncio \(R\$ 36,00 ÷ 2\)/.test(tp2), tp2);
   const vazio = relatorioDoDia({}, SP('23:50'), { membros: null, recentes: null, meta: null });
   caso('sem Z-API, sem encurtador e sem Meta: sai do mesmo jeito, avisando',
     /Membros: a Z-API não respondeu agora/.test(vazio) && /Entraram hoje: 0/.test(vazio) && /nenhum hoje/.test(vazio) && /Não consegui ler a Meta agora/.test(vazio) && /Ninguém ainda/.test(vazio), vazio);
