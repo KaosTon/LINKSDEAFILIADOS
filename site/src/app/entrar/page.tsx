@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import BotaoEntrar from "@/components/BotaoEntrar";
 import BarraEntrar from "@/components/BarraEntrar";
+import AvisoDeChegada from "@/components/AvisoDeChegada";
 import OfertasDoGrupo from "@/components/OfertasDoGrupo";
 import { IconeCheck } from "@/components/Icones";
 import { ENTRAR } from "@/data/entrar";
@@ -35,6 +36,7 @@ export default function Entrar() {
           <div className="mt-5">
             <BotaoEntrar id="entrar-principal" texto={ENTRAR.botao} className={CLASSE_BOTAO} />
             <p className="mt-2.5 text-sm text-tinta-2">{ENTRAR.depoisDoBotao}</p>
+            <AvisoDeChegada className="mt-1 text-sm text-tinta-2" />
           </div>
           <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-[13px] text-tinta-2">
             {ENTRAR.pontos.map((t) => (
