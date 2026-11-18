@@ -51,6 +51,56 @@ export function lojaPermitida(url) {
 const ROBO = /bot\b|bot\/|crawl|spider|slurp|facebookexternalhit|facebot|whatsapp|telegram|twitterbot|linkedin|discord|skypeuripreview|preview|headless|lighthouse|pingdom|uptime|python|curl|wget|go-http|okhttp|java\/|axios|ahrefs|semrush|mj12|petal|bytespider|gpt|claude|perplexity|applebot|yandex|baidu|duckduck/i;
 export function ehRobo(ua) { return !ua || ROBO.test(String(ua)); }
 
+// Rede da Meta (AS32934), 17/11. A revisao automatica de anuncio abre a pagina do anuncio com User-Agent de
+// celular comum e toca em "Entrar no grupo". Em 17/11 isso entrou como toque do anuncio v3 e virou Lead,
+// 44 segundos depois de o conjunto ser ligado e antes de qualquer exibicao. Quem navega de verdade pelo
+// Instagram ou pelo Facebook sai pela rede do proprio celular, nunca por esta.
+// Lista: RIPEstat, announced-prefixes de AS32934, em 17/11/2026, com os blocos vizinhos juntados.
+const REDE_META_V4 = [
+  '31.13.24.0/21', '31.13.64.0/18', '45.64.40.0/22', '57.141.0.0/24', '57.141.2.0/23', '57.141.4.0/23',
+  '57.141.6.0/24', '57.141.8.0/24', '57.141.10.0/24', '57.141.12.0/23', '57.141.14.0/24', '57.141.16.0/22',
+  '57.141.20.0/24', '57.141.22.0/24', '57.141.24.0/24', '57.144.0.0/14', '66.220.144.0/20', '69.63.176.0/20',
+  '69.171.224.0/19', '74.119.76.0/22', '102.132.96.0/20', '103.4.96.0/22', '129.134.0.0/17', '157.240.0.0/17',
+  '157.240.192.0/18', '163.70.128.0/17', '163.77.132.0/23', '163.77.136.0/23', '163.77.160.0/20', '173.252.64.0/18',
+  '179.60.192.0/22', '185.60.216.0/22', '185.89.216.0/22', '204.15.20.0/22',
+];
+// IPv6: 2a03:2880::/32 e 2620:0:1c00::/40, pelos primeiros digitos do endereco por extenso.
+const REDE_META_V6 = ['2a032880', '262000001c'];
+function v4num(ip) {
+  const p = String(ip).split('.');
+  if (p.length !== 4 || p.some(x => !/^\d{1,3}$/.test(x) || Number(x) > 255)) return null;
+  return p.reduce((n, x) => n * 256 + Number(x), 0);
+}
+const FAIXAS_META_V4 = REDE_META_V4.map(c => { const [b, m] = c.split('/'); const ini = v4num(b); return [ini, ini + 2 ** (32 - Number(m)) - 1]; });
+/** O IPv6 por extenso, 32 digitos hexadecimais, ou null se nao for um IPv6 bem formado. */
+function v6hex(ip) {
+  if (!/^[0-9a-f:]+$/.test(ip) || !ip.includes(':')) return null;
+  const partes = ip.split('::');
+  if (partes.length > 2) return null;
+  const antes = partes[0] ? partes[0].split(':') : [];
+  const depois = partes.length === 2 && partes[1] ? partes[1].split(':') : [];
+  const n = antes.length + depois.length;
+  if (partes.length === 1 ? n !== 8 : n > 7) return null;
+  const todos = [...antes, ...Array(8 - n).fill('0'), ...depois];
+  if (todos.some(h => !/^[0-9a-f]{1,4}$/.test(h))) return null;
+  return todos.map(h => h.padStart(4, '0')).join('');
+}
+/** O endereco de quem pediu, como o Railway entrega (primeiro do X-Forwarded-For). */
+export function ipDoPedido(headers) {
+  return String((headers && headers['x-forwarded-for']) || '').split(',')[0].trim();
+}
+export function ehRedeDaMeta(ip) {
+  const s = String(ip || '').trim().toLowerCase().replace(/^::ffff:/, '');
+  const n = v4num(s);
+  if (n !== null) return FAIXAS_META_V4.some(([a, b]) => n >= a && n <= b);
+  const h = v6hex(s);
+  return !!h && REDE_META_V6.some(p => h.startsWith(p));
+}
+/** Robo pelo User-Agent ou pela rede: e redirecionado como todo mundo, mas nao conta clique nem vira conversao. */
+export function pedidoDeRobo(headers) {
+  return ehRobo(headers && headers['user-agent']) || ehRedeDaMeta(ipDoPedido(headers));
+}
+
 const RECENTES = 300, RECENTES_DIAS = 14;
 
 /** Guarda a foto como jpg (até 1080 px) com o nome tirado do conteúdo; apaga as de mais de 10 dias. */
@@ -180,7 +230,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto,
     if (p === '/grupo') {
       // origem curta e sem nada de quem clicou: só a página do site ("home", "guia:cupom-amazon")
       const de = /^[a-z0-9:-]{1,60}$/.test(u.searchParams.get('de') || '') ? u.searchParams.get('de') : 'direto';
-      if (ehRobo(req.headers['user-agent'])) dados.robos.grupo++;
+      if (pedidoDeRobo(req.headers)) dados.robos.grupo++;
       else {
         dados.grupo[de] = (dados.grupo[de] || 0) + 1;
         // só a hora e a origem; nada de quem clicou (sem IP, sem aparelho)
@@ -207,7 +257,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto,
       if (/^\/[a-km-np-z2-9]{5}$/.test(p)) return responde(res, 302, '', { Location: raizSite + '/oferta-encerrada', 'Cache-Control': 'no-store' });
       return responde(res, 301, '', { Location: raizSite + p + u.search });
     }
-    if (ehRobo(req.headers['user-agent'])) dados.robos.links++; else l.cliques++;
+    if (pedidoDeRobo(req.headers)) dados.robos.links++; else l.cliques++;
     sujo = true;
     responde(res, 302, '', { Location: l.url, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer-when-downgrade' });
   });
