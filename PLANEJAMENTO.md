@@ -242,3 +242,38 @@ Pesquisa na internet (docs oficiais, blogs e comunidades BR). Parte das fontes �
 - Um n8n por cliente (projeto Railway separado): credenciais, número, tags de afiliado e memória do garimpo ficam isoladas; um erro de um não derruba o outro. Com muitos clientes, pensar em configuração por cliente numa tabela.
 - Cada cliente com o próprio número da Z-API e as próprias contas de afiliado; nada de chave nossa no fluxo dele.
 - Modelo: implantação + mensalidade (receita `robo-ofertas-afiliado` no opensquad-starter).
+
+## Nichos da marca (projeto para depois, anotado em 17/11)
+
+**Estado:** ideia do Wellington, guardada por ele em 17/11 ("deixa anotado para um projeto para depois"). Por enquanto o foco continua no grupo geral. Não começar sem ele pedir.
+
+**A ideia:** usar "Tem Descontos" como marca-mãe e abrir um grupo por nicho: Tem Descontos da Mamãe, Brinquedos, Esportes ou Fitness, Roupas e assim por diante. Atualiza o item 3 de "Próximas fases" (18/10), que falava em começar por brinquedos.
+
+**Como montar (recomendado em 17/11):**
+
+- Os nichos entram como grupos dentro da mesma comunidade: quem está num grupo enxerga os outros e entra sem anúncio.
+- Uma página de entrada por nicho no mesmo site (`/mamae`, `/fitness`), no modelo da `/entrar`. Mesmo domínio e mesmo pixel.
+- Um Instagram só no começo.
+- Etiqueta por nicho nos links (sub_id da Shopee, etiqueta do Mercado Livre, tag da Amazon) para medir a venda de cada um.
+- No garimpo: classificar cada oferta por nicho; a geral vai para todos, a de nicho só para o grupo dela.
+
+**Ordem sugerida:** 1) Mamãe, com brinquedos dentro (compra que se repete; novembro e dezembro são o pico de brinquedo); 2) Fitness (suplemento e tênis; em 17/11 uma creatina na Shopee pagava 26% de comissão); 3) Brinquedos separado, só se o volume justificar; 4) Roupas por último (depende de gosto e tamanho).
+
+**Limites conhecidos:**
+
+- Cada nicho pede um grupo, uma página, um filtro e um conjunto de anúncio. A Meta recusou conjunto abaixo de R$ 5,70 por dia; com R$ 18 por dia cabem 3 frentes, contando o grupo geral. Abrir um de cada vez, e o próximo só com custo por membro bom no anterior.
+- Um número de WhatsApp só: com mais de duas ou três comunidades, pensar em um segundo número.
+- Trabalho manual do Wellington por grupo: criar, cuidar do convite e mandar o histórico para quem entra.
+- Não prometer nicho e entregar o grupo geral: o teste precisa de grupo e filtro próprios.
+- Nicho Mamãe: a lei 11.265/2006 restringe promoção de fórmula infantil, mamadeira, bico e chupeta. Bloquear esses itens no garimpo e confirmar a regra com um advogado antes de lançar.
+- Falta fonte de farmácia (fralda e higiene): hoje as fontes são Amazon, Mercado Livre e Shopee.
+- Conferir no INPI se "Tem Descontos" tem registro antes de espalhar o nome.
+
+**Referência olhada em 17/11 (só fontes públicas: site, canal no Telegram e Biblioteca de Anúncios da Meta):** o grupo Descontinho de Mamãe.
+
+- Canal com 9,87 mil inscritos e 199 posts num dia (7h às 21h15, pico das 18h às 20h). 55% de bebê, 10% de criança, o resto casa, beleza e outros.
+- Amazon em 56% dos posts, rede de afiliados de farmácias em 17%, Mercado Livre em 13%, Shopee em 10%. Preço por unidade em 36% dos posts ("R$ 0,82 a tira").
+- Página de entrada de uma tela só: logo, uma frase, três etiquetas, contagem para a Black Friday e um botão. O botão passa por um roteador de grupos que oferece copiar o link e QR Code quando o WhatsApp não abre dentro do Instagram.
+- Uns 23 anúncios ativos, todos de imagem parada. Os mais antigos (desde 28/08) pedem para comentar uma palavra; o modelo mais repetido (desde 03/11) é o print de um post real com "de" e "por" e a frase "quem tá no grupo garantiu essa". Já têm três nichos por dentro: Mamãe, Kids e uma marca de roupa de bebê.
+
+**Primeiro passo quando retomar:** o Wellington cria o grupo da Mamãe dentro da comunidade e põe o convite numa variável do Railway (nunca no chat). Depois: filtro no garimpo, página `/mamae` e dois criativos com posts reais nossos, e 3 a 4 dias de teste comparando o custo por membro com o do grupo geral.
