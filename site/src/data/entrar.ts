@@ -27,6 +27,19 @@ export const ENTRAR = {
    * Se o WhatsApp trocar o texto desse botao, troque aqui tambem.
    */
   depoisDoBotao: "Na tela do WhatsApp, toque em “Participar do grupo”.",
+  /**
+   * Logo abaixo (18/11): quem entra nao ve as mensagens antigas e encontra o grupo vazio. Das 6 pessoas
+   * que entraram pelo anuncio em 17 e 18/11, 2 sairam em menos de 10 minutos sem ver oferta nenhuma (uma
+   * delas a 1h42, com o grupo parado ate as 8h). O texto diz o que esperar, de dia e de noite.
+   * O ritmo vem do garimpo (GARIMPO_INICIO 8, GARIMPO_FIM 24, um post a cada 25 minutos; o ultimo do dia
+   * sai por volta das 23h45): mudou la, muda aqui. Hora de Brasilia, com fracao (23.5 = 23h30).
+   */
+  chegada: {
+    dia: "O grupo começa vazio para quem entra. A próxima oferta costuma chegar em até meia hora.",
+    noite: "O grupo começa vazio para quem entra. As ofertas voltam às 8h da manhã.",
+    noiteDe: 23.5,
+    noiteAte: 8,
+  },
   /** acima dos cards na /entrar: deixa claro que sao ofertas que ja sairam, nao o preco de hoje */
   rotuloProvas: "Algumas ofertas que já saíram no grupo:",
   rodapeBotao: "Abre o WhatsApp. Não mandamos mensagem no privado.",
