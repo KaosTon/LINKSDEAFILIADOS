@@ -8,6 +8,8 @@
 //   POST /api/encurtar      { url } com Authorization: Bearer ENCURTADOR_SEGREDO -> { codigo, curto }
 //   GET  /api/cliques       mesma senha; os links mais clicados, cliques no convite por origem e os últimos
 //                           cliques no convite com a hora (grupoRecentes), para cruzar com quem entrou no grupo
+//   POST /api/movimento     mesma senha; { tipo: 'entrou'|'saiu', ids: [resumo], quando } avisado pelo WhatsApp (18/11).
+//                           Volta no /api/cliques (movimentos), junto com a versao do que esta no ar
 //
 // Robô não conta (21/10): Google, Bing, a prévia de link do WhatsApp e do Facebook abrem o link
 // e não são gente. Eles ainda são redirecionados normalmente; só ficam fora da contagem (robos).
@@ -102,6 +104,22 @@ export function pedidoDeRobo(headers) {
 }
 
 const RECENTES = 300, RECENTES_DIAS = 14;
+// Versao do que esta no ar: sai no /api/cliques para dar para conferir, de fora, se a publicacao nova entrou.
+export const VERSAO = '2026-11-18-movimentos';
+// Entradas e saidas da comunidade (18/11), avisadas pelo WhatsApp na hora e repassadas pelo fluxo 01 do n8n.
+// So o resumo (hash) de quem entrou ou saiu, a hora e o tipo. Nunca o telefone.
+const MOVIMENTOS = 600, MOVIMENTOS_DIAS = 30;
+/** Confere um aviso de movimento e devolve as linhas para guardar, ou null se vier torto. */
+export function lerMovimento(corpo, agoraMs = Date.now()) {
+  let j; try { j = typeof corpo === 'string' ? JSON.parse(corpo) : corpo; } catch { return null; }
+  if (!j || (j.tipo !== 'entrou' && j.tipo !== 'saiu')) return null;
+  const ids = Array.isArray(j.ids) ? [...new Set(j.ids)] : null;
+  if (!ids || !ids.length || ids.length > 20 || ids.some(x => typeof x !== 'string' || !/^[a-f0-9]{12}$/.test(x))) return null;
+  // A hora e a do aviso do WhatsApp; fora de um dia para tras ou 5 minutos para frente, vale a hora de agora.
+  const t = Date.parse(j.quando);
+  const quando = new Date(Number.isFinite(t) && t > agoraMs - 864e5 && t < agoraMs + 5 * 60e3 ? t : agoraMs).toISOString();
+  return ids.map(id => ({ quando, tipo: j.tipo, id }));
+}
 
 /** Guarda a foto como jpg (até 1080 px) com o nome tirado do conteúdo; apaga as de mais de 10 dias. */
 export async function guardarImagem(pastaImg, bin, dias = 10) {
@@ -134,6 +152,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto,
   dados.grupo = dados.grupo || {};
   dados.grupoRecentes = dados.grupoRecentes || [];
   dados.robos = dados.robos || { grupo: 0, links: 0 };
+  dados.movimentos = Array.isArray(dados.movimentos) ? dados.movimentos : [];
   const porUrl = new Map(Object.entries(dados.links).map(([c, l]) => [l.url, c]));
 
   let sujo = false;
@@ -219,12 +238,29 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto,
       return void res.end(jpg);
     }
 
+    if (p === '/api/movimento' && req.method === 'POST') {
+      if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
+      let corpo = '';
+      req.on('data', (c) => { corpo += c; if (corpo.length > 1e4) req.destroy(); });
+      req.on('end', () => {
+        const linhas = lerMovimento(corpo);
+        if (!linhas) return responde(res, 400, { erro: 'movimento' });
+        const limite = Date.now() - MOVIMENTOS_DIAS * 864e5;
+        // O WhatsApp pode avisar duas vezes: a mesma pessoa, o mesmo tipo e a mesma hora entram uma vez so.
+        const novas = linhas.filter(n => !dados.movimentos.some(x => x.id === n.id && x.tipo === n.tipo && x.quando === n.quando));
+        dados.movimentos = [...dados.movimentos.filter(x => Date.parse(x.quando) > limite), ...novas].slice(-MOVIMENTOS);
+        sujo = true;
+        responde(res, 200, { ok: true, guardados: novas.length });
+      });
+      return;
+    }
+
     if (p === '/api/cliques') {
       if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
       const top = Object.entries(dados.links).sort((a, b) => b[1].cliques - a[1].cliques).slice(0, 50)
         .map(([codigo, l]) => ({ codigo, cliques: l.cliques, url: l.url, criado: new Date(l.criado).toISOString() }));
       return responde(res, 200, { total: Object.keys(dados.links).length, top, grupo: dados.grupo,
-        grupoRecentes: dados.grupoRecentes, robos: dados.robos });
+        grupoRecentes: dados.grupoRecentes, robos: dados.robos, movimentos: dados.movimentos, versao: VERSAO });
     }
 
     if (p === '/grupo') {

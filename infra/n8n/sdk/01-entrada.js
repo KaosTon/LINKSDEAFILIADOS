@@ -96,7 +96,32 @@ const comoFoi = node({
 const responde = gateway('Responde no rascunho', [1200, 0], {
   phone: expr('{{ $env.GRUPO_RASCUNHO }}'), message: expr('{{ $json.resposta }}'), image: '', origem: '01-resposta', link: '', titulo: '' });
 
+// Aviso de entrada ou saída da comunidade (18/11). O WhatsApp avisa na hora pelo mesmo webhook do rascunho;
+// este nó só repassa ao encurtador o resumo de quem foi, a hora e o tipo, para o relatório do dia (fluxo 05).
+// Fica num ramo à parte: não segura nem muda o que o rascunho faz.
+const anotaMovimento = node({
+  type: 'n8n-nodes-base.code', version: 2,
+  config: { name: 'Anota quem entrou e saiu', position: [240, 220],
+    parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
+"/*LIB:aviso-entrada*/",
+"const w = $('Z-API avisou').first().json || {};",
+"if ($env.WEBHOOK_SEGREDO && String((w.query || {}).k || '') !== $env.WEBHOOK_SEGREDO) return [];",
+"const m = movimentoDoAviso(w.body, grupoDoAvisoDeEntrada($env));",
+"if (!m || !$env.ENCURTADOR_URL || !$env.ENCURTADOR_SEGREDO) return [];",
+"// Só o tipo e a quantidade ficam na execução: nem telefone nem resumo.",
+"try {",
+"  const r = await this.helpers.httpRequest({ method: 'POST', url: String($env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/movimento', json: true, timeout: 8000,",
+"    headers: { Authorization: 'Bearer ' + $env.ENCURTADOR_SEGREDO }, body: m });",
+"  return [{ json: { tipo: m.tipo, quantos: m.ids.length, guardado: !!(r && r.ok) } }];",
+"} catch (e) {",
+"  return [{ json: { tipo: m.tipo, quantos: m.ids.length, guardado: false, erro: String((e && e.message) || e).split(String($env.ENCURTADOR_SEGREDO)).join('***').slice(0, 80) } }];",
+"}"
+].join('\n') } },
+  output: [{ tipo: 'saiu', quantos: 1, guardado: true }]
+});
+
 export default workflow('ofertas-01-entrada', '[Ofertas] 01 Entrada (rascunho para o grupo)')
   .add(zapi.to(prepara).to(podePostar
     .onTrue(posta.to(comoFoi).to(responde))
-    .onFalse(responde)));
+    .onFalse(responde)))
+  .add(zapi.to(anotaMovimento));

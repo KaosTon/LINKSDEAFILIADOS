@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { criarServidor, lojaPermitida, novoCodigo, ehRobo, ehRedeDaMeta, ipDoPedido, pedidoDeRobo } from '../../encurtador/servidor.mjs';
+import { criarServidor, lojaPermitida, novoCodigo, ehRobo, ehRedeDaMeta, ipDoPedido, pedidoDeRobo, lerMovimento, VERSAO } from '../../encurtador/servidor.mjs';
 import { assinarFoto } from '../../encurtador/foto.mjs';
 import { assinarCard, dadosDoCard, linhasDoNome } from '../../encurtador/card.mjs';
 import { assinarReel, lerReel, ffmpegDisponivel } from '../../encurtador/reel.mjs';
@@ -89,6 +89,45 @@ caso('/grupo: gente pelo mesmo anuncio conta um toque so', gg.status === 302 && 
   && depoisMeta.grupoRecentes.filter(x => x.de === 'anuncio:v3').length === 1, depoisMeta.grupo);
 caso('link curto: rede da Meta e redirecionada mas nao conta clique', lm.status === 302 && lm.headers.get('location') === ML
   && depoisMeta.robos.links === antesMeta.robos.links + 1 && depoisMeta.top[0].cliques === antesMeta.top[0].cliques, depoisMeta.robos);
+// 18/11: entradas e saidas da comunidade avisadas pelo WhatsApp. So resumo (12 letras de hash), hora e tipo.
+const mandaMov = (corpo, senha = SENHA) => fetch(`${raiz}/api/movimento`, { method: 'POST',
+  headers: { Authorization: `Bearer ${senha}`, 'Content-Type': 'application/json' }, body: typeof corpo === 'string' ? corpo : JSON.stringify(corpo) });
+const ID1 = 'a1b2c3d4e5f6', ID2 = '0f1e2d3c4b5a';
+const haPouco = new Date(Date.now() - 4 * 60e3).toISOString();
+caso('movimento: sem a senha, 401', (await mandaMov({ tipo: 'saiu', ids: [ID1] }, 'y'.repeat(40))).status === 401);
+const mv1 = await mandaMov({ tipo: 'entrou', ids: [ID1], quando: haPouco });
+caso('movimento: guarda a entrada', mv1.status === 200 && (await mv1.json()).guardados === 1);
+caso('movimento: o mesmo aviso de novo nao duplica', (await (await mandaMov({ tipo: 'entrou', ids: [ID1], quando: haPouco })).json()).guardados === 0);
+await mandaMov({ tipo: 'saiu', ids: [ID1, ID2] });
+for (const ruim of [{ tipo: 'sumiu', ids: [ID1] }, { tipo: 'saiu' }, { tipo: 'saiu', ids: [] }, { tipo: 'saiu', ids: ['5511977776666'] }, { tipo: 'saiu', ids: ['776666'] },
+  { tipo: 'saiu', ids: [ID1.toUpperCase()] }, { tipo: 'saiu', ids: Array(21).fill(0).map((_, i) => ('00000000000' + i.toString(16)).slice(-12)) }, { tipo: 'saiu', ids: [123456789012] }, '{', '[]', 'null', '']) {
+  const rr = await mandaMov(ruim);
+  caso(`movimento torto recusado: ${JSON.stringify(ruim).slice(0, 60)}`, rr.status === 400, rr.status);
+}
+const cm = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('movimentos voltam no /api/cliques, so com quando, tipo e id', cm.movimentos.length === 3 && cm.movimentos[0].quando === haPouco && cm.movimentos[0].tipo === 'entrou' && cm.movimentos[0].id === ID1
+  && cm.movimentos.every(x => Object.keys(x).sort().join() === 'id,quando,tipo'), cm.movimentos);
+caso('telefone nunca e aceito como id', !JSON.stringify(cm.movimentos).includes('5511'));
+caso('a versao do que esta no ar sai no /api/cliques', cm.versao === VERSAO && /^\d{4}-\d{2}-\d{2}-/.test(VERSAO), cm.versao);
+caso('movimento: hora de mais de um dia atras, no futuro ou torta vira a hora de agora', [new Date(Date.now() - 3 * 864e5).toISOString(), new Date(Date.now() + 3600e3).toISOString(), 'ontem', undefined, 12345]
+  .every(q => { const l = lerMovimento({ tipo: 'saiu', ids: [ID1], quando: q }, Date.now()); return l && Math.abs(Date.parse(l[0].quando) - Date.now()) < 5000; }));
+caso('movimento: id repetido no mesmo aviso entra uma vez', lerMovimento({ tipo: 'saiu', ids: [ID1, ID1] }).length === 1);
+await new Promise((ok) => s.close(ok));
+({ s, raiz } = await sobe({ convite: 'https://chat.whatsapp.com/CONVITE' }));
+const cm2 = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('reiniciou: os movimentos continuam (salvos no volume)', cm2.movimentos.length === 3, cm2.movimentos);
+// Movimento velho (mais de 30 dias) sai quando chega um novo.
+{
+  const arq = fs.readdirSync(pasta).map(f => path.join(pasta, f)).find(f => { try { return fs.statSync(f).isFile() && JSON.parse(fs.readFileSync(f, 'utf8')).movimentos; } catch { return false; } });
+  await new Promise((ok) => s.close(ok));
+  const d = JSON.parse(fs.readFileSync(arq, 'utf8'));
+  d.movimentos.unshift({ quando: new Date(Date.now() - 40 * 864e5).toISOString(), tipo: 'saiu', id: 'ffffffffffff' });
+  fs.writeFileSync(arq, JSON.stringify(d));
+  ({ s, raiz } = await sobe({ convite: 'https://chat.whatsapp.com/CONVITE' }));
+  await mandaMov({ tipo: 'entrou', ids: [ID2] });
+  const cm3 = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+  caso('movimento de mais de 30 dias sai da memoria', cm3.movimentos.length === 4 && !cm3.movimentos.some(x => x.id === 'ffffffffffff'), cm3.movimentos);
+}
 await new Promise((ok) => s.close(ok));
 
 // com o site no www: o dominio sem www so guarda os links curtos
