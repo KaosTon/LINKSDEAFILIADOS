@@ -4,7 +4,7 @@
 import { pegarCodigo, rodar } from './executar.mjs';
 import { idDoMembro } from '../../lib/aviso-entrada.mjs';
 import { diferencaDeIds, janelaDaOrigem, origensProvaveis, registrarMovimento, categoriaDaOrigem, conjuntosDoDia, saldoDaConta,
-  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos, separarRobos, diaFechado } from '../../lib/relatorio-grupo.mjs';
+  orcamentoDiario, faixaDoCusto, relatorioDoDia, horaDoRelatorio, marcarRelatorio, gruposDasOfertas, pessoasNosGrupos, separarRobos, diaFechado, idsQueSairam, aplicarAvisos, tirarQuemSaiu } from '../../lib/relatorio-grupo.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -196,7 +196,7 @@ console.log('\n# No "Confere quem entrou" (como vai para o n8n)');
   ];
   const memoria = {};
   let r = await rodar(codigo, { env, http: [fones(base), enc, ...META], memoria, agora: SP('14:00') });
-  caso('1ª leitura: só guarda, sem ficha', r.saida[0].json.motivo === 'ninguem_novo' && !memoria.fichas && r.chamadas.length === 1, r.saida);
+  caso('1ª leitura: só guarda, sem ficha (lê a lista e os avisos)', r.saida[0].json.motivo === 'ninguem_novo' && !memoria.fichas && r.chamadas.length === 2, r.saida);
   recentes = [{ quando: SP('14:03').toISOString(), de: 'anuncio:v2' }];
   r = await rodar(codigo, { env, http: [fones([...base, '5511977776666']), enc, ...META], memoria, agora: SP('14:05') });
   const ficha = memoria.fichas && memoria.fichas[idDoMembro('5511977776666')];
@@ -239,6 +239,126 @@ console.log('\n# No "Confere quem entrou" (como vai para o n8n)');
   caso('Meta fora do ar: o relatório sai sem os anúncios', r.saida[0].json.avisar === true && /Não consegui ler a Meta agora/.test(r.saida[0].json.texto), r.saida[0].json.texto);
   r = await rodar(codigo, { env, http: [fones(['5511977776666', ...base.slice(1)]), enc, ...META], memoria: JSON.parse(JSON.stringify(memoria)), agora: SP('15:00', '18'), modo: 'manual' });
   caso('rodado na mão: devolve a prévia e não manda', r.saida[0].json.avisar === false && r.saida[0].json.motivo === 'teste' && /Relatório do dia \(18\/11\)/.test(r.saida[0].json.previa), r.saida);
+}
+
+console.log('\n# Entradas e saídas pelos avisos do WhatsApp (18/11)');
+{
+  // 17/11: clicou no anúncio v3 às 22h07, entrou às 22h15, saiu às 22h17. A lista da Z-API continuou
+  // mostrando a pessoa mais de uma hora depois, e o relatório disse "4 entraram, 4 continuam".
+  const X = idDoMembro('5511977776666'), Y = idDoMembro('5511955554444');
+  const E = SP('22:15:32').toISOString(), S = SP('22:17:36').toISOString();
+  const mov = [{ quando: E, tipo: 'entrou', id: X }, { quando: S, tipo: 'saiu', id: X }];
+  const cliques = [{ quando: SP('22:07:07').toISOString(), de: 'anuncio:v3' }];
+  caso('quem saiu: o último aviso é de saída', [...idsQueSairam(mov)].join() === X);
+  caso('quem voltou depois de sair não está fora', idsQueSairam([...mov, { quando: SP('22:40').toISOString(), tipo: 'entrou', id: X }]).size === 0);
+  caso('ordem em que os avisos chegam não importa', [...idsQueSairam([mov[1], mov[0]])].join() === X);
+  caso('aviso torto não conta', idsQueSairam([null, {}, { quando: 'x', tipo: 'saiu', id: X }, { quando: S, tipo: 'sumiu', id: X }, { quando: S, tipo: 'saiu', id: '5511977776666' }]).size === 0
+    && idsQueSairam(null).size === 0 && idsQueSairam(undefined).size === 0 && idsQueSairam('x').size === 0);
+
+  let mem = { fichas: { [X]: { e: SP('22:16').toISOString(), de: 'anuncio:v3' } } };
+  caso('ficha que a leitura abriu antes de sair: ganha a hora certa de entrar e de sair', aplicarAvisos(mem, mov, cliques) === 1
+    && mem.fichas[X].e === E && mem.fichas[X].s === S && mem.fichas[X].de === 'anuncio:v3', mem.fichas);
+  mem = { fichas: { [X]: { e: SP('22:20:14').toISOString(), de: 'anuncio:v3' } } };
+  caso('lista atrasada: a leitura só viu a pessoa depois de ela sair (caso de 17/11)', aplicarAvisos(mem, mov, cliques) === 1
+    && mem.fichas[X].e === E && mem.fichas[X].s === S && mem.fichas[X].de === 'anuncio:v3', mem.fichas);
+  const copia = JSON.stringify(mem);
+  caso('rodar de novo não muda nada', aplicarAvisos(mem, mov, cliques) === 0 && JSON.stringify(mem) === copia);
+  mem = { fichas: {} };
+  caso('entrou e saiu sem a leitura ver: ficha com as duas horas e a origem do clique de antes', aplicarAvisos(mem, mov, cliques) === 1
+    && JSON.stringify(mem.fichas[X]) === JSON.stringify({ e: E, de: 'anuncio:v3', s: S }), mem.fichas);
+  mem = { fichas: {} };
+  aplicarAvisos(mem, mov, [{ quando: SP('21:00').toISOString(), de: 'anuncio:v1' }]);
+  caso('sem clique nos 20 minutos antes de entrar: ficha sem origem', mem.fichas[X].de === null && mem.fichas[X].e === E && mem.fichas[X].s === S, mem.fichas);
+  mem = { fichas: {} };
+  caso('membro de antes das fichas que saiu: antigo', aplicarAvisos(mem, [{ quando: S, tipo: 'saiu', id: Y }]) === 1 && JSON.stringify(mem.fichas[Y]) === JSON.stringify({ e: null, de: 'antigo', s: S }), mem.fichas);
+  // A lista atrasada e a volta de verdade.
+  const TX = '5511977776666', TY = '5511955554444', TZ = '5511933332222';
+  let mf = {};
+  caso('lista atrasada: quem saiu pelo aviso sai da lista lida', tirarQuemSaiu(mf, mov, [TY, TX, TZ]).join() === [TY, TZ].join() && !mf.saidasConfirmadas, mf);
+  caso('enquanto a lista continuar atrasada, continua fora', tirarQuemSaiu(mf, mov, [TY, TX, TZ]).join() === [TY, TZ].join());
+  caso('a lista enfim tirou a pessoa: a saída fica confirmada', tirarQuemSaiu(mf, mov, [TY, TZ]).join() === [TY, TZ].join() && mf.saidasConfirmadas[X] === S, mf);
+  caso('depois de confirmada, se aparece de novo na lista é entrada de verdade (aviso de entrada perdido)', tirarQuemSaiu(mf, mov, [TY, TX, TZ]).join() === [TY, TX, TZ].join() && mf.saidasConfirmadas[X] === S);
+  const S2 = SP('23:10').toISOString();
+  caso('saiu de novo depois: volta a ser tirada até a lista confirmar', tirarQuemSaiu(mf, [...mov, { quando: S2, tipo: 'saiu', id: X }], [TY, TX, TZ]).join() === [TY, TZ].join() && !mf.saidasConfirmadas, mf);
+  mf = {};
+  caso('sem aviso, aviso torto ou Z-API fora do ar: a lista passa como veio', tirarQuemSaiu(mf, null, [TY, TX]).length === 2 && tirarQuemSaiu(mf, [{ tipo: 'saiu' }], [TY, TX]).length === 2
+    && tirarQuemSaiu(mf, mov, null) === null && Object.keys(mf).length === 0, mf);
+  caso('quem voltou com aviso de entrada não é tirado', tirarQuemSaiu({}, [...mov, { quando: SP('22:40').toISOString(), tipo: 'entrou', id: X }], [TY, TX]).length === 2);
+  caso('a memória do filtro guarda só resumo', (() => { const m = {}; tirarQuemSaiu(m, mov, [TY]); return !/5511/.test(JSON.stringify(m)) && Object.keys(m.saidasConfirmadas).join() === X; })());
+
+  mem = { fichas: { [X]: { e: SP('22:42').toISOString(), de: 'home' } } };
+  const voltou = [...mov, { quando: SP('22:40').toISOString(), tipo: 'entrou', id: X }];
+  caso('voltou depois de sair: a ficha nova não é mexida', aplicarAvisos(mem, voltou, cliques) === 0 && !mem.fichas[X].s && mem.fichas[X].de === 'home', mem.fichas);
+  mem = { fichas: { [X]: { e: SP('09:00', '18').toISOString(), de: 'links' } } };
+  caso('voltou no dia seguinte e o aviso de entrada se perdeu: a ficha nova não é fechada pela saída antiga', aplicarAvisos(mem, mov, cliques) === 0 && !mem.fichas[X].s && mem.fichas[X].de === 'links', mem.fichas);
+  mem = { fichas: { [X]: { e: SP('10:00', '14').toISOString(), de: 'links', s: SP('12:00', '15').toISOString() } } };
+  caso('estadia antiga já fechada: a entrada e saída de hoje viram a ficha nova', aplicarAvisos(mem, mov, cliques) === 1 && JSON.stringify(mem.fichas[X]) === JSON.stringify({ e: E, de: 'anuncio:v3', s: S })
+    && aplicarAvisos(mem, mov, cliques) === 0, mem.fichas);
+  mem = { fichas: { [X]: { e: SP('22:16').toISOString(), de: 'anuncio:v3', s: SP('07:00', '18').toISOString() } } };
+  caso('a leitura só marcou a saída no dia seguinte: vale a hora do aviso', aplicarAvisos(mem, mov, cliques) === 1 && mem.fichas[X].s === S && mem.fichas[X].e === E, mem.fichas);
+  mem = { fichas: { [X]: { e: SP('10:00', '14').toISOString(), de: 'links' } } };
+  aplicarAvisos(mem, [{ quando: S, tipo: 'saiu', id: X }]);
+  caso('membro de dias atrás que saiu: a entrada antiga fica, só entra a hora de sair', mem.fichas[X].e === SP('10:00', '14').toISOString() && mem.fichas[X].s === S && mem.fichas[X].de === 'links', mem.fichas);
+  mem = { fichas: { [X]: { e: SP('22:16').toISOString(), de: null } } };
+  aplicarAvisos(mem, mov, cliques);
+  caso('ficha sem origem ganha a origem do clique de antes da entrada', mem.fichas[X].de === 'anuncio:v3', mem.fichas);
+  mem = { fichas: { [X]: { e: SP('22:16').toISOString(), de: 'anuncio:v3' } } };
+  caso('sem aviso nenhum: nada muda', aplicarAvisos(mem, null) === 0 && aplicarAvisos(mem, []) === 0 && !mem.fichas[X].s);
+  caso('só aviso de entrada: nada muda (a leitura cuida)', aplicarAvisos(mem, [mov[0]]) === 0 && !mem.fichas[X].s && mem.fichas[X].e === SP('22:16').toISOString());
+  mem = { fichas: {} };
+  aplicarAvisos(mem, mov, cliques);
+  const t = relatorioDoDia({ ...mem, fichasDesde: '2026-11-16' }, SP('23:50'), { membros: 19, total: 43, recentes: cliques, meta: null });
+  caso('relatório: quem entrou e saiu em 2 minutos aparece nas duas contas, com a origem', /Entraram hoje: 1/.test(t) && /Saíram hoje: 1/.test(t) && /anúncio v3 \(Meta\): ficou 2 min/.test(t), t);
+  caso('relatório: sem travessão e sem resumo de telefone', !TRAVESSAO.test(t) && !t.includes(X));
+
+  // No nó, como vai para o n8n.
+  const codigo = pegarCodigo('05-aviso-entrada.json', 'Confere quem entrou');
+  const env = { GRUPO_RASCUNHO: 'r-group', GRUPO_OFERTAS: 'a-group,b-group', ZAPI_BASE_URL: 'https://zapi.test', ZAPI_INSTANCE_ID: 'I', ZAPI_INSTANCE_TOKEN: 'T',
+    ENCURTADOR_URL: 'https://enc.test/', ENCURTADOR_SEGREDO: 'S' };
+  const fones = (lista) => ({ quando: /light-group-metadata\/b-group$/, metodo: 'GET', responde: { participants: lista.map(phone => ({ phone })) } });
+  const outro = { quando: /light-group-metadata\/a-group$/, metodo: 'GET', responde: { participants: ['5511911110000'].map(phone => ({ phone })) } };
+  const base = Array.from({ length: 6 }, (_, i) => '55119000000' + i);
+  let recentes = [], movimentos = [];
+  const enc = { quando: /^https:\/\/enc\.test\/api\/cliques$/, metodo: 'GET', responde: () => ({ grupo: {}, grupoRecentes: recentes, movimentos, versao: 'teste' }) };
+  const semMeta = [{ quando: /graph\.facebook\.com/, metodo: 'GET', responde: () => { throw new Error('sem token'); } }];
+  const memoria = {};
+  await rodar(codigo, { env, http: [fones(base), enc], memoria, agora: SP('20:00') });
+  // Uma pessoa de antes entra na ficha para as fichas começarem a contar.
+  recentes = [{ quando: SP('20:03').toISOString(), de: 'home' }];
+  await rodar(codigo, { env, http: [fones([...base, '5511933332222']), enc], memoria, agora: SP('20:05') });
+
+  // 1) Entrou e saiu entre duas leituras; a lista atrasada ainda mostra a pessoa.
+  recentes.push(...cliques); movimentos = mov;
+  let r = await rodar(codigo, { env, http: [fones([...base, '5511933332222', '5511977776666']), enc], memoria, agora: SP('22:20') });
+  caso('nó: quem já saiu pelo aviso não vira "entrou" por causa da lista atrasada', r.saida[0].json.avisar === false && r.saida[0].json.motivo === 'ninguem_novo' && r.saida[0].json.total === 7, r.saida);
+  caso('nó: a ficha fica com a entrada, a saída e a origem', JSON.stringify(memoria.fichas[X]) === JSON.stringify({ e: E, de: 'anuncio:v3', s: S }) && !memoria.entradaIds.includes(X), memoria.fichas);
+  r = await rodar(codigo, { env, http: [fones([...base, '5511933332222', '5511977776666']), outro, enc, ...semMeta], memoria: JSON.parse(JSON.stringify(memoria)), agora: SP('23:50') });
+  caso('nó: relatório das 23h50 conta a saída, o tempo que ficou e tira a pessoa do total', /Entraram hoje: 2/.test(r.saida[0].json.texto) && /Saíram hoje: 1/.test(r.saida[0].json.texto)
+    && /anúncio v3 \(Meta\): ficou 2 min/.test(r.saida[0].json.texto) && /• Membros agora: 8 pessoas\n   ◦ 7 na comunidade/.test(r.saida[0].json.texto)
+    && /• Anúncio: 1 entrou, 0 continuam/.test(r.saida[0].json.texto), r.saida[0].json.texto);
+
+  // 2) A leitura viu a pessoa primeiro; depois chega o aviso de saída e a lista continua atrasada.
+  const m2 = {}; movimentos = []; recentes = [];
+  await rodar(codigo, { env, http: [fones(base), enc], memoria: m2, agora: SP('20:00') });
+  recentes = [...cliques];
+  r = await rodar(codigo, { env, http: [fones([...base, '5511977776666']), enc], memoria: m2, agora: SP('22:16') });
+  caso('nó: a leitura viu entrar e avisou com a origem', r.saida[0].json.avisar === true && r.saida[0].json.origem === 'anuncio:v3' && m2.entradaIds.includes(X), r.saida);
+  movimentos = mov;
+  r = await rodar(codigo, { env, http: [fones([...base, '5511977776666']), enc], memoria: m2, agora: SP('22:21') });
+  caso('nó: com o aviso de saída, a pessoa sai da contagem mesmo com a lista atrasada', !m2.entradaIds.includes(X) && r.saida[0].json.total === 6 && m2.fichas[X].s === S && m2.fichas[X].e === E, { saida: r.saida, ficha: m2.fichas[X] });
+  r = await rodar(codigo, { env, http: [fones([...base, '5511977776666']), enc], memoria: m2, agora: SP('22:26') });
+  caso('nó: nas leituras seguintes ela não volta como "entrou"', r.saida[0].json.avisar === false && !m2.entradaIds.includes(X) && m2.fichas[X].s === S, r.saida);
+  // 3) Voltou de verdade: aviso de entrada depois do de saída.
+  movimentos = [...mov, { quando: SP('22:40').toISOString(), tipo: 'entrou', id: X }];
+  recentes.push({ quando: SP('22:39').toISOString(), de: 'home' });
+  r = await rodar(codigo, { env, http: [fones([...base, '5511977776666']), enc], memoria: m2, agora: SP('22:41') });
+  caso('nó: se a pessoa volta, conta como entrada de novo', r.saida[0].json.avisar === true && m2.entradaIds.includes(X) && !m2.fichas[X].s && m2.fichas[X].de === 'home', { saida: r.saida, ficha: m2.fichas[X] });
+  // 4) Encurtador antigo (sem movimentos) ou fora do ar: tudo como antes.
+  const m4 = {}; recentes = [];
+  await rodar(codigo, { env, http: [fones(base), { ...enc, responde: () => ({ grupo: {}, grupoRecentes: [] }) }], memoria: m4, agora: SP('20:00') });
+  r = await rodar(codigo, { env, http: [fones([...base, '5511977776666']), { ...enc, responde: () => { throw new Error('fora do ar'); } }], memoria: m4, agora: SP('20:05') });
+  caso('nó: encurtador fora do ar não atrapalha o aviso de entrada', r.saida[0].json.avisar === true && r.saida[0].json.entrou === 1 && m4.entradaIds.includes(X), r.saida);
+  caso('nó: nada de telefone na memória nem na saída', !/5511/.test(JSON.stringify(memoria)) && !/5511/.test(JSON.stringify(m2)) && !/5511/.test(JSON.stringify(r.saida)));
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

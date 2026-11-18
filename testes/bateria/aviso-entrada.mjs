@@ -1,6 +1,6 @@
 // Bateria do aviso de entrada (fluxo 05). Telefones inventados.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem, avisoDoMarco } from '../../lib/aviso-entrada.mjs';
+import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem, avisoDoMarco, movimentoDoAviso } from '../../lib/aviso-entrada.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -88,6 +88,59 @@ console.log('\n  marco dos 100 membros');
   caso('aos 100 avisa, com as variáveis da foto em cena', /100 membros/.test(a) && /GARIMPO_CENA_POR_DIA=80/.test(a) && !/[\u2013\u2014]/.test(a), a);
   caso('avisa uma vez só', avisoDoMarco(m, 101) === null && m.marcos.length === 1);
   caso('total inválido não avisa', avisoDoMarco({}, undefined) === null);
+}
+
+console.log('\n# Aviso de entrada e saída do WhatsApp (18/11)');
+{
+  // 17/11: entrou às 22h15 e saiu às 22h17; a lista de participantes ainda mostrava a pessoa 1 h depois.
+  const G = '120363000000000002-group', T = '5511977776666', ADMIN = '5511999998888';
+  const AGORA = Date.parse('2026-11-18T01:20:00Z');
+  const aviso = (notification, extra = {}) => ({ isGroup: true, phone: G, notification, notificationParameters: [T], participantPhone: null, momment: Date.parse('2026-11-18T01:15:32Z'), ...extra });
+  const e = movimentoDoAviso(aviso('GROUP_PARTICIPANT_INVITE'), G, AGORA);
+  caso('entrou pelo link: tipo, resumo e a hora do aviso', e && e.tipo === 'entrou' && e.ids.length === 1 && e.ids[0] === idDoMembro(T) && e.quando === '2026-11-18T01:15:32.000Z', e);
+  const s = movimentoDoAviso(aviso('GROUP_PARTICIPANT_LEAVE', { participantPhone: T, momment: Date.parse('2026-11-18T01:17:36Z') }), G, AGORA);
+  caso('saiu: o número vem duas vezes no aviso e vira um resumo só', s && s.tipo === 'saiu' && s.ids.length === 1 && s.ids[0] === idDoMembro(T) && s.quando === '2026-11-18T01:17:36.000Z', s);
+  const rem = movimentoDoAviso(aviso('GROUP_PARTICIPANT_REMOVE', { participantPhone: ADMIN }), G, AGORA);
+  caso('removido: conta quem saiu, não o admin que removeu', rem && rem.tipo === 'saiu' && rem.ids.length === 1 && rem.ids[0] === idDoMembro(T), rem);
+  const add = movimentoDoAviso(aviso('GROUP_PARTICIPANT_ADD', { participantPhone: ADMIN, notificationParameters: [T, '5511955554444'] }), G, AGORA);
+  caso('adicionados dois: dois resumos, sem o admin', add && add.tipo === 'entrou' && add.ids.length === 2 && !add.ids.includes(idDoMembro(ADMIN)), add);
+  caso('sem lista no aviso: vale o participantPhone', (movimentoDoAviso(aviso('GROUP_PARTICIPANT_LEAVE', { notificationParameters: [], participantPhone: T }), G, AGORA) || {}).ids?.[0] === idDoMembro(T));
+  caso('nada de telefone no que sai', [e, s, rem, add].every(x => !/5511/.test(JSON.stringify(x))));
+  caso('aviso de outro grupo: nada', movimentoDoAviso(aviso('GROUP_PARTICIPANT_LEAVE'), '120363000000000001-group', AGORA) === null);
+  caso('sem grupo configurado: nada', movimentoDoAviso(aviso('GROUP_PARTICIPANT_LEAVE'), '', AGORA) === null && movimentoDoAviso(aviso('GROUP_PARTICIPANT_LEAVE'), undefined, AGORA) === null);
+  caso('mensagem comum e outros avisos: nada', [undefined, null, '', 'GROUP_CREATE', 'GROUP_PARTICIPANT_PROMOTE', 'CALL_MISSED_VOICE', 'constructor', '__proto__', 'toString']
+    .every(n => movimentoDoAviso(aviso(n), G, AGORA) === null));
+  caso('aviso vazio ou torto: nada', [null, undefined, {}, { notification: 'GROUP_PARTICIPANT_LEAVE' }, aviso('GROUP_PARTICIPANT_LEAVE', { notificationParameters: ['abc', '', null, '123'] }),
+    aviso('GROUP_PARTICIPANT_LEAVE', { notificationParameters: 'x', participantPhone: {} })].every(b => movimentoDoAviso(b, G, AGORA) === null));
+  caso('número com sinais: mesmo resumo da lista de participantes', movimentoDoAviso(aviso('GROUP_PARTICIPANT_INVITE', { notificationParameters: ['+55 (11) 97777-6666'] }), G, AGORA).ids[0] === idDoMembro(T));
+  const semHora = movimentoDoAviso(aviso('GROUP_PARTICIPANT_INVITE', { momment: undefined }), G, AGORA);
+  const futura = movimentoDoAviso(aviso('GROUP_PARTICIPANT_INVITE', { momment: AGORA + 3600e3 }), G, AGORA);
+  const emSegundos = movimentoDoAviso(aviso('GROUP_PARTICIPANT_INVITE', { momment: Math.floor(AGORA / 1000) - 60 }), G, AGORA);
+  caso('sem hora, hora no futuro ou em segundos: vale a hora de agora', [semHora, futura, emSegundos].every(x => x.quando === new Date(AGORA).toISOString()), [semHora, futura, emSegundos]);
+
+  // O nó do fluxo 01, como vai para o n8n.
+  const codigo = pegarCodigo('01-entrada.json', 'Anota quem entrou e saiu');
+  const env = { WEBHOOK_SEGREDO: 'k-secreta', GRUPO_OFERTAS: '120363000000000001-group,' + G, ENCURTADOR_URL: 'https://enc.test/', ENCURTADOR_SEGREDO: 'SENHA-DO-ENCURTADOR' };
+  const recebe = { quando: /^https:\/\/enc\.test\/api\/movimento$/, metodo: 'POST', responde: { ok: true, guardados: 1 } };
+  const zapi = (body, k = 'k-secreta') => ({ 'Z-API avisou': [{ json: { query: { k }, body } }] });
+  let r = await rodar(codigo, { env, http: [recebe], nos: zapi(aviso('GROUP_PARTICIPANT_LEAVE', { participantPhone: T, momment: Date.now() - 5000 })) });
+  const ch = r.chamadas[0] || {};
+  caso('nó: repassa o tipo, o resumo e a hora com a senha', r.chamadas.length === 1 && ch.metodo === 'POST' && ch.headers.Authorization === 'Bearer SENHA-DO-ENCURTADOR'
+    && ch.body.tipo === 'saiu' && ch.body.ids.length === 1 && ch.body.ids[0] === idDoMembro(T) && Object.keys(ch.body).sort().join() === 'ids,quando,tipo', ch);
+  caso('nó: o telefone não sai do n8n nem fica na execução', !/5511/.test(JSON.stringify(ch.body)) && !/5511/.test(JSON.stringify(r.saida)) && !JSON.stringify(r.saida).includes(idDoMembro(T)), { body: ch.body, saida: r.saida });
+  caso('nó: devolve só o tipo e a quantidade', JSON.stringify(r.saida[0].json) === JSON.stringify({ tipo: 'saiu', quantos: 1, guardado: true }), r.saida);
+  r = await rodar(codigo, { env, http: [recebe], nos: zapi(aviso('GROUP_PARTICIPANT_LEAVE'), 'outra-chave') });
+  caso('nó: chave do webhook errada, não repassa', r.saida.length === 0 && r.chamadas.length === 0, r);
+  r = await rodar(codigo, { env, http: [recebe], nos: zapi({ isGroup: true, phone: 'r-group', text: { message: 'Fone JBL\nPor R$ 99\nLink: https://amzn.to/x' } }) });
+  caso('nó: oferta mandada no rascunho não vira movimento', r.saida.length === 0 && r.chamadas.length === 0, r);
+  r = await rodar(codigo, { env, http: [recebe], nos: zapi(aviso('GROUP_PARTICIPANT_LEAVE', { phone: '120363000000000001-group' })) });
+  caso('nó: saída do grupo antigo (não é a comunidade) não repassa', r.saida.length === 0 && r.chamadas.length === 0, r);
+  r = await rodar(codigo, { env, http: [{ ...recebe, responde: () => { throw new Error('connect ECONNREFUSED Bearer SENHA-DO-ENCURTADOR'); } }], nos: zapi(aviso('GROUP_PARTICIPANT_INVITE')) });
+  caso('nó: encurtador fora do ar não derruba o fluxo nem mostra a senha', r.saida[0].json.guardado === false && !JSON.stringify(r.saida).includes('SENHA-DO-ENCURTADOR'), r.saida);
+  r = await rodar(codigo, { env: { ...env, ENCURTADOR_URL: '' }, http: [recebe], nos: zapi(aviso('GROUP_PARTICIPANT_INVITE')) });
+  caso('nó: sem encurtador configurado, não faz nada', r.saida.length === 0 && r.chamadas.length === 0, r);
+  r = await rodar(codigo, { env, http: [recebe], nos: zapi(aviso('GROUP_PARTICIPANT_INVITE')), bloquear: ['crypto', 'node:crypto'] });
+  caso('nó: sem crypto, não manda pedaço de telefone', r.chamadas.length === 0 && !/7666/.test(JSON.stringify(r.saida)), r);
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
