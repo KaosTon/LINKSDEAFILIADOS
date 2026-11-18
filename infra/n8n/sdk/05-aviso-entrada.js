@@ -60,12 +60,14 @@ const confere = node({
 "// (em 17/11 uma pessoa saiu às 22h17 e a lista ainda mostrava ela mais de uma hora depois).",
 "const avisos = ((await lerCliques()) || {}).movimentos || null;",
 "if (part) part = tirarQuemSaiu(mem, avisos, part);",
-"let entrou = 0, origem = null;",
+"let entrou = 0, origem = null, novos = [];",
 "if (part && part.length) {",
 "  const antes = Array.isArray(mem.entradaIds) ? mem.entradaIds.slice() : null;",
 "  const semLer = mem.ultimaLeitura ? (agora.getTime() - Date.parse(mem.ultimaLeitura)) / 60e3 : 0;",
 "  entrou = novosNoGrupo(mem, part);",
 "  const dif = diferencaDeIds(antes, mem.entradaIds);",
+"  // Quem tem aviso de entrada do WhatsApp conta mesmo sem o total crescer (uma saiu e outra entrou entre duas leituras).",
+"  if (antes) { novos = dif.novos; entrou = Math.max(entrou, entradasComAviso(avisos, novos, agora)); }",
 "  // Origem provável: o clique no convite mais recente antes de a pessoa aparecer na lista.",
 "  const c = dif.novos.length ? await lerCliques() : null;",
 "  const origens = origensProvaveis(c && c.grupoRecentes, agora, janelaDaOrigem(semLer), dif.novos.length);",
@@ -75,6 +77,8 @@ const confere = node({
 "}",
 "// As fichas acertadas pelos avisos: hora certa de sair e quem entrou e saiu entre duas leituras.",
 "if (avisos && mem.fichasDesde) aplicarAvisos(mem, avisos, ((await lerCliques()) || {}).grupoRecentes);",
+"// A origem do aviso de entrada pela hora certa do aviso do WhatsApp, quando ele chegou.",
+"if (avisos && novos.length) { const o = origemPeloAviso(avisos, novos[0], ((await lerCliques()) || {}).grupoRecentes, agora); if (o !== undefined) origem = o; }",
 "if (relatorio || teste) {",
 "  const c = await lerCliques();",
 "  const meta = await anunciosDoDia(this.helpers, $env);",
@@ -94,7 +98,7 @@ const confere = node({
 "if (!entrou) return [{ json: { avisar: false, motivo: 'ninguem_novo', total, entrou } }];",
 "// Marco dos 100 membros (15/11): uma vez só, lembra de ligar a foto em cena em todos os posts.",
 "const marco = avisoDoMarco(mem, total);",
-"return [{ json: { avisar: true, entrou, total, origem: origem && origem.de, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) + '\\n\\n' + linhaDaOrigem(origem) + (marco ? '\\n\\n' + marco : '') } }];"
+"return [{ json: { avisar: true, entrou, total, origem: origem && origem.de, grupo: $env.GRUPO_RASCUNHO, texto: textoEntrada(entrou, total) + '\\n\\n' + linhaDaOrigemPeloAviso(origem, agora) + (marco ? '\\n\\n' + marco : '') } }];"
 ].join('\n') } },
   output: [{ avisar: true, entrou: 1, total: 6, grupo: '120363000000000001-group', texto: 'Entrou 1 pessoa' }]
 });
