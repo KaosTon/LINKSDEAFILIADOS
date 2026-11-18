@@ -76,6 +76,14 @@ console.log('\n=== Encurtador: /grupo avisa sem segurar o redirecionamento ===')
   await fetch(`${raiz}/grupo?de=anuncio:v2&ev=zz99yy88xx66`, { redirect: 'manual', headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' } });
   await new Promise((r) => setTimeout(r, 30));
   caso('sem id do clique, ou robô: não repassa', recebidos.length === 1, recebidos.length);
+  // 17/11: a revisão de anúncio da Meta (rede dela, User-Agent de celular comum) tocou no botão e virou Lead do v3.
+  const rm = await fetch(`${raiz}/grupo?de=anuncio:v3&ev=zz99yy88xx44&fbc=${encodeURIComponent(FBC)}`, { redirect: 'manual', headers: { 'User-Agent': UA, 'X-Forwarded-For': '57.141.0.65' } });
+  await fetch(`${raiz}/grupo?de=anuncio:v3&ev=zz99yy88xx33&fbc=${encodeURIComponent(FBC)}`, { redirect: 'manual', headers: { 'User-Agent': UA, 'X-Forwarded-For': '2a03:2880:f0ff:1::1' } });
+  await new Promise((r) => setTimeout(r, 30));
+  caso('revisão da Meta: vai ao convite, mas não vira conversão', rm.status === 302 && rm.headers.get('location') === 'https://chat.whatsapp.com/CONVITE' && recebidos.length === 1, recebidos.length);
+  await fetch(`${raiz}/grupo?de=anuncio:v3&ev=zz99yy88xx22&fbc=${encodeURIComponent(FBC)}`, { redirect: 'manual', headers: { 'User-Agent': UA, 'X-Forwarded-For': '177.10.20.30' } });
+  await new Promise((r) => setTimeout(r, 30));
+  caso('gente pelo mesmo anúncio, de operadora comum: vira conversão', recebidos.length === 2 && recebidos[1].de === 'anuncio:v3' && recebidos[1].ev === 'zz99yy88xx22', recebidos);
   const quebra = criarServidor({ pasta, segredo: SENHA, base: 'https://promox.example', convite: 'https://chat.whatsapp.com/CONVITE',
     conversao: () => { throw new Error('n8n fora do ar'); } });
   await new Promise((r) => quebra.listen(0, r));

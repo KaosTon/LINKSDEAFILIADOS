@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { criarServidor, lojaPermitida, novoCodigo, ehRobo } from '../../encurtador/servidor.mjs';
+import { criarServidor, lojaPermitida, novoCodigo, ehRobo, ehRedeDaMeta, ipDoPedido, pedidoDeRobo } from '../../encurtador/servidor.mjs';
 import { assinarFoto } from '../../encurtador/foto.mjs';
 import { assinarCard, dadosDoCard, linhasDoNome } from '../../encurtador/card.mjs';
 import { assinarReel, lerReel, ffmpegDisponivel } from '../../encurtador/reel.mjs';
@@ -67,6 +67,28 @@ const cg2 = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization
 caso('/grupo: Googlebot vai ao convite mas nao conta', gb.status === 302 && !cg2.grupo['post:black-friday'] && cg2.robos.grupo === 1, cg2);
 const ult1 = cg2.grupoRecentes[cg2.grupoRecentes.length - 1];
 caso('/grupo: guarda a hora e a origem do clique de gente (sem IP)', ult1.de === 'post:pix' && Math.abs(Date.parse(ult1.quando) - Date.now()) < 60000 && Object.keys(ult1).length === 2, cg2.grupoRecentes);
+// 17/11: a revisao de anuncio da Meta abriu a pagina do v3 com User-Agent de celular comum e tocou em "Entrar no grupo".
+// Contou como toque do anuncio e virou Lead. Quem vem da rede da propria Meta e robo, mesmo com cara de gente.
+const DA_META = ['57.141.0.65', '31.13.24.1', '31.13.31.255', '157.240.0.1', '157.240.255.255', '173.252.127.255', '57.147.255.255',
+  '2a03:2880:f0ff:1::1', '2A03:2880::', '2620:0:1c00::1', '2620:0:1cff:ffff::1', '::ffff:57.141.0.65', ' 57.141.0.65 '];
+const DE_FORA = ['177.10.20.30', '189.5.6.7', '200.147.3.1', '57.141.1.1', '31.13.23.255', '31.13.32.0', '157.240.128.0', '57.148.0.0',
+  '2a03:2881::1', '2804:14c::1', '2620:0:1d00::1', '', 'abc', '999.1.1.1', '1.2.3', '1.2.3.4.5', '2a03:2880', '2a03::2880::1', null, undefined, 0, {}];
+caso('rede da Meta: reconhece IPv4 e IPv6, inclusive o caso de 17/11', DA_META.every(ehRedeDaMeta), DA_META.filter(x => !ehRedeDaMeta(x)));
+caso('rede da Meta: operadora brasileira, vizinho de bloco e endereco torto ficam de fora', !DE_FORA.some(ehRedeDaMeta), DE_FORA.filter(ehRedeDaMeta));
+caso('endereco de quem pediu: o primeiro do X-Forwarded-For', ipDoPedido({ 'x-forwarded-for': '57.141.0.65, 10.0.0.1' }) === '57.141.0.65' && ipDoPedido({}) === '' && ipDoPedido(null) === '');
+caso('robo pela rede, mesmo com User-Agent de gente; gente de operadora nao e robo', pedidoDeRobo({ 'user-agent': GENTE, 'x-forwarded-for': '57.141.0.65' })
+  && !pedidoDeRobo({ 'user-agent': GENTE, 'x-forwarded-for': '177.10.20.30' }) && !pedidoDeRobo({ 'user-agent': GENTE }) && pedidoDeRobo({ 'x-forwarded-for': '177.10.20.30' }));
+const antesMeta = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+const gm = await fetch(`${raiz}/grupo?de=anuncio:v3`, { redirect: 'manual', headers: { 'User-Agent': GENTE, 'X-Forwarded-For': '57.141.0.65' } });
+const lm = await fetch(`${raiz}/${r1.codigo}`, { redirect: 'manual', headers: { 'User-Agent': GENTE, 'X-Forwarded-For': '2a03:2880:f0ff:1::1' } });
+const gg = await fetch(`${raiz}/grupo?de=anuncio:v3`, { redirect: 'manual', headers: { 'User-Agent': GENTE, 'X-Forwarded-For': '177.10.20.30' } });
+const depoisMeta = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('/grupo: revisao da Meta vai ao convite mas nao conta toque', gm.status === 302 && gm.headers.get('location') === 'https://chat.whatsapp.com/CONVITE'
+  && depoisMeta.robos.grupo === antesMeta.robos.grupo + 1, depoisMeta.robos);
+caso('/grupo: gente pelo mesmo anuncio conta um toque so', gg.status === 302 && depoisMeta.grupo['anuncio:v3'] === 1
+  && depoisMeta.grupoRecentes.filter(x => x.de === 'anuncio:v3').length === 1, depoisMeta.grupo);
+caso('link curto: rede da Meta e redirecionada mas nao conta clique', lm.status === 302 && lm.headers.get('location') === ML
+  && depoisMeta.robos.links === antesMeta.robos.links + 1 && depoisMeta.top[0].cliques === antesMeta.top[0].cliques, depoisMeta.robos);
 await new Promise((ok) => s.close(ok));
 
 // com o site no www: o dominio sem www so guarda os links curtos
