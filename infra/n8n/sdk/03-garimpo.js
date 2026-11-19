@@ -64,7 +64,9 @@ const garimpa = node({
 "  reelOfertas: String($env.INSTAGRAM_REEL_OFERTAS || '').trim().toLowerCase() === 'sim', reelHora: N('INSTAGRAM_REEL_OFERTAS_HORA', 19),",
 "  // Carrossel de achados no Instagram (15/11): INSTAGRAM_ACHADOS=sim, dom/seg/qua/sex a partir das 18h.",
 "  achados: String($env.INSTAGRAM_ACHADOS || '').trim().toLowerCase() === 'sim', achadosHora: N('INSTAGRAM_ACHADOS_HORA', 18),",
-"  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined };",
+"  proibido: $env.GARIMPO_PROIBIDO ? lista('GARIMPO_PROIBIDO', '') : undefined,",
+"  // Mix de categorias (19/11): mais dia a dia, menos caro. GARIMPO_MIX=nao volta ao jeito antigo.",
+"  mix: String($env.GARIMPO_MIX || '').trim().toLowerCase() === 'nao' ? null : MIX_PADRAO, carosPorDia: N0('GARIMPO_CAROS_POR_DIA', 6) };",
 "// Rodado na mão no editor ($execution.mode = 'test'): ignora horário e limite para mostrar o que sairia.",
 "const teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);",
 "const ligado = String($env.GARIMPO_LIGADO || '').trim().toLowerCase() === 'sim';",
@@ -111,7 +113,7 @@ const garimpa = node({
 "if (r.acao !== 'postar') return [{ json: { postar: false, motivo: r.motivo, tentou: r.tentou, postados_hoje: mem.postados } }];",
 "// Só na rodada automática e ligada: cada foto em cena custa.",
 "if (ligado && !teste) r = await hospedarCena(await comFotoEmCena(r, mem, agora, cfg, rede), rede);",
-"return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || ''), eletronico: ehEletronico(r.titulo || '') } }];"
+"return [{ json: { ...r, postar: ligado && !!$env.GRUPO_OFERTAS, ligado, teste, grupo: $env.GRUPO_OFERTAS || '', postados_hoje: mem.postados, parecido: primeiraPalavra(r.titulo || ''), eletronico: ehEletronico(r.titulo || ''), categoria: categoriaDoItem(r.titulo || ''), caro: (precoEOffDaLegenda(r.texto).preco || 0) > 1000 } }];"
 ].join('\n') } },
   output: [{ postar: true, tipo: 'produto', chave: 'amazon:B0X', texto: 'Oferta', imagem: '', grupo: '120363000000000002-group' }]
 });
@@ -204,6 +206,8 @@ const anota = node({
 "  if (g.link && g.titulo) mem.titulos = Object.fromEntries([...Object.entries(mem.titulos || {}).filter(([k]) => k !== g.link), [g.link, String(g.titulo).slice(0, 60)]].slice(-300));",
 "  // Vez do eletrônico (GARIMPO_ELETRONICO_A_CADA): posts seguidos sem eletrônico.",
 "  if (g.tipo !== 'cupom') mem.semEletronico = g.eletronico ? 0 : (mem.semEletronico || 0) + 1;",
+"  // Mix de categorias (19/11): conta a categoria e o item caro do dia.",
+"  if (g.tipo !== 'cupom' && g.categoria) { mem.mix = mem.mix || {}; mem.mix[g.categoria] = (mem.mix[g.categoria] || 0) + 1; if (g.caro) mem.caros = (mem.caros || 0) + 1; }",
 "  // Melhor oferta do dia (maior % OFF da legenda), para a sugestão de status das 12h.",
 "  if (g.tipo === 'produto' && g.imagem && g.texto) {",
 "    const off = Number((String(g.texto).match(/(\\d{1,2})% OFF/) || [])[1]) || 0;",
