@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { comEtiquetaShopee } from '../../lib/ofertas.mjs';
+import { comEtiquetaShopee, categoriaDoItem, faltaNoMix, caroDemais, anotarMix, MIX_PADRAO } from '../../lib/ofertas.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';
@@ -1059,6 +1059,63 @@ console.log('\n  carrossel de achados (15/11)');
   caso('achados: Meta recusou um item, recomeça (até 3 no dia)', r.passo === 'meta_recusou_item' && !m2.achadosIG.filhos && m2.achadosIG.tent === 1);
   r = await passoDosAchados({ cenasSemana: barato }, SEG, cfg, { httpRequest: async () => { throw new Error('fora'); } }, env);
   caso('achados: erro de rede não derruba o garimpo', r.passo === 'erro');
+}
+
+console.log('\n=== Mix de categorias (19/11) ===');
+{
+  const exemplos = {
+    mercado: ['Sabão em Pó Omo Lavagem Perfeita 1,6kg', 'Papel Higiênico Neve Folha Tripla 24 rolos', 'Café 3 Corações Tradicional 500g', 'Kit Creme Dental Colgate 4 unidades', 'Desinfetante Lysoform 1L'],
+    beleza: ['Perfume Malbec Gold 100ml', 'Protetor Solar Facial La Roche-Posay', 'Secador de Cabelo Taiff 2000W', 'Hidratante Corporal Nivea Milk'],
+    moda: ['Tênis Nike Revolution 7', 'Kit 3 Cuecas Boxer', 'Bermuda Tactel Masculina', 'Meias Puma Kit 6 pares'],
+    games: ['Console PlayStation 5 Slim', 'Grand Theft Auto VI PS5', 'Controle Xbox Series sem fio'],
+    eletro: ['Air Fryer Mondial 4L', 'Geladeira Electrolux Frost Free 431L', 'Máquina de Lavar Brastemp 12kg', 'Liquidificador Oster 1400W'],
+    eletronico: ['Smart TV Samsung 55" Crystal', 'Celular Motorola Moto G85', 'Fone Bluetooth JBL Tune 520BT', 'Notebook Lenovo IdeaPad'],
+    casa: ['Jogo de Panelas Tramontina 5 peças', 'Garrafa Térmica Stanley 1L', 'Jogo de Lençol Queen 400 fios'],
+    esporte: ['Whey Protein Growth 1kg', 'Creatina Dark Lab 500g'],
+    ferramentas: ['Parafusadeira Furadeira 48V com 2 baterias', 'Lavadora de Alta Pressão Kärcher K2'],
+  };
+  const erros = [];
+  for (const [cat, nomes] of Object.entries(exemplos)) for (const n of nomes) if (categoriaDoItem(n) !== cat) erros.push([n, categoriaDoItem(n), cat]);
+  caso('categoria pelo nome nos exemplos', !erros.length, erros);
+  caso('nome vazio ou desconhecido: outros', categoriaDoItem('') === 'outros' && categoriaDoItem('Kit Misterioso Sortido') === 'outros');
+  caso('metas somam 100%', Math.abs(Object.values(MIX_PADRAO).reduce((a, b) => a + b, 0) - 1) < 1e-9);
+
+  const cfgMix = { mix: MIX_PADRAO, carosPorDia: 6 };
+  caso('sem nada no dia: mercado falta mais que eletrônico', faltaNoMix('mercado', {}, cfgMix, 13) > faltaNoMix('eletronico', {}, cfgMix, 13));
+  caso('com muito mercado no dia: eletrônico passa na frente', faltaNoMix('eletronico', { mix: { mercado: 8 } }, cfgMix, 13) > faltaNoMix('mercado', { mix: { mercado: 8 } }, cfgMix, 13));
+  caso('de manhã o dia a dia ganha um empurrão; à noite, o desejo', faltaNoMix('mercado', {}, cfgMix, 9) > faltaNoMix('mercado', {}, cfgMix, 15)
+    && faltaNoMix('games', {}, cfgMix, 20) > faltaNoMix('games', {}, cfgMix, 15));
+  caso('caro: só depois do teto do dia', !caroDemais(1500, { caros: 5 }, cfgMix) && caroDemais(1500, { caros: 6 }, cfgMix) && !caroDemais(900, { caros: 9 }, cfgMix) && !caroDemais(1500, { caros: 9 }, { carosPorDia: 0 }));
+
+  const SAB = 'Kit Sabonete Dove 6 unidades\n\n🔥 Por: R$ 32\n\n🛒 Link: https://link.amazon/Bccc';
+  const canais = () => ({ canalum: pagina(post('canalum/70', min(5), P1, 'https://cdn1.telesco.pe/file/f70'), post('canalum/71', min(20), SAB, 'https://cdn1.telesco.pe/file/f71')) });
+  const C = { ...CFG, eletronicoACada: 2, mix: MIX_PADRAO, carosPorDia: 6 };
+  const r1 = await garimpar({ canais: canais(), agora: AGORA, cfg: C, mem: { ...memNova(), semEletronico: 1 }, rede });
+  caso('mix ligado: o sabonete (mercado) antes do monitor mais novo, mesmo na vez do eletrônico', r1.chave === 'amazon:B0CCCCCCCC', r1);
+  const r2 = await garimpar({ canais: canais(), agora: AGORA, cfg: C, mem: { ...memNova(), mix: { mercado: 9, beleza: 3 } }, rede });
+  caso('mix ligado com mercado de sobra: vai o monitor', r2.chave === 'amazon:B0AAAAAAAA', r2);
+  const r3 = await garimpar({ canais: canais(), agora: AGORA, cfg: { ...C, mix: null }, mem: { ...memNova(), semEletronico: 1 }, rede });
+  caso('GARIMPO_MIX=nao: volta a vez do eletrônico', r3.chave === 'amazon:B0AAAAAAAA', r3);
+  const TV = 'Smart TV Teste 65 4K\n\n🔥 Por: R$ 2.999 no Pix\n\n🛒 Link: https://amzn.to/aaa';
+  const SAB2 = 'Kit Sabonete Dove 6 unidades\n\n🔥 Por: R$ 32\n\n🛒 Link: https://link.amazon/Bccc';
+  const canais2 = () => ({ canalum: pagina(post('canalum/80', min(5), TV, 'https://cdn1.telesco.pe/file/f80'), post('canalum/81', min(20), SAB2, 'https://cdn1.telesco.pe/file/f81')) });
+  const r4 = await garimpar({ canais: canais2(), agora: AGORA, cfg: C, mem: { ...memNova(), mix: { mercado: 9 }, caros: 6 }, rede });
+  caso('teto de caros atingido: a TV vai para o fim mesmo com eletrônico faltando', r4.chave === 'amazon:B0CCCCCCCC', r4);
+  const SH = [
+    { nome: 'Fone Bluetooth Teste', preco: 20, desconto: 45, comissao: 0.40, foto: 'f', link: 'https://s.shopee.com.br/B', chave: 'shopee:2.22' },
+    { nome: 'Detergente Ypê Kit 6', preco: 12, desconto: 40, comissao: 0.05, foto: 'f', link: 'https://s.shopee.com.br/A', chave: 'shopee:1.11' } ];
+  const s1 = await garimpar({ canais: {}, shopee: SH, agora: AGORA, cfg: { ...C, shopee: true }, mem: { ...memNova(), postados: 2 }, rede });
+  caso('Shopee com mix: o detergente (mercado) antes da maior comissão', s1.link === 'https://s.shopee.com.br/A', s1);
+
+  const m = memNova();
+  caso('memória do dia começa com o mix zerado', JSON.stringify(m.mix) === '{}' && m.caros === 0);
+  registrarPostado(m, { chave: 'amazon:A', tipo: 'produto', categoria: 'mercado' }, AGORA);
+  registrarPostado(m, { chave: 'amazon:B', tipo: 'produto', categoria: 'eletronico', caro: true }, AGORA);
+  registrarPostado(m, { chave: 'cupom:C', tipo: 'cupom', categoria: 'outros' }, AGORA);
+  caso('conta categoria e caro; cupom fica fora', m.mix.mercado === 1 && m.mix.eletronico === 1 && !m.mix.outros && m.caros === 1, m);
+  const novoDia = arrumarMemoria({ ...m }, new Date(AGORA.getTime() + 864e5));
+  caso('no dia seguinte o mix zera', JSON.stringify(novoDia.mix) === '{}' && novoDia.caros === 0);
+  caso('anotarMix sem categoria não faz nada', JSON.stringify(anotarMix({}, { tipo: 'produto' })) === '{}');
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);
