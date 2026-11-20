@@ -3,7 +3,7 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { comEtiquetaShopee, categoriaDoItem, faltaNoMix, caroDemais, anotarMix, MIX_PADRAO } from '../../lib/ofertas.mjs';
+import { postDoCanalOficial, CANAIS_OFICIAIS, comEtiquetaShopee, categoriaDoItem, faltaNoMix, caroDemais, anotarMix, MIX_PADRAO } from '../../lib/ofertas.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';
@@ -29,11 +29,12 @@ const REDIR = {
   'https://link.amazon/Bccc': 'https://www.amazon.com.br/Produto-Teste/dp/B0CCCCCCCC/ref=x?tag=outro-20',
   'https://pechin.co/111': 'https://amzn.to/ddd', 'https://amzn.to/ddd': 'https://www.amazon.com.br/dp/B0DDDDDDDD?tag=outro-21',
   'https://divulgador.magalu.com/Xyz': 'https://www.magazinevoce.com.br/magazineoutraloja/fone-teste/p/abc123def4/el/fone/',
+  'https://maga.lu/teste1': 'https://www.magazineluiza.com.br/jogo-de-potes-teste-7-pecas/p/111222333/ud/poud/?seller_id=magazineluiza&partner_id=99999&utm_source=whatsapp&utm_medium=whatsapp&utm_campaign=teste&utm_term=99999',
 };
 const rede = { abrir: async (u) => {
   let a = u;
   for (let i = 0; i < 6 && REDIR[a]; i++) a = REDIR[a];
-  if (a === u && !/amazon\.com\.br|magazinevoce/.test(u)) throw new Error('nao abriu');
+  if (a === u && !/amazon\.com\.br|magazinevoce|magazineluiza/.test(u)) throw new Error('nao abriu');
   return a;
 }, shopee: async () => null };
 const memNova = () => arrumarMemoria({}, AGORA);
@@ -1116,6 +1117,31 @@ console.log('\n=== Mix de categorias (19/11) ===');
   const novoDia = arrumarMemoria({ ...m }, new Date(AGORA.getTime() + 864e5));
   caso('no dia seguinte o mix zera', JSON.stringify(novoDia.mix) === '{}' && novoDia.caros === 0);
   caso('anotarMix sem categoria não faz nada', JSON.stringify(anotarMix({}, { tipo: 'produto' })) === '{}');
+}
+
+console.log('\n=== Canal oficial da Magalu no WhatsApp (20/11) ===');
+{
+  const MAGALU = Object.keys(CANAIS_OFICIAIS).find(k => CANAIS_OFICIAIS[k] === 'magalu-oficial');
+  const LEGENDA = 'Olha que legal esses potes! Sua cozinha vai ficar super organizada! 📦✨\n\n*Produto:* Jogo de Potes de Vidro Teste com Tampa 7 Peças\n\n💰 *Preço:* ```R$ 77,50```\n\n_👉 Garanta o seu agora:_\n\nhttps://maga.lu/teste1';
+  const corpo = (extra = {}) => ({ isNewsletter: true, isGroup: false, fromMe: false, isEdit: false, phone: MAGALU, messageId: '3EB0TESTE000000001', momment: AGORA.getTime() - 10 * 6e4,
+    chatName: 'Magalu', image: { imageUrl: 'https://f004.example.com/file/temp/foto-teste.jpg', caption: LEGENDA, mimeType: 'image/jpeg' }, ...extra });
+  const p = postDoCanalOficial(corpo());
+  caso('post do canal da Magalu vira post no formato do canal', p && p.id === 'magalu-oficial/3EB0TESTE000000001' && p.foto === 'https://f004.example.com/file/temp/foto-teste.jpg'
+    && p.quando === min(10) && p.links.join() === 'https://maga.lu/teste1' && p.canal === 'magalu-oficial', p);
+  caso('canal que nao esta na lista (Mercado Livre, Amazon): fica de fora', postDoCanalOficial(corpo({ phone: '120363000000000099@newsletter' })) === null);
+  caso('post so de texto, sem foto, ou editado: fica de fora', postDoCanalOficial(corpo({ image: undefined, text: { message: LEGENDA } })) === null
+    && postDoCanalOficial(corpo({ isEdit: true })) === null && postDoCanalOficial(corpo({ image: { imageUrl: 'https://x.example/f.jpg', caption: '' } })) === null);
+  caso('mensagem de grupo (nao canal): fica de fora', postDoCanalOficial(corpo({ isNewsletter: false, isGroup: true })) === null);
+  const l = lerPost(LEGENDA);
+  caso('le o post da Magalu: nome sem o rotulo "Produto:", preco e link', l.tipo === 'produto' && l.nome === 'Jogo de Potes de Vidro Teste com Tampa 7 Peças' && l.preco === 77.5 && l.link === 'https://maga.lu/teste1', l);
+  const r = await garimpar({ canais: {}, oficiais: [p], agora: AGORA, cfg: CFG, mem: memNova(), rede });
+  caso('garimpo posta a oferta do canal com o link da SUA loja', r.acao === 'postar' && r.link.startsWith('https://www.magazinevoce.com.br/magazineminhaloja/jogo-de-potes-teste-7-pecas/p/111222333/') && r.chave === 'magalu:111222333', r);
+  caso('o link sai sem o rastreio da Magalu (partner_id, utm) e com o vendedor', !/partner_id|utm_/.test(r.link) && /seller_id=magazineluiza/.test(r.link) && r.texto.includes(r.link), r.link);
+  caso('sai com a foto do post, o preco do post e nada da conversa do canal', r.imagem === p.foto && /R\$77,50|R\$ ?77,5/.test(r.texto) && !/Olha que legal|Garanta o seu/.test(r.texto), r.texto);
+  const velho = await garimpar({ canais: {}, oficiais: [{ ...p, id: 'magalu-oficial/3EB0TESTE000000002', quando: min(150) }], agora: AGORA, cfg: CFG, mem: memNova(), rede });
+  caso('post do canal com mais de 2 horas: nao posta (preco pode ter mudado)', velho.acao !== 'postar', velho);
+  const mem = memNova(); mem.vistos[p.id] = AGORA.getTime() - 6e4;
+  caso('post do canal ja visto: nao tenta de novo', (await garimpar({ canais: {}, oficiais: [p], agora: AGORA, cfg: CFG, mem, rede })).acao !== 'postar');
 }
 
 console.log(`\n  ${ok}/${ok + mau} PASS`);

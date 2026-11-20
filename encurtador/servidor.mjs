@@ -10,6 +10,8 @@
 //                           cliques no convite com a hora (grupoRecentes), para cruzar com quem entrou no grupo
 //   POST /api/movimento     mesma senha; { tipo: 'entrou'|'saiu', ids: [resumo], quando } avisado pelo WhatsApp (18/11).
 //                           Volta no /api/cliques (movimentos), junto com a versao do que esta no ar
+//   POST /api/canal         mesma senha; { post } de canal oficial de loja no WhatsApp (20/11), repassado pelo fluxo 01
+//   GET  /api/canal         mesma senha; os posts de canal oficial das ultimas 24h, para o garimpo (fluxo 03)
 //
 // Robô não conta (21/10): Google, Bing, a prévia de link do WhatsApp e do Facebook abrem o link
 // e não são gente. Eles ainda são redirecionados normalmente; só ficam fora da contagem (robos).
@@ -105,7 +107,7 @@ export function pedidoDeRobo(headers) {
 
 const RECENTES = 300, RECENTES_DIAS = 14;
 // Versao do que esta no ar: sai no /api/cliques para dar para conferir, de fora, se a publicacao nova entrou.
-export const VERSAO = '2026-11-18-movimentos';
+export const VERSAO = '2026-11-20-canal-oficial';
 // Entradas e saidas da comunidade (18/11), avisadas pelo WhatsApp na hora e repassadas pelo fluxo 01 do n8n.
 // So o resumo (hash) de quem entrou ou saiu, a hora e o tipo. Nunca o telefone.
 const MOVIMENTOS = 600, MOVIMENTOS_DIAS = 30;
@@ -119,6 +121,23 @@ export function lerMovimento(corpo, agoraMs = Date.now()) {
   const t = Date.parse(j.quando);
   const quando = new Date(Number.isFinite(t) && t > agoraMs - 864e5 && t < agoraMs + 5 * 60e3 ? t : agoraMs).toISOString();
   return ids.map(id => ({ quando, tipo: j.tipo, id }));
+}
+
+// Posts de canal oficial de loja (20/11): o fluxo 01 recebe do WhatsApp e o garimpo (fluxo 03) le aqui.
+// Sao ofertas publicas da loja (foto, texto e link); nada de quem segue o canal.
+const CANAL_MAX = 80, CANAL_HORAS = 24;
+/** Confere um post de canal oficial e devolve o que guardar, ou null se vier torto. */
+export function lerPostDeCanal(corpo, agoraMs = Date.now()) {
+  let j; try { j = typeof corpo === 'string' ? JSON.parse(corpo) : corpo; } catch { return null; }
+  const p = j && j.post;
+  if (!p || typeof p !== 'object') return null;
+  const id = String(p.id || ''), texto = String(p.texto || ''), foto = String(p.foto || ''), canal = String(p.canal || '');
+  if (!/^[a-z0-9-]{3,30}\/[A-Za-z0-9]{6,40}$/.test(id) || !/^[a-z0-9-]{3,30}$/.test(canal) || !texto || texto.length > 2000) return null;
+  if (!/^https:\/\/[^\s]{8,600}$/.test(foto)) return null;
+  const links = (Array.isArray(p.links) ? p.links : []).map(String).filter(l => /^https:\/\/[^\s]{4,400}$/.test(l)).slice(0, 3);
+  const t = Date.parse(p.quando);
+  const quando = new Date(Number.isFinite(t) && t > agoraMs - CANAL_HORAS * 36e5 && t < agoraMs + 5 * 60e3 ? t : agoraMs).toISOString();
+  return { id, canal, quando, foto, texto, links };
 }
 
 /** Guarda a foto como jpg (até 1080 px) com o nome tirado do conteúdo; apaga as de mais de 10 dias. */
@@ -153,6 +172,7 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto,
   dados.grupoRecentes = dados.grupoRecentes || [];
   dados.robos = dados.robos || { grupo: 0, links: 0 };
   dados.movimentos = Array.isArray(dados.movimentos) ? dados.movimentos : [];
+  dados.canal = Array.isArray(dados.canal) ? dados.canal : [];
   const porUrl = new Map(Object.entries(dados.links).map(([c, l]) => [l.url, c]));
 
   let sujo = false;
@@ -251,6 +271,24 @@ export function criarServidor({ pasta, segredo, base, convite, site, baixarFoto,
         dados.movimentos = [...dados.movimentos.filter(x => Date.parse(x.quando) > limite), ...novas].slice(-MOVIMENTOS);
         sujo = true;
         responde(res, 200, { ok: true, guardados: novas.length });
+      });
+      return;
+    }
+
+    if (p === '/api/canal') {
+      if (!autorizado(req)) return responde(res, 401, { erro: 'senha' });
+      const limite = Date.now() - CANAL_HORAS * 36e5;
+      if (req.method === 'GET') return responde(res, 200, { posts: dados.canal.filter(x => Date.parse(x.quando) > limite), versao: VERSAO });
+      if (req.method !== 'POST') return responde(res, 405, { erro: 'metodo' });
+      let corpo = '';
+      req.on('data', (c) => { corpo += c; if (corpo.length > 2e4) req.destroy(); });
+      req.on('end', () => {
+        const post = lerPostDeCanal(corpo);
+        if (!post) return responde(res, 400, { erro: 'post' });
+        const novo = !dados.canal.some(x => x.id === post.id);
+        dados.canal = [...dados.canal.filter(x => Date.parse(x.quando) > limite && x.id !== post.id), post].slice(-CANAL_MAX);
+        sujo = true;
+        responde(res, 200, { ok: true, novo });
       });
       return;
     }

@@ -127,6 +127,8 @@ console.log('\n=== Esteira (fluxo 01) ===');
   caso('MAGALU_LOJA com ou sem "magazine" na frente', lojaMagalu('magapromooficial') === 'magazinemagapromooficial' && lojaMagalu('magazinemagapromooficial') === 'magazinemagapromooficial' && lojaMagalu('') === '');
   caso('Magalu: link de outra loja (formato real) vira da sua, mantendo produto e vendedor', magaluNaMinhaLoja(REAL, 'magapromooficial') === 'https://www.magazinevoce.com.br/magazinemagapromooficial/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz');
   const SITE = 'https://www.magazineluiza.com.br/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz';
+  caso('Magalu: rastreio de quem divulgou (partner_id, utm) sai do link; o vendedor fica', magaluNaMinhaLoja(SITE + '&partner_id=99999&utm_source=whatsapp&utm_term=99999', 'magapromooficial')
+    === 'https://www.magazinevoce.com.br/magazinemagapromooficial/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz');
   caso('Magalu: link do site vira link da sua loja', converterSemRede(SITE, { magaluLoja: 'magapromooficial' }).url === 'https://www.magazinevoce.com.br/magazinemagapromooficial/cama-casal-madeira/p/bf968823c9/mo/camo/?seller_id=lojaxyz');
   caso('Magalu: pagina do site que nao e produto continua recusada', converterSemRede('https://www.magazineluiza.com.br/busca/tv/', { magaluLoja: 'x' }).motivo === 'magalu_precisa_link_da_sua_loja');
   caso('Shopee: tira o rastreio de quem divulgou', limparShopee('https://shopee.com.br/produto-i.1.2?smtt=0.0.9&utm_source=x#a') === 'https://shopee.com.br/produto-i.1.2');

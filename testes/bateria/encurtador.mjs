@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { criarServidor, lojaPermitida, novoCodigo, ehRobo, ehRedeDaMeta, ipDoPedido, pedidoDeRobo, lerMovimento, VERSAO } from '../../encurtador/servidor.mjs';
+import { criarServidor, lojaPermitida, novoCodigo, ehRobo, ehRedeDaMeta, ipDoPedido, pedidoDeRobo, lerMovimento, lerPostDeCanal, VERSAO } from '../../encurtador/servidor.mjs';
 import { assinarFoto } from '../../encurtador/foto.mjs';
 import { assinarCard, dadosDoCard, linhasDoNome } from '../../encurtador/card.mjs';
 import { assinarReel, lerReel, ffmpegDisponivel } from '../../encurtador/reel.mjs';
@@ -112,10 +112,33 @@ caso('a versao do que esta no ar sai no /api/cliques', cm.versao === VERSAO && /
 caso('movimento: hora de mais de um dia atras, no futuro ou torta vira a hora de agora', [new Date(Date.now() - 3 * 864e5).toISOString(), new Date(Date.now() + 3600e3).toISOString(), 'ontem', undefined, 12345]
   .every(q => { const l = lerMovimento({ tipo: 'saiu', ids: [ID1], quando: q }, Date.now()); return l && Math.abs(Date.parse(l[0].quando) - Date.now()) < 5000; }));
 caso('movimento: id repetido no mesmo aviso entra uma vez', lerMovimento({ tipo: 'saiu', ids: [ID1, ID1] }).length === 1);
+// 20/11: post de canal oficial de loja (Magalu), guardado pelo fluxo 01 e lido pelo garimpo.
+const POST = { id: 'magalu-oficial/3EB0TESTE0001', canal: 'magalu-oficial', quando: haPouco, foto: 'https://f004.example.com/file/x/foto.jpg',
+  texto: '*Produto:* Jogo de Potes Teste 7 Pecas\n\n*Preco:* R$ 77,50\n\nhttps://maga.lu/teste', links: ['https://maga.lu/teste'] };
+const mandaCanal = (corpo, senha = SENHA) => fetch(`${raiz}/api/canal`, { method: 'POST',
+  headers: { Authorization: `Bearer ${senha}`, 'Content-Type': 'application/json' }, body: typeof corpo === 'string' ? corpo : JSON.stringify(corpo) });
+caso('canal: sem a senha, 401 (POST e GET)', (await mandaCanal({ post: POST }, 'y'.repeat(40))).status === 401
+  && (await fetch(`${raiz}/api/canal`, { headers: { Authorization: `Bearer ${'y'.repeat(40)}` } })).status === 401);
+const pc1 = await mandaCanal({ post: POST });
+caso('canal: guarda o post', pc1.status === 200 && (await pc1.json()).novo === true);
+caso('canal: o mesmo post de novo nao duplica', (await (await mandaCanal({ post: POST })).json()).novo === false);
+for (const ruim of [{ post: { ...POST, id: 'x' } }, { post: { ...POST, foto: 'http://inseguro.example/f.jpg' } }, { post: { ...POST, texto: '' } },
+  { post: { ...POST, texto: 'a'.repeat(2001) } }, { post: { ...POST, canal: 'Canal Com Espaco' } }, {}, '{', 'null']) {
+  const rr = await mandaCanal(ruim);
+  caso(`canal: post torto recusado: ${JSON.stringify(ruim).slice(0, 50)}`, rr.status === 400, rr.status);
+}
+const gc = await (await fetch(`${raiz}/api/canal`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('canal: GET devolve o post com id, canal, hora, foto, texto e links', gc.posts.length === 1 && gc.posts[0].id === POST.id && gc.posts[0].quando === haPouco
+  && gc.posts[0].links[0] === 'https://maga.lu/teste' && Object.keys(gc.posts[0]).sort().join() === 'canal,foto,id,links,quando,texto', gc.posts);
+caso('canal: link que nao e https fica de fora', lerPostDeCanal({ post: { ...POST, links: ['javascript:alert(1)', 'https://maga.lu/ok'] } }).links.join() === 'https://maga.lu/ok');
+caso('canal: hora torta ou de mais de 24h vira a hora de agora', ['ontem', new Date(Date.now() - 2 * 864e5).toISOString()]
+  .every(q => Math.abs(Date.parse(lerPostDeCanal({ post: { ...POST, quando: q } }).quando) - Date.now()) < 5000));
 await new Promise((ok) => s.close(ok));
 ({ s, raiz } = await sobe({ convite: 'https://chat.whatsapp.com/CONVITE' }));
 const cm2 = await (await fetch(`${raiz}/api/cliques`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
 caso('reiniciou: os movimentos continuam (salvos no volume)', cm2.movimentos.length === 3, cm2.movimentos);
+const gc2 = await (await fetch(`${raiz}/api/canal`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('reiniciou: o post do canal continua (salvo no volume)', gc2.posts.length === 1 && gc2.posts[0].id === POST.id, gc2.posts);
 // Movimento velho (mais de 30 dias) sai quando chega um novo.
 {
   const arq = fs.readdirSync(pasta).map(f => path.join(pasta, f)).find(f => { try { return fs.statSync(f).isFile() && JSON.parse(fs.readFileSync(f, 'utf8')).movimentos; } catch { return false; } });
