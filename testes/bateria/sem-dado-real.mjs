@@ -62,6 +62,8 @@ for (const arq of arquivos) {
       if (so.length < 10) continue;
       if (links.some(([a, b]) => m.index >= a && m.index < b)) continue;
       if (pareceInventado(so)) continue;
+      // Id de canal do WhatsApp (120363...@newsletter, 20/11/2026) é de canal público de loja, não de gente.
+      if (/^\d*@newsletter\b/.test(linha.slice(m.index + m[0].length))) continue;
       // Epoch do painel tem 10 dígitos e DDD do interior de SP também começa
       // com 17 e 18, então o número sozinho não decide. O que decide é a
       // vizinhança: telefone de gente não mora ao lado da palavra "epoch".

@@ -120,8 +120,32 @@ const anotaMovimento = node({
   output: [{ tipo: 'saiu', quantos: 1, guardado: true }]
 });
 
+// Canal oficial de loja (20/11): o número do robô segue os canais oficiais, e a Z-API avisa cada post pelo
+// mesmo webhook. Post de oferta do canal da Magalu (foto, nome, preço, link) vai para o encurtador, e o garimpo
+// (fluxo 03) lê de lá como mais um canal. Ramo à parte: não segura nem muda o rascunho.
+const guardaCanal = node({
+  type: 'n8n-nodes-base.code', version: 2,
+  config: { name: 'Guarda post do canal oficial', position: [240, 440],
+    parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
+"/*LIB:ofertas*/",
+"const w = $('Z-API avisou').first().json || {};",
+"if ($env.WEBHOOK_SEGREDO && String((w.query || {}).k || '') !== $env.WEBHOOK_SEGREDO) return [];",
+"const post = postDoCanalOficial(w.body);",
+"if (!post || !$env.ENCURTADOR_URL || !$env.ENCURTADOR_SEGREDO) return [];",
+"try {",
+"  const r = await this.helpers.httpRequest({ method: 'POST', url: String($env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/canal', json: true, timeout: 8000,",
+"    headers: { Authorization: 'Bearer ' + $env.ENCURTADOR_SEGREDO }, body: { post } });",
+"  return [{ json: { canal: post.canal, id: post.id, guardado: !!(r && r.ok) } }];",
+"} catch (e) {",
+"  return [{ json: { canal: post.canal, id: post.id, guardado: false, erro: String((e && e.message) || e).split(String($env.ENCURTADOR_SEGREDO)).join('***').slice(0, 80) } }];",
+"}"
+].join('\n') } },
+  output: [{ canal: 'magalu-oficial', id: 'magalu-oficial/X', guardado: true }]
+});
+
 export default workflow('ofertas-01-entrada', '[Ofertas] 01 Entrada (rascunho para o grupo)')
   .add(zapi.to(prepara).to(podePostar
     .onTrue(posta.to(comoFoi).to(responde))
     .onFalse(responde)))
-  .add(zapi.to(anotaMovimento));
+  .add(zapi.to(anotaMovimento))
+  .add(zapi.to(guardaCanal));
