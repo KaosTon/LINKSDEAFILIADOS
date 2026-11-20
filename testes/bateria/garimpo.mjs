@@ -3,7 +3,8 @@
 // repetir produto, postar coisa proibida, passar do limite do dia, e o texto
 // do canal (com @ e chamada dele) ir para o seu grupo.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { postDoCanalOficial, CANAIS_OFICIAIS, comEtiquetaShopee, categoriaDoItem, faltaNoMix, caroDemais, anotarMix, MIX_PADRAO } from '../../lib/ofertas.mjs';
+import { postDoCanalOficial, CANAIS_OFICIAIS } from '../../lib/aviso-entrada.mjs';
+import { comEtiquetaShopee, categoriaDoItem, faltaNoMix, caroDemais, anotarMix, MIX_PADRAO } from '../../lib/ofertas.mjs';
 import { pedidoGaleria, escolhaDaGaleria, quantidade, lerVitrineML, lerCupomAmazon, lerProdutoML, mlAfiliado, escolherProdutoML, fotoLimpaDaResposta, pedidoFoto, nomeFraco, lerPaginaAmazon, chaveProduto, primeiraPalavra } from '../../lib/ofertas.mjs';
 import { pedidosStoryIG, chamadaDoRascunho, lerCanalTelegram, lerPost, lerPreco, legendaAchado, gancho, reaisCurto, limparChamada, pedidoChamada, MODELO_CHAMADA, proibido, lerAmazonDeals, garimpar, arrumarMemoria, podeAgora, lerOfertasShopee, conferirPreco,
          registrarPostado, ehEletronico, lojaConfiavel, converterLink, legendaCupom, textoResumo, condicaoCupom, colherCupons, melhorCupom, lojaDoCupom, horaDoResumo, deCrivel, coletarPainel, guardarPainel, somarVendasShopee, idDoMembro, dadosDoStatus, ehAltoValor, ehDestaque, podeCena, comFotoEmCena, pedidoCena, imagemDaResposta, conferenciaDaResposta, precoEOffDaLegenda, MODELO_CENA, textosDaResposta, problemaNoTexto, pedidoTextos, cenaEmTudo, hospedarCena, ofertasDoReel, linkDoReel, legendaDoReel, passoDoReel, vendasPorPeriodo, pedidoMarcaNova, marcaNovaDaResposta, nomeCurto, ofertasDosAchados, linksDosAchados, legendaDosAchados, passoDosAchados } from '../../lib/ofertas.mjs';

@@ -127,7 +127,7 @@ const guardaCanal = node({
   type: 'n8n-nodes-base.code', version: 2,
   config: { name: 'Guarda post do canal oficial', position: [240, 440],
     parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: [
-"/*LIB:ofertas*/",
+"/*LIB:aviso-entrada*/",
 "const w = $('Z-API avisou').first().json || {};",
 "if ($env.WEBHOOK_SEGREDO && String((w.query || {}).k || '') !== $env.WEBHOOK_SEGREDO) return [];",
 "const post = postDoCanalOficial(w.body);",
