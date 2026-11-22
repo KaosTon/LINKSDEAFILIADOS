@@ -1,0 +1,207 @@
+{
+  "name": "[Ofertas] 08 Vigia da Z-API (avisa se o WhatsApp cair)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "id": "9ec9b1cd-0269-501e-80b3-e6f927e03b50",
+      "name": "A cada 10 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nconst horaSPv = (ms) => Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false }).format(new Date(ms)));\nconst hhmm = (ms) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }).format(new Date(ms));\nconst ddmm = (ms) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit' }).format(new Date(ms));\nconst diaV = (ms) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date(ms));\n\nfunction duracao(ms) {\n  const min = Math.max(0, Math.round(ms / 60e3));\n  if (min < 60) return `${min} min`;\n  const h = Math.floor(min / 60), m = min % 60;\n  return m ? `${h} h ${m} min` : `${h} h`;\n}\n\nfunction lerStatusZapi(r) {\n  if (!r || typeof r !== 'object' || r.erro) return null;\n  if (r.connected === true) return true;\n  if (r.connected === false) return false;\n  return null;\n}\n\nfunction decidirVigia(mem, conectado, agoraMs, cfg = {}) {\n  const repetir = (Number(cfg.repetirMin) > 0 ? Number(cfg.repetirMin) : 180) * 60e3;\n  const acordado = horaSPv(agoraMs) >= 7 && horaSPv(agoraMs) < 23;\n  const saida = { push: null, rascunho: null };\n  const podeRepetir = () => acordado && (!mem.avisadoEm || agoraMs - mem.avisadoEm >= repetir);\n\n  if (conectado === true) {\n    if (mem.avisadoEm && mem.caiuEm) {\n      const fora = duracao(agoraMs - mem.caiuEm);\n      const texto = `O WhatsApp do robô voltou às ${hhmm(agoraMs)}. Ficou fora ${fora} (desde ${hhmm(mem.caiuEm)} de ${ddmm(mem.caiuEm)}).`;\n      saida.push = { titulo: 'Robô de ofertas voltou', texto, prioridade: 3 };\n      saida.rascunho = `✅ ${texto} As ofertas voltam a sair sozinhas. Oferta mandada aqui enquanto ele estava fora não chegou: mande de novo.`;\n    }\n    mem.caiuEm = null; mem.quedas = 0; mem.erros = 0; mem.avisadoEm = null;\n    return saida;\n  }\n\n  if (conectado === false) {\n    mem.erros = 0;\n    mem.caiuEm = mem.caiuEm || agoraMs;\n    mem.quedas = (mem.quedas || 0) + 1;\n    if (mem.quedas >= 2 && podeRepetir()) {\n      mem.avisadoEm = agoraMs;\n      saida.push = { titulo: 'Robô de ofertas desconectado', prioridade: 5,\n        texto: `O WhatsApp do robô caiu às ${hhmm(mem.caiuEm)} de ${ddmm(mem.caiuEm)} (fora há ${duracao(agoraMs - mem.caiuEm)}). `\n          + 'O grupo está sem ofertas e o rascunho não responde. Para voltar: painel da Z-API, Instâncias, QR code; '\n          + 'no celular do robô, WhatsApp, Aparelhos conectados, Conectar um aparelho.' };\n    }\n    return saida;\n  }\n\n  mem.erros = (mem.erros || 0) + 1;\n  mem.caiuEm = mem.caiuEm || agoraMs;\n  if (mem.erros >= 3 && podeRepetir()) {\n    mem.avisadoEm = agoraMs;\n    saida.push = { titulo: 'Robô de ofertas: Z-API não responde', prioridade: 4,\n      texto: `Há ${duracao(agoraMs - mem.caiuEm)} o robô não consegue falar com a Z-API. Pode ser a Z-API fora do ar. `\n        + 'Se o grupo estiver sem ofertas, confira a instância no painel da Z-API.' };\n  }\n  return saida;\n}\n\nfunction avisoDoVencimento(mem, vence, pago, agoraMs) {\n  const v = Number(vence);\n  if (!Number.isFinite(v) || v <= 0) return null;\n  const falta = v - agoraMs;\n  if (falta > 3 * 864e5 || mem.vencimentoDia === diaV(agoraMs) || horaSPv(agoraMs) < 9) return null;\n  mem.vencimentoDia = diaV(agoraMs);\n  const quando = falta <= 0 ? `venceu em ${ddmm(v)}` : `vence em ${ddmm(v)}`;\n  return { titulo: 'Plano da Z-API vencendo', prioridade: 4,\n    texto: `O plano da Z-API do robô ${quando}${pago && pago !== 'PAID' ? ` (situação: ${String(pago).slice(0, 20)})` : ''}. Sem ele, o robô para de postar.` };\n}\n\nfunction pedidoNtfy(topico, aviso) {\n  const t = String(topico || '').trim();\n  if (!aviso || !/^[A-Za-z0-9_-]{8,64}$/.test(t)) return null;\n  return { method: 'POST', url: 'https://ntfy.sh/', json: true, timeout: 15000,\n    body: { topic: t, title: aviso.titulo, message: aviso.texto, priority: aviso.prioridade || 3, tags: [aviso.prioridade >= 5 ? 'rotating_light' : 'white_check_mark'] } };\n}\n\nconst env = $env, agora = Date.now();\nconst mem = $getWorkflowStaticData('global');\nconst raiz = String(env.ZAPI_BASE_URL || 'https://api.z-api.io').replace(/\\/+$/, '') + '/instances/' + env.ZAPI_INSTANCE_ID + '/token/' + env.ZAPI_INSTANCE_TOKEN;\nconst H = env.ZAPI_CLIENT_TOKEN ? { 'client-token': env.ZAPI_CLIENT_TOKEN } : {};\n// Nunca deixa token na execução.\nconst limpa = (e) => [env.ZAPI_INSTANCE_TOKEN, env.ZAPI_CLIENT_TOKEN].filter(Boolean).reduce((s, k) => s.split(String(k)).join('***'), String((e && e.message) || e)).slice(0, 120);\nlet r;\ntry { r = await this.helpers.httpRequest({ method: 'GET', url: raiz + '/status', json: true, timeout: 20000, headers: H }); } catch (e) { r = { erro: limpa(e) }; }\nconst conectado = lerStatusZapi(r);\nconst d = decidirVigia(mem, conectado, agora, { repetirMin: Number(env.AVISO_REPETIR_MIN) || 180 });\nconst avisos = d.push ? [d.push] : [];\n// Vencimento do plano: uma consulta por dia.\nconst dia = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date(agora));\nif (conectado !== null && mem.meDia !== dia) {\n  mem.meDia = dia;\n  try { const m = await this.helpers.httpRequest({ method: 'GET', url: raiz + '/me', json: true, timeout: 20000, headers: H }); mem.vence = m && m.due; mem.pago = m && m.paymentStatus; } catch (e) { /* tenta amanhã */ }\n}\nconst v = avisoDoVencimento(mem, mem.vence, mem.pago, agora);\nif (v) avisos.push(v);\nconst enviados = [];\nfor (const a of avisos) {\n  const p = pedidoNtfy(env.AVISO_NTFY_TOPICO, a);\n  if (!p) { enviados.push({ titulo: a.titulo, push: 'sem_topico' }); continue; }\n  try { await this.helpers.httpRequest(p); enviados.push({ titulo: a.titulo, push: true }); } catch (e) { enviados.push({ titulo: a.titulo, push: false, erro: String((e && e.message) || e).slice(0, 80) }); }\n}\nreturn [{ json: { conectado, erro: r && r.erro ? r.erro : null, avisos: enviados, rascunho: d.rascunho || '', avisar: !!(d.rascunho && env.GRUPO_RASCUNHO), grupo: env.GRUPO_RASCUNHO || '' } }];"
+      },
+      "id": "d697df3e-76d8-516c-9de2-79628f0c4491",
+      "name": "Confere a Z-API",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.avisar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "1fa18ace-7a4b-5dc9-b0e4-3b3b91759722",
+      "name": "Avisa no rascunho?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "0lJeNYqZyDG9Rq2J"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "origem",
+              "displayName": "origem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "titulo",
+              "displayName": "titulo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "value": {
+            "phone": "={{ $json.grupo }}",
+            "message": "={{ $json.rascunho }}",
+            "image": "",
+            "origem": "08-vigia",
+            "link": "",
+            "titulo": ""
+          }
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "568bc820-adbd-5b36-85eb-6322e29632e3",
+      "name": "Avisa que voltou",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        -100
+      ]
+    }
+  ],
+  "connections": {
+    "A cada 10 minutos": {
+      "main": [
+        [
+          {
+            "node": "Confere a Z-API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisa no rascunho?": {
+      "main": [
+        [
+          {
+            "node": "Avisa que voltou",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confere a Z-API": {
+      "main": [
+        [
+          {
+            "node": "Avisa no rascunho?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
