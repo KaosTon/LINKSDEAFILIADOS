@@ -1,6 +1,6 @@
 // Bateria do aviso de entrada (fluxo 05). Telefones inventados.
 import { pegarCodigo, rodar } from './executar.mjs';
-import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem, avisoDoMarco, movimentoDoAviso } from '../../lib/aviso-entrada.mjs';
+import { novosNoGrupo, grupoDoAvisoDeEntrada, horaDoAvisoDeEntrada, textoEntrada, chegaramDesde, boasVindas, horarioDasOfertas, idDoMembro, provavelOrigem, nomeDaOrigem, linhaDaOrigem, avisoDoMarco, movimentoDoAviso } from '../../lib/aviso-entrada.mjs';
 
 let ok = 0, mau = 0;
 const caso = (nome, cond, extra) => {
@@ -54,6 +54,8 @@ caso('um novo: 1', chegaramDesde(antes, ['5511900000001', '5511900000002', '5511
 caso('sem lista guardada: 0 (não chuta)', chegaramDesde(null, ['5511900000003']) === 0 && chegaramDesde([], ['5511900000003']) === 0);
 caso('Z-API sem resposta: 0', chegaramDesde(antes, null) === 0);
 caso('sem novos: texto igual', boasVindas('CONVITE', 0) === 'CONVITE');
+caso('horario: GARIMPO_FIM=24 vira meia-noite; 22 fica 22h; vazio fica o padrao', horarioDasOfertas('8', '24') === 'das 8h à meia-noite' && horarioDasOfertas(8, 22) === 'das 8h às 22h' && horarioDasOfertas(undefined, undefined) === 'das 8h às 22h');
+caso('boas-vindas com o horario de verdade', /das 8h à meia-noite/.test(boasVindas('CONVITE', 1, '8', '24')) && !/22h/.test(boasVindas('CONVITE', 1, '8', '24')));
 caso('com novos: boas-vindas no topo e o convite inteiro embaixo', /^\u{1F44B} \*Boas-vindas/u.test(boasVindas('CONVITE', 2)) && boasVindas('CONVITE', 2).endsWith('\nCONVITE'));
 const cb = pegarCodigo('03-garimpo.json', 'Boas-vindas');
 const envB = { ZAPI_BASE_URL: 'https://z', ZAPI_INSTANCE_ID: 'i', ZAPI_INSTANCE_TOKEN: 't', GRUPO_OFERTAS: 'g1-group,com-group' };

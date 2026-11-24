@@ -132,7 +132,7 @@ export const POSTS: Post[] = [
 <tr><td>Destino do link</td><td>Sempre a loja oficial, nunca site intermediário</td></tr>
 </tbody>
 </table>
-<p>E uma regra que vale o ano todo: o grupo não pede dado pessoal, Pix ou código no privado. Se alguém fizer isso usando o nosso nome, não é a gente. As ofertas saem das 8h às 22h. Mais sobre quem somos em <a href="/sobre">sobre o Tem Descontos</a>.</p>
+<p>E uma regra que vale o ano todo: o grupo não pede dado pessoal, Pix ou código no privado. Se alguém fizer isso usando o nosso nome, não é a gente. As ofertas saem das 8h à meia-noite. Mais sobre quem somos em <a href="/sobre">sobre o Tem Descontos</a>.</p>
 
 <h2>Quais são os seus direitos na compra da Black Friday?</h2>
 <p>São os mesmos de qualquer dia do ano: Black Friday não suspende o Código de Defesa do Consumidor (Lei 8.078/1990).</p>
@@ -1085,7 +1085,7 @@ export const POSTS: Post[] = [
 <p>Oferta anunciada precisa ser cumprida, e desconto sobre preço que nunca existiu é publicidade enganosa. Guarde print da oferta e do pagamento.</p>
 
 <h2>O que o Tem Descontos faz na Cyber Monday?</h2>
-<p>O mesmo de todos os dias: conferimos cada oferta antes de enviar ao grupo, das 8h às 22h.</p>
+<p>O mesmo de todos os dias: conferimos cada oferta antes de enviar ao grupo, das 8h à meia-noite.</p>
 <table>
 <thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
 <tbody>
@@ -1443,7 +1443,7 @@ export const POSTS: Post[] = [
 <p>Como engenheiro, eu gosto do calendário por um motivo simples: ele tira a pressa. Quem sabe que tem outra data no mês seguinte não compra por medo de perder.</p>
 
 <h2>O que o Tem Descontos faz nas datas de promoção?</h2>
-<p>O mesmo que nos outros dias, com mais volume. As ofertas saem das 8h às 22h, e cada uma passa por esta conferência antes de ir para o grupo:</p>
+<p>O mesmo que nos outros dias, com mais volume. As ofertas saem das 8h à meia-noite, e cada uma passa por esta conferência antes de ir para o grupo:</p>
 <table>
 <thead><tr><th>O que conferimos</th><th>O que acontece se falhar</th></tr></thead>
 <tbody>
