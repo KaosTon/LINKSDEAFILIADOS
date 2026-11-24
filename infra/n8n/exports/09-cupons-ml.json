@@ -1,0 +1,233 @@
+{
+  "name": "[Ofertas] 09 Cupons do Mercado Livre (um post por dia)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "d9acf1fd-0934-51f9-9878-d5c34893b711",
+      "name": "A cada 15 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet urlModC = null; try { urlModC = require('url'); } catch (e) { urlModC = null; }\nconst URLM = typeof URL !== 'undefined' ? URL : (urlModC && urlModC.URL);\n\nconst diaC = (ms) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date(ms));\nconst limpaLinha = (l) => String(l || '').replace(/[*_~`]/g, '').replace(/^\\s*>\\s*/, '').trim();\nconst reaisNum = (t) => { const n = Number(String(t).replace(/\\./g, '').replace(',', '.')); return Number.isFinite(n) && n > 0 ? n : null; };\nconst CABECA = /^(?:🎟️|🎟|🎫)?\\s*([A-Z0-9]{4,24})\\s*👉\\s*(.+)$/u;\nconst LINK = /https?:\\/\\/[^\\s<>\"')]+/;\n\nfunction validadeDe(texto, postMs) {\n  const t = String(texto || '').toLowerCase();\n  const dia = diaC(postMs), ano = Number(dia.slice(0, 4)), mes = Number(dia.slice(5, 7));\n  const data = (d, m) => `${m < mes - 6 ? ano + 1 : ano}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;\n  let m = t.match(/at[eé]\\s+(?:o\\s+dia\\s+)?(\\d{1,2})[./](\\d{1,2})/);\n  if (m) return data(Number(m[1]), Number(m[2]));\n  m = t.match(/somente\\s+em\\s+(\\d{1,2})[./](\\d{1,2})/);\n  if (m) return data(Number(m[1]), Number(m[2]));\n  return dia;\n}\n\nfunction lerCuponsML(texto, postMs) {\n  const linhas = String(texto || '').split('\\n').map(limpaLinha);\n  const validadeGeral = validadeDe(linhas.filter(l => /v[aá]lid/i.test(l)).join(' '), postMs);\n  const comLink = linhas.filter(l => LINK.test(l));\n  const linkGeral = comLink.length ? comLink[comLink.length - 1].match(LINK)[0] : null;\n  const cupons = [];\n  let atual = null;\n  for (const l of linhas) {\n    const c = l.match(CABECA);\n    if (c) {\n      const valor = c[2].trim();\n      const pct = Number((valor.match(/(\\d{1,2})\\s*%/) || [])[1]) || null;\n      const reais = pct ? null : reaisNum((valor.match(/R\\$\\s*([\\d.,]+)/) || [])[1]);\n      if (!pct && !reais) { atual = null; continue; }\n      atual = { codigo: c[1], pct, reais, minimo: null, maximo: null, categoria: null, link: null, ate: null };\n      cupons.push(atual);\n      continue;\n    }\n    if (!l) { atual = null; continue; }\n    if (!atual) continue;\n    const min = l.match(/compra\\s+m[ií]n(?:ima|\\.)?\\s*:?\\s*R\\$\\s*([\\d.,]+)/i) || l.match(/a\\s+partir\\s+de\\s+R\\$\\s*([\\d.,]+)/i);\n    if (min) atual.minimo = reaisNum(min[1]);\n    const max = l.match(/desconto\\s+m[aá]x(?:imo|\\.)?\\s*:?\\s*R\\$\\s*([\\d.,]+)/i);\n    if (max) atual.maximo = reaisNum(max[1]);\n    const lk = l.match(LINK);\n    if (lk) atual.link = lk[0];\n    if (/v[aá]lid/i.test(l)) atual.ate = validadeDe(l, postMs);\n\n    const pedaco = l.split('|')[0].trim();\n    if (!min && !max && !lk && !/v[aá]lid|\\d/i.test(pedaco) && pedaco.length <= 40 && !atual.categoria && !/^variad/i.test(pedaco)) atual.categoria = pedaco;\n  }\n  return cupons.map(c => ({ ...c, ate: c.ate || validadeGeral, link: c.link || linkGeral }));\n}\n\nfunction linkMLComEtiqueta(url, etiqueta, tool) {\n  let u; try { u = new URLM(url); } catch { return null; }\n  if (!/(^|\\.)mercadolivre\\.com\\.br$/i.test(u.hostname) || !etiqueta || !tool) return null;\n  for (const k of [...u.searchParams.keys()]) if (/^(matt_\\w+|utm_\\w+|glk|tracking_id)$/i.test(k)) u.searchParams.delete(k);\n  u.searchParams.set('matt_word', String(etiqueta).trim());\n  u.searchParams.set('matt_tool', String(tool).trim());\n  u.hash = '';\n  return u.toString();\n}\n\nfunction lojaDoLink(url) {\n  const m = String(url || '').match(/mercadolivre\\.com\\.br\\/loja\\/([a-z0-9-]{2,40})/i);\n  return m ? m[1].split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') : null;\n}\n\nfunction escolherCupons(posts, agoraMs, mem, { max = 5, diasSemRepetir = 5 } = {}) {\n  const hoje = diaC(agoraMs);\n  const recentes = mem.cuponsPostados || {};\n  const limite = diaC(agoraMs - diasSemRepetir * 864e5);\n  const vistos = new Set();\n  const todos = [];\n  for (const p of [...(posts || [])].sort((a, b) => Date.parse(b.quando) - Date.parse(a.quando))) {\n    for (const c of lerCuponsML(p.texto, Date.parse(p.quando) || agoraMs)) {\n      if (vistos.has(c.codigo) || c.ate < hoje) continue;\n      if (recentes[c.codigo] && recentes[c.codigo] > limite) continue;\n      vistos.add(c.codigo);\n      todos.push(c);\n    }\n  }\n\n  const nota = (c) => (c.categoria ? 0 : 100) + (c.ate === hoje ? 50 : 0) + (c.pct || Math.min(30, (c.reais || 0) / 20));\n  return todos.sort((a, b) => nota(b) - nota(a) || (a.minimo || 0) - (b.minimo || 0)).slice(0, max);\n}\n\nconst rs = (v) => `R$${Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`;\nconst ddmmC = (iso) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;\n\nfunction textoCupons(cupons, agoraMs, links = {}) {\n  const hoje = diaC(agoraMs);\n  const linhas = ['🎟️ *CUPONS DO MERCADO LIVRE*', ''];\n\n  const ordem = [];\n  for (const c of cupons) if (!ordem.includes(links[c.codigo] || c.codigo)) ordem.push(links[c.codigo] || c.codigo);\n  cupons = ordem.flatMap(k => cupons.filter(c => (links[c.codigo] || c.codigo) === k));\n  cupons.forEach((c, i) => {\n    const valor = c.pct ? `${c.pct}% OFF` : `${rs(c.reais)} OFF`;\n    const onde = c.loja ? ` na loja oficial ${c.loja}` : c.categoria ? ` em ${c.categoria}` : '';\n    const min = !c.minimo || c.minimo <= 1 ? 'sem compra mínima' : `acima de ${rs(c.minimo)}`;\n    const max = c.maximo ? ` (desconto até ${rs(c.maximo)})` : '';\n    const ate = c.ate === hoje ? ', só hoje' : `, até ${ddmmC(c.ate)}`;\n    linhas.push(`*${c.codigo}*: ${valor}${onde}, ${min}${max}${ate}`);\n\n    const prox = cupons[i + 1];\n    if (links[c.codigo] && !(prox && links[prox.codigo] === links[c.codigo])) linhas.push(`👉 ${links[c.codigo]}`, '');\n  });\n  if (linhas[linhas.length - 1] !== '') linhas.push('');\n  linhas.push('_Em produtos elegíveis, enquanto durarem os estoques. Use o código no carrinho._');\n  return linhas.join('\\n');\n}\n\nfunction horaDosCupons(mem, agoraMs, hora = 11, minuto = 30) {\n  const f = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(agoraMs));\n  const [h, m] = f.split(':').map(Number);\n  return h * 60 + m >= hora * 60 + minuto && h < 21 && mem.cuponsDia !== diaC(agoraMs);\n}\n\nfunction anotarCupons(mem, codigos, agoraMs) {\n  const hoje = diaC(agoraMs), limite = diaC(agoraMs - 30 * 864e5);\n  mem.cuponsDia = hoje;\n  mem.cuponsPostados = Object.fromEntries([...Object.entries(mem.cuponsPostados || {}).filter(([, d]) => d > limite), ...codigos.map(c => [c, hoje])]);\n  return mem;\n}\n\nconst env = $env, agora = Date.now();\nconst mem = $getWorkflowStaticData('global');\nconst teste = typeof $execution !== 'undefined' && /^(test|manual)$/.test($execution.mode);\nconst ligado = String(env.CUPONS_LIGADO || '').trim().toLowerCase() === 'sim';\nconst hora = Number(env.CUPONS_HORA) > 0 ? Number(env.CUPONS_HORA) : 11;\nif (!teste && !horaDosCupons(mem, agora, hora, 30)) return [{ json: { postar: false, motivo: 'fora_da_hora_ou_ja_postou' } }];\nif (!env.ENCURTADOR_URL || !env.ENCURTADOR_SEGREDO || !env.GRUPO_OFERTAS) return [{ json: { postar: false, motivo: 'falta_variavel' } }];\nlet posts = [];\ntry { const r = await this.helpers.httpRequest({ method: 'GET', url: String(env.ENCURTADOR_URL).replace(/\\/+$/, '') + '/api/canal?tipo=cupom', json: true, timeout: 15000,\n  headers: { Authorization: 'Bearer ' + env.ENCURTADOR_SEGREDO } }); posts = (r && r.posts) || []; } catch (e) { return [{ json: { postar: false, motivo: 'encurtador_falhou' } }]; }\nconst cupons = escolherCupons(posts, agora, mem, { max: Number(env.CUPONS_MAX) > 0 ? Number(env.CUPONS_MAX) : 5 });\nif (!cupons.length) return [{ json: { postar: false, motivo: 'sem_cupom_novo', posts: posts.length } }];\n// Abre o link curto (bit.ly) até o ML e põe a sua etiqueta. Link que não abre: o cupom sai sem link.\nconst abre = async (u) => {\n  let atual = u;\n  for (let i = 0; i < 4 && atual && !/^https:\\/\\/([a-z0-9-]+\\.)*mercadolivre\\.com\\.br\\//i.test(atual); i++) {\n    const r = await this.helpers.httpRequest({ method: 'GET', url: atual, disableFollowRedirect: true, returnFullResponse: true, ignoreHttpStatusErrors: true, timeout: 15000 });\n    const d = r && r.headers && (r.headers.location || r.headers.Location);\n    if (!d) break;\n    atual = /^https?:/i.test(d) ? d : null;\n  }\n  return atual;\n};\nconst links = {};\nfor (const c of cupons) {\n  if (!c.link) continue;\n  let fim = null;\n  try { fim = await abre(c.link); } catch (e) { fim = null; }\n  c.loja = lojaDoLink(fim);\n  const meu = fim && linkMLComEtiqueta(fim, env.ML_ETIQUETA, env.ML_MATT_TOOL);\n  if (meu) links[c.codigo] = meu;\n}\nconst texto = textoCupons(cupons, agora, links);\nreturn [{ json: { postar: ligado && !teste, teste, ligado, grupo: env.GRUPO_OFERTAS, texto, codigos: cupons.map(c => c.codigo), semLink: cupons.filter(c => !links[c.codigo]).map(c => c.codigo) } }];"
+      },
+      "id": "a250be99-7197-564c-8d00-e4269a128713",
+      "name": "Monta os cupons",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.postar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "ea74e83e-847d-591f-aa30-2244074c938b",
+      "name": "Posta?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "0lJeNYqZyDG9Rq2J"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "origem",
+              "displayName": "origem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "titulo",
+              "displayName": "titulo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "value": {
+            "phone": "={{ $json.grupo }}",
+            "message": "={{ $json.texto }}",
+            "image": "",
+            "origem": "09-cupons",
+            "link": "",
+            "titulo": ""
+          }
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "1a32929c-c19f-5edb-bbc0-57ef7623f4e2",
+      "name": "Posta no grupo",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "\n\nlet urlModC = null; try { urlModC = require('url'); } catch (e) { urlModC = null; }\nconst URLM = typeof URL !== 'undefined' ? URL : (urlModC && urlModC.URL);\n\nconst diaC = (ms) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date(ms));\nconst limpaLinha = (l) => String(l || '').replace(/[*_~`]/g, '').replace(/^\\s*>\\s*/, '').trim();\nconst reaisNum = (t) => { const n = Number(String(t).replace(/\\./g, '').replace(',', '.')); return Number.isFinite(n) && n > 0 ? n : null; };\nconst CABECA = /^(?:🎟️|🎟|🎫)?\\s*([A-Z0-9]{4,24})\\s*👉\\s*(.+)$/u;\nconst LINK = /https?:\\/\\/[^\\s<>\"')]+/;\n\nfunction validadeDe(texto, postMs) {\n  const t = String(texto || '').toLowerCase();\n  const dia = diaC(postMs), ano = Number(dia.slice(0, 4)), mes = Number(dia.slice(5, 7));\n  const data = (d, m) => `${m < mes - 6 ? ano + 1 : ano}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;\n  let m = t.match(/at[eé]\\s+(?:o\\s+dia\\s+)?(\\d{1,2})[./](\\d{1,2})/);\n  if (m) return data(Number(m[1]), Number(m[2]));\n  m = t.match(/somente\\s+em\\s+(\\d{1,2})[./](\\d{1,2})/);\n  if (m) return data(Number(m[1]), Number(m[2]));\n  return dia;\n}\n\nfunction lerCuponsML(texto, postMs) {\n  const linhas = String(texto || '').split('\\n').map(limpaLinha);\n  const validadeGeral = validadeDe(linhas.filter(l => /v[aá]lid/i.test(l)).join(' '), postMs);\n  const comLink = linhas.filter(l => LINK.test(l));\n  const linkGeral = comLink.length ? comLink[comLink.length - 1].match(LINK)[0] : null;\n  const cupons = [];\n  let atual = null;\n  for (const l of linhas) {\n    const c = l.match(CABECA);\n    if (c) {\n      const valor = c[2].trim();\n      const pct = Number((valor.match(/(\\d{1,2})\\s*%/) || [])[1]) || null;\n      const reais = pct ? null : reaisNum((valor.match(/R\\$\\s*([\\d.,]+)/) || [])[1]);\n      if (!pct && !reais) { atual = null; continue; }\n      atual = { codigo: c[1], pct, reais, minimo: null, maximo: null, categoria: null, link: null, ate: null };\n      cupons.push(atual);\n      continue;\n    }\n    if (!l) { atual = null; continue; }\n    if (!atual) continue;\n    const min = l.match(/compra\\s+m[ií]n(?:ima|\\.)?\\s*:?\\s*R\\$\\s*([\\d.,]+)/i) || l.match(/a\\s+partir\\s+de\\s+R\\$\\s*([\\d.,]+)/i);\n    if (min) atual.minimo = reaisNum(min[1]);\n    const max = l.match(/desconto\\s+m[aá]x(?:imo|\\.)?\\s*:?\\s*R\\$\\s*([\\d.,]+)/i);\n    if (max) atual.maximo = reaisNum(max[1]);\n    const lk = l.match(LINK);\n    if (lk) atual.link = lk[0];\n    if (/v[aá]lid/i.test(l)) atual.ate = validadeDe(l, postMs);\n\n    const pedaco = l.split('|')[0].trim();\n    if (!min && !max && !lk && !/v[aá]lid|\\d/i.test(pedaco) && pedaco.length <= 40 && !atual.categoria && !/^variad/i.test(pedaco)) atual.categoria = pedaco;\n  }\n  return cupons.map(c => ({ ...c, ate: c.ate || validadeGeral, link: c.link || linkGeral }));\n}\n\nfunction linkMLComEtiqueta(url, etiqueta, tool) {\n  let u; try { u = new URLM(url); } catch { return null; }\n  if (!/(^|\\.)mercadolivre\\.com\\.br$/i.test(u.hostname) || !etiqueta || !tool) return null;\n  for (const k of [...u.searchParams.keys()]) if (/^(matt_\\w+|utm_\\w+|glk|tracking_id)$/i.test(k)) u.searchParams.delete(k);\n  u.searchParams.set('matt_word', String(etiqueta).trim());\n  u.searchParams.set('matt_tool', String(tool).trim());\n  u.hash = '';\n  return u.toString();\n}\n\nfunction lojaDoLink(url) {\n  const m = String(url || '').match(/mercadolivre\\.com\\.br\\/loja\\/([a-z0-9-]{2,40})/i);\n  return m ? m[1].split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') : null;\n}\n\nfunction escolherCupons(posts, agoraMs, mem, { max = 5, diasSemRepetir = 5 } = {}) {\n  const hoje = diaC(agoraMs);\n  const recentes = mem.cuponsPostados || {};\n  const limite = diaC(agoraMs - diasSemRepetir * 864e5);\n  const vistos = new Set();\n  const todos = [];\n  for (const p of [...(posts || [])].sort((a, b) => Date.parse(b.quando) - Date.parse(a.quando))) {\n    for (const c of lerCuponsML(p.texto, Date.parse(p.quando) || agoraMs)) {\n      if (vistos.has(c.codigo) || c.ate < hoje) continue;\n      if (recentes[c.codigo] && recentes[c.codigo] > limite) continue;\n      vistos.add(c.codigo);\n      todos.push(c);\n    }\n  }\n\n  const nota = (c) => (c.categoria ? 0 : 100) + (c.ate === hoje ? 50 : 0) + (c.pct || Math.min(30, (c.reais || 0) / 20));\n  return todos.sort((a, b) => nota(b) - nota(a) || (a.minimo || 0) - (b.minimo || 0)).slice(0, max);\n}\n\nconst rs = (v) => `R$${Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`;\nconst ddmmC = (iso) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;\n\nfunction textoCupons(cupons, agoraMs, links = {}) {\n  const hoje = diaC(agoraMs);\n  const linhas = ['🎟️ *CUPONS DO MERCADO LIVRE*', ''];\n\n  const ordem = [];\n  for (const c of cupons) if (!ordem.includes(links[c.codigo] || c.codigo)) ordem.push(links[c.codigo] || c.codigo);\n  cupons = ordem.flatMap(k => cupons.filter(c => (links[c.codigo] || c.codigo) === k));\n  cupons.forEach((c, i) => {\n    const valor = c.pct ? `${c.pct}% OFF` : `${rs(c.reais)} OFF`;\n    const onde = c.loja ? ` na loja oficial ${c.loja}` : c.categoria ? ` em ${c.categoria}` : '';\n    const min = !c.minimo || c.minimo <= 1 ? 'sem compra mínima' : `acima de ${rs(c.minimo)}`;\n    const max = c.maximo ? ` (desconto até ${rs(c.maximo)})` : '';\n    const ate = c.ate === hoje ? ', só hoje' : `, até ${ddmmC(c.ate)}`;\n    linhas.push(`*${c.codigo}*: ${valor}${onde}, ${min}${max}${ate}`);\n\n    const prox = cupons[i + 1];\n    if (links[c.codigo] && !(prox && links[prox.codigo] === links[c.codigo])) linhas.push(`👉 ${links[c.codigo]}`, '');\n  });\n  if (linhas[linhas.length - 1] !== '') linhas.push('');\n  linhas.push('_Em produtos elegíveis, enquanto durarem os estoques. Use o código no carrinho._');\n  return linhas.join('\\n');\n}\n\nfunction horaDosCupons(mem, agoraMs, hora = 11, minuto = 30) {\n  const f = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(agoraMs));\n  const [h, m] = f.split(':').map(Number);\n  return h * 60 + m >= hora * 60 + minuto && h < 21 && mem.cuponsDia !== diaC(agoraMs);\n}\n\nfunction anotarCupons(mem, codigos, agoraMs) {\n  const hoje = diaC(agoraMs), limite = diaC(agoraMs - 30 * 864e5);\n  mem.cuponsDia = hoje;\n  mem.cuponsPostados = Object.fromEntries([...Object.entries(mem.cuponsPostados || {}).filter(([, d]) => d > limite), ...codigos.map(c => [c, hoje])]);\n  return mem;\n}\n\n// Só marca o dia e os códigos se o gateway confirmou o envio; se falhou, tenta de novo na próxima rodada.\nconst r = $input.first().json || {};\nconst m = $('Monta os cupons').first().json || {};\nif (r.ok) anotarCupons($getWorkflowStaticData('global'), m.codigos || [], Date.now());\nreturn [{ json: { ok: !!r.ok, erro: r.erro || null, codigos: m.codigos || [] } }];"
+      },
+      "id": "62bf0303-d535-50f3-9628-bad074cc545c",
+      "name": "Anota",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        -100
+      ]
+    }
+  ],
+  "connections": {
+    "A cada 15 minutos": {
+      "main": [
+        [
+          {
+            "node": "Monta os cupons",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Posta no grupo": {
+      "main": [
+        [
+          {
+            "node": "Anota",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Posta?": {
+      "main": [
+        [
+          {
+            "node": "Posta no grupo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta os cupons": {
+      "main": [
+        [
+          {
+            "node": "Posta?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

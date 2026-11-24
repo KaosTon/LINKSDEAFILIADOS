@@ -129,7 +129,15 @@ for (const ruim of [{ post: { ...POST, id: 'x' } }, { post: { ...POST, foto: 'ht
 }
 const gc = await (await fetch(`${raiz}/api/canal`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
 caso('canal: GET devolve o post com id, canal, hora, foto, texto e links', gc.posts.length === 1 && gc.posts[0].id === POST.id && gc.posts[0].quando === haPouco
-  && gc.posts[0].links[0] === 'https://maga.lu/teste' && Object.keys(gc.posts[0]).sort().join() === 'canal,foto,id,links,quando,texto', gc.posts);
+  && gc.posts[0].links[0] === 'https://maga.lu/teste' && Object.keys(gc.posts[0]).sort().join() === 'canal,foto,id,links,quando,texto,tipo' && gc.posts[0].tipo === 'produto', gc.posts);
+// 24/11: post de cupom (canal de afiliados do ML) pode vir sem foto e so sai para quem pede ?tipo=cupom.
+const CUP = { id: 'ml-afiliados/3EB0TESTE0002', canal: 'ml-afiliados', quando: haPouco, foto: '', tipo: 'cupom', texto: 'TESTECUPOM 30% OFF', links: ['https://bit.ly/a', 'https://bit.ly/b', 'https://bit.ly/c', 'https://bit.ly/d'] };
+caso('canal: cupom sem foto e guardado', (await mandaCanal({ post: CUP })).status === 200);
+caso('canal: produto sem foto continua recusado', (await mandaCanal({ post: { ...POST, id: 'magalu-oficial/3EB0TESTE0003', foto: '' } })).status === 400);
+const soProd = await (await fetch(`${raiz}/api/canal`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+const soCup = await (await fetch(`${raiz}/api/canal?tipo=cupom`, { headers: { Authorization: `Bearer ${SENHA}` } })).json();
+caso('canal: o garimpo (GET sem tipo) nao recebe cupom; ?tipo=cupom so recebe cupom, com os 4 links', soProd.posts.length === 1 && soProd.posts[0].tipo === 'produto'
+  && soCup.posts.length === 1 && soCup.posts[0].id === CUP.id && soCup.posts[0].links.length === 4, { soProd, soCup });
 caso('canal: link que nao e https fica de fora', lerPostDeCanal({ post: { ...POST, links: ['javascript:alert(1)', 'https://maga.lu/ok'] } }).links.join() === 'https://maga.lu/ok');
 caso('canal: hora torta ou de mais de 24h vira a hora de agora', ['ontem', new Date(Date.now() - 2 * 864e5).toISOString()]
   .every(q => Math.abs(Date.parse(lerPostDeCanal({ post: { ...POST, quando: q } }).quando) - Date.now()) < 5000));
