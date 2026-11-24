@@ -68,7 +68,7 @@ console.log('\n=== Texto do post ===');
     && /\*TESTETRINTA\*: 30% OFF, sem compra mínima \(desconto até R\$500\), até 20\/12/.test(t) && /em Tecnologia/.test(t), t);
   caso('mesmo link em cupons seguidos sai uma vez só', (t.match(/teste1\?/g) || []).length === 1, t);
   caso('todo link é o com a sua etiqueta', (t.match(/https?:\/\/\S+/g) || []).every(u => /matt_word=minhaetiqueta/.test(u)), t);
-  caso('sem travessão', !/[–—]/.test(t));
+  caso('sem travessão', !/[\u2013\u2014]/.test(t));
 }
 
 console.log('\n=== Hora e memória ===');

@@ -152,7 +152,8 @@ const boas = node({
 "  const p = g ? await participantesDoGrupo(this.helpers, $env, g) : null;",
 "  novos = chegaramDesde(mem.membrosIds && mem.membrosIds.ids, p);",
 "} catch (e) { novos = 0; }",
-"return [{ json: { ...j, texto: boasVindas(j.texto, novos), novos } }];"
+"// O horário no texto segue o GARIMPO_INICIO e o GARIMPO_FIM de verdade (24/11).",
+"return [{ json: { ...j, texto: boasVindas(j.texto, novos, $env.GARIMPO_INICIO, $env.GARIMPO_FIM), novos } }];"
 ].join('\n') } },
   output: [{ postar: true, tipo: 'convite', texto: 'x', novos: 1 }]
 });
