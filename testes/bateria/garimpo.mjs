@@ -125,6 +125,9 @@ console.log('\n=== Mercado Livre com o seu link ===');
     + ',' + cardJson('5200000003', 'www.mercadolivre.com.br/calca-legging-teste-com-bolso-fitness-atletyca/up/MLBU5200000002', 'Calça Legging Teste Com Bolso Fitness Atletyca', 52.9, 78.9) + ']}</script></body></html>';
   const v = lerVitrineML(VITRINE);
   caso('vitrine: le o card em destaque com preco, preco antigo e foto', v && v.id === 'MLB4100000001' && v.preco === 75.64 && v.precoDe === 215.71 && /MLB-4100000001/.test(v.url) && !/[?#]/.test(v.url) && /D_NQ_NP_9/.test(v.foto), v);
+  caso('quantidade: "10x" no começo, "Leve 3" e "10 x 250g" contam; parcela não', quantidade('10x Salgadinho Teste Onda, 250g') === 10 && quantidade('2x Desodorante Teste') === 2
+    && quantidade('Leve 3 Sabonete Teste') === 3 && quantidade('Biscoito Teste 10 x 100g') === 10 && quantidade('Fone Teste 10x sem juros') === 1 && quantidade('TV Teste em 10x de R$100') === 1
+    && quantidade('Smart TV 50 Teste') === 1 && quantidade('Air Fryer 4L Teste') === 1);
   caso('quantidade: kit 3, 2 unidades e avulso', quantidade('Kit 3 Legging') === 3 && quantidade('Fralda 2 unidades') === 2 && quantidade('Legging Com Bolso') === 1);
   caso('escolher por nome: kit 3 nao vira a legging avulsa', !/MLBU5200000002/.test(escolherProdutoML(VITRINE.replace(/card-featured/g, 'x'), 'Kit 3 Legging Com Bolso Atletyca') || ''));
   caso('link produto.mercadolivre.com.br/MLB-123-nome agora e achado', /MLB-4100000001/.test(escolherProdutoML(VITRINE, 'Kit 3 Legging Teste Com Bolso Atletyca') || ''));
@@ -362,6 +365,9 @@ console.log('\n=== Travas de qualidade (16/10) ===');
   caso('link com outro produto (air fryer no texto, tenis na loja): nao posta', outro.acao !== 'postar' && JSON.stringify(outro.tentou).includes('produto_diferente_do_post'), outro);
   const kit = await garimpar({ canais: pAmz('Kit 3 Cuecas Boxer Teste Algodao\n\n🔥 Por R$ 199,90'), agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG('Cueca Boxer Teste Algodao Preta') } });
   caso('kit 3 no texto, 1 unidade na loja: nao posta', kit.acao !== 'postar' && JSON.stringify(kit.tentou).includes('produto_diferente_do_post'), kit);
+  // 25/11: saiu "10x Salgadinho Cheetos" por R$15,99 e o link da Amazon era de 1 pacote.
+  const dez = await garimpar({ canais: pAmz('10x Salgadinho de Milho Teste, Onda Requeijao, 250g\n\n🔥 Por R$ 199,90'), agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG('Salgadinho de Milho Teste, Onda Requeijao, 250g') } });
+  caso('"10x" no texto, 1 pacote na loja: nao posta', dez.acao !== 'postar' && JSON.stringify(dez.tentou).includes('produto_diferente_do_post'), dez);
   const ok = await garimpar({ canais: pAmz('Fritadeira Air Fryer Teste 4L\n\n🔥 Por R$ 199,90'), agora: AGORA, cfg: CFG, mem: memNova(), rede: { ...rede, pagina: async () => PAG('Fritadeira Elétrica Air Fryer Teste 4L Preta 1500W') } });
   caso('mesmo produto com titulo maior na loja: posta, com o nome do post', ok.acao === 'postar' && ok.titulo === 'Fritadeira Air Fryer Teste 4L', ok);
 
